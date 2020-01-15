@@ -11,6 +11,18 @@
         <content type="html"><![CDATA[<h2 id="DASH-Dominant-weighted-neural-Architecture-SearcH"><a href="#DASH-Dominant-weighted-neural-Architecture-SearcH" class="headerlink" title="DASH: Dominant-weighted neural Architecture SearcH"></a>DASH: Dominant-weighted neural Architecture SearcH</h2><p>Recently, there has been increasing attention attracted by neural architecture search (NAS). Traditional NAS approaches based on reinforcement learning or evolutionary algorithms which take thousand of GPU hours are strongly limited by the resources and time. In this work, we present a new gradient-based approach, namely Dominant-weighted neural Architecture SearcH (DASH). Unlike prior differentiable architecture search works, our DASH learns candidate operations individually and searches for the dominant-weighted edges as the most potential architecture. Experiments show the effectiveness of our proposed approach. Specifically, the model searched by DASH achieves a new state-of-the-art performance of a 2.47% test error in CIFAR-10, and can be transferred to ImageNet to obtain a test error of 25.1% with only 5.0M parameters, which is on par with recent methods. Our code is available <a href="https://github.com/bansheng/DASH" target="_blank" rel="noopener"></a>.</p>]]></content>
       
       
+      <categories>
+          
+          <category> Deep Learning </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
       
     </entry>
     
