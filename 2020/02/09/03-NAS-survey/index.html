@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="DASH: Dominant-weighted neural Architecture SearcH, HomePage of Yadong Ding">
-    <meta name="description" content="DASH: Dominant-weighted neural Architecture SearcHRecently, there has been increasing attention attracted by neural arch">
+    <meta name="keywords" content="A survey: Neural Architecture Search, HomePage of Yadong Ding">
+    <meta name="description" content="A NAS survey">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>DASH: Dominant-weighted neural Architecture SearcH | HomePage of Yadong Ding</title>
+    <title>A survey: Neural Architecture Search | HomePage of Yadong Ding</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -281,12 +281,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">DASH: Dominant-weighted neural Architecture SearcH</h1>
+                    <h1 class="description center-align post-title">A survey: Neural Architecture Search</h1>
                 </div>
             </div>
         </div>
@@ -415,8 +415,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Deep-Learning/" class="post-category">
-                                Deep Learning
+                            <a href="/categories/Survey/" class="post-category">
+                                Survey
                             </a>
                         
                     </div>
@@ -428,7 +428,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-01-15
+                    2020-02-09
                 </div>
                 
 
@@ -445,7 +445,21 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="DASH-Dominant-weighted-neural-Architecture-SearcH"><a href="#DASH-Dominant-weighted-neural-Architecture-SearcH" class="headerlink" title="DASH: Dominant-weighted neural Architecture SearcH"></a>DASH: Dominant-weighted neural Architecture SearcH</h2><p>Recently, there has been increasing attention attracted by neural architecture search (NAS). Traditional NAS approaches based on reinforcement learning or evolutionary algorithms which take thousand of GPU hours are strongly limited by the resources and time. In this work, we present a new gradient-based approach, namely Dominant-weighted neural Architecture SearcH (DASH). Unlike prior differentiable architecture search works, our DASH learns candidate operations individually and searches for the dominant-weighted edges as the most potential architecture. Experiments show the effectiveness of our proposed approach. Specifically, the model searched by DASH achieves a new state-of-the-art performance of a 2.47% test error in CIFAR-10, and can be transferred to ImageNet to obtain a test error of 25.1% with only 5.0M parameters, which is on par with recent methods. Our code is available <a href="https://github.com/bansheng/DASH" target="_blank" rel="noopener"></a>.</p>
+                <!-- ## A survey: Neural Architecture Search -->
+
+<p>[TOC]</p>
+<h2 id="1-Searching-Method"><a href="#1-Searching-Method" class="headerlink" title="1. Searching Method"></a>1. Searching Method</h2><p>Up to now, there mainly exsits three popular NAS frameworks.</p>
+<ol>
+<li>reinforcement learning</li>
+<li>evolutionary algorithms</li>
+<li>differentiable NAS</li>
+</ol>
+<p>RL-based and EA-based NAS methods suffer from the problem that they require heavy computional resources and time, which is unacceptable for scientists. Thus, gradient-based NAS approches become more popular these days.</p>
+<h3 id="1-1-Reinforcement-Learning"><a href="#1-1-Reinforcement-Learning" class="headerlink" title="1.1 Reinforcement Learning"></a>1.1 Reinforcement Learning</h3><p><img src="/source/_posts/imgs/01-controller.png" alt="controller"><br><img src="imgs/02-rnn-generator.png" alt="rnn generator"></p>
+<p>Zoph et al. use a RNN controller to generate the width, height or other facotrs of the CNN.</p>
+<blockquote>
+<p>Zoph B, Le Q V. Neural architecture search with reinforcement learning</p>
+</blockquote>
 
             </div>
             <hr/>
@@ -471,7 +485,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://bansheng.github.io/2020/01/15/DASH/">https://bansheng.github.io/2020/01/15/DASH/</a>
+                    <a href="https://bansheng.github.io/2020/02/09/03-NAS-survey/">https://bansheng.github.io/2020/02/09/03-NAS-survey/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -556,7 +570,7 @@
         repo: 'https://github.com/bansheng/bansheng.github.io',
         owner: 'bansheng',
         admin: "bansheng",
-        id: '2020-01-15T15-53-21',
+        id: '2020-02-09T18-45-45',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -577,11 +591,62 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
-                <a href="/2020/02/05/NAP/">
+                <a href="/2020/02/09/03-NAS-survey/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="A survey: Neural Architecture Search">
+                        
+                        <span class="card-title">A survey: Neural Architecture Search</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            A NAS survey
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-09
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Survey/" class="post-category">
+                                    Survey
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/NAS/">
+                        <span class="chip bg-color">NAS</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/02/05/02-NAP/">
                     <div class="card-image">
                         
                         
@@ -597,15 +662,15 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-02-05
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-05
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/NAS/" class="post-category">
-                                    NAS
+                            <a href="/categories/Abstract/" class="post-category">
+                                    Abstract
                                 </a>
                             
                             
@@ -619,43 +684,6 @@
                         <span class="chip bg-color">NAS Pruning</span>
                     </a>
                     
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/01/15/hello-world/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
-                        
-                        <span class="card-title">Hello World</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-15
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Yadong Ding
-                            
-                        </span>
-                    </div>
                 </div>
                 
             </div>

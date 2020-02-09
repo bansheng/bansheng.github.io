@@ -4,16 +4,41 @@
   
     
     <entry>
+      <title>A survey: Neural Architecture Search</title>
+      <link href="/2020/02/09/03-NAS-survey/"/>
+      <url>/2020/02/09/03-NAS-survey/</url>
+      
+        <content type="html"><![CDATA[<!-- ## A survey: Neural Architecture Search --><p>[TOC]</p><h2 id="1-Searching-Method"><a href="#1-Searching-Method" class="headerlink" title="1. Searching Method"></a>1. Searching Method</h2><p>Up to now, there mainly exsits three popular NAS frameworks.</p><ol><li>reinforcement learning</li><li>evolutionary algorithms</li><li>differentiable NAS</li></ol><p>RL-based and EA-based NAS methods suffer from the problem that they require heavy computional resources and time, which is unacceptable for scientists. Thus, gradient-based NAS approches become more popular these days.</p><h3 id="1-1-Reinforcement-Learning"><a href="#1-1-Reinforcement-Learning" class="headerlink" title="1.1 Reinforcement Learning"></a>1.1 Reinforcement Learning</h3><p><img src="/source/_posts/imgs/01-controller.png" alt="controller"><br><img src="imgs/02-rnn-generator.png" alt="rnn generator"></p><p>Zoph et al. use a RNN controller to generate the width, height or other facotrs of the CNN.</p><blockquote><p>Zoph B, Le Q V. Neural architecture search with reinforcement learning</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> Survey </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>NAP</title>
-      <link href="/2020/02/05/NAP/"/>
-      <url>/2020/02/05/NAP/</url>
+      <link href="/2020/02/05/02-NAP/"/>
+      <url>/2020/02/05/02-NAP/</url>
       
         <content type="html"><![CDATA[<h2 id="NAP-Neural-Architecture-search-with-Pruning"><a href="#NAP-Neural-Architecture-search-with-Pruning" class="headerlink" title="NAP: Neural Architecture search with Pruning"></a>NAP: Neural Architecture search with Pruning</h2><p>In recent years, there has been continuously increasing attention attracted by Neural Architecture Search (NAS). Due to its computational efficiency, gradient-based NAS methods like DARTS has become the most popular framework for NAS tasks. Nevertheless, as the search iterates, the derived model becomes dominated by {\it skip-connect}s, causing the performance downfall. In this work, we present a novel approach to alleviate this issue, named Neural Architecture search with Pruning (NAP). Unlike prior differentiable architecture search works, our approach draws the idea from network pruning. We first train an over-parameterized network, including all candidate operations. Then we propose a criterion to prune the network. Based on a different relaxation of architecture representation, NAP can derive the most potential model by removing trivial and redundant edges from the whole network topology. Experiments show the effectiveness of our proposed approach. Specifically, the model searched by NAP achieves state-of-the-art performances (2.48% test error) on CIFAR-10. We transfer the model to ImageNet and obtains 25.1% test error with only 5.0M parameters, which is on par with modern NAS methods.</p>]]></content>
       
       
       <categories>
           
-          <category> NAS </category>
+          <category> Abstract </category>
           
       </categories>
       
@@ -30,15 +55,15 @@
     
     <entry>
       <title>DASH: Dominant-weighted neural Architecture SearcH</title>
-      <link href="/2020/01/15/DASH/"/>
-      <url>/2020/01/15/DASH/</url>
+      <link href="/2020/01/15/01-DASH/"/>
+      <url>/2020/01/15/01-DASH/</url>
       
         <content type="html"><![CDATA[<h2 id="DASH-Dominant-weighted-neural-Architecture-SearcH"><a href="#DASH-Dominant-weighted-neural-Architecture-SearcH" class="headerlink" title="DASH: Dominant-weighted neural Architecture SearcH"></a>DASH: Dominant-weighted neural Architecture SearcH</h2><p>Recently, there has been increasing attention attracted by neural architecture search (NAS). Traditional NAS approaches based on reinforcement learning or evolutionary algorithms which take thousand of GPU hours are strongly limited by the resources and time. In this work, we present a new gradient-based approach, namely Dominant-weighted neural Architecture SearcH (DASH). Unlike prior differentiable architecture search works, our DASH learns candidate operations individually and searches for the dominant-weighted edges as the most potential architecture. Experiments show the effectiveness of our proposed approach. Specifically, the model searched by DASH achieves a new state-of-the-art performance of a 2.47% test error in CIFAR-10, and can be transferred to ImageNet to obtain a test error of 25.1% with only 5.0M parameters, which is on par with recent methods. Our code is available <a href="https://github.com/bansheng/DASH" target="_blank" rel="noopener"></a>.</p>]]></content>
       
       
       <categories>
           
-          <category> Deep Learning </category>
+          <category> Abstract </category>
           
       </categories>
       
@@ -48,19 +73,6 @@
             <tag> NAS </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2020/01/15/hello-world/"/>
-      <url>/2020/01/15/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
-      
-      
       
     </entry>
     

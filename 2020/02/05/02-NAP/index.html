@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hello World, HomePage of Yadong Ding">
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex">
+    <meta name="keywords" content="NAP, HomePage of Yadong Ding">
+    <meta name="description" content="NAP: Neural Architecture search with PruningIn recent years, there has been continuously increasing attention attracted ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Hello World | HomePage of Yadong Ding</title>
+    <title>NAP | HomePage of Yadong Ding</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -281,12 +281,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Hello World</h1>
+                    <h1 class="description center-align post-title">NAP</h1>
                 </div>
             </div>
         </div>
@@ -401,12 +401,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/NAS-Pruning/">
+                                <span class="chip bg-color">NAS Pruning</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Abstract/" class="post-category">
+                                Abstract
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -415,7 +428,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-01-15
+                    2020-02-05
                 </div>
                 
 
@@ -432,19 +445,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+                <h2 id="NAP-Neural-Architecture-search-with-Pruning"><a href="#NAP-Neural-Architecture-search-with-Pruning" class="headerlink" title="NAP: Neural Architecture search with Pruning"></a>NAP: Neural Architecture search with Pruning</h2><p>In recent years, there has been continuously increasing attention attracted by Neural Architecture Search (NAS). Due to its computational efficiency, gradient-based NAS methods like DARTS has become the most popular framework for NAS tasks. Nevertheless, as the search iterates, the derived model becomes dominated by {\it skip-connect}s, causing the performance downfall. In this work, we present a novel approach to alleviate this issue, named Neural Architecture search with Pruning (NAP). Unlike prior differentiable architecture search works, our approach draws the idea from network pruning. We first train an over-parameterized network, including all candidate operations. Then we propose a criterion to prune the network. Based on a different relaxation of architecture representation, NAP can derive the most potential model by removing trivial and redundant edges from the whole network topology. Experiments show the effectiveness of our proposed approach. Specifically, the model searched by NAP achieves state-of-the-art performances (2.48% test error) on CIFAR-10. We transfer the model to ImageNet and obtains 25.1% test error with only 5.0M parameters, which is on par with modern NAS methods.</p>
 
             </div>
             <hr/>
@@ -470,7 +471,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://bansheng.github.io/2020/01/15/hello-world/">https://bansheng.github.io/2020/01/15/hello-world/</a>
+                    <a href="https://bansheng.github.io/2020/02/05/02-NAP/">https://bansheng.github.io/2020/02/05/02-NAP/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -507,7 +508,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">No tag</span>
+                            
+                                <a href="/tags/NAS-Pruning/">
+                                    <span class="chip bg-color">NAS Pruning</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -551,7 +556,7 @@
         repo: 'https://github.com/bansheng/bansheng.github.io',
         owner: 'bansheng',
         admin: "bansheng",
-        id: '2020-01-15T15-35-51',
+        id: '2020-02-05T11-17-07',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -576,31 +581,31 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2020/01/15/DASH/">
+                <a href="/2020/02/09/03-NAS-survey/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="DASH: Dominant-weighted neural Architecture SearcH">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="A survey: Neural Architecture Search">
                         
-                        <span class="card-title">DASH: Dominant-weighted neural Architecture SearcH</span>
+                        <span class="card-title">A survey: Neural Architecture Search</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            DASH: Dominant-weighted neural Architecture SearcHRecently, there has been increasing attention attracted by neural arch
+                            A NAS survey
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-15
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-02-09
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Deep-Learning/" class="post-category">
-                                    Deep Learning
+                            <a href="/categories/Survey/" class="post-category">
+                                    Survey
                                 </a>
                             
                             
@@ -622,22 +627,22 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                Current&nbsp;<i class="far fa-dot-circle"></i>
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/01/15/hello-world/">
+                <a href="/2020/01/15/01-DASH/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="DASH: Dominant-weighted neural Architecture SearcH">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">DASH: Dominant-weighted neural Architecture SearcH</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex
+                            DASH: Dominant-weighted neural Architecture SearcHRecently, there has been increasing attention attracted by neural arch
                         
                     </div>
                     <div class="publish-info">
@@ -646,13 +651,24 @@
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Yadong Ding
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Abstract/" class="post-category">
+                                    Abstract
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/NAS/">
+                        <span class="chip bg-color">NAS</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
