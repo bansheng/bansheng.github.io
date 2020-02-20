@@ -4,8 +4,14 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="A survey: Neural Architecture Search, HomePage of Yadong Ding">
-    <meta name="description" content="A NAS survey">
+    <meta name="keywords" content="note of matplotlib, HomePage of Yadong Ding">
+    <meta name="description" content="matplotlib ????
+??
+ import matlplotlib.pyplot as plt
+ import numpy as np
+
+?plot????x=(0,10)?sin???
+ x = np.linespace(0, ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +19,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>A survey: Neural Architecture Search | HomePage of Yadong Ding</title>
+    <title>note of matplotlib | HomePage of Yadong Ding</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -281,12 +287,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">A survey: Neural Architecture Search</h1>
+                    <h1 class="description center-align post-title">note of matplotlib</h1>
                 </div>
             </div>
         </div>
@@ -401,25 +407,12 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/NAS/">
-                                <span class="chip bg-color">NAS</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">No tag</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/Survey/" class="post-category">
-                                Survey
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -428,7 +421,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-02-09
+                    2020-02-14
                 </div>
                 
 
@@ -445,21 +438,26 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <!-- ## A survey: Neural Architecture Search -->
-
-<p>[TOC]</p>
-<h2 id="1-Searching-Method"><a href="#1-Searching-Method" class="headerlink" title="1. Searching Method"></a>1. Searching Method</h2><p>Up to now, there mainly exsits three popular NAS frameworks.</p>
-<ol>
-<li>reinforcement learning</li>
-<li>evolutionary algorithms</li>
-<li>differentiable NAS</li>
+                <h2 id="matplotlib"><a href="#matplotlib" class="headerlink" title="matplotlib ????"></a>matplotlib ????</h2><ol>
+<li><p>??</p>
+<pre class=" language-python"><code class="language-python"> <span class="token keyword">import</span> matlplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+ <span class="token keyword">import</span> numpy <span class="token keyword">as</span> np</code></pre>
+</li>
+<li><p>?plot????x=(0,10)?sin???</p>
+<pre class=" language-python"><code class="language-python"> x <span class="token operator">=</span> np<span class="token punctuation">.</span>linespace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span>
+ plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x<span class="token punctuation">,</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p> <img src="imgs/03-plot_1.png" alt="sinx"></p>
+</li>
+<li><p>?????????x=(0,10)?sin???</p>
+<pre class=" language-python"><code class="language-python"> plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x<span class="token punctuation">,</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'-o'</span><span class="token punctuation">)</span></code></pre>
+<p> <img src="imgs/04-plot_2.png" alt="sinx-o"></p>
+</li>
+<li><p>?scatter????x=(0,10)?sin????</p>
+<pre class=" language-python"><code class="language-python"> plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>x<span class="token punctuation">,</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+</li>
+<li><p>?????????????4???</p>
+</li>
 </ol>
-<p>RL-based and EA-based NAS methods suffer from the problem that they require heavy computional resources and time, which is unacceptable for scientists. Thus, gradient-based NAS approches become more popular these days.</p>
-<h3 id="1-1-Reinforcement-Learning"><a href="#1-1-Reinforcement-Learning" class="headerlink" title="1.1 Reinforcement Learning"></a>1.1 Reinforcement Learning</h3><p><img src="/source/_posts/imgs/01-controller.png" alt="controller"><br><img src="imgs/02-rnn-generator.png" alt="rnn generator"></p>
-<p>Zoph et al. use a RNN controller to generate the width, height or other facotrs of the CNN.</p>
-<blockquote>
-<p>Zoph B, Le Q V. Neural architecture search with reinforcement learning</p>
-</blockquote>
 
             </div>
             <hr/>
@@ -485,7 +483,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://bansheng.github.io/2020/02/09/03-NAS-survey/">https://bansheng.github.io/2020/02/09/03-NAS-survey/</a>
+                    <a href="https://bansheng.github.io/2020/02/14/04-matplotlib_note/">https://bansheng.github.io/2020/02/14/04-matplotlib_note/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -522,11 +520,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/NAS/">
-                                    <span class="chip bg-color">NAS</span>
-                                </a>
-                            
+                            <span class="chip bg-color">No tag</span>
                         </div>
                     
                 </div>
@@ -570,7 +564,7 @@
         repo: 'https://github.com/bansheng/bansheng.github.io',
         owner: 'bansheng',
         admin: "bansheng",
-        id: '2020-02-09T18-45-45',
+        id: '2020-02-14T11-36-34',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -591,9 +585,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
                 <a href="/2020/02/14/04-matplotlib_note/">
                     <div class="card-image">
@@ -617,9 +612,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-02-14
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-14
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -628,6 +623,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -638,31 +634,31 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/02/05/02-NAP/">
+                <a href="/2020/02/09/03-NAS-survey/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="NAP">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="A survey: Neural Architecture Search">
                         
-                        <span class="card-title">NAP</span>
+                        <span class="card-title">A survey: Neural Architecture Search</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            NAP: Neural Architecture search with PruningIn recent years, there has been continuously increasing attention attracted 
+                            A NAS survey
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-05
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-09
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Abstract/" class="post-category">
-                                    Abstract
+                            <a href="/categories/Survey/" class="post-category">
+                                    Survey
                                 </a>
                             
                             
