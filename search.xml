@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>paddle 同步训练源码阅读笔记</title>
+      <link href="/2020/06/10/06-paddle-sync/"/>
+      <url>/2020/06/10/06-paddle-sync/</url>
+      
+        <content type="html"><![CDATA[<h2 id="paddlepadlle-同步CPU分布式"><a href="#paddlepadlle-同步CPU分布式" class="headerlink" title="paddlepadlle 同步CPU分布式"></a>paddlepadlle 同步CPU分布式</h2><p><a href="https://github.com/PaddlePaddle/Fleet/blob/develop/examples/distribute_ctr/sync_train.py" target="_blank" rel="noopener">sync_train.py</a></p><ol><li><p>class PaddleCloudRoleMaker()</p><p> role maker for paddle cloud<br> 读取系统里面的一系列环境变量，判断当前机器是PSERVER or TRAINER<br> 获取其他机器的 ip:port 等等<br> 获取index</p></li><li><p>def fleet.init(role)<br> fleet 本身是个 DistributedTranspiler类<br> 这个类的主要的作用是</p><ol><li><p>初始化一个role_maker对象，生成本机里面的role</p></li><li><p>进行optimizer的config 和 program的config</p></li><li><p>如果本机是server，还能初始化server，控制server的运行</p></li><li><p>如果本机是worker，创建worker进程进行训练</p><p>init()主要是将初始化fleet里面的role_maker成员，并且调用role_maker类的generate_role函数，进行本机的role的初始化</p></li></ol></li><li><p>class DistributeTranspilerConfig()<br> 主要为分布式的transpiler jobs提供config的支持<br> 比如</p><ol><li><p>同步异步</p></li><li><p>是否使用geo_sgd算法</p></li><li><p>Minimum number of split elements in block</p></li><li><p>是否实时切割信息等等（注意实时切割信息和sync为True冲突</p><p>等等</p></li></ol></li><li><p>def fleet.distributed_optimizer(optimizer, strategy)<br> 创建fleet的_optimizer成员<br> 该成员是一个TranspilerOptimizer()类<br> 继承自 DistributedOptimizer<br> 实现了DistributedOptimizer()里面的三个虚函数</p><ol><li>backward() loss回传,计算梯度</li><li>apply_gradients 更新梯度</li><li>minimize() 由上面两个函数组成</li></ol></li><li><p>optimizer.minimize(avg_cost)<br> 输入：</p><ol><li><p>loss 产生的loss</p></li><li><p>scopes 无作用</p></li><li><p>startup_program 初始化parameter_list参数的program</p></li><li><p>parameter_list 需要update的参数列表</p></li><li><p>no_grad_set 不需要更新的参数列表</p><p>输出:</p><p>optimize_ops, 附加的ops的列表<br>params_grads (param, grad) 参数及产生的梯度</p></li></ol></li><li><p>fleet._transpile(config)<br> 主要的作用，设置config<br> 设置main_program 主要的运行program<br> 设置startup_program init_server init_worker运行的program</p></li><li><p>is_server() is_worker()<br> 返回role_maker类创建的本机的信息</p></li><li><p>init_server() run_server()<br> 开始跑startup_program、main_program</p></li><li><p>init_worker()<br> 首先，等待所有的参数服务器p_server启动<br> 第二，运行executor初始化start_up program<br> 第三，等待所有的worker全部初始化</p><p> 检查所有的服务器是否正常<br> 创建一个Communicator()类</p><p> Communicator用于分布式训练的信息传递<br> 是CPP类Communicator()的封装</p></li><li><p>exe.run(fleet.startup_program)<br>初始化含有分布式流程的fleet.startup_program</p></li><li><p>exec_strategy build_strategy<br>exec_strategy CPP类 core.ParallelExecutor.ExecutionStrategy<br>包含一些计算图计算时的参数<br>build_strategy CPP类 core.ParallelExecutor.BuildStrategy<br>包含一些计算图构造时的参数</p></li><li><p>fluid.compiler.CompiledProgram(fleet.main_program).with_data_parallel(</p><pre><code>loss_name=avg_cost.name,build_strategy=build_strategy,exec_strategy=exec_strategy</code></pre><p>)</p><p>class CompiledProgram()<br>根据build_strategy的配置，CompiledProgram用于转换program或计算图以进行各种优化。<br>例如，运算符在计算图中的融合，在计算图中执行过程中的内存优化等。</p><p>with_data_parallel()<br>该接口用于将输入的程序或图转换为 multi-graph，以在数据并行模式下运行模型。 用户可以使用build_strategy和exec_strategy来设置一些可在Graph的构建和计算过程中应用的优化，例如减少AllReduce操作的数量，指定运行模型的计算Graph中使用的线程池的大小，以此类推。</p><p>输入:</p><ol><li>loss_name 回传的loss</li><li>build_strategy 策略类</li><li>exec_strategy 策略类</li><li>share_vars_from CompiledProgram()类，和设定的CompiledProgram进行参数共享</li><li>places 指定模型运行在哪些设备上面cpu gpu</li></ol><p>输出：</p><p>CompiledProgram() 自身的对象</p></li><li><p>fleet.is_first_worker()<br>判断是不是第一个worker节点，这个由role_maker里面的信息得到</p></li><li><p>fleet.stop_worker()<br>self._communicator.stop() 关闭communicator<br>self._role_maker._finalize() 析构role_maker<br>self._executor.close() 关闭executor</p></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Notes </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> distributed system </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Net2Net</title>
       <link href="/2020/02/21/05-net2net/"/>
       <url>/2020/02/21/05-net2net/</url>
@@ -13,7 +38,7 @@
       
       <categories>
           
-          <category> Notes </category>
+          <category> Paper </category>
           
       </categories>
       
