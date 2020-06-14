@@ -451,7 +451,7 @@
 <li><p>class PaddleCloudRoleMaker()</p>
 <p> role maker for paddle cloud<br> 读取系统里面的一系列环境变量，判断当前机器是PSERVER or TRAINER<br> 获取其他机器的 ip:port 等等<br> 获取index</p>
 </li>
-<li><p>def fleet.init(role)<br> fleet 本身是个 DistributedTranspiler类<br> 这个类的主要的作用是</p>
+<li><p>fleet.init(role)<br> fleet 本身是个 DistributedTranspiler类<br> 这个类的主要的作用是</p>
 <ol>
 <li><p>初始化一个role_maker对象，生成本机里面的role</p>
 </li>
@@ -501,23 +501,51 @@
 </ol>
 </li>
 <li><p>fleet._transpile(config)<br> 主要的作用，设置config<br> 设置main_program 主要的运行program<br> 设置startup_program init_server init_worker运行的program</p>
+<p> 输入:</p>
+<ol>
+<li><p>config DistributedStrategy类的对象，包含训练信息</p>
+<p>输出：</p>
+</li>
+<li><p>无</p>
+</li>
+</ol>
+</li>
+<li><p>self._transpiler.transpile(trainer_id=fleet.worker_index(), pservers=fleet.server_endpoints(to_string=True), trainers=fleet.worker_num(), sync_mode=program_config.sync_mode)</p>
+<p> 输入：</p>
+<ol>
+<li><p>trainer_id：当前worker的id，如果有n个worker，取值范围在0-n-1。</p>
+</li>
+<li><p>program：需要编译的program，默认fluid.default_main_program()</p>
+</li>
+<li><p>startup_program：需要编译的startup_program，默认为fluid.default_startup_program().</p>
+</li>
+<li><p>pservers：pserver列表</p>
+</li>
+<li><p>trainers: trainers进程的数目</p>
+</li>
+<li><p>sync_mode：是否是同步</p>
+</li>
+<li><p>current_endpoint: pserver mode不使用这个</p>
+<p>输出：</p>
+</li>
+<li><p>无</p>
+<p>功能：根据config的信息和参数，将输入的program转化为分布式的program</p>
+</li>
+</ol>
 </li>
 <li><p>is_server() is_worker()<br> 返回role_maker类创建的本机的信息</p>
 </li>
 <li><p>init_server() run_server()<br> 开始跑startup_program、main_program</p>
 </li>
-<li><p>init_worker()<br> 首先，等待所有的参数服务器p_server启动<br> 第二，运行executor初始化start_up program<br> 第三，等待所有的worker全部初始化</p>
-<p> 检查所有的服务器是否正常<br> 创建一个Communicator()类</p>
-<p> Communicator用于分布式训练的信息传递<br> 是CPP类Communicator()的封装</p>
+<li><p>init_worker()<br>首先，等待所有的参数服务器p_server启动<br>第二，运行executor初始化start_up program<br>第三，等待所有的worker全部初始化</p>
+<p>检查所有的服务器是否正常<br>创建一个Communicator()类</p>
+<p>Communicator用于分布式训练的信息传递<br>是CPP类Communicator()的封装</p>
 </li>
 <li><p>exe.run(fleet.startup_program)<br>初始化含有分布式流程的fleet.startup_program</p>
 </li>
 <li><p>exec_strategy build_strategy<br>exec_strategy CPP类 core.ParallelExecutor.ExecutionStrategy<br>包含一些计算图计算时的参数<br>build_strategy CPP类 core.ParallelExecutor.BuildStrategy<br>包含一些计算图构造时的参数</p>
 </li>
-<li><p>fluid.compiler.CompiledProgram(fleet.main_program).with_data_parallel(</p>
-<pre><code>loss_name=avg_cost.name,
-build_strategy=build_strategy,
-exec_strategy=exec_strategy</code></pre><p>)</p>
+<li><p>fluid.compiler.CompiledProgram(fleet.main_program).with_data_parallel(loss_name=avg_cost.name,build_strategy=build_strategyexec_strategy=exec_strategy)</p>
 <p>class CompiledProgram()<br>根据build_strategy的配置，CompiledProgram用于转换program或计算图以进行各种优化。<br>例如，运算符在计算图中的融合，在计算图中执行过程中的内存优化等。</p>
 <p>with_data_parallel()<br>该接口用于将输入的程序或图转换为 multi-graph，以在数据并行模式下运行模型。 用户可以使用build_strategy和exec_strategy来设置一些可在Graph的构建和计算过程中应用的优化，例如减少AllReduce操作的数量，指定运行模型的计算Graph中使用的线程池的大小，以此类推。</p>
 <p>输入:</p>
