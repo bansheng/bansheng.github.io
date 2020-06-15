@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="paddle 同步训练源码阅读笔记, Ingaong&#39;s Blogs">
-    <meta name="description" content="同步训练源码阅读笔记">
+    <meta name="keywords" content="Graph Neural Networks: A review of methods and applications, Ingaong&#39;s Blogs">
+    <meta name="description" content="note for &#34;Graph Neural Networks A review of methods and applications&#34;">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>paddle 同步训练源码阅读笔记 | Ingaong&#39;s Blogs</title>
+    <title>Graph Neural Networks: A review of methods and applications | Ingaong&#39;s Blogs</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -282,12 +282,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">paddle 同步训练源码阅读笔记</h1>
+                    <h1 class="description center-align post-title">Graph Neural Networks: A review of methods and applications</h1>
                 </div>
             </div>
         </div>
@@ -404,8 +404,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/distributed-system/">
-                                <span class="chip bg-color">distributed system</span>
+                            <a href="/tags/GNN/">
+                                <span class="chip bg-color">GNN</span>
                             </a>
                         
                     </div>
@@ -416,8 +416,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Notes/" class="post-category">
-                                Notes
+                            <a href="/categories/Survey/" class="post-category">
+                                Survey
                             </a>
                         
                     </div>
@@ -429,7 +429,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-06-10
+                    2020-06-15
                 </div>
                 
 
@@ -446,124 +446,77 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="paddlepadlle-同步CPU分布式"><a href="#paddlepadlle-同步CPU分布式" class="headerlink" title="paddlepadlle 同步CPU分布式"></a>paddlepadlle 同步CPU分布式</h2><p><a href="https://github.com/PaddlePaddle/Fleet/blob/develop/examples/distribute_ctr/sync_train.py" target="_blank" rel="noopener">sync_train.py</a></p>
-<ol>
-<li><p>class PaddleCloudRoleMaker()</p>
-<p> role maker for paddle cloud<br> 读取系统里面的一系列环境变量，判断当前机器是PSERVER or TRAINER<br> 获取其他机器的 ip:port 等等<br> 获取index</p>
+                <h2 id="Graph-Neural-Networks-A-review-of-methods-and-applications"><a href="#Graph-Neural-Networks-A-review-of-methods-and-applications" class="headerlink" title="Graph Neural Networks: A review of methods and applications"></a>Graph Neural Networks: A review of methods and applications</h2><h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1. introduction"></a>1. introduction</h2><ol>
+<li>social science (social networks)</li>
+<li>natural science (physical systems</li>
+<li>protein-protein interaction networks</li>
+<li>knowledge graphs</li>
+</ol>
+<p>常见的欧几里得结构化数据主要包含：</p>
+<p>1D：声音，时间序列等；<br>2D：图像等；<br>3D：视频，高光谱图像等；</p>
+<h3 id="1-1-motivation"><a href="#1-1-motivation" class="headerlink" title="1.1 motivation"></a>1.1 motivation</h3><ol>
+<li>CNN<ul>
+<li>局部连接</li>
+<li>共享权重</li>
+<li>多层网络</li>
+</ul>
 </li>
-<li><p>fleet.init(role)<br> fleet 本身是个 DistributedTranspiler类<br> 这个类的主要的作用是</p>
-<ol>
-<li><p>初始化一个role_maker对象，生成本机里面的role</p>
-</li>
-<li><p>进行optimizer的config 和 program的config</p>
-</li>
-<li><p>如果本机是server，还能初始化server，控制server的运行</p>
-</li>
-<li><p>如果本机是worker，创建worker进程进行训练</p>
-<p>init()主要是将初始化fleet里面的role_maker成员，并且调用role_maker类的generate_role函数，进行本机的role的初始化</p>
+<li>graph embedding<ul>
+<li>在 encoder 中，节点之间没有共享参数，这导致计算效率低下，因为这意味着参数的数量随着节点的数量线性增长</li>
+<li>直接嵌入方法缺乏泛化能力，这意味着它们无法处理动态图形或推广到新图形</li>
+</ul>
 </li>
 </ol>
+<h3 id="1-2-优点"><a href="#1-2-优点" class="headerlink" title="1.2 优点"></a>1.2 优点</h3><ol>
+<li><p>CNN 和 RNN 这样的标准神经网络无法处理没有自然节点顺序的不规则图数据，而 GNN 在每个节点上分别传播，忽略了节点的输入顺序。即，GNN 的输出对于节点的输入顺序是不变的。</p>
 </li>
-<li><p>class DistributeTranspilerConfig()<br> 主要为分布式的transpiler jobs提供config的支持<br> 比如</p>
+<li><p>图中的边表示了两个节点之间的依赖关系的信息。在标准的神经网络中，这些依赖信息只是作为节点的特征。然后，GNN 可以通过图形结构进行传播，而不是将其作为特征的一部分。通常，GNN 通过其邻域的状态的<strong>加权和</strong>来更新节点的隐藏状态。</p>
+</li>
+<li><p>推理是高级人工智能的一个非常重要的研究课题，人脑中的推理过程几乎都是基于从日常经验中提取的图形。标准神经网络已经显示出通过学习数据分布来生成合成图像和文档的能力，同时它们仍然无法从大型实验数据中学习推理图。然而，GNN 探索从场景图片和故事文档等非结构性数据生成图形，这可以成为进一步高级 AI 的强大神经模型。</p>
+</li>
+</ol>
+<h2 id="2-模型"><a href="#2-模型" class="headerlink" title="2. 模型"></a>2. 模型</h2><h3 id="2-1-限制"><a href="#2-1-限制" class="headerlink" title="2.1 限制"></a>2.1 限制</h3><p>虽然实验结果表明 GNN 是一种用于建模结构数据的强大架构，但原始 GNN 仍然存在一些局限性。</p>
 <ol>
-<li><p>同步异步</p>
-</li>
-<li><p>是否使用geo_sgd算法</p>
-</li>
-<li><p>Minimum number of split elements in block</p>
-</li>
-<li><p>是否实时切割信息等等（注意实时切割信息和sync为True冲突</p>
-<p>等等</p>
-</li>
+<li>对于固定点来迭代更新节点的隐藏状态是十分低效的。如果放宽固定点的假设，可以设计一个多层 GNN 来获得节点及其邻域的稳定表示。</li>
+<li>GNN 在迭代中使用相同的参数，而大多数流行的神经网络在不同的层中使用不同的参数来进行分层特征提取。此外，节点隐藏状态的更新是一个顺序过程，可以利用 RNN 内核，如 GRU 和 LSTM，来进一步优化。</li>
+<li>存在一些边缘（edges）的信息特征无法在原始 GNN 中有效建模。例如，知识图中的边缘具有关系类型，并且通过不同边缘的消息传播应根据其类型而不同。此外，如何学习边缘的隐藏状态也是一个重要问题。</li>
+<li>如果我们专注于节点的表示而不是图形，则不适合使用固定点，因为固定点中的表示分布将在值上非常平滑并且用于区分每个节点的信息量较少。</li>
 </ol>
-</li>
-<li><p>def fleet.distributed_optimizer(optimizer, strategy)<br> 创建fleet的_optimizer成员<br> 该成员是一个TranspilerOptimizer()类<br> 继承自 DistributedOptimizer<br> 实现了DistributedOptimizer()里面的三个虚函数</p>
+<h3 id="2-2-GNN的-变体"><a href="#2-2-GNN的-变体" class="headerlink" title="2.2 GNN的 变体"></a>2.2 GNN的 变体</h3><h4 id="2-2-1-图类型"><a href="#2-2-1-图类型" class="headerlink" title="2.2.1 图类型"></a>2.2.1 图类型</h4><p>在原始的 GNN 中，输入的图形包括带有标签信息的节点和无向的边，这是一种最简单的图形式。但在现实生活中，存在多种图的变体，主要包括有向图、异构图和带有边信息的图。</p>
 <ol>
-<li>backward() loss回传,计算梯度</li>
-<li>apply_gradients 更新梯度</li>
-<li>minimize() 由上面两个函数组成</li>
+<li>有向图：即图中的边是存在方向的。有向边可以带来比无向边更多的信息。</li>
+<li>异构图：即图中存在多种类型的节点。处理异构图的最简单方法是将每个节点的类型转换为与原始特征连接的 one-hot 特征向量。</li>
+<li>带有边信息的图：即图中的每条边也存在权重或类型等信息。这种类型的图有两种解决办法，一种是将图形转化为二部图，原始边也作为节点，并将其分割成两条新的边，分别连接原始边的两端节点；第二种方法是调整不同的权重矩阵，以便在不同类型的边缘上传播。</li>
 </ol>
-</li>
-<li><p>optimizer.minimize(avg_cost)<br> 输入：</p>
+<p><img src="/2020/06/15/07-gnn-review1/01-graph_types.png" alt="graph types"></p>
+<h4 id="2-2-2-传播类型"><a href="#2-2-2-传播类型" class="headerlink" title="2.2.2 传播类型"></a>2.2.2 传播类型</h4><p>对于获取节点或者边的隐藏状态，神经网络中的传播步骤和输出步骤至关重要。在传播步骤方面的改进主要有卷积、注意力机制、门机制和跳跃连接（skip connection），而在输出步骤通常遵循简单的前馈神经网络设置。</p>
 <ol>
-<li><p>loss 产生的loss</p>
-</li>
-<li><p>scopes 无作用</p>
-</li>
-<li><p>startup_program 初始化parameter_list参数的program</p>
-</li>
-<li><p>parameter_list 需要update的参数列表</p>
-</li>
-<li><p>no_grad_set 不需要更新的参数列表</p>
-<p>输出:</p>
-<p>optimize_ops, 附加的ops的列表<br>params_grads (param, grad) 参数及产生的梯度</p>
-</li>
+<li>卷积。Graph Convolutional Network（GCN）希望将卷积操作应用在图结构数据上，主要分为 Spectral Method 和 Spatial Method（Non-spectral Method）两类。Spectral Method 希望使用谱分解的方法，应用图的拉普拉斯矩阵分解进行节点的信息收集。Spatial Method 直接使用图的拓扑结构，根据图的邻居信息进行信息收集。</li>
+<li>注意力机制。Graph Attention Network 致力于将注意力机制应用在图中的信息收集阶段。</li>
+<li>门机制。这些变体将门机制应用于节点更新阶段。Gated graph neural network 将 GRU 机制应用于节点更新。很多工作致力于将 LSTM 应用于不同类型的图上，根据具体情境的不同，可以分为 Tree LSTM、Graph LSTM 和 Sentence LSTM 等。</li>
+<li>残差连接。注意到堆叠多层图神经网络可能引起信息平滑的问题，很多工作将残差机制应用于图神经网络中，文中介绍了 Highway GNN 和 Jump Knowledge Network 两种不同的处理方式</li>
 </ol>
-</li>
-<li><p>fleet._transpile(config)<br> 主要的作用，设置config<br> 设置main_program 主要的运行program<br> 设置startup_program init_server init_worker运行的program</p>
-<p> 输入:</p>
+<p><img src="/2020/06/15/07-gnn-review1/02-propagation_types.png" alt="propagation types"></p>
+<h4 id="2-2-3-训练方法"><a href="#2-2-3-训练方法" class="headerlink" title="2.2.3 训练方法"></a>2.2.3 训练方法</h4><p>原始图卷积神经网络在训练和优化方法中具有若干缺点。例如，</p>
 <ol>
-<li><p>config DistributedStrategy类的对象，包含训练信息</p>
-<p>输出：</p>
-</li>
-<li><p>无</p>
-</li>
+<li>GCN 需要完整的图拉普拉斯算子，这对于大图来说是<strong>计算成本十分高</strong>。</li>
+<li>而且，层 𝐿 的节点的嵌入是通过层 $𝐿−1$ 的所有该节点的邻居来进行计算的。因此，单个节点的感知域相对于层数呈指数增长，<strong>单个节点的计算梯度成本很高</strong>。</li>
+<li>最后，GCN 针对固定图形进行独立训练，<strong>缺乏归纳学习的能力</strong>。</li>
 </ol>
-</li>
-<li><p>self._transpiler.transpile(trainer_id=fleet.worker_index(), pservers=fleet.server_endpoints(to_string=True), trainers=fleet.worker_num(), sync_mode=program_config.sync_mode)</p>
-<p> 输入：</p>
+<h3 id="2-3-通用框架"><a href="#2-3-通用框架" class="headerlink" title="2.3 通用框架"></a>2.3 通用框架</h3><p>除了提出图神经网络的不同变体之外，一些研究人员从神经网络的框架入手，提出了一些通用框架，旨在将不同模型集成到一个单一框架中。主要包括 Message Passing Neural Networks（MPNN）、Non-local Neural Networks（NLNN）以及 Graph Network（GN）等。</p>
 <ol>
-<li><p>trainer_id：当前worker的id，如果有n个worker，取值范围在0-n-1。</p>
+<li><p>Message Passing Neural Networks<br> 针对图结构的监督学习框架，MPNN框架抽象了几种最流行的图形结构数据模型（如图卷积中的光谱方法和非光谱方法，门控神经网络，交互网络，分子图卷积，深度张量神经网络等）之间的共性，</p>
 </li>
-<li><p>program：需要编译的program，默认fluid.default_main_program()</p>
+<li><p>Non-local Neural Networks<br> NLNN利用深度学习捕捉长范围的依赖关系，这是对非局部平均运算的一种泛化，非局部运算通过计算对所有位置的特征的加权和来得到当前位置的影响，此处的位置集合可以是空间、时间或者时空。</p>
 </li>
-<li><p>startup_program：需要编译的startup_program，默认为fluid.default_startup_program().</p>
-</li>
-<li><p>pservers：pserver列表</p>
-</li>
-<li><p>trainers: trainers进程的数目</p>
-</li>
-<li><p>sync_mode：是否是同步</p>
-</li>
-<li><p>current_endpoint: pserver mode不使用这个</p>
-<p>输出：</p>
-</li>
-<li><p>无</p>
-<p>功能：根据config的信息和参数，将输入的program转化为分布式的program</p>
+<li><p>Graph Networks<br> GN被提出来泛化和扩展多种图神经网络，以及 MPNN 和 NLNN 方法。本文主要介绍了图的定义、GN block、核心 GN 计算单元、计算步骤和基本设计原则。详细的内容扩展会另外写到专门针对该文献的阅读笔记当中。</p>
 </li>
 </ol>
-</li>
-<li><p>is_server() is_worker()<br> 返回role_maker类创建的本机的信息</p>
-</li>
-<li><p>init_server() run_server()<br> 开始跑startup_program、main_program</p>
-</li>
-<li><p>init_worker()<br>首先，等待所有的参数服务器p_server启动<br>第二，运行executor初始化start_up program<br>第三，等待所有的worker全部初始化</p>
-<p>检查所有的服务器是否正常<br>创建一个Communicator()类</p>
-<p>Communicator用于分布式训练的信息传递<br>是CPP类Communicator()的封装</p>
-</li>
-<li><p>exe.run(fleet.startup_program)<br>初始化含有分布式流程的fleet.startup_program</p>
-</li>
-<li><p>exec_strategy build_strategy<br>exec_strategy CPP类 core.ParallelExecutor.ExecutionStrategy<br>包含一些计算图计算时的参数<br>build_strategy CPP类 core.ParallelExecutor.BuildStrategy<br>包含一些计算图构造时的参数</p>
-</li>
-<li><p>fluid.compiler.CompiledProgram(fleet.main_program).with_data_parallel(loss_name=avg_cost.name,build_strategy=build_strategyexec_strategy=exec_strategy)</p>
-<p>class CompiledProgram()<br>根据build_strategy的配置，CompiledProgram用于转换program或计算图以进行各种优化。<br>例如，运算符在计算图中的融合，在计算图中执行过程中的内存优化等。</p>
-<p>with_data_parallel()<br>该接口用于将输入的程序或图转换为 multi-graph，以在数据并行模式下运行模型。 用户可以使用build_strategy和exec_strategy来设置一些可在Graph的构建和计算过程中应用的优化，例如减少AllReduce操作的数量，指定运行模型的计算Graph中使用的线程池的大小，以此类推。</p>
-<p>输入:</p>
-<ol>
-<li>loss_name 回传的loss</li>
-<li>build_strategy 策略类</li>
-<li>exec_strategy 策略类</li>
-<li>share_vars_from CompiledProgram()类，和设定的CompiledProgram进行参数共享</li>
-<li>places 指定模型运行在哪些设备上面cpu gpu</li>
-</ol>
-<p>输出：</p>
-<p>CompiledProgram() 自身的对象</p>
-</li>
-<li><p>fleet.is_first_worker()<br>判断是不是第一个worker节点，这个由role_maker里面的信息得到</p>
-</li>
-<li><p>fleet.stop_worker()<br>self._communicator.stop() 关闭communicator<br>self._role_maker._finalize() 析构role_maker<br>self._executor.close() 关闭executor</p>
-</li>
-</ol>
+<h2 id="3-应用"><a href="#3-应用" class="headerlink" title="3. 应用"></a>3. 应用</h2><p><img src="/2020/06/15/07-gnn-review1/03-applications.png" alt="applications"></p>
+<h2 id="4-0-开放性问题"><a href="#4-0-开放性问题" class="headerlink" title="4.0 开放性问题"></a>4.0 开放性问题</h2><h3 id="4-1-浅层结构"><a href="#4-1-浅层结构" class="headerlink" title="4.1 浅层结构"></a>4.1 浅层结构</h3><p>传统的深度神经网络可以堆叠数百层以获得更好的性能，因为更深的结构具有更多的参数，从而能够显著提高表示能力。而图神经网络通常都很浅，大多数不超过三层。正如 [5] 中的实验所示，堆叠多个 GCN 层将导致过度平滑，也就是说，所有顶点将收敛到相同的值。尽管一些研究人员设法解决了这个问题，但它仍然是 GNN 的最大限制。设计真正的深度 GNN 对于未来的研究来说是一个令人兴奋的挑战，并将对理解 GNN 做出相当大的贡献。</p>
+<h3 id="4-2-动态图结构"><a href="#4-2-动态图结构" class="headerlink" title="4.2 动态图结构"></a>4.2 动态图结构</h3><p>另一个具有挑战性的问题是如何处理具有动态结构的图形。静态图是稳定的，因此可以容易地建模，而动态图则引入变化的结构。当边和节点出现或消失时，GNN 无法自适应地更改。<br>动态 GNN 正在积极研究中，我们认为它是一般 GNN 的稳定性和适应性的重要里程碑。</p>
+<h3 id="4-3-非结构化场景"><a href="#4-3-非结构化场景" class="headerlink" title="4.3 非结构化场景"></a>4.3 非结构化场景</h3><p>虽然我们已经讨论了 GNN 在非结构场景中的应用，但我们发现没有最佳方法可以从原始数据生成图形。因此，找到最佳图形生成方法将提供 GNN 可以做出贡献的更广泛的领域。</p>
+<h3 id="4-4-可伸缩性"><a href="#4-4-可伸缩性" class="headerlink" title="4.4 可伸缩性"></a>4.4 可伸缩性</h3><p>如何在社交网络或推荐系统等网络规模条件下应用嵌入方法对于几乎所有图形嵌入算法来说都是一个致命的问题，而 GNN 也不例外。扩展 GNN 很困难，因为许多核心步骤在大数据环境中的计算成本都十分高。</p>
 
             </div>
             <hr/>
@@ -589,7 +542,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://bansheng.github.io/2020/06/10/06-paddle-sync/">https://bansheng.github.io/2020/06/10/06-paddle-sync/</a>
+                    <a href="https://bansheng.github.io/2020/06/15/07-gnn-review1/">https://bansheng.github.io/2020/06/15/07-gnn-review1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -627,8 +580,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/distributed-system/">
-                                    <span class="chip bg-color">distributed system</span>
+                                <a href="/tags/GNN/">
+                                    <span class="chip bg-color">GNN</span>
                                 </a>
                             
                         </div>
@@ -674,7 +627,7 @@
         repo: 'https://github.com/bansheng/bansheng.github.io',
         owner: 'bansheng',
         admin: "bansheng",
-        id: '2020-06-10T21-48-28',
+        id: '2020-06-15T12-41-07',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -695,9 +648,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
                 <a href="/2020/06/15/07-gnn-review1/">
                     <div class="card-image">
@@ -715,9 +669,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-15
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-15
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -730,6 +684,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -748,31 +703,31 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/02/21/05-Net2Net/">
+                <a href="/2020/06/10/06-paddle-sync/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Net2Net">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="paddle 同步训练源码阅读笔记">
                         
-                        <span class="card-title">Net2Net</span>
+                        <span class="card-title">paddle 同步训练源码阅读笔记</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Net2Net: Accelerating Learning via Knowledge Transfer
+                            同步训练源码阅读笔记
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-21
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-10
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Notes/" class="post-category">
+                                    Notes
                                 </a>
                             
                             
@@ -782,8 +737,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Knowledge-Transfer/">
-                        <span class="chip bg-color">Knowledge Transfer</span>
+                    <a href="/tags/distributed-system/">
+                        <span class="chip bg-color">distributed system</span>
                     </a>
                     
                 </div>
