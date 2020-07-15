@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="meta-learning_nas, Ingaong&#39;s Blogs">
-    <meta name="description" content="papers for nas using meta-learning">
+    <meta name="keywords" content="string_pattern, Ingaong&#39;s Blogs">
+    <meta name="description" content="字符子串匹配算法">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>meta-learning_nas | Ingaong&#39;s Blogs</title>
+    <title>string_pattern | Ingaong&#39;s Blogs</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -282,12 +282,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">meta-learning_nas</h1>
+                    <h1 class="description center-align post-title">string_pattern</h1>
                 </div>
             </div>
         </div>
@@ -404,8 +404,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/nas-meta-learning/">
-                                <span class="chip bg-color">nas, meta-learning</span>
+                            <a href="/tags/string/">
+                                <span class="chip bg-color">string</span>
                             </a>
                         
                     </div>
@@ -416,8 +416,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Survey/" class="post-category">
-                                Survey
+                            <a href="/categories/Algorithm/" class="post-category">
+                                Algorithm
                             </a>
                         
                     </div>
@@ -429,7 +429,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-06-18
+                    2020-07-15
                 </div>
                 
 
@@ -446,16 +446,69 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning"><a href="#1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning" class="headerlink" title="1. Towards fast adaptation of neural architectures with meta learning"></a>1. Towards fast adaptation of neural architectures with meta learning</h2><p><a href="https://openreview.net/forum?id=r1eowANFvr" target="_blank" rel="noopener">ICLR2020</a></p>
-<p>文章的的主要思想是，在meta-learning的setting上面，通过不同的task，学习一个可以泛化的architecture，然后在query集上面进行fune-tuning，微调这个结构，使得该结构对不同test task有良好的适用性。<br><img src="/2020/06/18/08-meta-learning-nas/01-towards1.png" alt="towards"></p>
-<p>在mini-imagenet上面5-way的结果<br><img src="/2020/06/18/08-meta-learning-nas/02-towards2.png" alt="towards_result"></p>
-<h2 id="2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search"><a href="#2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search" class="headerlink" title="2. Auto-Meta: Automated Gradient Based Meta Learner Search"></a>2. Auto-Meta: Automated Gradient Based Meta Learner Search</h2><p><a href="https://arxiv.org/abs/1806.06927" target="_blank" rel="noopener">https://arxiv.org/abs/1806.06927</a></p>
-<p>也是构造cell去stack起来，获取整个的network，但是一开始的cell并不是整个的supernet，而是在搜索的过程中，逐步往这个cell里面去添加opetator，<strong>然后使用一个predictor去预测这个cell的性能</strong>，选择top k性能的cell组成网络进行测试。<br><img src="/2020/06/18/08-meta-learning-nas/03-auto_meta.png" alt="auto meta"></p>
-<h2 id="3-Meta-Architecture-Search"><a href="#3-Meta-Architecture-Search" class="headerlink" title="3. Meta Architecture Search"></a>3. Meta Architecture Search</h2><p><a href="https://openreview.net/forum?id=B1M0gBSlLB" target="_blank" rel="noopener">NIPS19</a></p>
-<p>本文从Bayesian的角度，推理了一遍NAS的原理，提出用Coupled Variational Bayes (CVB)去生成参数的表达，同时进行了推理（hard math）。本质上来说，这篇工作基本上还是darts，不过它首先将meta learning的在imagenet上面获取的先验知识拿出来放到其他任务上去train。<br>首先使用gumble_softmaxed darts(参见SNAS)，取得meta network的arch和init，然后针对不同任务进行fine tuning。<br><img src="/2020/06/18/08-meta-learning-nas/04-meta_architecture_search.png" alt="meta as"></p>
-<h2 id="MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification"><a href="#MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification" class="headerlink" title="MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification"></a>MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification</h2><p><a href="https://arxiv.org/abs/1912.00412" target="_blank" rel="noopener">https://arxiv.org/abs/1912.00412</a></p>
-<p>在darts的基础上，提出了一个MetAdapt Controllers，就是说，对于不同的task，产生不同的叠加权重<br><img src="/2020/06/18/08-meta-learning-nas/05-MetAdapt.png" alt="MetAdapt"></p>
-<h2 id="Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning"><a href="#Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning" class="headerlink" title="Meta-Learning of Neural Architectures for Few-Shot Learning"></a>Meta-Learning of Neural Architectures for Few-Shot Learning</h2><p><a href="https://arxiv.org/abs/1911.11090" target="_blank" rel="noopener">https://arxiv.org/abs/1911.11090</a><br>提出了gradient-based NAS + meta learning 结合的框架<br><img src="/2020/06/18/08-meta-learning-nas/06-meta_learning_of_NAS4FS.png" alt="06-meta_learning_of_NAS4FS"></p>
+                <h2 id="1-1-字符串匹配算法"><a href="#1-1-字符串匹配算法" class="headerlink" title="1.1 字符串匹配算法"></a>1.1 字符串匹配算法</h2><table>
+<thead>
+<tr>
+<th align="left">algorithm</th>
+<th align="center">$T_{best}$</th>
+<th align="center">$T_{avg}$</th>
+<th align="center">$T_{worst}$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1. 朴素匹配算法</td>
+<td align="center">O(nm)</td>
+<td align="center">O(nm)</td>
+<td align="center">O(nm)</td>
+</tr>
+<tr>
+<td align="left">2. Robin-Karp 算法</td>
+<td align="center">O(n)</td>
+<td align="center">O(nm)</td>
+<td align="center">O(nm)</td>
+</tr>
+<tr>
+<td align="left">3. KMP算法</td>
+<td align="center">O(n+m)</td>
+<td align="center">O(n+m)</td>
+<td align="center">O(n+m)</td>
+</tr>
+</tbody></table>
+<h3 id="1-1-1-朴素匹配算法"><a href="#1-1-1-朴素匹配算法" class="headerlink" title="1.1.1 朴素匹配算法"></a>1.1.1 朴素匹配算法</h3><p>暴力求解</p>
+<h3 id="1-1-2-Robin-Karp算法"><a href="#1-1-2-Robin-Karp算法" class="headerlink" title="1.1.2 Robin-Karp算法"></a>1.1.2 Robin-Karp算法</h3><p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。<br>选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中 $0&lt;m&lt;n$，$Hash(t[i,j])$代表字符串t[i, j]的哈希值。</p>
+<p>当 $Hash(t[0, m-1])!=Hash(p[0,m-1])$ 时，我们很自然的会把 $Hash(t[1, m])$ 拿过来继续比较。在这个过程中，若我们重新计算字符串t[1, m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0, m-1]与t[1, m]中有 m-1 个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为 O(1)。</p>
+<p>Rabin-Karp 算法选用的滚动哈希函数主要是利用$Rabin fingerprint$的思想，举个例子，计算字符串t[0, m - 1]的哈希值的公式如下，</p>
+<p>$$Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+…+t[m−1]∗b_0$$</p>
+<p>其中的 b_k 可以是一个常数，在 Rabin-Karp 算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取 101。</p>
+<p>则计算字符串t[1, m]的哈希值公式如下，</p>
+<p>$$Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0$$</p>
+<h3 id="1-1-3-KMP算法"><a href="#1-1-3-KMP算法" class="headerlink" title="1.1.3 KMP算法"></a>1.1.3 KMP算法</h3><p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p>
+<p><a href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html" target="_blank" rel="noopener">阮一峰KMP算法</a></p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true">#KMP</span>
+<span class="token keyword">def</span> <span class="token function">kmp_match</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    m <span class="token operator">=</span> len<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span> n <span class="token operator">=</span> len<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
+    cur <span class="token operator">=</span> <span class="token number">0</span><span class="token comment" spellcheck="true">#起始指针cur</span>
+    table <span class="token operator">=</span> partial_table<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
+    <span class="token keyword">while</span> cur<span class="token operator">&lt;=</span>m<span class="token operator">-</span>n<span class="token punctuation">:</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">if</span> s<span class="token punctuation">[</span>i<span class="token operator">+</span>cur<span class="token punctuation">]</span><span class="token operator">!=</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">:</span>
+                cur <span class="token operator">+=</span> max<span class="token punctuation">(</span>i <span class="token operator">-</span> table<span class="token punctuation">[</span>i<span class="token number">-1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">#有了部分匹配表,我们不只是单纯的1位1位往右移,可以一次移动多位</span>
+                <span class="token keyword">break</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token boolean">True</span>
+    <span class="token keyword">return</span> <span class="token boolean">False</span>
+
+<span class="token comment" spellcheck="true">#部分匹配表</span>
+<span class="token keyword">def</span> <span class="token function">partial_table</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">'''partial_table("ABCDABD") -> [0, 0, 0, 0, 1, 2, 0]'''</span>
+    prefix <span class="token operator">=</span> set<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    postfix <span class="token operator">=</span> set<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ret <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>len<span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        prefix<span class="token punctuation">.</span>add<span class="token punctuation">(</span>p<span class="token punctuation">[</span><span class="token punctuation">:</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        postfix <span class="token operator">=</span> <span class="token punctuation">{</span>p<span class="token punctuation">[</span>j<span class="token punctuation">:</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> j <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+        ret<span class="token punctuation">.</span>append<span class="token punctuation">(</span>len<span class="token punctuation">(</span><span class="token punctuation">(</span>prefix<span class="token operator">&amp;</span>postfix <span class="token operator">or</span> <span class="token punctuation">{</span><span class="token string">''</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> ret<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
             </div>
             <hr/>
@@ -481,7 +534,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://bansheng.github.io/2020/06/18/08-meta-learning-nas/">https://bansheng.github.io/2020/06/18/08-meta-learning-nas/</a>
+                    <a href="https://bansheng.github.io/2020/07/15/09-string-pattern/">https://bansheng.github.io/2020/07/15/09-string-pattern/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -519,8 +572,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/nas-meta-learning/">
-                                    <span class="chip bg-color">nas, meta-learning</span>
+                                <a href="/tags/string/">
+                                    <span class="chip bg-color">string</span>
                                 </a>
                             
                         </div>
@@ -566,7 +619,7 @@
         repo: 'https://github.com/bansheng/bansheng.github.io',
         owner: 'bansheng',
         admin: "bansheng",
-        id: '2020-06-18T09-01-49',
+        id: '2020-07-15T14-08-05',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -587,9 +640,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
                 <a href="/2020/07/15/09-string-pattern/">
                     <div class="card-image">
@@ -607,9 +661,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-15
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-15
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -622,6 +676,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -640,24 +695,24 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/06/15/07-gnn-review1/">
+                <a href="/2020/06/18/08-meta-learning-nas/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="Graph Neural Networks: A review of methods and applications">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="meta-learning_nas">
                         
-                        <span class="card-title">Graph Neural Networks: A review of methods and applications</span>
+                        <span class="card-title">meta-learning_nas</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            note for "Graph Neural Networks A review of methods and applications"
+                            papers for nas using meta-learning
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-18
                             </span>
                         <span class="publish-author">
                             
@@ -674,8 +729,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/GNN/">
-                        <span class="chip bg-color">GNN</span>
+                    <a href="/tags/nas-meta-learning/">
+                        <span class="chip bg-color">nas, meta-learning</span>
                     </a>
                     
                 </div>
