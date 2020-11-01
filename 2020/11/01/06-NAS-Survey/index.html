@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="AutoML自动机器学习, Ingaong&#39;s Blogs">
-    <meta name="description" content="一篇关于AutoML的简单概述">
+    <meta name="keywords" content="Neural Architecture Search: A Survey, Ingaong&#39;s Blogs">
+    <meta name="description" content="Neural Architecture Search: A Survey解读">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>AutoML自动机器学习 | Ingaong&#39;s Blogs</title>
+    <title>Neural Architecture Search: A Survey | Ingaong&#39;s Blogs</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -282,12 +282,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">AutoML自动机器学习</h1>
+                    <h1 class="description center-align post-title">Neural Architecture Search: A Survey</h1>
                 </div>
             </div>
         </div>
@@ -404,8 +404,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/AutoML/">
-                                <span class="chip bg-color">AutoML</span>
+                            <a href="/tags/NAS/">
+                                <span class="chip bg-color">NAS</span>
                             </a>
                         
                     </div>
@@ -446,201 +446,80 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>wiki definition:<br>AutoML is the process of automating the end-to-end process of applying appropriate data-preprocessing, feature engineering, model selection, and model evaluation to solve the certain task</p>
-<ul>
-<li>Google AutoML</li>
-<li><a href="https://arxiv.org/abs/1611.01578" target="_blank" rel="noopener">Neural Architecture Search with Reinforcement Learning
-</a></li>
-</ul>
-<p>We will introduce NAS from two perspectives.</p>
-<ul>
-<li>The first is the structures of the model.<ul>
-<li>entire structure</li>
-<li>cell-based structure</li>
-<li>hierarchical structure</li>
-<li>morphism-based structure</li>
-</ul>
-</li>
-<li>The second is hyperparameter optimization (HPO) for designing the model structure.<ul>
-<li>Reinforcement Learning</li>
-<li>Evolutionary Algorithms</li>
-<li>Gradient-based</li>
-<li>Bayesian Optimization</li>
-</ul>
-</li>
-</ul>
-<p>AutoML</p>
-<ul>
-<li>data preparation</li>
-<li>feature engineering</li>
-<li>model generation</li>
-<li>model evaluation</li>
-</ul>
-<h2 id="1-Data-preparation"><a href="#1-Data-preparation" class="headerlink" title="1. Data preparation"></a>1. Data preparation</h2><h3 id="1-1-data-collection"><a href="#1-1-data-collection" class="headerlink" title="1.1 data collection"></a>1.1 data collection</h3><ol>
-<li>data synthesis<ul>
-<li>augment the exsiting dataset<br>CV: cropping, flipping, padding, rotation and resize, etc.<br>Library: torchvision augmentor</li>
-<li>data warping<br>generates additional samples by applying transformation on data-space</li>
-<li>synthetic over-sampling<br>creates additional samples in feature-space.</li>
-<li>For text data, synonym insertion is a common way of augmenting同义词插入</li>
-<li>first translate the text into some foreign language, and then translate it back to the original language</li>
-<li>non-domain-specific data augmentation strategy that uses noising in RNNs</li>
-<li>back-translation</li>
-<li>data simulator</li>
-</ul>
- <strong>OpenAI Gym</strong> is a popular toolkit that provides various simulation environment<ul>
-<li>GAN</li>
-</ul>
-</li>
-<li>data searching(search for web data)<ul>
-<li>On the one hand, sometimes the <strong>search results do not exactly match the keywords</strong>.(filter unrelated data)</li>
-<li>The other problem is that web data may <strong>have wrong labels or even no labels.</strong>(learning-based <strong>self-labeling</strong> method, 分为self-training, co-training, co-learning)</li>
-<li>the distribution of web data can be extremely different from the target dataset, which would increase the difficulty of training the model.(fine-tune these web data)</li>
-<li>dataset inbalance(SMOTE, combines boosting method with data generation)</li>
-</ul>
-</li>
-</ol>
-<h3 id="1-2-data-cleaning"><a href="#1-2-data-cleaning" class="headerlink" title="1.2 data cleaning"></a>1.2 data cleaning</h3><p>redundant, incomplete, or incorrect data</p>
-<p>standardization, scaling, binarization of quantitative characteristic, one-hot encoding qualitative characteristic, and filling missing values with mean value, etc.</p>
-<h2 id="2-feature-engneering"><a href="#2-feature-engneering" class="headerlink" title="2. feature engneering"></a>2. feature engneering</h2><ul>
-<li>feature selection 减少冗余特征</li>
-<li>extraction 减少特征的维度</li>
-<li>construction 展开原始特征空间</li>
-</ul>
-<h3 id="2-1-feature-selection"><a href="#2-1-feature-selection" class="headerlink" title="2.1 feature selection"></a>2.1 feature selection</h3><p><img src="/2020/11/01/01-AutoML/03-feature-selection.png" alt="feature selection"></p>
-<p>search strategy</p>
-<ul>
-<li>complete<ul>
-<li>exhaustive</li>
-<li>non-exhaustive</li>
-</ul>
-</li>
-<li>heuristic<ul>
-<li>Sequential Forward Selection(SFS)</li>
-<li>Sequential Backward Selection(SBS)</li>
-<li>Bidirectional Search(BS)</li>
-</ul>
-</li>
-<li>random search algorithm<ul>
-<li>Simulated Annealing(SA)</li>
-<li>Genetic Algorithms(GA)</li>
-</ul>
-</li>
-</ul>
-<p>subset evaluation</p>
-<ul>
-<li>filter method<br>  scores each feature according to divergence or correlation, and then select features by a threshold</li>
-<li>Wrapper method<br>  classifies the sample set with the selected feature subset, the classification accuracy is used as the criterion to measure the quality of the feature subset</li>
-<li>embedded method<br>  performs variable selection as part of the learning procedure.<br>  Regularization, decision tree, <strong>DL</strong></li>
-</ul>
-<h3 id="2-2-feature-construction"><a href="#2-2-feature-construction" class="headerlink" title="2.2 feature construction"></a>2.2 feature construction</h3><h4 id="definition"><a href="#definition" class="headerlink" title="definition"></a>definition</h4><p><strong>constructs new features</strong> from the basic feature space or raw data to help enhance the robustness and generalization of the model, and its essence is to increase the representative ability of original features.</p>
-<h4 id="常用方法-preprocessing-transformation"><a href="#常用方法-preprocessing-transformation" class="headerlink" title="常用方法 preprocessing transformation"></a>常用方法 preprocessing transformation</h4><p>包括</p>
-<ul>
-<li>standardization</li>
-<li>normalization</li>
-<li>feature discretization</li>
-</ul>
-<h4 id="自动化检索"><a href="#自动化检索" class="headerlink" title="自动化检索"></a>自动化检索</h4><p>人力很难检索所有可能<br>some automatic feature construction methods have been proposed</p>
-<p>These algorithms mainly aim to automate <strong>the process of searching and evaluating the operation combination</strong>实现操作组合搜索和评价的自动化</p>
-<p>searching 算法</p>
-<ul>
-<li>decision tree-based methods</li>
-<li>genetic algorithm<br>  需要pre-defined operation space</li>
-<li>annotation-based approaches<br>  不需要，将domain知识以注释的形式与训练示例一起使用<br>  引入了交互式特征空间构建协议，学习者识别出特征空间的不足区域，并与领域专家协作，通过现有的语义资源增加描述性</li>
-</ul>
-<h3 id="2-3-feature-extraction"><a href="#2-3-feature-extraction" class="headerlink" title="2.3 feature extraction"></a>2.3 feature extraction</h3><p>a dimensionality reduction process through some mapping functions</p>
-<p>mapping function</p>
-<ul>
-<li>Principal Component Analysis(PCA)</li>
-<li>Independent COmponent Analysis(ICA)</li>
-<li>isomap</li>
-<li>nonlinear dimensionality reduction</li>
-<li>Linear discriminant analysis(LDA)</li>
-<li><strong>feed-forward neural networks approach</strong></li>
-</ul>
-<h2 id="3-model-generation"><a href="#3-model-generation" class="headerlink" title="3. model generation"></a>3. model generation</h2><p>two types of approaches for model selection:</p>
-<ul>
-<li>traditional model selection<ul>
-<li>SVM</li>
-<li>KNN</li>
-<li>decision tree</li>
-<li>K-means</li>
-</ul>
-</li>
-<li>NAS</li>
-</ul>
-<p>主要介绍NAS</p>
-<h3 id="3-1-model-structures"><a href="#3-1-model-structures" class="headerlink" title="3.1 model structures"></a>3.1 model structures</h3><p>The model is generated by selecting and combining a set of primitive operations, which are pre-defined in the search space. The operations can be broadly divided into convolution, pooling, concatenation, elemental addition, skip connection, etc.</p>
+                <p>目前存在的应用<br>image classification<br>object detection<br>semantic segmentation</p>
+<p>NAS can be seen as subfield of AutoML (Hutter et al., 2019) and has significant overlap with hyperparameter optimization (Feurer and Hutter, 2019) and meta-learning (Vanschoren, 2019).<br>AutoML的子领域<br>NAS与元学习和超参数优化有很多重合的地方</p>
+<p>NAS的方法分为三类：</p>
 <ol>
-<li><p>entire structure<br> 缺点：太深，搜索空间太大，消耗时间和计算资源，找到的model的transferability差，意味着小的数据集上找到的模型在完整数据集上表现很差</p>
-</li>
-<li><p>Cell-based structure<br> 先生成cell，再连起来<br> <img src="/2020/11/01/01-AutoML/04-cell-model.png" alt="cell model"><br> 优点：搜索空间大大减小，并且更容易从小dataset上转换到大的dataset上(简单叠加cells))<br> 分成两级：</p>
+<li>search space</li>
+<li>search strategy</li>
+<li>performance estimation strategy</li>
+</ol>
+<p><img src="/2020/11/01/06-NAS-Survey/01-NAS-methods.png" alt="NAS methods"></p>
 <ul>
-<li>inner:cell level, selects the operation and connection for each node</li>
-<li>outter level:network level, controls the spatial resolution changes</li>
+<li>Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了search space，同时也可能漏掉超出人类认知的架构</li>
+<li>Search Strategy.搜索策略详细描述了如何探索搜索空间(通常是指数级大的，甚至是无界的)。它包含了物理的探索-利用权衡，因为一方面，快速找到性能良好的架构是可取的，而另一方面，应该避免过早地收敛到次优架构的区域。</li>
+<li>Performance Estimation Strategy.<br>简单的对所有数据进行标准训练和测试，但是这种方案计算太过昂贵，并且限制了可以研究的体系结构的数量</li>
 </ul>
+<h2 id="1-search-space"><a href="#1-search-space" class="headerlink" title="1. search space"></a>1. search space</h2><h3 id="chain-structured-neural-network-architecture"><a href="#chain-structured-neural-network-architecture" class="headerlink" title="chain-structured neural network architecture"></a>chain-structured neural network architecture</h3><p><img src="/2020/11/01/06-NAS-Survey/09-chain.png" alt="chain"><br>搜索空间的影响因素</p>
+<ol>
+<li>层的数目</li>
+<li>每一层的种类 pooling, conv, skip-connection, etc</li>
+<li>超参数</li>
+</ol>
+<h3 id="cell-based-model"><a href="#cell-based-model" class="headerlink" title="cell-based model"></a>cell-based model</h3><p><img src="/2020/11/01/06-NAS-Survey/10-cell.png" alt="cell"></p>
+<ul>
+<li>normal cell</li>
+<li>reduction cell</li>
+</ul>
+<p>优点：</p>
+<ol>
+<li>The size of the search space is drastically reduced<br>搜索空间大大减小</li>
+<li>Architectures built from cells can more easily be transferred or adapted to other data sets by simply varying the number of cells and filters used within a model<br>可移植性比较好</li>
+<li>Creating architectures by repeating building blocks has proven a useful design prin- ciple in general, such as repeating an LSTM block in RNNs or stacking a residual block.<br>已经证明叠加网络是有效的设计准则，如LSTM，RNN，res-block</li>
+</ol>
+<h3 id="macro-architecture"><a href="#macro-architecture" class="headerlink" title="macro-architecture"></a>macro-architecture</h3><p>how many cells shall be used and how should they be connected to build the actual model</p>
+<h2 id="2-search-strategy"><a href="#2-search-strategy" class="headerlink" title="2. search strategy"></a>2. search strategy</h2><ul>
+<li>random search</li>
+<li>Bayesian optimization</li>
+<li>evolutionary methods</li>
+<li>reinforcement learning (RL)</li>
+<li>gradient-based methods.</li>
+</ul>
+<ol>
+<li><p>no interaction with an environment occurs during this sequential process (no external state is observed, and there are no intermediate rewards)<br>将架构取样的过程当做single action的线性生成过程，将RL问题转换为无状态多武装强盗问题。</p>
 </li>
-<li><p>Hierarchical structure<br> for a hierarchical structure, there are many levels, each with a fixed number of cells. The higher-level cell is generated by incorporating lower-level cell iteratively.<br> <img src="/2020/11/01/01-AutoML/05-hierarchical-structure.png" alt="hierarchical structure"><br> 可以发现更多复杂、灵活的网络结构类型。</p>
+<li><p>frame NAS as a sequential decision process</p>
 </li>
-<li><p>Network Morphism based structure<br> transferring the information stored in an existing neural network into a new neural network<br> 从现有网络到新网络<br> 保证性能不低于原有网络</p>
+<li><p>deal with variable-length network architectures</p>
 </li>
 </ol>
-<h3 id="3-2-hyperparameter-optimization-HPO"><a href="#3-2-hyperparameter-optimization-HPO" class="headerlink" title="3.2 hyperparameter optimization(HPO)"></a>3.2 hyperparameter optimization(HPO)</h3><ol>
-<li><p>Grid &amp; Random Search<br> 最广泛使用的<br> <img src="/2020/11/01/01-AutoML/06-grid-and-random-search.png" alt="grid&amp;random search"></p>
+<p><strong>use a bi-directional LSTM to encode architectures into a fixed-length representation</strong></p>
+<ol start="4">
+<li><p>使用gradient-based method去优化权重，使用进化算法仅仅去优化神经网络的架构</p>
 </li>
-<li><p>Reinforcement Learning<br> 分为两部分</p>
-<ul>
-<li>controller:RNN, used to generate different child networks at different epoch</li>
-<li>reward network:trains and evaluates the generated child networks and uses the reward (e.g. accuracy) to update RNN controller.</li>
-<li>缺点：训练时间长，资源需求大</li>
-<li>ENAS:子架构被看做是预定义搜索空间的子图，共享参数，从而避免从零开始到收敛地训练每个子模型</li>
-</ul>
+<li><p>Neuro-evolutionary方法不同的地方在于how they sample parents, update populations, and generate offsprings</p>
+<p> <a href="https://arxiv.org/abs/1804.09081" target="_blank" rel="noopener">Efficient multi-objective neural architecture search via lamarckian evolution.</a> 后代从父网络中继承权重</p>
+<p> <a href="https://arxiv.org/pdf/1703.01041.pdf" target="_blank" rel="noopener">Large-scale evolution of image classifiers</a> 后代从父网络中继承没有被突变影响的权重</p>
 </li>
-<li><p>Evolutionary Algorithm<br> 通用的基于种群的元启发式优化算法，<br> 有两种类型的编码方案:直接编码和间接编码。direct, indirect<br> 直接编码是一种广泛使用的方法，它显式地指定了表现型：Genetic CNN</p>
-<ul>
-<li><p>selection 选择</p>
-<ul>
-<li>fitness selection</li>
-<li>rank selection</li>
-<li>Tournament selection</li>
-</ul>
+<li><p>Monte Carlo Tree Search. hill climbing</p>
 </li>
-<li><p>crossover 杂交</p>
+<li><p>optimize both the network weights and the network architecture by alternating gradient descent steps on training data for weights and on validation data for architectural parameters such as. 交替使用梯度下降法，在训练集上训练权重，在验证集上更改架构参数</p>
 </li>
-<li><p>mutation 突变</p>
+<li><p>在可能的操作集合上面优化带参的分布</p>
 </li>
-<li><p>update 更新</p>
-<p><img src="/2020/11/01/01-AutoML/07-overview-of-EA.png" alt="overview of EA"></p>
-</li>
-</ul>
-</li>
-<li><p>Bayesian Optimization</p>
-<ul>
-<li>BO</li>
-<li>Sequential model-based optimization(SMBO)</li>
-<li>Bayesian Optimization-based Hyperband (BOHB)</li>
-</ul>
-</li>
-<li><p>Gradient Descent</p>
+<li><p>优化层的超参数和连接模式</p>
 </li>
 </ol>
-<h2 id="4-model-estimation"><a href="#4-model-estimation" class="headerlink" title="4. model estimation"></a>4. model estimation</h2><h3 id="4-1-low-fidelity"><a href="#4-1-low-fidelity" class="headerlink" title="4.1 low fidelity"></a>4.1 low fidelity</h3><p>On the one hand, we can reduce the number of images or the resolution of images (for image classification tasks)<br>在子集上面训练,在低精度训练集上面训练<br>On the other hand, low fidelity model evaluation can be realized by reducing the model size, such as training with less number of filters per layer<br>减少网络的大小，比如每层的filter的数目</p>
-<h3 id="4-2-Transfer-learning"><a href="#4-2-Transfer-learning" class="headerlink" title="4.2 Transfer learning"></a>4.2 Transfer learning</h3><ul>
-<li>Transfer Neural AutoML<br>uses knowledge from prior tasks to speed up network design</li>
-<li>ENAS<br>shares parameters among child networks</li>
-<li>The network morphism based algorithms<br>inherit the weights of previous architectures</li>
-</ul>
-<h3 id="4-3-Surrogate代理"><a href="#4-3-Surrogate代理" class="headerlink" title="4.3 Surrogate代理"></a>4.3 Surrogate代理</h3><p>一般来说，一旦获得了一个良好的近似，就很容易找到最佳配置，而不是直接优化原来昂贵的目标。<br>PNAS</p>
-<p>this method is not applicable when the optimization space is too large and hard to quantize, and the evaluation of each configuration is extremely expensive</p>
-<h3 id="4-4-Early-stopping"><a href="#4-4-Early-stopping" class="headerlink" title="4.4 Early stopping"></a>4.4 Early stopping</h3><p>is now being used to speed up model evaluation by <strong>stopping the evaluations which predicted to perform poorly on the validation set</strong></p>
-<h2 id="5-NAS-PERFORMANCE-SUMMARY"><a href="#5-NAS-PERFORMANCE-SUMMARY" class="headerlink" title="5. NAS PERFORMANCE SUMMARY"></a>5. NAS PERFORMANCE SUMMARY</h2><p><img src="/2020/11/01/01-AutoML/08-manual-vs-generated-model.png" alt="manual VS generated models"></p>
-<h2 id="6-future-work"><a href="#6-future-work" class="headerlink" title="6. future work"></a>6. future work</h2><ol>
-<li>Complete AutoML Pipeline<br>数据部分</li>
-<li>Interpretability</li>
-<li>Reproducibility</li>
-<li>Flexible Encoding Scheme</li>
-<li>More Area<br>cnn: image classification<br>rnn: language modeling<br>more</li>
-<li>Lifelong Learn</li>
-</ol>
+<h2 id="3-Performance-Estimation-Strategy"><a href="#3-Performance-Estimation-Strategy" class="headerlink" title="3. Performance Estimation Strategy"></a>3. Performance Estimation Strategy</h2><p><img src="/2020/11/01/06-NAS-Survey/11-overview_of_different_methods_for_speeding_up.png" alt="speed-up method"></p>
+<h2 id="4-directions"><a href="#4-directions" class="headerlink" title="4. directions"></a>4. directions</h2><p>人类定义搜索空间的大小相比较寻找性能更好的网络架构更简单，但同时也限制了NAS不太可能找到本质上优于现在架构的网络架构</p>
+<p>应用在image restoration<br>semantic segmentation<br>reinforcement learning<br>等等上面</p>
+<p>GAN sensor, fusion</p>
+<p>multi-task problems<br>multi-objective problems</p>
+<p>extending one-shot NAS to generate different architectures depending on the task or instance on-the-fly.</p>
+<p>search space的选择</p>
+<p>更加细粒度cell的构建，能否大大加强NAS的能力</p>
+<p>新的数据集：Nas-bench-101: Towards reproducible neural architecture search</p>
+<p>Learning Augmentation Policies from Data</p>
 
             </div>
             <hr/>
@@ -666,7 +545,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://bansheng.github.io/2020/11/01/01-AutoML/">https://bansheng.github.io/2020/11/01/01-AutoML/</a>
+                    <a href="https://bansheng.github.io/2020/11/01/06-NAS-Survey/">https://bansheng.github.io/2020/11/01/06-NAS-Survey/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -704,8 +583,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/AutoML/">
-                                    <span class="chip bg-color">AutoML</span>
+                                <a href="/tags/NAS/">
+                                    <span class="chip bg-color">NAS</span>
                                 </a>
                             
                         </div>
@@ -751,7 +630,7 @@
         repo: 'https://github.com/bansheng/bansheng.github.io',
         owner: 'bansheng',
         admin: "bansheng",
-        id: '2020-11-01T13-36-56',
+        id: '2020-11-01T14-05-25',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -776,19 +655,19 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2020/11/01/02-DARTS/">
+                <a href="/2020/11/01/10-FL/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="DARTS 可微分架构搜索">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="联邦学习概述">
                         
-                        <span class="card-title">DARTS 可微分架构搜索</span>
+                        <span class="card-title">联邦学习概述</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            可微分架构搜索DARTS
+                            联邦学习概述
                         
                     </div>
                     <div class="publish-info">
@@ -799,8 +678,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Paper/" class="post-category">
-                                    Paper
+                            <a href="/categories/Survey/" class="post-category">
+                                    Survey
                                 </a>
                             
                             
@@ -810,8 +689,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/NAS/">
-                        <span class="chip bg-color">NAS</span>
+                    <a href="/tags/Federated-Learning/">
+                        <span class="chip bg-color">Federated Learning</span>
                     </a>
                     
                 </div>
@@ -825,31 +704,31 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/15/09-string-pattern/">
+                <a href="/2020/11/01/05-ICLR2020_NAS_papers/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="string_pattern">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="ICLR2020部分NAS投稿论文解读">
                         
-                        <span class="card-title">string_pattern</span>
+                        <span class="card-title">ICLR2020部分NAS投稿论文解读</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            字符子串匹配算法
+                            节选了ICLR2020部分NAS投稿论文解读
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-11-01
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Algorithm/" class="post-category">
-                                    Algorithm
+                            <a href="/categories/Papers/" class="post-category">
+                                    Papers
                                 </a>
                             
                             
@@ -859,8 +738,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/string/">
-                        <span class="chip bg-color">string</span>
+                    <a href="/tags/NAS/">
+                        <span class="chip bg-color">NAS</span>
                     </a>
                     
                 </div>

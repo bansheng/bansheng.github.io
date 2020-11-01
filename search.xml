@@ -4,6 +4,131 @@
   
     
     <entry>
+      <title>联邦学习概述</title>
+      <link href="/2020/11/01/10-FL/"/>
+      <url>/2020/11/01/10-FL/</url>
+      
+        <content type="html"><![CDATA[<p>Examples of potential applications include: learning sentiment, semantic location, or activities of mobile phone users; adapting to pedestrian behavior in autonomous vehicles; and predicting health events like heart attack risk from wearable devices [6, 52, 84].</p><h2 id="1-Overview"><a href="#1-Overview" class="headerlink" title="1. Overview"></a>1. Overview</h2><h3 id="1-1-问题定义"><a href="#1-1-问题定义" class="headerlink" title="1.1 问题定义"></a>1.1 问题定义</h3><p><img src="/2020/11/01/10-FL/01-FL_problem.png" alt="problem definition"><br>简单来说，就是说联邦学习的目标是训练一个”尽可能接近把各个节点数据聚合起来训练”的模型。</p><h3 id="1-2-典型应用"><a href="#1-2-典型应用" class="headerlink" title="1.2 典型应用"></a>1.2 典型应用</h3><ul><li>smart phone</li><li>Organizations</li><li>internet of things 物联网 收集各种模态的信息</li></ul><h3 id="1-3-主要挑战"><a href="#1-3-主要挑战" class="headerlink" title="1.3 主要挑战"></a>1.3 主要挑战</h3><ol><li>expensive communication<ul><li>reducing the total number of communication rounds</li><li>reducing the size of transmitted messages at each round.</li></ul></li><li>systems heterogeneity<ul><li>only a small fraction of the devices being active at once</li><li>anticipate a low amount of participation</li><li>tolerate heterogeneous hardware</li><li>be robust to dropped devices in the network.</li></ul></li><li>Statistical Heterogeneity<ul><li>independent and identically distributed</li><li>Both the multi-task and meta-learning perspectives enable personalized or device-specific modeling, which is often a more natural approach to handle the statistical heterogeneity of the data.</li></ul></li><li>Privacy Concern<ul><li>secure multiparty computation or differential privacy</li><li>at the cost of reduced model performance or system efficiency.</li></ul></li></ol><h2 id="2-related-and-current-work"><a href="#2-related-and-current-work" class="headerlink" title="2. related and current work"></a>2. related and current work</h2><h3 id="2-1-Communication-efficiency"><a href="#2-1-Communication-efficiency" class="headerlink" title="2.1 Communication-efficiency"></a>2.1 Communication-efficiency</h3><ol><li>local updating methods</li><li>compression schemes</li><li>decentralized training</li></ol><h3 id="2-2-Systems-Heterogeneity"><a href="#2-2-Systems-Heterogeneity" class="headerlink" title="2.2 Systems Heterogeneity"></a>2.2 Systems Heterogeneity</h3><h3 id="2-3-Statistical-Heterogeneity"><a href="#2-3-Statistical-Heterogeneity" class="headerlink" title="2.3 Statistical Heterogeneity"></a>2.3 Statistical Heterogeneity</h3><h4 id="2-3-1-Modeling-heterogeneous-Data"><a href="#2-3-1-Modeling-heterogeneous-Data" class="headerlink" title="2.3.1 Modeling heterogeneous Data"></a>2.3.1 Modeling heterogeneous Data</h4><ul><li>fairness</li><li>accountability</li><li>interpretability</li></ul><h4 id="2-3-2-Convergence-Guarantees-for-Non-IID-Data"><a href="#2-3-2-Convergence-Guarantees-for-Non-IID-Data" class="headerlink" title="2.3.2 Convergence Guarantees for Non-IID Data"></a>2.3.2 Convergence Guarantees for Non-IID Data</h4><p>Indeed, when data is not identically distributed across devices in the network, methods such as <strong>FedAvg</strong> have been shown to diverge in practice</p><p>Parallel SGD and related variants</p><p>FedProx</p><h3 id="2-4-Ptivacy"><a href="#2-4-Ptivacy" class="headerlink" title="2.4 Ptivacy"></a>2.4 Ptivacy</h3><h4 id="2-4-1-privacy-in-Machine-learning"><a href="#2-4-1-privacy-in-Machine-learning" class="headerlink" title="2.4.1 privacy in Machine learning"></a>2.4.1 privacy in Machine learning</h4><p>differential privacy： strong information theoretic guarantees, algorithmic simplicity, and relatively small systems overhead</p><p>homomorphic encryption同态加密</p><h4 id="2-4-2-Privacy-in-Federated-Learning"><a href="#2-4-2-Privacy-in-Federated-Learning" class="headerlink" title="2.4.2 Privacy in Federated Learning"></a>2.4.2 Privacy in Federated Learning</h4><p>计算廉价，交流高效，允许丢失device–不能对accuracy做很大让步</p><ol><li><p>Secure Multi-party Computation (SMC) 安全的多方计算<br> 各方除了输入和输出外一无所知</p><ul><li><p>复杂的计算协议</p></li><li><p>如果提供安全保证，则部分知识公开可能被认为是可以接受的</p><p>要求参与者的数据在非冲突服务器之间秘密共享</p></li></ul></li><li><p>Differential Privacy 差异隐私<br> 向数据添加噪音，或使用归纳方法遮盖某些敏感属性，直到第三方无法区分个人</p><ul><li>数据也被传输到给了其他人</li><li>涉及准确性和隐私之间的权衡</li></ul></li><li><p>Homomorphic Encryption 同态加密<br> 在机器学习期间通过加密机制下的参数交换来保护用户数据隐私</p><ul><li>数据和模型本身不传输</li><li>准确性与私密性之间的权衡</li></ul></li></ol><h2 id="3-future-directions"><a href="#3-future-directions" class="headerlink" title="3. future directions"></a>3. future directions</h2><ol><li>Extreme communication schemes<ul><li>one- shot or divide-and-conquer communication schemes</li><li>one-shot/few-shot heuristics</li></ul></li><li>Communication reduction and the Pareto frontier<ul><li>local updatding 本地更新</li><li>model compression 模型压缩</li></ul></li><li>Novel models of asynchrony<ul><li>任何设备在任何迭代中都有可能失联</li><li>设备随时通过<strong>事件驱动</strong>和central server交换信息</li></ul></li><li>Heterogeneity diagnostics<ul><li>是否存在简单的诊断方法来预先快速确定联合网络的异构程度?</li><li>能否开发出类似的诊断方法来量化与系统相关的异质性的数量</li><li>可以利用现有的或新的异构定义进一步改进联邦优化方法的收敛性吗?</li></ul></li><li>Granular privacy constraints<ul><li>thus providing a weaker form of privacy in exchange for more accurate models</li></ul></li><li>Beyond supervised learning<ul><li>scalability, heterogeneity, and privacy.</li></ul></li><li>Productionizing federated learning<ul><li>实际落地的问题 concept drift</li><li>diurnal variations 设备不同时间表现不同</li><li>cold start problems 设备新加入</li></ul></li><li>Benchmarks<ul><li>reproducibility of empirical results and the dissemination of new solutions for federated learning.</li></ul></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Survey </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Federated Learning </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Neural Architecture Search: A Survey</title>
+      <link href="/2020/11/01/06-NAS-Survey/"/>
+      <url>/2020/11/01/06-NAS-Survey/</url>
+      
+        <content type="html"><![CDATA[<p>目前存在的应用<br>image classification<br>object detection<br>semantic segmentation</p><p>NAS can be seen as subfield of AutoML (Hutter et al., 2019) and has significant overlap with hyperparameter optimization (Feurer and Hutter, 2019) and meta-learning (Vanschoren, 2019).<br>AutoML的子领域<br>NAS与元学习和超参数优化有很多重合的地方</p><p>NAS的方法分为三类：</p><ol><li>search space</li><li>search strategy</li><li>performance estimation strategy</li></ol><p><img src="/2020/11/01/06-NAS-Survey/01-NAS-methods.png" alt="NAS methods"></p><ul><li>Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了search space，同时也可能漏掉超出人类认知的架构</li><li>Search Strategy.搜索策略详细描述了如何探索搜索空间(通常是指数级大的，甚至是无界的)。它包含了物理的探索-利用权衡，因为一方面，快速找到性能良好的架构是可取的，而另一方面，应该避免过早地收敛到次优架构的区域。</li><li>Performance Estimation Strategy.<br>简单的对所有数据进行标准训练和测试，但是这种方案计算太过昂贵，并且限制了可以研究的体系结构的数量</li></ul><h2 id="1-search-space"><a href="#1-search-space" class="headerlink" title="1. search space"></a>1. search space</h2><h3 id="chain-structured-neural-network-architecture"><a href="#chain-structured-neural-network-architecture" class="headerlink" title="chain-structured neural network architecture"></a>chain-structured neural network architecture</h3><p><img src="/2020/11/01/06-NAS-Survey/09-chain.png" alt="chain"><br>搜索空间的影响因素</p><ol><li>层的数目</li><li>每一层的种类 pooling, conv, skip-connection, etc</li><li>超参数</li></ol><h3 id="cell-based-model"><a href="#cell-based-model" class="headerlink" title="cell-based model"></a>cell-based model</h3><p><img src="/2020/11/01/06-NAS-Survey/10-cell.png" alt="cell"></p><ul><li>normal cell</li><li>reduction cell</li></ul><p>优点：</p><ol><li>The size of the search space is drastically reduced<br>搜索空间大大减小</li><li>Architectures built from cells can more easily be transferred or adapted to other data sets by simply varying the number of cells and filters used within a model<br>可移植性比较好</li><li>Creating architectures by repeating building blocks has proven a useful design prin- ciple in general, such as repeating an LSTM block in RNNs or stacking a residual block.<br>已经证明叠加网络是有效的设计准则，如LSTM，RNN，res-block</li></ol><h3 id="macro-architecture"><a href="#macro-architecture" class="headerlink" title="macro-architecture"></a>macro-architecture</h3><p>how many cells shall be used and how should they be connected to build the actual model</p><h2 id="2-search-strategy"><a href="#2-search-strategy" class="headerlink" title="2. search strategy"></a>2. search strategy</h2><ul><li>random search</li><li>Bayesian optimization</li><li>evolutionary methods</li><li>reinforcement learning (RL)</li><li>gradient-based methods.</li></ul><ol><li><p>no interaction with an environment occurs during this sequential process (no external state is observed, and there are no intermediate rewards)<br>将架构取样的过程当做single action的线性生成过程，将RL问题转换为无状态多武装强盗问题。</p></li><li><p>frame NAS as a sequential decision process</p></li><li><p>deal with variable-length network architectures</p></li></ol><p><strong>use a bi-directional LSTM to encode architectures into a fixed-length representation</strong></p><ol start="4"><li><p>使用gradient-based method去优化权重，使用进化算法仅仅去优化神经网络的架构</p></li><li><p>Neuro-evolutionary方法不同的地方在于how they sample parents, update populations, and generate offsprings</p><p> <a href="https://arxiv.org/abs/1804.09081" target="_blank" rel="noopener">Efficient multi-objective neural architecture search via lamarckian evolution.</a> 后代从父网络中继承权重</p><p> <a href="https://arxiv.org/pdf/1703.01041.pdf" target="_blank" rel="noopener">Large-scale evolution of image classifiers</a> 后代从父网络中继承没有被突变影响的权重</p></li><li><p>Monte Carlo Tree Search. hill climbing</p></li><li><p>optimize both the network weights and the network architecture by alternating gradient descent steps on training data for weights and on validation data for architectural parameters such as. 交替使用梯度下降法，在训练集上训练权重，在验证集上更改架构参数</p></li><li><p>在可能的操作集合上面优化带参的分布</p></li><li><p>优化层的超参数和连接模式</p></li></ol><h2 id="3-Performance-Estimation-Strategy"><a href="#3-Performance-Estimation-Strategy" class="headerlink" title="3. Performance Estimation Strategy"></a>3. Performance Estimation Strategy</h2><p><img src="/2020/11/01/06-NAS-Survey/11-overview_of_different_methods_for_speeding_up.png" alt="speed-up method"></p><h2 id="4-directions"><a href="#4-directions" class="headerlink" title="4. directions"></a>4. directions</h2><p>人类定义搜索空间的大小相比较寻找性能更好的网络架构更简单，但同时也限制了NAS不太可能找到本质上优于现在架构的网络架构</p><p>应用在image restoration<br>semantic segmentation<br>reinforcement learning<br>等等上面</p><p>GAN sensor, fusion</p><p>multi-task problems<br>multi-objective problems</p><p>extending one-shot NAS to generate different architectures depending on the task or instance on-the-fly.</p><p>search space的选择</p><p>更加细粒度cell的构建，能否大大加强NAS的能力</p><p>新的数据集：Nas-bench-101: Towards reproducible neural architecture search</p><p>Learning Augmentation Policies from Data</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Survey </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>ICLR2020部分NAS投稿论文解读</title>
+      <link href="/2020/11/01/05-ICLR2020_NAS_papers/"/>
+      <url>/2020/11/01/05-ICLR2020_NAS_papers/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters"><a href="#1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters" class="headerlink" title="1.stabilizing DARTS with Amended grarident estimation on architectural parameters"></a>1.stabilizing DARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。<br>$$<br>\mathbf{g}<em>{2}^{\prime}=-\left.\left.\eta \cdot \nabla</em>{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\boldsymbol{\omega}=\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>$$</p><p>提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为$g_1$，通过梯度的反向传播得到。第二部分称为$g_2$，更合理的近似为$g_2’$。</p><p>$$<br>\begin{aligned}<br>\nabla_{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}), \boldsymbol{\alpha}\right)|</em>{\boldsymbol{\alpha}=\boldsymbol{\alpha}<em>{t}} =&amp; \nabla</em>{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\boldsymbol{\omega}=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} -<br>\<br>&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega},<br>\boldsymbol{\alpha})|</em>{\omega=\boldsymbol{\omega}^{</em>}<br>\left(\boldsymbol{\alpha}<em>{t}\right),<br>\boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p><p>$$<br>\begin{aligned}<br>\left\langle\mathbf{g}<em>{2}^{\prime}, \mathbf{g}</em>{2}\right\rangle=&amp;\left.\left.\eta \cdot \nabla_{\omega} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\omega^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} ^{\top} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}, \boldsymbol{\alpha}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \ &amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\omega^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p><p>并证明$g_2’$与$g_2$的乘积恒大于0，也就是夹角小于90度。</p><h2 id="2-DARTS-Improved-Differentiable-Architecture-Search-with-Early-Stopping"><a href="#2-DARTS-Improved-Differentiable-Architecture-Search-with-Early-Stopping" class="headerlink" title="2. DARTS+: Improved Differentiable Architecture Search with Early Stopping"></a>2. DARTS+: Improved Differentiable Architecture Search with Early Stopping</h2><p>随着epoch数量的增多，DARTS倾向于skip-connection，造成模型的表现下降</p><p>提出一种提前停止训练的标准，让模型搜索提前停止。</p><ol><li>当模型中出现两个skip-connection的时候</li><li>当模型中的$\alpha$参数的排列顺序不再发生改变的时候($\alpha$的值是各个Primitives的概率)</li></ol><h2 id="3-PC-DARTS"><a href="#3-PC-DARTS" class="headerlink" title="3. PC-DARTS"></a>3. PC-DARTS</h2><p>uses partial- channel connections to reduce search time,</p><p><img src="/2020/11/01/05-ICLR2020_NAS_papers/12-PC-DARTS.png" alt="PC-DARTS"></p><ol><li><p>Partial Channel Connections</p><p>只将1/K 的channels使用primitives连接，其余的channels选择直接连接，也就是，从$node_i$到$node_j$的边中，选出一部分channel使用非identity的方式连接，其余的使用identity，经过非identity方式的channel乘以softmax以后的$\alpha$权重相加，再和原来的channel一起concat。<strong>这样做的处理，是希望占用的内存更小，使用更大的batch_size，提升训练和模型表现。</strong></p><p>削弱了weight-free操作的影响。</p></li><li><p>Edge Normalization</p><p>$node_i$前面所有的$node$都需要输出到它，设计权重$\beta$，乘以这些边，得到$node_i$的值。</p></li></ol><h2 id="4-P-DARTS"><a href="#4-P-DARTS" class="headerlink" title="4. P-DARTS"></a>4. P-DARTS</h2><p>将layer的数目慢慢增加。</p><p><img src="/2020/11/01/05-ICLR2020_NAS_papers/01-pdarts1.png" alt="P-DARTS"></p><ol><li>searching for 25 epochs instead of 50 epochs,</li><li>adopting <em>dropout</em> after <em>skip-connect</em>s</li><li>manually reducing the number of <em>skip-connect</em>s to two</li></ol><p>修剪<em>skip-connection</em>的数目操作只能发生在第一个</p><h2 id="5-Searching-for-A-Robust-Neural-Architecture-in-Four-GPU-Hours"><a href="#5-Searching-for-A-Robust-Neural-Architecture-in-Four-GPU-Hours" class="headerlink" title="5. Searching for A Robust Neural Architecture in Four GPU Hours"></a>5. Searching for A Robust Neural Architecture in Four GPU Hours</h2><p><img src="/2020/11/01/05-ICLR2020_NAS_papers/14-in_four_hours.png" alt="overview"></p><p>每次只计算最大权重的梯度，只BP最大权重的梯度，以此来减少计算量和GPU显存。</p><h2 id="6-ProxylessNAS"><a href="#6-ProxylessNAS" class="headerlink" title="6. ProxylessNAS"></a>6. ProxylessNAS</h2><p>ProxylessNAS 不同于以前的在代理数据集上面进行搜索以后转移到大数据集类似ImageNet上面进行训练测试，而是直接在大数据集上面进行搜索，它的搜素的算子数目被大大减少以减小搜索的空间，降低搜索的难度。</p><h2 id="7-SNAS"><a href="#7-SNAS" class="headerlink" title="7. SNAS"></a>7. SNAS</h2><p>SNAS故事讲的不一样，但是本质上来说，跟DARTS基本一样的原理，即使用operation的加权和来代替单独的operation。<br>它使用了gumble-softmax trick，<strong>使用概率采样出的权值而不是固定的权值来计算加权和</strong>，同时增加temperature，使得采样出的权值更加接近one-hot的权值，来拟合单独的operation。</p><p><img src="/2020/11/01/05-ICLR2020_NAS_papers/16-snas.png" alt="snas"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Papers </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>hierarchical representations for efficient architecture search</title>
+      <link href="/2020/11/01/04-HREAS/"/>
+      <url>/2020/11/01/04-HREAS/</url>
+      
+        <content type="html"><![CDATA[<p>分层设计，底层为一个个最基本的计算操作，顶层为整体架构。</p><p><img src="/2020/11/01/04-HREAS/01-hierarchical-architecture-representation.png" alt="hiarchical architecture representation"></p><h2 id="evolutionary-architecture-search"><a href="#evolutionary-architecture-search" class="headerlink" title="evolutionary architecture search"></a>evolutionary architecture search</h2><h3 id="mutation"><a href="#mutation" class="headerlink" title="mutation"></a>mutation</h3><p>找到non-primitive level l&gt;=2，选择这个level里面的一个motif，选择motif里面的两个节点，把两个节点中间的边置换为另一种边(三种情况，1.新增边；2.去除边；3.置换边)。</p><h3 id="initialization"><a href="#initialization" class="headerlink" title="initialization"></a>initialization</h3><p>原型初始化的处理</p><ol><li>先把所有的边置换为identity</li><li>执行很大数目(e.g. 1000)次的mutation</li></ol><h3 id="search-algorithm"><a href="#search-algorithm" class="headerlink" title="search algorithm"></a>search algorithm</h3><p>Tournament selection</p><p>从初始的随机原型集合中，tournament selection选出最promising 原型，把它的mutated后代放到集合中，重复这个过程，集合中的原型表现会随时间缓慢优化。选择原型集合中在validation set上面表现最好的genotype作为一段时间进化的最后输出。</p><p>randon search</p><p>不同于tournament selection，random search随机选择集合中的原型进行突变，这样突变的过程可以并行，减少了search time</p><h3 id="implementation"><a href="#implementation" class="headerlink" title="implementation"></a>implementation</h3><p>异步的 一个controller负责执行所有原型的进化，其余的worker负责对原型的表现做evaluation。Architectures are trained from scratch for a fixed number of steps with random weight initialization。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Paper </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>DARTS 可微分架构搜索</title>
+      <link href="/2020/11/01/02-DARTS/"/>
+      <url>/2020/11/01/02-DARTS/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-DARTS"><a href="#1-DARTS" class="headerlink" title="1. DARTS"></a>1. DARTS</h2><p> the computation procedure for an architecture (or a cell in it) is represented as a directed acyclic graph. 表示为有向图。</p><h3 id="1-1-search-space"><a href="#1-1-search-space" class="headerlink" title="1.1 search space"></a>1.1 search space</h3><p>寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。</p><p>cell是由N个有序序列node组成的有向无环图。每一条edge都是一个计算。我们假设这个cell有两个input和一个output，对于cnn，它就是前面两个层的输出，对于rnn，它是上个step的state以及这个step的Input。cell的输出是通过对所有中间节点应用reduction得到的。</p><p>所有中间节点的计算依赖前置节点。<br>$$<br>x^{(j)} = \sum_{i&lt;j}o^{(i,j)}(x^{(i)})<br>$$<br>注意zero operation也是可以被允许的edge类型。</p><h3 id="1-2-continuous-relaxation-and-optimization"><a href="#1-2-continuous-relaxation-and-optimization" class="headerlink" title="1.2 continuous relaxation and optimization"></a>1.2 continuous relaxation and optimization</h3><p>找到每一个操作对应的权重矩阵$\alpha^{(i,j)}$，这样所有的权重矩阵集合为$\alpha$，我们将NAS的任务减小为学习一个连续变量的集合$\alpha$。</p><p>DARTS使用的是<strong>GD</strong>来优化validation loss。相似的有RL(<a href>Learning transferable architectures for scalable image recognition</a>)，EA(<a href>Hierarchical representations for efficient architecture search</a>)</p><p>NAS的目标是找到$\alpha^<em>$使得validation loss$L_{val}(w^</em>, \alpha^<em>)$最小，$w^</em>$是使得training loss$L_{train}(w, \alpha^<em>)$最小的w。<br>$$<br>min_{\alpha} L_{val}(w^</em>(\alpha), \alpha) \<br>s.t. w^*(\alpha) = argmin_w L_{train}(w, \alpha)<br>$$<br><img src="/2020/11/01/02-DARTS/01-algorithm.png" alt="algorithm"></p><h3 id="1-3-approximate-architecture-gradient"><a href="#1-3-approximate-architecture-gradient" class="headerlink" title="1.3 approximate architecture gradient"></a>1.3 approximate architecture gradient</h3><p>$$<br>\begin{aligned} &amp; \nabla_{\alpha} \mathcal{L}<em>{v a l}\left(w^{*}(\alpha), \alpha\right) \ \approx &amp; \nabla</em>{\alpha} \mathcal{L}<em>{v a l}\left(w-\xi \nabla</em>{w} \mathcal{L}_{t r a i n}(w, \alpha), \alpha\right) \end{aligned}<br>$$</p><p>运用chain rule。将上式进一步处理。<br>$$<br>\triangledown_\alpha L_{val}(w’, \alpha - \xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha) \triangledown_{w’}L_{val}(w’, \alpha))<br>$$<br>其中的$w’ = w - \xi\triangledown_w L_{train}(w, \alpha)$指的就是one-step forward model。</p><p>使用the finite difference approximation(有限差分近似)可以减少复杂度。<br>$$<br>\epsilon 是极小量 \<br>w^{\pm} = w \pm \epsilon \triangledown_{w’}L_{val}(w’, \alpha) \<br>\xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha) \triangledown_{w’}L_{val}(w’, \alpha)) \approx \frac{\triangledown_\alpha L_{train}(w^{+}, \alpha) - \triangledown_\alpha L_{train}(w^{-}, \alpha)}{2\xi}<br>$$<br>将$\xi = 0$作为一阶近似，将$\xi &gt; 0$作为两阶近似。</p><h3 id="1-4-deriving-discrete-architecture"><a href="#1-4-deriving-discrete-architecture" class="headerlink" title="1.4 deriving discrete architecture"></a>1.4 deriving discrete architecture</h3><p>在所有非0的候选operations保留top-k strongest operations，为了使得出的网络可以和现有网络比较，我们选择k=2 for cnn, k=1 for rnn。</p><p>为什么不使用zero operation呢？</p><ol><li>为了与现有模型进行公平的比较，我们需要每个节点恰好有k条非零的引入边</li><li>因为增加零操作的logits只会影响结果节点表示的规模，由于BN处理的存在而不会而影响最终的分类结果</li></ol><h2 id="2-Experiments-and-results"><a href="#2-Experiments-and-results" class="headerlink" title="2. Experiments and results"></a>2. Experiments and results</h2><h3 id="2-1-architecture-search"><a href="#2-1-architecture-search" class="headerlink" title="2.1 architecture search"></a>2.1 architecture search</h3><h4 id="2-1-1-search-for-convolutional-cells-on-cifar-10"><a href="#2-1-1-search-for-convolutional-cells-on-cifar-10" class="headerlink" title="2.1.1 search for convolutional cells on cifar-10"></a>2.1.1 search for convolutional cells on cifar-10</h4><p>包含8种operation。 3 × 3 and 5 × 5 separable convolutions, 3 × 3 and 5 × 5 dilated separable convolutions, 3 × 3 max pooling, 3 × 3 average pooling, identity, and zero。</p><p>We use the ReLU-Conv-BN order for convolutional operations, and each separable convolution is always applied twice</p><p>在整个网络的1/3和2/3处，设立reduce cell。缩小空间分辨率。</p><h4 id="2-1-2-searching-for-recurrent-cells-for-penn-treebank"><a href="#2-1-2-searching-for-recurrent-cells-for-penn-treebank" class="headerlink" title="2.1.2 searching for recurrent cells for penn treebank"></a>2.1.2 searching for recurrent cells for penn treebank</h4><p>operation的种类：linear transformations followed by one of tanh, relu, sigmoid activations, as well as the identity mapping and the <em>zero</em> operation.</p><p>总共12个node，最初的intermediate node是由两个input node通过线性变换，求和，然后传过一个tanh激活函数得到的。</p><h3 id="2-2-architecture-evaluation"><a href="#2-2-architecture-evaluation" class="headerlink" title="2.2 architecture evaluation"></a>2.2 architecture evaluation</h3><p><strong>寻找多次，避免初始化的影响</strong> 。从cifar-10上迁移到imagenet上，从PTB上迁移到wikitext-2上。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Paper </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>AutoML自动机器学习</title>
       <link href="/2020/11/01/01-AutoML/"/>
       <url>/2020/11/01/01-AutoML/</url>
@@ -70,7 +195,7 @@
       
         <tags>
             
-            <tag> nas, meta-learning </tag>
+            <tag> NAS, meta-learning </tag>
             
         </tags>
       
