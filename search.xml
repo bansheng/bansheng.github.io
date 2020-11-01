@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>AutoML自动机器学习</title>
+      <link href="/2020/11/01/01-AutoML/"/>
+      <url>/2020/11/01/01-AutoML/</url>
+      
+        <content type="html"><![CDATA[<p>wiki definition:<br>AutoML is the process of automating the end-to-end process of applying appropriate data-preprocessing, feature engineering, model selection, and model evaluation to solve the certain task</p><ul><li>Google AutoML</li><li><a href="https://arxiv.org/abs/1611.01578" target="_blank" rel="noopener">Neural Architecture Search with Reinforcement Learning</a></li></ul><p>We will introduce NAS from two perspectives.</p><ul><li>The first is the structures of the model.<ul><li>entire structure</li><li>cell-based structure</li><li>hierarchical structure</li><li>morphism-based structure</li></ul></li><li>The second is hyperparameter optimization (HPO) for designing the model structure.<ul><li>Reinforcement Learning</li><li>Evolutionary Algorithms</li><li>Gradient-based</li><li>Bayesian Optimization</li></ul></li></ul><p>AutoML</p><ul><li>data preparation</li><li>feature engineering</li><li>model generation</li><li>model evaluation</li></ul><h2 id="1-Data-preparation"><a href="#1-Data-preparation" class="headerlink" title="1. Data preparation"></a>1. Data preparation</h2><h3 id="1-1-data-collection"><a href="#1-1-data-collection" class="headerlink" title="1.1 data collection"></a>1.1 data collection</h3><ol><li>data synthesis<ul><li>augment the exsiting dataset<br>CV: cropping, flipping, padding, rotation and resize, etc.<br>Library: torchvision augmentor</li><li>data warping<br>generates additional samples by applying transformation on data-space</li><li>synthetic over-sampling<br>creates additional samples in feature-space.</li><li>For text data, synonym insertion is a common way of augmenting同义词插入</li><li>first translate the text into some foreign language, and then translate it back to the original language</li><li>non-domain-specific data augmentation strategy that uses noising in RNNs</li><li>back-translation</li><li>data simulator</li></ul> <strong>OpenAI Gym</strong> is a popular toolkit that provides various simulation environment<ul><li>GAN</li></ul></li><li>data searching(search for web data)<ul><li>On the one hand, sometimes the <strong>search results do not exactly match the keywords</strong>.(filter unrelated data)</li><li>The other problem is that web data may <strong>have wrong labels or even no labels.</strong>(learning-based <strong>self-labeling</strong> method, 分为self-training, co-training, co-learning)</li><li>the distribution of web data can be extremely different from the target dataset, which would increase the difficulty of training the model.(fine-tune these web data)</li><li>dataset inbalance(SMOTE, combines boosting method with data generation)</li></ul></li></ol><h3 id="1-2-data-cleaning"><a href="#1-2-data-cleaning" class="headerlink" title="1.2 data cleaning"></a>1.2 data cleaning</h3><p>redundant, incomplete, or incorrect data</p><p>standardization, scaling, binarization of quantitative characteristic, one-hot encoding qualitative characteristic, and filling missing values with mean value, etc.</p><h2 id="2-feature-engneering"><a href="#2-feature-engneering" class="headerlink" title="2. feature engneering"></a>2. feature engneering</h2><ul><li>feature selection 减少冗余特征</li><li>extraction 减少特征的维度</li><li>construction 展开原始特征空间</li></ul><h3 id="2-1-feature-selection"><a href="#2-1-feature-selection" class="headerlink" title="2.1 feature selection"></a>2.1 feature selection</h3><p><img src="/2020/11/01/01-AutoML/03-feature-selection.png" alt="feature selection"></p><p>search strategy</p><ul><li>complete<ul><li>exhaustive</li><li>non-exhaustive</li></ul></li><li>heuristic<ul><li>Sequential Forward Selection(SFS)</li><li>Sequential Backward Selection(SBS)</li><li>Bidirectional Search(BS)</li></ul></li><li>random search algorithm<ul><li>Simulated Annealing(SA)</li><li>Genetic Algorithms(GA)</li></ul></li></ul><p>subset evaluation</p><ul><li>filter method<br>  scores each feature according to divergence or correlation, and then select features by a threshold</li><li>Wrapper method<br>  classifies the sample set with the selected feature subset, the classification accuracy is used as the criterion to measure the quality of the feature subset</li><li>embedded method<br>  performs variable selection as part of the learning procedure.<br>  Regularization, decision tree, <strong>DL</strong></li></ul><h3 id="2-2-feature-construction"><a href="#2-2-feature-construction" class="headerlink" title="2.2 feature construction"></a>2.2 feature construction</h3><h4 id="definition"><a href="#definition" class="headerlink" title="definition"></a>definition</h4><p><strong>constructs new features</strong> from the basic feature space or raw data to help enhance the robustness and generalization of the model, and its essence is to increase the representative ability of original features.</p><h4 id="常用方法-preprocessing-transformation"><a href="#常用方法-preprocessing-transformation" class="headerlink" title="常用方法 preprocessing transformation"></a>常用方法 preprocessing transformation</h4><p>包括</p><ul><li>standardization</li><li>normalization</li><li>feature discretization</li></ul><h4 id="自动化检索"><a href="#自动化检索" class="headerlink" title="自动化检索"></a>自动化检索</h4><p>人力很难检索所有可能<br>some automatic feature construction methods have been proposed</p><p>These algorithms mainly aim to automate <strong>the process of searching and evaluating the operation combination</strong>实现操作组合搜索和评价的自动化</p><p>searching 算法</p><ul><li>decision tree-based methods</li><li>genetic algorithm<br>  需要pre-defined operation space</li><li>annotation-based approaches<br>  不需要，将domain知识以注释的形式与训练示例一起使用<br>  引入了交互式特征空间构建协议，学习者识别出特征空间的不足区域，并与领域专家协作，通过现有的语义资源增加描述性</li></ul><h3 id="2-3-feature-extraction"><a href="#2-3-feature-extraction" class="headerlink" title="2.3 feature extraction"></a>2.3 feature extraction</h3><p>a dimensionality reduction process through some mapping functions</p><p>mapping function</p><ul><li>Principal Component Analysis(PCA)</li><li>Independent COmponent Analysis(ICA)</li><li>isomap</li><li>nonlinear dimensionality reduction</li><li>Linear discriminant analysis(LDA)</li><li><strong>feed-forward neural networks approach</strong></li></ul><h2 id="3-model-generation"><a href="#3-model-generation" class="headerlink" title="3. model generation"></a>3. model generation</h2><p>two types of approaches for model selection:</p><ul><li>traditional model selection<ul><li>SVM</li><li>KNN</li><li>decision tree</li><li>K-means</li></ul></li><li>NAS</li></ul><p>主要介绍NAS</p><h3 id="3-1-model-structures"><a href="#3-1-model-structures" class="headerlink" title="3.1 model structures"></a>3.1 model structures</h3><p>The model is generated by selecting and combining a set of primitive operations, which are pre-defined in the search space. The operations can be broadly divided into convolution, pooling, concatenation, elemental addition, skip connection, etc.</p><ol><li><p>entire structure<br> 缺点：太深，搜索空间太大，消耗时间和计算资源，找到的model的transferability差，意味着小的数据集上找到的模型在完整数据集上表现很差</p></li><li><p>Cell-based structure<br> 先生成cell，再连起来<br> <img src="/2020/11/01/01-AutoML/04-cell-model.png" alt="cell model"><br> 优点：搜索空间大大减小，并且更容易从小dataset上转换到大的dataset上(简单叠加cells))<br> 分成两级：</p><ul><li>inner:cell level, selects the operation and connection for each node</li><li>outter level:network level, controls the spatial resolution changes</li></ul></li><li><p>Hierarchical structure<br> for a hierarchical structure, there are many levels, each with a fixed number of cells. The higher-level cell is generated by incorporating lower-level cell iteratively.<br> <img src="/2020/11/01/01-AutoML/05-hierarchical-structure.png" alt="hierarchical structure"><br> 可以发现更多复杂、灵活的网络结构类型。</p></li><li><p>Network Morphism based structure<br> transferring the information stored in an existing neural network into a new neural network<br> 从现有网络到新网络<br> 保证性能不低于原有网络</p></li></ol><h3 id="3-2-hyperparameter-optimization-HPO"><a href="#3-2-hyperparameter-optimization-HPO" class="headerlink" title="3.2 hyperparameter optimization(HPO)"></a>3.2 hyperparameter optimization(HPO)</h3><ol><li><p>Grid &amp; Random Search<br> 最广泛使用的<br> <img src="/2020/11/01/01-AutoML/06-grid-and-random-search.png" alt="grid&amp;random search"></p></li><li><p>Reinforcement Learning<br> 分为两部分</p><ul><li>controller:RNN, used to generate different child networks at different epoch</li><li>reward network:trains and evaluates the generated child networks and uses the reward (e.g. accuracy) to update RNN controller.</li><li>缺点：训练时间长，资源需求大</li><li>ENAS:子架构被看做是预定义搜索空间的子图，共享参数，从而避免从零开始到收敛地训练每个子模型</li></ul></li><li><p>Evolutionary Algorithm<br> 通用的基于种群的元启发式优化算法，<br> 有两种类型的编码方案:直接编码和间接编码。direct, indirect<br> 直接编码是一种广泛使用的方法，它显式地指定了表现型：Genetic CNN</p><ul><li><p>selection 选择</p><ul><li>fitness selection</li><li>rank selection</li><li>Tournament selection</li></ul></li><li><p>crossover 杂交</p></li><li><p>mutation 突变</p></li><li><p>update 更新</p><p><img src="/2020/11/01/01-AutoML/07-overview-of-EA.png" alt="overview of EA"></p></li></ul></li><li><p>Bayesian Optimization</p><ul><li>BO</li><li>Sequential model-based optimization(SMBO)</li><li>Bayesian Optimization-based Hyperband (BOHB)</li></ul></li><li><p>Gradient Descent</p></li></ol><h2 id="4-model-estimation"><a href="#4-model-estimation" class="headerlink" title="4. model estimation"></a>4. model estimation</h2><h3 id="4-1-low-fidelity"><a href="#4-1-low-fidelity" class="headerlink" title="4.1 low fidelity"></a>4.1 low fidelity</h3><p>On the one hand, we can reduce the number of images or the resolution of images (for image classification tasks)<br>在子集上面训练,在低精度训练集上面训练<br>On the other hand, low fidelity model evaluation can be realized by reducing the model size, such as training with less number of filters per layer<br>减少网络的大小，比如每层的filter的数目</p><h3 id="4-2-Transfer-learning"><a href="#4-2-Transfer-learning" class="headerlink" title="4.2 Transfer learning"></a>4.2 Transfer learning</h3><ul><li>Transfer Neural AutoML<br>uses knowledge from prior tasks to speed up network design</li><li>ENAS<br>shares parameters among child networks</li><li>The network morphism based algorithms<br>inherit the weights of previous architectures</li></ul><h3 id="4-3-Surrogate代理"><a href="#4-3-Surrogate代理" class="headerlink" title="4.3 Surrogate代理"></a>4.3 Surrogate代理</h3><p>一般来说，一旦获得了一个良好的近似，就很容易找到最佳配置，而不是直接优化原来昂贵的目标。<br>PNAS</p><p>this method is not applicable when the optimization space is too large and hard to quantize, and the evaluation of each configuration is extremely expensive</p><h3 id="4-4-Early-stopping"><a href="#4-4-Early-stopping" class="headerlink" title="4.4 Early stopping"></a>4.4 Early stopping</h3><p>is now being used to speed up model evaluation by <strong>stopping the evaluations which predicted to perform poorly on the validation set</strong></p><h2 id="5-NAS-PERFORMANCE-SUMMARY"><a href="#5-NAS-PERFORMANCE-SUMMARY" class="headerlink" title="5. NAS PERFORMANCE SUMMARY"></a>5. NAS PERFORMANCE SUMMARY</h2><p><img src="/2020/11/01/01-AutoML/08-manual-vs-generated-model.png" alt="manual VS generated models"></p><h2 id="6-future-work"><a href="#6-future-work" class="headerlink" title="6. future work"></a>6. future work</h2><ol><li>Complete AutoML Pipeline<br>数据部分</li><li>Interpretability</li><li>Reproducibility</li><li>Flexible Encoding Scheme</li><li>More Area<br>cnn: image classification<br>rnn: language modeling<br>more</li><li>Lifelong Learn</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Survey </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> AutoML </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>string_pattern</title>
       <link href="/2020/07/15/09-string-pattern/"/>
       <url>/2020/07/15/09-string-pattern/</url>
@@ -33,7 +58,7 @@
       <link href="/2020/06/18/08-meta-learning-nas/"/>
       <url>/2020/06/18/08-meta-learning-nas/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning"><a href="#1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning" class="headerlink" title="1. Towards fast adaptation of neural architectures with meta learning"></a>1. Towards fast adaptation of neural architectures with meta learning</h2><p><a href="https://openreview.net/forum?id=r1eowANFvr" target="_blank" rel="noopener">ICLR2020</a></p><p>文章的的主要思想是，在meta-learning的setting上面，通过不同的task，学习一个可以泛化的architecture，然后在query集上面进行fune-tuning，微调这个结构，使得该结构对不同test task有良好的适用性。<br><img src="/2020/06/18/08-meta-learning-nas/01-towards1.png" alt="towards"></p><p>在mini-imagenet上面5-way的结果<br><img src="/2020/06/18/08-meta-learning-nas/02-towards2.png" alt="towards_result"></p><h2 id="2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search"><a href="#2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search" class="headerlink" title="2. Auto-Meta: Automated Gradient Based Meta Learner Search"></a>2. Auto-Meta: Automated Gradient Based Meta Learner Search</h2><p><a href="https://arxiv.org/abs/1806.06927" target="_blank" rel="noopener">https://arxiv.org/abs/1806.06927</a></p><p>也是构造cell去stack起来，获取整个的network，但是一开始的cell并不是整个的supernet，而是在搜索的过程中，逐步往这个cell里面去添加opetator，<strong>然后使用一个predictor去预测这个cell的性能</strong>，选择top k性能的cell组成网络进行测试。<br><img src="/2020/06/18/08-meta-learning-nas/03-auto_meta.png" alt="auto meta"></p><h2 id="3-Meta-Architecture-Search"><a href="#3-Meta-Architecture-Search" class="headerlink" title="3. Meta Architecture Search"></a>3. Meta Architecture Search</h2><p><a href="https://openreview.net/forum?id=B1M0gBSlLB" target="_blank" rel="noopener">NIPS19</a></p><p>本文从Bayesian的角度，推理了一遍NAS的原理，提出用Coupled Variational Bayes (CVB)去生成参数的表达，同时进行了推理（hard math）。本质上来说，这篇工作基本上还是darts，不过它首先将meta learning的在imagenet上面获取的先验知识拿出来放到其他任务上去train。<br>首先使用gumble_softmaxed darts(参见SNAS)，取得meta network的arch和init，然后针对不同任务进行fine tuning。<br><img src="/2020/06/18/08-meta-learning-nas/04-meta_architecture_search.png" alt="meta as"></p><h2 id="MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification"><a href="#MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification" class="headerlink" title="MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification"></a>MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification</h2><p><a href="https://arxiv.org/abs/1912.00412" target="_blank" rel="noopener">https://arxiv.org/abs/1912.00412</a></p><p>在darts的基础上，提出了一个MetAdapt Controllers，就是说，对于不同的task，产生不同的叠加权重<br><img src="/2020/06/18/08-meta-learning-nas/05-MetAdapt.png" alt="MetAdapt"></p><h2 id="Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning"><a href="#Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning" class="headerlink" title="Meta-Learning of Neural Architectures for Few-Shot Learning"></a>Meta-Learning of Neural Architectures for Few-Shot Learning</h2><p><a href="https://arxiv.org/abs/1911.11090" target="_blank" rel="noopener">https://arxiv.org/abs/1911.11090</a><br>提出了gradient-based NAS + meta learning 结合的框架<br><img src="/2020/06/18/08-meta-learning-nas/06-meta_learning_of_NAS4FS.png" alt="06-meta_learning_of_NAS4FS"></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning"><a href="#1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning" class="headerlink" title="1. Towards fast adaptation of neural architectures with meta learning"></a>1. Towards fast adaptation of neural architectures with meta learning</h2><p><a href="https://openreview.net/forum?id=r1eowANFvr" target="_blank" rel="noopener">ICLR2020</a></p><p>文章的的主要思想是，在meta-learning的setting上面，通过不同的task，学习一个可以泛化的architecture，然后在query集上面进行fune-tuning，微调这个结构，使得该结构对不同test task有良好的适用性。<br><img src="/2020/06/18/08-meta-learning-nas/01-towards1.png" alt="towards"></p><p>在mini-imagenet上面5-way的结果<br><img src="/2020/06/18/08-meta-learning-nas/02-towards2.png" alt="towards_result"></p><h2 id="2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search"><a href="#2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search" class="headerlink" title="2. Auto-Meta: Automated Gradient Based Meta Learner Search"></a>2. Auto-Meta: Automated Gradient Based Meta Learner Search</h2><p><a href="https://arxiv.org/abs/1806.06927" target="_blank" rel="noopener">https://arxiv.org/abs/1806.06927</a></p><p>也是构造cell去stack起来，获取整个的network，但是一开始的cell并不是整个的supernet，而是在搜索的过程中，逐步往这个cell里面去添加opetator，<strong>然后使用一个predictor去预测这个cell的性能</strong>，选择top k性能的cell组成网络进行测试。<br><img src="/2020/06/18/08-meta-learning-nas/03-auto_meta.png" alt="auto meta"></p><h2 id="3-Meta-Architecture-Search"><a href="#3-Meta-Architecture-Search" class="headerlink" title="3. Meta Architecture Search"></a>3. Meta Architecture Search</h2><p><a href="https://openreview.net/forum?id=B1M0gBSlLB" target="_blank" rel="noopener">NIPS19</a></p><p>本文从Bayesian的角度，推理了一遍NAS的原理，提出用Coupled Variational Bayes (CVB)去生成参数的表达，同时进行了推理（hard math）。本质上来说，这篇工作基本上还是darts，不过它首先将meta learning的在imagenet上面获取的先验知识拿出来放到其他任务上去train。<br>首先使用gumble_softmaxed darts(参见SNAS)，取得meta network的arch和init，然后针对不同任务进行fine tuning。<br><img src="/2020/06/18/08-meta-learning-nas/04-meta_architecture_search.png" alt="meta as"></p><h2 id="MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification"><a href="#MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification" class="headerlink" title="MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification"></a>MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification</h2><p><a href="https://arxiv.org/abs/1912.00412" target="_blank" rel="noopener">https://arxiv.org/abs/1912.00412</a></p><p>在darts的基础上，提出了一个MetAdapt Controllers，就是说，对于不同的task，产生不同的叠加权重<br><img src="/2020/06/18/08-meta-learning-nas/05-MetAdapt.png" alt="MetAdapt"></p><h2 id="Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning"><a href="#Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning" class="headerlink" title="Meta-Learning of Neural Architectures for Few-Shot Learning"></a>Meta-Learning of Neural Architectures for Few-Shot Learning</h2><p><a href="https://arxiv.org/abs/1911.11090" target="_blank" rel="noopener">https://arxiv.org/abs/1911.11090</a><br>提出了gradient-based NAS + meta learning 结合的框架，直接想把所有方法都框到自己下面。<br><img src="/2020/06/18/08-meta-learning-nas/06-meta_learning_of_NAS4FS.png" alt="06-meta_learning_of_NAS4FS"></p>]]></content>
       
       
       <categories>
@@ -79,56 +104,6 @@
     
     
     <entry>
-      <title>paddle 同步训练源码阅读笔记</title>
-      <link href="/2020/06/10/06-paddle-sync/"/>
-      <url>/2020/06/10/06-paddle-sync/</url>
-      
-        <content type="html"><![CDATA[<h2 id="paddlepadlle-同步CPU分布式"><a href="#paddlepadlle-同步CPU分布式" class="headerlink" title="paddlepadlle 同步CPU分布式"></a>paddlepadlle 同步CPU分布式</h2><p><a href="https://github.com/PaddlePaddle/Fleet/blob/develop/examples/distribute_ctr/sync_train.py" target="_blank" rel="noopener">sync_train.py</a></p><ol><li><p>class PaddleCloudRoleMaker()</p><p> role maker for paddle cloud<br> 读取系统里面的一系列环境变量，判断当前机器是PSERVER or TRAINER<br> 获取其他机器的 ip:port 等等<br> 获取index</p></li><li><p>fleet.init(role)<br> fleet 本身是个 DistributedTranspiler类<br> 这个类的主要的作用是</p><ol><li><p>初始化一个role_maker对象，生成本机里面的role</p></li><li><p>进行optimizer的config 和 program的config</p></li><li><p>如果本机是server，还能初始化server，控制server的运行</p></li><li><p>如果本机是worker，创建worker进程进行训练</p><p>init()主要是将初始化fleet里面的role_maker成员，并且调用role_maker类的generate_role函数，进行本机的role的初始化</p></li></ol></li><li><p>class DistributeTranspilerConfig()<br> 主要为分布式的transpiler jobs提供config的支持<br> 比如</p><ol><li><p>同步异步</p></li><li><p>是否使用geo_sgd算法</p></li><li><p>Minimum number of split elements in block</p></li><li><p>是否实时切割信息等等（注意实时切割信息和sync为True冲突</p><p>等等</p></li></ol></li><li><p>def fleet.distributed_optimizer(optimizer, strategy)<br> 创建fleet的_optimizer成员<br> 该成员是一个TranspilerOptimizer()类<br> 继承自 DistributedOptimizer<br> 实现了DistributedOptimizer()里面的三个虚函数</p><ol><li>backward() loss回传,计算梯度</li><li>apply_gradients 更新梯度</li><li>minimize() 由上面两个函数组成</li></ol></li><li><p>optimizer.minimize(avg_cost)<br> 输入：</p><ol><li><p>loss 产生的loss</p></li><li><p>scopes 无作用</p></li><li><p>startup_program 初始化parameter_list参数的program</p></li><li><p>parameter_list 需要update的参数列表</p></li><li><p>no_grad_set 不需要更新的参数列表</p><p>输出:</p><p>optimize_ops, 附加的ops的列表<br>params_grads (param, grad) 参数及产生的梯度</p></li></ol></li><li><p>fleet._transpile(config)<br> 主要的作用，设置config<br> 设置main_program 主要的运行program<br> 设置startup_program init_server init_worker运行的program</p><p> 输入:</p><ol><li><p>config DistributedStrategy类的对象，包含训练信息</p><p>输出：</p></li><li><p>无</p></li></ol></li><li><p>self._transpiler.transpile(trainer_id=fleet.worker_index(), pservers=fleet.server_endpoints(to_string=True), trainers=fleet.worker_num(), sync_mode=program_config.sync_mode)</p><p> 输入：</p><ol><li><p>trainer_id：当前worker的id，如果有n个worker，取值范围在0-n-1。</p></li><li><p>program：需要编译的program，默认fluid.default_main_program()</p></li><li><p>startup_program：需要编译的startup_program，默认为fluid.default_startup_program().</p></li><li><p>pservers：pserver列表</p></li><li><p>trainers: trainers进程的数目</p></li><li><p>sync_mode：是否是同步</p></li><li><p>current_endpoint: pserver mode不使用这个</p><p>输出：</p></li><li><p>无</p><p>功能：根据config的信息和参数，将输入的program转化为分布式的program</p></li></ol></li><li><p>is_server() is_worker()<br> 返回role_maker类创建的本机的信息</p></li><li><p>init_server() run_server()<br> 开始跑startup_program、main_program</p></li><li><p>init_worker()<br>首先，等待所有的参数服务器p_server启动<br>第二，运行executor初始化start_up program<br>第三，等待所有的worker全部初始化</p><p>检查所有的服务器是否正常<br>创建一个Communicator()类</p><p>Communicator用于分布式训练的信息传递<br>是CPP类Communicator()的封装</p></li><li><p>exe.run(fleet.startup_program)<br>初始化含有分布式流程的fleet.startup_program</p></li><li><p>exec_strategy build_strategy<br>exec_strategy CPP类 core.ParallelExecutor.ExecutionStrategy<br>包含一些计算图计算时的参数<br>build_strategy CPP类 core.ParallelExecutor.BuildStrategy<br>包含一些计算图构造时的参数</p></li><li><p>fluid.compiler.CompiledProgram(fleet.main_program).with_data_parallel(loss_name=avg_cost.name,build_strategy=build_strategyexec_strategy=exec_strategy)</p><p>class CompiledProgram()<br>根据build_strategy的配置，CompiledProgram用于转换program或计算图以进行各种优化。<br>例如，运算符在计算图中的融合，在计算图中执行过程中的内存优化等。</p><p>with_data_parallel()<br>该接口用于将输入的程序或图转换为 multi-graph，以在数据并行模式下运行模型。 用户可以使用build_strategy和exec_strategy来设置一些可在Graph的构建和计算过程中应用的优化，例如减少AllReduce操作的数量，指定运行模型的计算Graph中使用的线程池的大小，以此类推。</p><p>输入:</p><ol><li>loss_name 回传的loss</li><li>build_strategy 策略类</li><li>exec_strategy 策略类</li><li>share_vars_from CompiledProgram()类，和设定的CompiledProgram进行参数共享</li><li>places 指定模型运行在哪些设备上面cpu gpu</li></ol><p>输出：</p><p>CompiledProgram() 自身的对象</p></li><li><p>fleet.is_first_worker()<br>判断是不是第一个worker节点，这个由role_maker里面的信息得到</p></li><li><p>fleet.stop_worker()<br>self._communicator.stop() 关闭communicator<br>self._role_maker._finalize() 析构role_maker<br>self._executor.close() 关闭executor</p></li></ol>]]></content>
-      
-      
-      <categories>
-          
-          <category> Notes </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> distributed system </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Net2Net</title>
-      <link href="/2020/02/21/05-Net2Net/"/>
-      <url>/2020/02/21/05-Net2Net/</url>
-      
-        <content type="html"><![CDATA[<h2 id="Net2Net-Accelerating-Learning-via-Knowledge-Transfer"><a href="#Net2Net-Accelerating-Learning-via-Knowledge-Transfer" class="headerlink" title="Net2Net: Accelerating Learning via Knowledge Transfer"></a>Net2Net: Accelerating Learning via Knowledge Transfer</h2><h3 id="1-什么是Net2Net"><a href="#1-什么是Net2Net" class="headerlink" title="1. 什么是Net2Net"></a>1. 什么是Net2Net</h3><p>Net2Net，指利用知识迁移，去解决大型网络训练难度大、训练慢的问题。</p><p>先训练一个小网络，再利用Net2Net，训练一个更宽更深的网络，但是这个大网络并非train from scratch，我们将小网络中的权重进行变换以后，作为大网络的初始化权重，从而加速大网络的训练过程。这个网络权值再利用的过程，就是知识迁移。</p><p><img src="/2020/02/21/05-Net2Net/01-overview.png" alt="overview"></p><!-- 真实场景下的机器学习系统，最终都会变成终身学习系统(Lifelong learning System)，不断的有新数据，通过新的数据改善模型，刚开始数据量小，我们使用小的网络，可以防止过拟合并加快训练速度，但是随着数据量的增大，小网络就不足以完成复杂的问题了，这个时候我们就需要在小网络上进行扩展变成一个大网络了。 --><p>现实世界中我们遇到的大部分机器学习系统，应该都是属于终身学习系统(Lifelong learning System)，再系统使用的过程中，也不断有新的数据加入，改善模型。刚开始的时候，数据量比较小，所以我们使用简单的网络，加快训练速度的同时，还能防止过拟合。但是数据量一步步增大的时候，简单模型可能不能够胜任需要，这个时候我们就需要拓展模型，将小网络加宽加深。</p><p>问题：如何在小网络的基础上面进行拓展，改变网络的拓扑结构以后，小网络的权重如何利用在大网络上面？</p><blockquote><p>改变拓扑结构但是不改变网络的效果，对于同样的输入有同样的输出。这就是Net2Net的思想。</p></blockquote><h3 id="2-如何进行Net2Net"><a href="#2-如何进行Net2Net" class="headerlink" title="2. 如何进行Net2Net"></a>2. 如何进行Net2Net</h3><p>定义两个操作Net2WiderNet，Net2DeeperNet</p><h4 id="2-1-Net2WiderNet"><a href="#2-1-Net2WiderNet" class="headerlink" title="2.1 Net2WiderNet"></a>2.1 Net2WiderNet</h4><p>Net2WiderNet 操作使得某一层更宽，例如让全连接层有更多的单元，让卷积层有更多的channel。<br>我们希望能够使得这层更宽并且变化后的结构对于同样的输入会得到相同的输出。<br><img src="/2020/02/21/05-Net2Net/02-Net2widerNet.png" alt="Net2WiderNet"></p><p>如上图，对于一个全连接层来说，如果我们新增了一个节点，那么我们随机从已有节点中选择一个节点copy它的输入权重，使得这个节点的值和已有选择的节点的值相同，对于输出的节点来说，需要把前一层的节点的值求和激活，这时我们发现我们选择的那个节点的值扩大了两倍，于是我们可以把他们各自都除以2，这样我们就实现了全连接层的恒等替换。</p><p>对于一个卷积层来说，道理也类似，如果我想增加一个channel，我可以随机选一个channel然后copy它的权重(filter)，对于输出时要再进行卷积的filter而言，我们把filter中这两层的channel的权重除以2就可以，这样也在channel增加的情况实现了恒等替换。</p><h4 id="2-2-Net2DeeperNet"><a href="#2-2-Net2DeeperNet" class="headerlink" title="2.2 Net2DeeperNet"></a>2.2 Net2DeeperNet</h4><p>Net2DeeperNet操作使得我们可以增加一层，例如在一个全连接层后面再加一个全连接层，在一个卷积层后面再加一个卷积层。</p><p><img src="/2020/02/21/05-Net2Net/03-Net2DeeperNet.png" alt="Net2DeeperNet"></p><p>对于一个全连接层来说，我们利用一个单位矩阵做权值，添加一个和上一个全连接层维度完全相同的全连接层，把前一个全连接层的值copy过来，实现恒等映射，此时再结合Net2WiderNet，就可以使这一层再变宽。但是我们可能很难实现把这个层变瘦。</p><p>对于一个卷积层来说，我们利用一个只有中间位置是1，其它位置全是0的filter，就很轻松的实现了恒等映射。</p><h3 id="3-Summary"><a href="#3-Summary" class="headerlink" title="3. Summary"></a>3. Summary</h3><p>综上，我们通过定义两个操作，实现了从小网络到大网络的转换，但是我们这个不是一个可以泛化的方法，有一定的局限性，因为不是所有的情况都有事先恒等映射的方法。</p><p>但是对于全连接层和卷积层等来说，我们可以利用如上的方法大大加速大网络的训练，尤其是在结合终身机器学习系统或者神经网络架构搜索的方向上。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Paper </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Knowledge Transfer </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>ENAS</title>
       <link href="/2020/02/09/03-ENAS/"/>
       <url>/2020/02/09/03-ENAS/</url>
@@ -139,56 +114,6 @@
       <categories>
           
           <category> Paper </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> NAS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>NAP</title>
-      <link href="/2020/02/05/02-NAP/"/>
-      <url>/2020/02/05/02-NAP/</url>
-      
-        <content type="html"><![CDATA[<h2 id="NAP-Neural-Architecture-search-with-Pruning"><a href="#NAP-Neural-Architecture-search-with-Pruning" class="headerlink" title="NAP: Neural Architecture search with Pruning"></a>NAP: Neural Architecture search with Pruning</h2><p>In recent years, there has been continuously increasing attention attracted by Neural Architecture Search (NAS). Due to its computational efficiency, gradient-based NAS methods like DARTS has become the most popular framework for NAS tasks. Nevertheless, as the search iterates, the derived model becomes dominated by {\it skip-connect}s, causing the performance downfall. In this work, we present a novel approach to alleviate this issue, named Neural Architecture search with Pruning (NAP). Unlike prior differentiable architecture search works, our approach draws the idea from network pruning. We first train an over-parameterized network, including all candidate operations. Then we propose a criterion to prune the network. Based on a different relaxation of architecture representation, NAP can derive the most potential model by removing trivial and redundant edges from the whole network topology. Experiments show the effectiveness of our proposed approach. Specifically, the model searched by NAP achieves state-of-the-art performances (2.48% test error) on CIFAR-10. We transfer the model to ImageNet and obtains 25.1% test error with only 5.0M parameters, which is on par with modern NAS methods.</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Abstract </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> NAS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>DASH: Dominant-weighted neural Architecture SearcH</title>
-      <link href="/2020/01/15/01-DASH/"/>
-      <url>/2020/01/15/01-DASH/</url>
-      
-        <content type="html"><![CDATA[<h2 id="DASH-Dominant-weighted-neural-Architecture-SearcH"><a href="#DASH-Dominant-weighted-neural-Architecture-SearcH" class="headerlink" title="DASH: Dominant-weighted neural Architecture SearcH"></a>DASH: Dominant-weighted neural Architecture SearcH</h2><p>Recently, there has been increasing attention attracted by neural architecture search (NAS). Traditional NAS approaches based on reinforcement learning or evolutionary algorithms which take thousand of GPU hours are strongly limited by the resources and time. In this work, we present a new gradient-based approach, namely Dominant-weighted neural Architecture SearcH (DASH). Unlike prior differentiable architecture search works, our DASH learns candidate operations individually and searches for the dominant-weighted edges as the most potential architecture. Experiments show the effectiveness of our proposed approach. Specifically, the model searched by DASH achieves a new state-of-the-art performance of a 2.47% test error in CIFAR-10, and can be transferred to ImageNet to obtain a test error of 25.1% with only 5.0M parameters, which is on par with recent methods. Our code is available <a href="https://github.com/bansheng/DASH" target="_blank" rel="noopener"></a>.</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Abstract </category>
           
       </categories>
       
