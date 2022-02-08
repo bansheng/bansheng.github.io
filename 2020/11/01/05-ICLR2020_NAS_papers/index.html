@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://dydcoding.cn/05-ICLR2020_NAS_papers/14-in_four_hours.png">
 <meta property="og:image" content="https://dydcoding.cn/05-ICLR2020_NAS_papers/16-snas.png">
 <meta property="article:published_time" content="2020-11-01T06:00:54.000Z">
-<meta property="article:modified_time" content="2022-02-08T09:37:44.804Z">
+<meta property="article:modified_time" content="2022-02-08T09:56:07.194Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="NAS">
 <meta name="twitter:card" content="summary">
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-08 17:37:44" itemprop="dateModified" datetime="2022-02-08T17:37:44+08:00">2022-02-08</time>
+                <time title="Modified: 2022-02-08 17:56:07" itemprop="dateModified" datetime="2022-02-08T17:56:07+08:00">2022-02-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,11 +266,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters"><a href="#1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters" class="headerlink" title="1.stabilizing DARTS with Amended grarident estimation on architectural parameters"></a>1.stabilizing DARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。<br>$$<br>\mathbf{g}<em>{2}^{\prime}&#x3D;-\left.\left.\eta \cdot \nabla</em>{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\boldsymbol{\omega}&#x3D;\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>$$</p>
-<p>提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为$g_1$，通过梯度的反向传播得到。第二部分称为$g_2$，更合理的近似为$g_2’$。</p>
-<p>$$<br>\begin{aligned}<br>\nabla_{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}), \boldsymbol{\alpha}\right)|</em>{\boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}<em>{t}} &#x3D;&amp; \nabla</em>{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\boldsymbol{\omega}&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} -<br>\<br>&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega},<br>\boldsymbol{\alpha})|</em>{\omega&#x3D;\boldsymbol{\omega}^{</em>}<br>\left(\boldsymbol{\alpha}<em>{t}\right),<br>\boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\omega&#x3D;\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
-<p>$$<br>\begin{aligned}<br>\left\langle\mathbf{g}<em>{2}^{\prime}, \mathbf{g}</em>{2}\right\rangle&#x3D;&amp;\left.\left.\eta \cdot \nabla_{\omega} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\omega^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} ^{\top} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}, \boldsymbol{\alpha}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \ &amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\omega^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
-<p>并证明$g_2’$与$g_2$的乘积恒大于0，也就是夹角小于90度。</p>
+        <h2 id="1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters"><a href="#1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters" class="headerlink" title="1.stabilizing DARTS with Amended grarident estimation on architectural parameters"></a>1.stabilizing DARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。</p>
+<p>$$\begin{equation}<br>\begin{aligned}<br>\mathbf{g}<em>{2}^{\prime}&#x3D;-\left.\left.\eta \cdot \nabla</em>{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\boldsymbol{\omega}&#x3D;\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>\end{equation}$$</p>
+<p>提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为$g_1$，通过梯度的反向传播得到。第二部分称为$g_2$，更合理的近似为$g_2’$。<br>$$<br>\begin{aligned}<br>\nabla_{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}), \boldsymbol{\alpha}\right)|</em>{\boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}<em>{t}} &#x3D;&amp; \nabla</em>{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\boldsymbol{\omega}&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} -<br>\<br>&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega},<br>\boldsymbol{\alpha})|</em>{\omega&#x3D;\boldsymbol{\omega}^{</em>}<br>\left(\boldsymbol{\alpha}<em>{t}\right),<br>\boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\omega&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$<br>$$<br>\begin{aligned}<br>\left\langle\mathbf{g}<em>{2}^{\prime}, \mathbf{g}</em>{2}\right\rangle&#x3D;&amp;\left.\left.\eta \cdot \nabla_{\omega} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\omega^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} ^{\top} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}, \boldsymbol{\alpha}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \ &amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\omega^{*}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$<br>并证明$g_2’$与$g_2$的乘积恒大于0，也就是夹角小于90度。</p>
 <h2 id="2-DARTS-Improved-Differentiable-Architecture-Search-with-Early-Stopping"><a href="#2-DARTS-Improved-Differentiable-Architecture-Search-with-Early-Stopping" class="headerlink" title="2. DARTS+: Improved Differentiable Architecture Search with Early Stopping"></a>2. DARTS+: Improved Differentiable Architecture Search with Early Stopping</h2><p>随着epoch数量的增多，DARTS倾向于skip-connection，造成模型的表现下降</p>
 <p>提出一种提前停止训练的标准，让模型搜索提前停止。</p>
 <ol>
@@ -577,6 +575,61 @@ window.addEventListener('pjax:success', () => {
 
     <div id="pjax">
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
