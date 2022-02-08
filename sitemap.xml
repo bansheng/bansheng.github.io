@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/</loc>
+    
+    <lastmod>2022-02-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://dydcoding.cn/2022/02/08/thoughts-01/</loc>
     
     <lastmod>2022-02-08</lastmod>
@@ -75,15 +84,6 @@
   
   <url>
     <loc>https://dydcoding.cn/2020/02/09/03-ENAS/</loc>
-    
-    <lastmod>2022-02-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/</loc>
     
     <lastmod>2022-02-08</lastmod>
     
@@ -223,13 +223,6 @@
   
   <url>
     <loc>https://dydcoding.cn/categories/Paper/</loc>
-    <lastmod>2022-02-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://dydcoding.cn/categories/Papers/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
