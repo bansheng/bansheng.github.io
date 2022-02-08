@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Federated Learning," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Examples of potential applications include: learning sentiment, semantic location, or activities of mobile phone users; adapting to pedestrian behavior in autonomous vehicles; and predicting health ev">
+<meta property="og:type" content="article">
+<meta property="og:title" content="联邦学习概述">
+<meta property="og:url" content="https://bansheng.github.io/2020/11/01/10-FL/index.html">
+<meta property="og:site_name" content="Ingaong&#39;s Blogs">
+<meta property="og:description" content="Examples of potential applications include: learning sentiment, semantic location, or activities of mobile phone users; adapting to pedestrian behavior in autonomous vehicles; and predicting health ev">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bansheng.github.io/2020/11/01/10-FL/01-FL_problem.png">
+<meta property="article:published_time" content="2020-11-01T06:14:59.000Z">
+<meta property="article:modified_time" content="2022-02-08T03:38:14.094Z">
+<meta property="article:author" content="bansheng">
+<meta property="article:tag" content="Federated Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bansheng.github.io/2020/11/01/10-FL/01-FL_problem.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://bansheng.github.io/2020/11/01/10-FL/"/>
+
+
+
+
+
+  <title>联邦学习概述 | Ingaong's Blogs</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ingaong's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Head forward.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-contact">
+          <a href="/contact/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            contact
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            Commonweal 404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/10-FL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ingaong's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">联邦学习概述</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T14:14:59+08:00">
+                2020-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Survey/" itemprop="url" rel="index">
+                    <span itemprop="name">Survey</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Examples of potential applications include: learning sentiment, semantic location, or activities of mobile phone users; adapting to pedestrian behavior in autonomous vehicles; and predicting health events like heart attack risk from wearable devices [6, 52, 84].</p>
+<h2 id="1-Overview"><a href="#1-Overview" class="headerlink" title="1. Overview"></a>1. Overview</h2><h3 id="1-1-问题定义"><a href="#1-1-问题定义" class="headerlink" title="1.1 问题定义"></a>1.1 问题定义</h3><p><img src="/2020/11/01/10-FL/01-FL_problem.png" alt="problem definition"><br>简单来说，就是说联邦学习的目标是训练一个”尽可能接近把各个节点数据聚合起来训练”的模型。</p>
+<h3 id="1-2-典型应用"><a href="#1-2-典型应用" class="headerlink" title="1.2 典型应用"></a>1.2 典型应用</h3><ul>
+<li>smart phone</li>
+<li>Organizations</li>
+<li>internet of things 物联网 收集各种模态的信息</li>
+</ul>
+<h3 id="1-3-主要挑战"><a href="#1-3-主要挑战" class="headerlink" title="1.3 主要挑战"></a>1.3 主要挑战</h3><ol>
+<li>expensive communication<ul>
+<li>reducing the total number of communication rounds</li>
+<li>reducing the size of transmitted messages at each round.</li>
+</ul>
+</li>
+<li>systems heterogeneity<ul>
+<li>only a small fraction of the devices being active at once</li>
+<li>anticipate a low amount of participation</li>
+<li>tolerate heterogeneous hardware</li>
+<li>be robust to dropped devices in the network.</li>
+</ul>
+</li>
+<li>Statistical Heterogeneity<ul>
+<li>independent and identically distributed</li>
+<li>Both the multi-task and meta-learning perspectives enable personalized or device-specific modeling, which is often a more natural approach to handle the statistical heterogeneity of the data.</li>
+</ul>
+</li>
+<li>Privacy Concern<ul>
+<li>secure multiparty computation or differential privacy</li>
+<li>at the cost of reduced model performance or system efficiency.</li>
+</ul>
+</li>
+</ol>
+<h2 id="2-related-and-current-work"><a href="#2-related-and-current-work" class="headerlink" title="2. related and current work"></a>2. related and current work</h2><h3 id="2-1-Communication-efficiency"><a href="#2-1-Communication-efficiency" class="headerlink" title="2.1 Communication-efficiency"></a>2.1 Communication-efficiency</h3><ol>
+<li>local updating methods</li>
+<li>compression schemes</li>
+<li>decentralized training</li>
+</ol>
+<h3 id="2-2-Systems-Heterogeneity"><a href="#2-2-Systems-Heterogeneity" class="headerlink" title="2.2 Systems Heterogeneity"></a>2.2 Systems Heterogeneity</h3><h3 id="2-3-Statistical-Heterogeneity"><a href="#2-3-Statistical-Heterogeneity" class="headerlink" title="2.3 Statistical Heterogeneity"></a>2.3 Statistical Heterogeneity</h3><h4 id="2-3-1-Modeling-heterogeneous-Data"><a href="#2-3-1-Modeling-heterogeneous-Data" class="headerlink" title="2.3.1 Modeling heterogeneous Data"></a>2.3.1 Modeling heterogeneous Data</h4><ul>
+<li>fairness</li>
+<li>accountability</li>
+<li>interpretability</li>
+</ul>
+<h4 id="2-3-2-Convergence-Guarantees-for-Non-IID-Data"><a href="#2-3-2-Convergence-Guarantees-for-Non-IID-Data" class="headerlink" title="2.3.2 Convergence Guarantees for Non-IID Data"></a>2.3.2 Convergence Guarantees for Non-IID Data</h4><p>Indeed, when data is not identically distributed across devices in the network, methods such as <strong>FedAvg</strong> have been shown to diverge in practice</p>
+<p>Parallel SGD and related variants</p>
+<p>FedProx</p>
+<h3 id="2-4-Ptivacy"><a href="#2-4-Ptivacy" class="headerlink" title="2.4 Ptivacy"></a>2.4 Ptivacy</h3><h4 id="2-4-1-privacy-in-Machine-learning"><a href="#2-4-1-privacy-in-Machine-learning" class="headerlink" title="2.4.1 privacy in Machine learning"></a>2.4.1 privacy in Machine learning</h4><p>differential privacy： strong information theoretic guarantees, algorithmic simplicity, and relatively small systems overhead</p>
+<p>homomorphic encryption同态加密</p>
+<h4 id="2-4-2-Privacy-in-Federated-Learning"><a href="#2-4-2-Privacy-in-Federated-Learning" class="headerlink" title="2.4.2 Privacy in Federated Learning"></a>2.4.2 Privacy in Federated Learning</h4><p>计算廉价，交流高效，允许丢失device–不能对accuracy做很大让步</p>
+<ol>
+<li><p>Secure Multi-party Computation (SMC) 安全的多方计算<br> 各方除了输入和输出外一无所知</p>
+<ul>
+<li><p>复杂的计算协议</p>
+</li>
+<li><p>如果提供安全保证，则部分知识公开可能被认为是可以接受的</p>
+<p>要求参与者的数据在非冲突服务器之间秘密共享</p>
+</li>
+</ul>
+</li>
+<li><p>Differential Privacy 差异隐私<br> 向数据添加噪音，或使用归纳方法遮盖某些敏感属性，直到第三方无法区分个人</p>
+<ul>
+<li>数据也被传输到给了其他人</li>
+<li>涉及准确性和隐私之间的权衡</li>
+</ul>
+</li>
+<li><p>Homomorphic Encryption 同态加密<br> 在机器学习期间通过加密机制下的参数交换来保护用户数据隐私</p>
+<ul>
+<li>数据和模型本身不传输</li>
+<li>准确性与私密性之间的权衡</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-future-directions"><a href="#3-future-directions" class="headerlink" title="3. future directions"></a>3. future directions</h2><ol>
+<li>Extreme communication schemes<ul>
+<li>one- shot or divide-and-conquer communication schemes</li>
+<li>one-shot/few-shot heuristics</li>
+</ul>
+</li>
+<li>Communication reduction and the Pareto frontier<ul>
+<li>local updatding 本地更新</li>
+<li>model compression 模型压缩</li>
+</ul>
+</li>
+<li>Novel models of asynchrony<ul>
+<li>任何设备在任何迭代中都有可能失联</li>
+<li>设备随时通过<strong>事件驱动</strong>和central server交换信息</li>
+</ul>
+</li>
+<li>Heterogeneity diagnostics<ul>
+<li>是否存在简单的诊断方法来预先快速确定联合网络的异构程度?</li>
+<li>能否开发出类似的诊断方法来量化与系统相关的异质性的数量</li>
+<li>可以利用现有的或新的异构定义进一步改进联邦优化方法的收敛性吗?</li>
+</ul>
+</li>
+<li>Granular privacy constraints<ul>
+<li>thus providing a weaker form of privacy in exchange for more accurate models</li>
+</ul>
+</li>
+<li>Beyond supervised learning<ul>
+<li>scalability, heterogeneity, and privacy.</li>
+</ul>
+</li>
+<li>Productionizing federated learning<ul>
+<li>实际落地的问题 concept drift</li>
+<li>diurnal variations 设备不同时间表现不同</li>
+<li>cold start problems 设备新加入</li>
+</ul>
+</li>
+<li>Benchmarks<ul>
+<li>reproducibility of empirical results and the dissemination of new solutions for federated learning.</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Federated-Learning/" rel="tag"># Federated Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/01/06-NAS-Survey/" rel="next" title="Neural Architecture Search: A Survey">
+                <i class="fa fa-chevron-left"></i> Neural Architecture Search: A Survey
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/11/01/11-GNN-survey2/" rel="prev" title="A Comprehensive Survey on Graph Neural Networks">
+                A Comprehensive Survey on Graph Neural Networks <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">bansheng</p>
+              <p class="site-description motion-element" itemprop="description">嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/bansheng" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:dyadongcs@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/lemon-dong" target="_blank" title="Zhihu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Zhihu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Overview"><span class="nav-number">1.</span> <span class="nav-text">1. Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-问题定义"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-典型应用"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 典型应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-主要挑战"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 主要挑战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-related-and-current-work"><span class="nav-number">2.</span> <span class="nav-text">2. related and current work</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Communication-efficiency"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Communication-efficiency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Systems-Heterogeneity"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Systems Heterogeneity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Statistical-Heterogeneity"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Statistical Heterogeneity</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-Modeling-heterogeneous-Data"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1 Modeling heterogeneous Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-Convergence-Guarantees-for-Non-IID-Data"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2 Convergence Guarantees for Non-IID Data</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Ptivacy"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 Ptivacy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-1-privacy-in-Machine-learning"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 privacy in Machine learning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-2-Privacy-in-Federated-Learning"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 Privacy in Federated Learning</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-future-directions"><span class="nav-number">3.</span> <span class="nav-text">3. future directions</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bansheng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":null,"right width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>

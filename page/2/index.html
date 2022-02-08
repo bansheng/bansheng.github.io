@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ingaong&#39;s Blogs">
+<meta property="og:url" content="https://bansheng.github.io/page/2/index.html">
+<meta property="og:site_name" content="Ingaong&#39;s Blogs">
+<meta property="og:description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="bansheng">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://bansheng.github.io/page/2/"/>
+
+
+
+
+
+  <title>Ingaong's Blogs</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left 
+  page-home">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ingaong's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Head forward.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-contact">
+          <a href="/contact/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            contact
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            Commonweal 404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/01-AutoML/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ingaong's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/11/01/01-AutoML/" itemprop="url">AutoML自动机器学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T13:36:56+08:00">
+                2020-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Survey/" itemprop="url" rel="index">
+                    <span itemprop="name">Survey</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>wiki definition:<br>AutoML is the process of automating the end-to-end process of applying appropriate data-preprocessing, feature engineering, model selection, and model evaluation to solve the certain task</p>
+<ul>
+<li>Google AutoML</li>
+<li><a href="https://arxiv.org/abs/1611.01578" target="_blank" rel="noopener">Neural Architecture Search with Reinforcement Learning
+</a></li>
+</ul>
+<p>We will introduce NAS from two perspectives.</p>
+<ul>
+<li>The first is the structures of the model.<ul>
+<li>entire structure</li>
+<li>cell-based structure</li>
+<li>hierarchical structure</li>
+<li>morphism-based structure</li>
+</ul>
+</li>
+<li>The second is hyperparameter optimization (HPO) for designing the model structure.<ul>
+<li>Reinforcement Learning</li>
+<li>Evolutionary Algorithms</li>
+<li>Gradient-based</li>
+<li>Bayesian Optimization</li>
+</ul>
+</li>
+</ul>
+<p>AutoML</p>
+<ul>
+<li>data preparation</li>
+<li>feature engineering</li>
+<li>model generation</li>
+<li>model evaluation</li>
+</ul>
+<h2 id="1-Data-preparation"><a href="#1-Data-preparation" class="headerlink" title="1. Data preparation"></a>1. Data preparation</h2><h3 id="1-1-data-collection"><a href="#1-1-data-collection" class="headerlink" title="1.1 data collection"></a>1.1 data collection</h3><ol>
+<li>data synthesis<ul>
+<li>augment the exsiting dataset<br>CV: cropping, flipping, padding, rotation and resize, etc.<br>Library: torchvision augmentor</li>
+<li>data warping<br>generates additional samples by applying transformation on data-space</li>
+<li>synthetic over-sampling<br>creates additional samples in feature-space.</li>
+<li>For text data, synonym insertion is a common way of augmenting同义词插入</li>
+<li>first translate the text into some foreign language, and then translate it back to the original language</li>
+<li>non-domain-specific data augmentation strategy that uses noising in RNNs</li>
+<li>back-translation</li>
+<li>data simulator</li>
+</ul>
+ <strong>OpenAI Gym</strong> is a popular toolkit that provides various simulation environment<ul>
+<li>GAN</li>
+</ul>
+</li>
+<li>data searching(search for web data)<ul>
+<li>On the one hand, sometimes the <strong>search results do not exactly match the keywords</strong>.(filter unrelated data)</li>
+<li>The other problem is that web data may <strong>have wrong labels or even no labels.</strong>(learning-based <strong>self-labeling</strong> method, 分为self-training, co-training, co-learning)</li>
+<li>the distribution of web data can be extremely different from the target dataset, which would increase the difficulty of training the model.(fine-tune these web data)</li>
+<li>dataset inbalance(SMOTE, combines boosting method with data generation)</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-2-data-cleaning"><a href="#1-2-data-cleaning" class="headerlink" title="1.2 data cleaning"></a>1.2 data cleaning</h3><p>redundant, incomplete, or incorrect data</p>
+<p>standardization, scaling, binarization of quantitative characteristic, one-hot encoding qualitative characteristic, and filling missing values with mean value, etc.</p>
+<h2 id="2-feature-engneering"><a href="#2-feature-engneering" class="headerlink" title="2. feature engneering"></a>2. feature engneering</h2><ul>
+<li>feature selection 减少冗余特征</li>
+<li>extraction 减少特征的维度</li>
+<li>construction 展开原始特征空间</li>
+</ul>
+<h3 id="2-1-feature-selection"><a href="#2-1-feature-selection" class="headerlink" title="2.1 feature selection"></a>2.1 feature selection</h3><p><img src="/2020/11/01/01-AutoML/03-feature-selection.png" alt="feature selection"></p>
+<p>search strategy</p>
+<ul>
+<li>complete<ul>
+<li>exhaustive</li>
+<li>non-exhaustive</li>
+</ul>
+</li>
+<li>heuristic<ul>
+<li>Sequential Forward Selection(SFS)</li>
+<li>Sequential Backward Selection(SBS)</li>
+<li>Bidirectional Search(BS)</li>
+</ul>
+</li>
+<li>random search algorithm<ul>
+<li>Simulated Annealing(SA)</li>
+<li>Genetic Algorithms(GA)</li>
+</ul>
+</li>
+</ul>
+<p>subset evaluation</p>
+<ul>
+<li>filter method<br>  scores each feature according to divergence or correlation, and then select features by a threshold</li>
+<li>Wrapper method<br>  classifies the sample set with the selected feature subset, the classification accuracy is used as the criterion to measure the quality of the feature subset</li>
+<li>embedded method<br>  performs variable selection as part of the learning procedure.<br>  Regularization, decision tree, <strong>DL</strong></li>
+</ul>
+<h3 id="2-2-feature-construction"><a href="#2-2-feature-construction" class="headerlink" title="2.2 feature construction"></a>2.2 feature construction</h3><h4 id="definition"><a href="#definition" class="headerlink" title="definition"></a>definition</h4><p><strong>constructs new features</strong> from the basic feature space or raw data to help enhance the robustness and generalization of the model, and its essence is to increase the representative ability of original features.</p>
+<h4 id="常用方法-preprocessing-transformation"><a href="#常用方法-preprocessing-transformation" class="headerlink" title="常用方法 preprocessing transformation"></a>常用方法 preprocessing transformation</h4><p>包括</p>
+<ul>
+<li>standardization</li>
+<li>normalization</li>
+<li>feature discretization</li>
+</ul>
+<h4 id="自动化检索"><a href="#自动化检索" class="headerlink" title="自动化检索"></a>自动化检索</h4><p>人力很难检索所有可能<br>some automatic feature construction methods have been proposed</p>
+<p>These algorithms mainly aim to automate <strong>the process of searching and evaluating the operation combination</strong>实现操作组合搜索和评价的自动化</p>
+<p>searching 算法</p>
+<ul>
+<li>decision tree-based methods</li>
+<li>genetic algorithm<br>  需要pre-defined operation space</li>
+<li>annotation-based approaches<br>  不需要，将domain知识以注释的形式与训练示例一起使用<br>  引入了交互式特征空间构建协议，学习者识别出特征空间的不足区域，并与领域专家协作，通过现有的语义资源增加描述性</li>
+</ul>
+<h3 id="2-3-feature-extraction"><a href="#2-3-feature-extraction" class="headerlink" title="2.3 feature extraction"></a>2.3 feature extraction</h3><p>a dimensionality reduction process through some mapping functions</p>
+<p>mapping function</p>
+<ul>
+<li>Principal Component Analysis(PCA)</li>
+<li>Independent COmponent Analysis(ICA)</li>
+<li>isomap</li>
+<li>nonlinear dimensionality reduction</li>
+<li>Linear discriminant analysis(LDA)</li>
+<li><strong>feed-forward neural networks approach</strong></li>
+</ul>
+<h2 id="3-model-generation"><a href="#3-model-generation" class="headerlink" title="3. model generation"></a>3. model generation</h2><p>two types of approaches for model selection:</p>
+<ul>
+<li>traditional model selection<ul>
+<li>SVM</li>
+<li>KNN</li>
+<li>decision tree</li>
+<li>K-means</li>
+</ul>
+</li>
+<li>NAS</li>
+</ul>
+<p>主要介绍NAS</p>
+<h3 id="3-1-model-structures"><a href="#3-1-model-structures" class="headerlink" title="3.1 model structures"></a>3.1 model structures</h3><p>The model is generated by selecting and combining a set of primitive operations, which are pre-defined in the search space. The operations can be broadly divided into convolution, pooling, concatenation, elemental addition, skip connection, etc.</p>
+<ol>
+<li><p>entire structure<br> 缺点：太深，搜索空间太大，消耗时间和计算资源，找到的model的transferability差，意味着小的数据集上找到的模型在完整数据集上表现很差</p>
+</li>
+<li><p>Cell-based structure<br> 先生成cell，再连起来<br> <img src="/2020/11/01/01-AutoML/04-cell-model.png" alt="cell model"><br> 优点：搜索空间大大减小，并且更容易从小dataset上转换到大的dataset上(简单叠加cells))<br> 分成两级：</p>
+<ul>
+<li>inner:cell level, selects the operation and connection for each node</li>
+<li>outter level:network level, controls the spatial resolution changes</li>
+</ul>
+</li>
+<li><p>Hierarchical structure<br> for a hierarchical structure, there are many levels, each with a fixed number of cells. The higher-level cell is generated by incorporating lower-level cell iteratively.<br> <img src="/2020/11/01/01-AutoML/05-hierarchical-structure.png" alt="hierarchical structure"><br> 可以发现更多复杂、灵活的网络结构类型。</p>
+</li>
+<li><p>Network Morphism based structure<br> transferring the information stored in an existing neural network into a new neural network<br> 从现有网络到新网络<br> 保证性能不低于原有网络</p>
+</li>
+</ol>
+<h3 id="3-2-hyperparameter-optimization-HPO"><a href="#3-2-hyperparameter-optimization-HPO" class="headerlink" title="3.2 hyperparameter optimization(HPO)"></a>3.2 hyperparameter optimization(HPO)</h3><ol>
+<li><p>Grid &amp; Random Search<br> 最广泛使用的<br> <img src="/2020/11/01/01-AutoML/06-grid-and-random-search.png" alt="grid&amp;random search"></p>
+</li>
+<li><p>Reinforcement Learning<br> 分为两部分</p>
+<ul>
+<li>controller:RNN, used to generate different child networks at different epoch</li>
+<li>reward network:trains and evaluates the generated child networks and uses the reward (e.g. accuracy) to update RNN controller.</li>
+<li>缺点：训练时间长，资源需求大</li>
+<li>ENAS:子架构被看做是预定义搜索空间的子图，共享参数，从而避免从零开始到收敛地训练每个子模型</li>
+</ul>
+</li>
+<li><p>Evolutionary Algorithm<br> 通用的基于种群的元启发式优化算法，<br> 有两种类型的编码方案:直接编码和间接编码。direct, indirect<br> 直接编码是一种广泛使用的方法，它显式地指定了表现型：Genetic CNN</p>
+<ul>
+<li><p>selection 选择</p>
+<ul>
+<li>fitness selection</li>
+<li>rank selection</li>
+<li>Tournament selection</li>
+</ul>
+</li>
+<li><p>crossover 杂交</p>
+</li>
+<li><p>mutation 突变</p>
+</li>
+<li><p>update 更新</p>
+<p><img src="/2020/11/01/01-AutoML/07-overview-of-EA.png" alt="overview of EA"></p>
+</li>
+</ul>
+</li>
+<li><p>Bayesian Optimization</p>
+<ul>
+<li>BO</li>
+<li>Sequential model-based optimization(SMBO)</li>
+<li>Bayesian Optimization-based Hyperband (BOHB)</li>
+</ul>
+</li>
+<li><p>Gradient Descent</p>
+</li>
+</ol>
+<h2 id="4-model-estimation"><a href="#4-model-estimation" class="headerlink" title="4. model estimation"></a>4. model estimation</h2><h3 id="4-1-low-fidelity"><a href="#4-1-low-fidelity" class="headerlink" title="4.1 low fidelity"></a>4.1 low fidelity</h3><p>On the one hand, we can reduce the number of images or the resolution of images (for image classification tasks)<br>在子集上面训练,在低精度训练集上面训练<br>On the other hand, low fidelity model evaluation can be realized by reducing the model size, such as training with less number of filters per layer<br>减少网络的大小，比如每层的filter的数目</p>
+<h3 id="4-2-Transfer-learning"><a href="#4-2-Transfer-learning" class="headerlink" title="4.2 Transfer learning"></a>4.2 Transfer learning</h3><ul>
+<li>Transfer Neural AutoML<br>uses knowledge from prior tasks to speed up network design</li>
+<li>ENAS<br>shares parameters among child networks</li>
+<li>The network morphism based algorithms<br>inherit the weights of previous architectures</li>
+</ul>
+<h3 id="4-3-Surrogate代理"><a href="#4-3-Surrogate代理" class="headerlink" title="4.3 Surrogate代理"></a>4.3 Surrogate代理</h3><p>一般来说，一旦获得了一个良好的近似，就很容易找到最佳配置，而不是直接优化原来昂贵的目标。<br>PNAS</p>
+<p>this method is not applicable when the optimization space is too large and hard to quantize, and the evaluation of each configuration is extremely expensive</p>
+<h3 id="4-4-Early-stopping"><a href="#4-4-Early-stopping" class="headerlink" title="4.4 Early stopping"></a>4.4 Early stopping</h3><p>is now being used to speed up model evaluation by <strong>stopping the evaluations which predicted to perform poorly on the validation set</strong></p>
+<h2 id="5-NAS-PERFORMANCE-SUMMARY"><a href="#5-NAS-PERFORMANCE-SUMMARY" class="headerlink" title="5. NAS PERFORMANCE SUMMARY"></a>5. NAS PERFORMANCE SUMMARY</h2><p><img src="/2020/11/01/01-AutoML/08-manual-vs-generated-model.png" alt="manual VS generated models"></p>
+<h2 id="6-future-work"><a href="#6-future-work" class="headerlink" title="6. future work"></a>6. future work</h2><ol>
+<li>Complete AutoML Pipeline<br>数据部分</li>
+<li>Interpretability</li>
+<li>Reproducibility</li>
+<li>Flexible Encoding Scheme</li>
+<li>More Area<br>cnn: image classification<br>rnn: language modeling<br>more</li>
+<li>Lifelong Learn</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/07/15/09-string-pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ingaong's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/07/15/09-string-pattern/" itemprop="url">string_pattern</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-07-15T14:08:05+08:00">
+                2020-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-1-字符串匹配算法"><a href="#1-1-字符串匹配算法" class="headerlink" title="1.1 字符串匹配算法"></a>1.1 字符串匹配算法</h2><table>
+<thead>
+<tr>
+<th align="left">algorithm</th>
+<th align="center">$T_{best}$</th>
+<th align="center">$T_{avg}$</th>
+<th align="center">$T_{worst}$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1. 朴素匹配算法</td>
+<td align="center">O(nm)</td>
+<td align="center">O(nm)</td>
+<td align="center">O(nm)</td>
+</tr>
+<tr>
+<td align="left">2. Robin-Karp 算法</td>
+<td align="center">O(n)</td>
+<td align="center">O(nm)</td>
+<td align="center">O(nm)</td>
+</tr>
+<tr>
+<td align="left">3. KMP算法</td>
+<td align="center">O(n+m)</td>
+<td align="center">O(n+m)</td>
+<td align="center">O(n+m)</td>
+</tr>
+</tbody></table>
+<h3 id="1-1-1-朴素匹配算法"><a href="#1-1-1-朴素匹配算法" class="headerlink" title="1.1.1 朴素匹配算法"></a>1.1.1 朴素匹配算法</h3><p>暴力求解</p>
+<h3 id="1-1-2-Robin-Karp算法"><a href="#1-1-2-Robin-Karp算法" class="headerlink" title="1.1.2 Robin-Karp算法"></a>1.1.2 Robin-Karp算法</h3><p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。<br>选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中 $0&lt;m&lt;n$，$Hash(t[i,j])$代表字符串t[i, j]的哈希值。</p>
+<p>当 $Hash(t[0, m-1])!=Hash(p[0,m-1])$ 时，我们很自然的会把 $Hash(t[1, m])$ 拿过来继续比较。在这个过程中，若我们重新计算字符串t[1, m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0, m-1]与t[1, m]中有 m-1 个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为 O(1)。</p>
+<p>Rabin-Karp 算法选用的滚动哈希函数主要是利用$Rabin fingerprint$的思想，举个例子，计算字符串t[0, m - 1]的哈希值的公式如下，</p>
+<p>$$Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+…+t[m−1]∗b_0$$</p>
+<p>其中的 b_k 可以是一个常数，在 Rabin-Karp 算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取 101。</p>
+<p>则计算字符串t[1, m]的哈希值公式如下，</p>
+<p>$$Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0$$</p>
+<h3 id="1-1-3-KMP算法"><a href="#1-1-3-KMP算法" class="headerlink" title="1.1.3 KMP算法"></a>1.1.3 KMP算法</h3><p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p>
+<p><a href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html" target="_blank" rel="noopener">阮一峰KMP算法</a></p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true">#KMP</span>
+<span class="token keyword">def</span> <span class="token function">kmp_match</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    m <span class="token operator">=</span> len<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span> n <span class="token operator">=</span> len<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
+    cur <span class="token operator">=</span> <span class="token number">0</span><span class="token comment" spellcheck="true">#起始指针cur</span>
+    table <span class="token operator">=</span> partial_table<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
+    <span class="token keyword">while</span> cur<span class="token operator">&lt;=</span>m<span class="token operator">-</span>n<span class="token punctuation">:</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">if</span> s<span class="token punctuation">[</span>i<span class="token operator">+</span>cur<span class="token punctuation">]</span><span class="token operator">!=</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">:</span>
+                cur <span class="token operator">+=</span> max<span class="token punctuation">(</span>i <span class="token operator">-</span> table<span class="token punctuation">[</span>i<span class="token number">-1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">#有了部分匹配表,我们不只是单纯的1位1位往右移,可以一次移动多位</span>
+                <span class="token keyword">break</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token boolean">True</span>
+    <span class="token keyword">return</span> <span class="token boolean">False</span>
+
+<span class="token comment" spellcheck="true">#部分匹配表</span>
+<span class="token keyword">def</span> <span class="token function">partial_table</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">'''partial_table("ABCDABD") -> [0, 0, 0, 0, 1, 2, 0]'''</span>
+    prefix <span class="token operator">=</span> set<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    postfix <span class="token operator">=</span> set<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ret <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>len<span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        prefix<span class="token punctuation">.</span>add<span class="token punctuation">(</span>p<span class="token punctuation">[</span><span class="token punctuation">:</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
+        postfix <span class="token operator">=</span> <span class="token punctuation">{</span>p<span class="token punctuation">[</span>j<span class="token punctuation">:</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> j <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+        ret<span class="token punctuation">.</span>append<span class="token punctuation">(</span>len<span class="token punctuation">(</span><span class="token punctuation">(</span>prefix<span class="token operator">&amp;</span>postfix <span class="token operator">or</span> <span class="token punctuation">{</span><span class="token string">''</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> ret<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/06/18/08-meta-learning-nas/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ingaong's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/18/08-meta-learning-nas/" itemprop="url">meta-learning_nas</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-18T09:01:49+08:00">
+                2020-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Survey/" itemprop="url" rel="index">
+                    <span itemprop="name">Survey</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning"><a href="#1-Towards-fast-adaptation-of-neural-architectures-with-meta-learning" class="headerlink" title="1. Towards fast adaptation of neural architectures with meta learning"></a>1. Towards fast adaptation of neural architectures with meta learning</h2><p><a href="https://openreview.net/forum?id=r1eowANFvr" target="_blank" rel="noopener">ICLR2020</a></p>
+<p>文章的的主要思想是，在meta-learning的setting上面，通过不同的task，学习一个可以泛化的architecture，然后在query集上面进行fune-tuning，微调这个结构，使得该结构对不同test task有良好的适用性。<br><img src="/2020/06/18/08-meta-learning-nas/01-towards1.png" alt="towards"></p>
+<p>在mini-imagenet上面5-way的结果<br><img src="/2020/06/18/08-meta-learning-nas/02-towards2.png" alt="towards_result"></p>
+<h2 id="2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search"><a href="#2-Auto-Meta-Automated-Gradient-Based-Meta-Learner-Search" class="headerlink" title="2. Auto-Meta: Automated Gradient Based Meta Learner Search"></a>2. Auto-Meta: Automated Gradient Based Meta Learner Search</h2><p><a href="https://arxiv.org/abs/1806.06927" target="_blank" rel="noopener">https://arxiv.org/abs/1806.06927</a></p>
+<p>也是构造cell去stack起来，获取整个的network，但是一开始的cell并不是整个的supernet，而是在搜索的过程中，逐步往这个cell里面去添加opetator，<strong>然后使用一个predictor去预测这个cell的性能</strong>，选择top k性能的cell组成网络进行测试。<br><img src="/2020/06/18/08-meta-learning-nas/03-auto_meta.png" alt="auto meta"></p>
+<h2 id="3-Meta-Architecture-Search"><a href="#3-Meta-Architecture-Search" class="headerlink" title="3. Meta Architecture Search"></a>3. Meta Architecture Search</h2><p><a href="https://openreview.net/forum?id=B1M0gBSlLB" target="_blank" rel="noopener">NIPS19</a></p>
+<p>本文从Bayesian的角度，推理了一遍NAS的原理，提出用Coupled Variational Bayes (CVB)去生成参数的表达，同时进行了推理（hard math）。本质上来说，这篇工作基本上还是darts，不过它首先将meta learning的在imagenet上面获取的先验知识拿出来放到其他任务上去train。<br>首先使用gumble_softmaxed darts(参见SNAS)，取得meta network的arch和init，然后针对不同任务进行fine tuning。<br><img src="/2020/06/18/08-meta-learning-nas/04-meta_architecture_search.png" alt="meta as"></p>
+<h2 id="MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification"><a href="#MetAdapt-Meta-Learned-Task-Adaptive-Architecture-for-Few-Shot-Classification" class="headerlink" title="MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification"></a>MetAdapt: Meta-Learned Task-Adaptive Architecture for Few-Shot Classification</h2><p><a href="https://arxiv.org/abs/1912.00412" target="_blank" rel="noopener">https://arxiv.org/abs/1912.00412</a></p>
+<p>在darts的基础上，提出了一个MetAdapt Controllers，就是说，对于不同的task，产生不同的叠加权重<br><img src="/2020/06/18/08-meta-learning-nas/05-MetAdapt.png" alt="MetAdapt"></p>
+<h2 id="Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning"><a href="#Meta-Learning-of-Neural-Architectures-for-Few-Shot-Learning" class="headerlink" title="Meta-Learning of Neural Architectures for Few-Shot Learning"></a>Meta-Learning of Neural Architectures for Few-Shot Learning</h2><p><a href="https://arxiv.org/abs/1911.11090" target="_blank" rel="noopener">https://arxiv.org/abs/1911.11090</a><br>提出了gradient-based NAS + meta learning 结合的框架，直接想把所有方法都框到自己下面。<br><img src="/2020/06/18/08-meta-learning-nas/06-meta_learning_of_NAS4FS.png" alt="06-meta_learning_of_NAS4FS"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/06/15/07-gnn-review1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ingaong's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/15/07-gnn-review1/" itemprop="url">Graph Neural Networks: A review of methods and applications</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-15T12:41:07+08:00">
+                2020-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Survey/" itemprop="url" rel="index">
+                    <span itemprop="name">Survey</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Graph-Neural-Networks-A-review-of-methods-and-applications"><a href="#Graph-Neural-Networks-A-review-of-methods-and-applications" class="headerlink" title="Graph Neural Networks: A review of methods and applications"></a>Graph Neural Networks: A review of methods and applications</h2><h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1. introduction"></a>1. introduction</h2><ol>
+<li>social science (social networks)</li>
+<li>natural science (physical systems</li>
+<li>protein-protein interaction networks</li>
+<li>knowledge graphs</li>
+</ol>
+<p>常见的欧几里得结构化数据主要包含：</p>
+<p>1D：声音，时间序列等；<br>2D：图像等；<br>3D：视频，高光谱图像等；</p>
+<h3 id="1-1-motivation"><a href="#1-1-motivation" class="headerlink" title="1.1 motivation"></a>1.1 motivation</h3><ol>
+<li>CNN<ul>
+<li>局部连接</li>
+<li>共享权重</li>
+<li>多层网络</li>
+</ul>
+</li>
+<li>graph embedding<ul>
+<li>在 encoder 中，节点之间没有共享参数，这导致计算效率低下，因为这意味着参数的数量随着节点的数量线性增长</li>
+<li>直接嵌入方法缺乏泛化能力，这意味着它们无法处理动态图形或推广到新图形</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-2-优点"><a href="#1-2-优点" class="headerlink" title="1.2 优点"></a>1.2 优点</h3><ol>
+<li><p>CNN 和 RNN 这样的标准神经网络无法处理没有自然节点顺序的不规则图数据，而 GNN 在每个节点上分别传播，忽略了节点的输入顺序。即，GNN 的输出对于节点的输入顺序是不变的。</p>
+</li>
+<li><p>图中的边表示了两个节点之间的依赖关系的信息。在标准的神经网络中，这些依赖信息只是作为节点的特征。然后，GNN 可以通过图形结构进行传播，而不是将其作为特征的一部分。通常，GNN 通过其邻域的状态的<strong>加权和</strong>来更新节点的隐藏状态。</p>
+</li>
+<li><p>推理是高级人工智能的一个非常重要的研究课题，人脑中的推理过程几乎都是基于从日常经验中提取的图形。标准神经网络已经显示出通过学习数据分布来生成合成图像和文档的能力，同时它们仍然无法从大型实验数据中学习推理图。然而，GNN 探索从场景图片和故事文档等非结构性数据生成图形，这可以成为进一步高级 AI 的强大神经模型。</p>
+</li>
+</ol>
+<h2 id="2-模型"><a href="#2-模型" class="headerlink" title="2. 模型"></a>2. 模型</h2><h3 id="2-1-限制"><a href="#2-1-限制" class="headerlink" title="2.1 限制"></a>2.1 限制</h3><p>虽然实验结果表明 GNN 是一种用于建模结构数据的强大架构，但原始 GNN 仍然存在一些局限性。</p>
+<ol>
+<li>对于固定点来迭代更新节点的隐藏状态是十分低效的。如果放宽固定点的假设，可以设计一个多层 GNN 来获得节点及其邻域的稳定表示。</li>
+<li>GNN 在迭代中使用相同的参数，而大多数流行的神经网络在不同的层中使用不同的参数来进行分层特征提取。此外，节点隐藏状态的更新是一个顺序过程，可以利用 RNN 内核，如 GRU 和 LSTM，来进一步优化。</li>
+<li>存在一些边缘（edges）的信息特征无法在原始 GNN 中有效建模。例如，知识图中的边缘具有关系类型，并且通过不同边缘的消息传播应根据其类型而不同。此外，如何学习边缘的隐藏状态也是一个重要问题。</li>
+<li>如果我们专注于节点的表示而不是图形，则不适合使用固定点，因为固定点中的表示分布将在值上非常平滑并且用于区分每个节点的信息量较少。</li>
+</ol>
+<h3 id="2-2-GNN的-变体"><a href="#2-2-GNN的-变体" class="headerlink" title="2.2 GNN的 变体"></a>2.2 GNN的 变体</h3><h4 id="2-2-1-图类型"><a href="#2-2-1-图类型" class="headerlink" title="2.2.1 图类型"></a>2.2.1 图类型</h4><p>在原始的 GNN 中，输入的图形包括带有标签信息的节点和无向的边，这是一种最简单的图形式。但在现实生活中，存在多种图的变体，主要包括有向图、异构图和带有边信息的图。</p>
+<ol>
+<li>有向图：即图中的边是存在方向的。有向边可以带来比无向边更多的信息。</li>
+<li>异构图：即图中存在多种类型的节点。处理异构图的最简单方法是将每个节点的类型转换为与原始特征连接的 one-hot 特征向量。</li>
+<li>带有边信息的图：即图中的每条边也存在权重或类型等信息。这种类型的图有两种解决办法，一种是将图形转化为二部图，原始边也作为节点，并将其分割成两条新的边，分别连接原始边的两端节点；第二种方法是调整不同的权重矩阵，以便在不同类型的边缘上传播。</li>
+</ol>
+<p><img src="/2020/06/15/07-gnn-review1/01-graph_types.png" alt="graph types"></p>
+<h4 id="2-2-2-传播类型"><a href="#2-2-2-传播类型" class="headerlink" title="2.2.2 传播类型"></a>2.2.2 传播类型</h4><p>对于获取节点或者边的隐藏状态，神经网络中的传播步骤和输出步骤至关重要。在传播步骤方面的改进主要有卷积、注意力机制、门机制和跳跃连接（skip connection），而在输出步骤通常遵循简单的前馈神经网络设置。</p>
+<ol>
+<li>卷积。Graph Convolutional Network（GCN）希望将卷积操作应用在图结构数据上，主要分为 Spectral Method 和 Spatial Method（Non-spectral Method）两类。Spectral Method 希望使用谱分解的方法，应用图的拉普拉斯矩阵分解进行节点的信息收集。Spatial Method 直接使用图的拓扑结构，根据图的邻居信息进行信息收集。</li>
+<li>注意力机制。Graph Attention Network 致力于将注意力机制应用在图中的信息收集阶段。</li>
+<li>门机制。这些变体将门机制应用于节点更新阶段。Gated graph neural network 将 GRU 机制应用于节点更新。很多工作致力于将 LSTM 应用于不同类型的图上，根据具体情境的不同，可以分为 Tree LSTM、Graph LSTM 和 Sentence LSTM 等。</li>
+<li>残差连接。注意到堆叠多层图神经网络可能引起信息平滑的问题，很多工作将残差机制应用于图神经网络中，文中介绍了 Highway GNN 和 Jump Knowledge Network 两种不同的处理方式</li>
+</ol>
+<p><img src="/2020/06/15/07-gnn-review1/02-propagation_types.png" alt="propagation types"></p>
+<h4 id="2-2-3-训练方法"><a href="#2-2-3-训练方法" class="headerlink" title="2.2.3 训练方法"></a>2.2.3 训练方法</h4><p>原始图卷积神经网络在训练和优化方法中具有若干缺点。例如，</p>
+<ol>
+<li>GCN 需要完整的图拉普拉斯算子，这对于大图来说是<strong>计算成本十分高</strong>。</li>
+<li>而且，层 𝐿 的节点的嵌入是通过层 $𝐿−1$ 的所有该节点的邻居来进行计算的。因此，单个节点的感知域相对于层数呈指数增长，<strong>单个节点的计算梯度成本很高</strong>。</li>
+<li>最后，GCN 针对固定图形进行独立训练，<strong>缺乏归纳学习的能力</strong>。</li>
+</ol>
+<h3 id="2-3-通用框架"><a href="#2-3-通用框架" class="headerlink" title="2.3 通用框架"></a>2.3 通用框架</h3><p>除了提出图神经网络的不同变体之外，一些研究人员从神经网络的框架入手，提出了一些通用框架，旨在将不同模型集成到一个单一框架中。主要包括 Message Passing Neural Networks（MPNN）、Non-local Neural Networks（NLNN）以及 Graph Network（GN）等。</p>
+<ol>
+<li><p>Message Passing Neural Networks<br> 针对图结构的监督学习框架，MPNN框架抽象了几种最流行的图形结构数据模型（如图卷积中的光谱方法和非光谱方法，门控神经网络，交互网络，分子图卷积，深度张量神经网络等）之间的共性，</p>
+</li>
+<li><p>Non-local Neural Networks<br> NLNN利用深度学习捕捉长范围的依赖关系，这是对非局部平均运算的一种泛化，非局部运算通过计算对所有位置的特征的加权和来得到当前位置的影响，此处的位置集合可以是空间、时间或者时空。</p>
+</li>
+<li><p>Graph Networks<br> GN被提出来泛化和扩展多种图神经网络，以及 MPNN 和 NLNN 方法。本文主要介绍了图的定义、GN block、核心 GN 计算单元、计算步骤和基本设计原则。详细的内容扩展会另外写到专门针对该文献的阅读笔记当中。</p>
+</li>
+</ol>
+<h2 id="3-应用"><a href="#3-应用" class="headerlink" title="3. 应用"></a>3. 应用</h2><p><img src="/2020/06/15/07-gnn-review1/03-applications.png" alt="applications"></p>
+<h2 id="4-开放性问题"><a href="#4-开放性问题" class="headerlink" title="4. 开放性问题"></a>4. 开放性问题</h2><h3 id="4-1-浅层结构"><a href="#4-1-浅层结构" class="headerlink" title="4.1 浅层结构"></a>4.1 浅层结构</h3><p>传统的深度神经网络可以堆叠数百层以获得更好的性能，因为更深的结构具有更多的参数，从而能够显著提高表示能力。而图神经网络通常都很浅，大多数不超过三层。正如 [5] 中的实验所示，堆叠多个 GCN 层将导致过度平滑，也就是说，所有顶点将收敛到相同的值。尽管一些研究人员设法解决了这个问题，但它仍然是 GNN 的最大限制。设计真正的深度 GNN 对于未来的研究来说是一个令人兴奋的挑战，并将对理解 GNN 做出相当大的贡献。</p>
+<h3 id="4-2-动态图结构"><a href="#4-2-动态图结构" class="headerlink" title="4.2 动态图结构"></a>4.2 动态图结构</h3><p>另一个具有挑战性的问题是如何处理具有动态结构的图形。静态图是稳定的，因此可以容易地建模，而动态图则引入变化的结构。当边和节点出现或消失时，GNN 无法自适应地更改。<br>动态 GNN 正在积极研究中，我们认为它是一般 GNN 的稳定性和适应性的重要里程碑。</p>
+<h3 id="4-3-非结构化场景"><a href="#4-3-非结构化场景" class="headerlink" title="4.3 非结构化场景"></a>4.3 非结构化场景</h3><p>虽然我们已经讨论了 GNN 在非结构场景中的应用，但我们发现没有最佳方法可以从原始数据生成图形。因此，找到最佳图形生成方法将提供 GNN 可以做出贡献的更广泛的领域。</p>
+<h3 id="4-4-可伸缩性"><a href="#4-4-可伸缩性" class="headerlink" title="4.4 可伸缩性"></a>4.4 可伸缩性</h3><p>如何在社交网络或推荐系统等网络规模条件下应用嵌入方法对于几乎所有图形嵌入算法来说都是一个致命的问题，而 GNN 也不例外。扩展 GNN 很困难，因为许多核心步骤在大数据环境中的计算成本都十分高。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/02/09/03-ENAS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ingaong's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/09/03-ENAS/" itemprop="url">ENAS</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-09T18:45:45+08:00">
+                2020-02-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index">
+                    <span itemprop="name">Paper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Efficient-Neural-Architecture-Search-via-Parameter-Sharing"><a href="#Efficient-Neural-Architecture-Search-via-Parameter-Sharing" class="headerlink" title="Efficient Neural Architecture Search via Parameter Sharing"></a>Efficient Neural Architecture Search via Parameter Sharing</h2><p>an RNN controller is trained in a loop: the controller first samples a candidate architecture, i.e. a child model, and then trains it to convergence to measure its performance on the task of desire.</p>
+<h2 id="0-训练"><a href="#0-训练" class="headerlink" title="0. 训练"></a>0. 训练</h2><p>分为两个网络，controller选择设计子网络的架构，<br>子网络是一个entire网络的一个子图</p>
+<p>分为两种参数 RNN的参数$\theta$ sample网络的$w$<br>分别使用adam 在validation set训练<br>SGD在training set上面训练</p>
+<h2 id="1-RNN-cells的设计"><a href="#1-RNN-cells的设计" class="headerlink" title="1. RNN cells的设计"></a>1. RNN cells的设计</h2><p>controller设计</p>
+<ol>
+<li>当前节点连接的前一个节点</li>
+<li>使用什么激活函数(relu, sigmod, tanh, identity)4种</li>
+</ol>
+<p><img src="/2020/02/09/03-ENAS/01-rnn-cells.png" alt="rnn cells"></p>
+<p>search space:the search space has$4N × N!$configurations. In our experiments, N = 12,</p>
+<h2 id="2-cnn的设计"><a href="#2-cnn的设计" class="headerlink" title="2. cnn的设计"></a>2. cnn的设计</h2><p>controller设计</p>
+<ol>
+<li>当前节点连接的前一个节点</li>
+<li>使用什么计算函数(<code>conv3*3, conv5*5, sep3*3, sep5*5, maxpooling3*3, average pooling3*3</code>)6种</li>
+</ol>
+<p><img src="/2020/02/09/03-ENAS/02-cnn.png" alt="cnn"></p>
+<p>search space:<br>Making the described set of decisions for a total of L times, we can sample a network of L layers. Since all decisions are independent, there are 6L × 2L(L−1)/2 networks in the search space. In our experiments, L = 12, resulting in 1.6 × 1029 possible networks.</p>
+<h2 id="3-cnn-cells设计"><a href="#3-cnn-cells设计" class="headerlink" title="3. cnn cells设计"></a>3. cnn cells设计</h2><p>controller设计</p>
+<ol>
+<li>两个前置连接的节点</li>
+<li>两条边的计算种类(<code>identity, sep3*3, spe5*5, avepooling3*3, maxpooling3*3</code>) 5种</li>
+</ol>
+<p><img src="/2020/02/09/03-ENAS/03-cnn-cells.png" alt="cnn cells"></p>
+<p>search space:<br>Finally, we estimate the complexity of this search space.<br>At node i (3 ≤ i ≤ B), the controller can select any two nodes from the i − 1 previous nodes, and any two operations from 5 operations. As all decisions are independent, there are (5 × (B − 2)!)2 possible cells. Since we independently sample for a convolutional cell and a reduction cell, the final size of the search space is (5 × (B − 2)!) . With B = 7 as in our experiments, the search space can realize 1.3 × 1011 final networks, making it significantly smaller than the search space for entire convolutional networks</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/">&lt;i class&#x3D;&quot;fa-regular fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
+
+
+          </div>
+          
+
+
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">bansheng</p>
+              <p class="site-description motion-element" itemprop="description">嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/bansheng" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:dyadongcs@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/lemon-dong" target="_blank" title="Zhihu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Zhihu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bansheng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":null,"right width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>

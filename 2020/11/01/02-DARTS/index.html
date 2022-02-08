@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="NAS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. DARTS the computation procedure for an architecture (or a cell in it) is represented as a directed acyclic graph. 表示为有向图。 1.1 search space寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DARTS 可微分架构搜索">
+<meta property="og:url" content="https://bansheng.github.io/2020/11/01/02-DARTS/index.html">
+<meta property="og:site_name" content="Ingaong&#39;s Blogs">
+<meta property="og:description" content="1. DARTS the computation procedure for an architecture (or a cell in it) is represented as a directed acyclic graph. 表示为有向图。 1.1 search space寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bansheng.github.io/2020/11/01/02-DARTS/01-algorithm.png">
+<meta property="article:published_time" content="2020-11-01T05:43:04.000Z">
+<meta property="article:modified_time" content="2022-02-08T03:38:14.067Z">
+<meta property="article:author" content="bansheng">
+<meta property="article:tag" content="NAS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bansheng.github.io/2020/11/01/02-DARTS/01-algorithm.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://bansheng.github.io/2020/11/01/02-DARTS/"/>
+
+
+
+
+
+  <title>DARTS 可微分架构搜索 | Ingaong's Blogs</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ingaong's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Head forward.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-contact">
+          <a href="/contact/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            contact
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            Commonweal 404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/02-DARTS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ingaong's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DARTS 可微分架构搜索</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T13:43:04+08:00">
+                2020-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index">
+                    <span itemprop="name">Paper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-DARTS"><a href="#1-DARTS" class="headerlink" title="1. DARTS"></a>1. DARTS</h2><p> the computation procedure for an architecture (or a cell in it) is represented as a directed acyclic graph. 表示为有向图。</p>
+<h3 id="1-1-search-space"><a href="#1-1-search-space" class="headerlink" title="1.1 search space"></a>1.1 search space</h3><p>寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。</p>
+<p>cell是由N个有序序列node组成的有向无环图。每一条edge都是一个计算。我们假设这个cell有两个input和一个output，对于cnn，它就是前面两个层的输出，对于rnn，它是上个step的state以及这个step的Input。cell的输出是通过对所有中间节点应用reduction得到的。</p>
+<p>所有中间节点的计算依赖前置节点。<br>$$<br>x^{(j)} = \sum_{i&lt;j}o^{(i,j)}(x^{(i)})<br>$$<br>注意zero operation也是可以被允许的edge类型。</p>
+<h3 id="1-2-continuous-relaxation-and-optimization"><a href="#1-2-continuous-relaxation-and-optimization" class="headerlink" title="1.2 continuous relaxation and optimization"></a>1.2 continuous relaxation and optimization</h3><p>找到每一个操作对应的权重矩阵$\alpha^{(i,j)}$，这样所有的权重矩阵集合为$\alpha$，我们将NAS的任务减小为学习一个连续变量的集合$\alpha$。</p>
+<p>DARTS使用的是<strong>GD</strong>来优化validation loss。相似的有RL(<a href>Learning transferable architectures for scalable image recognition</a>)，EA(<a href>Hierarchical representations for efficient architecture search</a>)</p>
+<p>NAS的目标是找到$\alpha^<em>$使得validation loss$L_{val}(w^</em>, \alpha^<em>)$最小，$w^</em>$是使得training loss$L_{train}(w, \alpha^<em>)$最小的w。<br>$$<br>min_{\alpha} L_{val}(w^</em>(\alpha), \alpha) \<br>s.t. w^*(\alpha) = argmin_w L_{train}(w, \alpha)<br>$$<br><img src="/2020/11/01/02-DARTS/01-algorithm.png" alt="algorithm"></p>
+<h3 id="1-3-approximate-architecture-gradient"><a href="#1-3-approximate-architecture-gradient" class="headerlink" title="1.3 approximate architecture gradient"></a>1.3 approximate architecture gradient</h3><p>$$<br>\begin{aligned} &amp; \nabla_{\alpha} \mathcal{L}<em>{v a l}\left(w^{*}(\alpha), \alpha\right) \ \approx &amp; \nabla</em>{\alpha} \mathcal{L}<em>{v a l}\left(w-\xi \nabla</em>{w} \mathcal{L}_{t r a i n}(w, \alpha), \alpha\right) \end{aligned}<br>$$</p>
+<p>运用chain rule。将上式进一步处理。<br>$$<br>\triangledown_\alpha L_{val}(w’, \alpha - \xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha) \triangledown_{w’}L_{val}(w’, \alpha))<br>$$<br>其中的$w’ = w - \xi\triangledown_w L_{train}(w, \alpha)$指的就是one-step forward model。</p>
+<p>使用the finite difference approximation(有限差分近似)可以减少复杂度。<br>$$<br>\epsilon 是极小量 \<br>w^{\pm} = w \pm \epsilon \triangledown_{w’}L_{val}(w’, \alpha) \<br>\xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha) \triangledown_{w’}L_{val}(w’, \alpha)) \approx \frac{\triangledown_\alpha L_{train}(w^{+}, \alpha) - \triangledown_\alpha L_{train}(w^{-}, \alpha)}{2\xi}<br>$$<br>将$\xi = 0$作为一阶近似，将$\xi &gt; 0$作为两阶近似。</p>
+<h3 id="1-4-deriving-discrete-architecture"><a href="#1-4-deriving-discrete-architecture" class="headerlink" title="1.4 deriving discrete architecture"></a>1.4 deriving discrete architecture</h3><p>在所有非0的候选operations保留top-k strongest operations，为了使得出的网络可以和现有网络比较，我们选择k=2 for cnn, k=1 for rnn。</p>
+<p>为什么不使用zero operation呢？</p>
+<ol>
+<li>为了与现有模型进行公平的比较，我们需要每个节点恰好有k条非零的引入边</li>
+<li>因为增加零操作的logits只会影响结果节点表示的规模，由于BN处理的存在而不会而影响最终的分类结果</li>
+</ol>
+<h2 id="2-Experiments-and-results"><a href="#2-Experiments-and-results" class="headerlink" title="2. Experiments and results"></a>2. Experiments and results</h2><h3 id="2-1-architecture-search"><a href="#2-1-architecture-search" class="headerlink" title="2.1 architecture search"></a>2.1 architecture search</h3><h4 id="2-1-1-search-for-convolutional-cells-on-cifar-10"><a href="#2-1-1-search-for-convolutional-cells-on-cifar-10" class="headerlink" title="2.1.1 search for convolutional cells on cifar-10"></a>2.1.1 search for convolutional cells on cifar-10</h4><p>包含8种operation。 3 × 3 and 5 × 5 separable convolutions, 3 × 3 and 5 × 5 dilated separable convolutions, 3 × 3 max pooling, 3 × 3 average pooling, identity, and zero。</p>
+<p>We use the ReLU-Conv-BN order for convolutional operations, and each separable convolution is always applied twice</p>
+<p>在整个网络的1/3和2/3处，设立reduce cell。缩小空间分辨率。</p>
+<h4 id="2-1-2-searching-for-recurrent-cells-for-penn-treebank"><a href="#2-1-2-searching-for-recurrent-cells-for-penn-treebank" class="headerlink" title="2.1.2 searching for recurrent cells for penn treebank"></a>2.1.2 searching for recurrent cells for penn treebank</h4><p>operation的种类：linear transformations followed by one of tanh, relu, sigmoid activations, as well as the identity mapping and the <em>zero</em> operation.</p>
+<p>总共12个node，最初的intermediate node是由两个input node通过线性变换，求和，然后传过一个tanh激活函数得到的。</p>
+<h3 id="2-2-architecture-evaluation"><a href="#2-2-architecture-evaluation" class="headerlink" title="2.2 architecture evaluation"></a>2.2 architecture evaluation</h3><p><strong>寻找多次，避免初始化的影响</strong> 。从cifar-10上迁移到imagenet上，从PTB上迁移到wikitext-2上。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NAS/" rel="tag"># NAS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/01/01-AutoML/" rel="next" title="AutoML自动机器学习">
+                <i class="fa fa-chevron-left"></i> AutoML自动机器学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/11/01/04-HREAS/" rel="prev" title="hierarchical representations for efficient architecture search">
+                hierarchical representations for efficient architecture search <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">bansheng</p>
+              <p class="site-description motion-element" itemprop="description">嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/bansheng" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:dyadongcs@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/lemon-dong" target="_blank" title="Zhihu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Zhihu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-DARTS"><span class="nav-number">1.</span> <span class="nav-text">1. DARTS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-search-space"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 search space</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-continuous-relaxation-and-optimization"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 continuous relaxation and optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-approximate-architecture-gradient"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 approximate architecture gradient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-deriving-discrete-architecture"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 deriving discrete architecture</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Experiments-and-results"><span class="nav-number">2.</span> <span class="nav-text">2. Experiments and results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-architecture-search"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 architecture search</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-search-for-convolutional-cells-on-cifar-10"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 search for convolutional cells on cifar-10</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-searching-for-recurrent-cells-for-penn-treebank"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 searching for recurrent cells for penn treebank</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-architecture-evaluation"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 architecture evaluation</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bansheng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":null,"right width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>
