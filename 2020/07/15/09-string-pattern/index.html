@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 6.0.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"dydcoding.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"dydcoding.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="字符子串匹配算法">
@@ -106,6 +106,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -145,11 +146,43 @@
     <a href="/contact/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>contact</a>
 
   </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -159,6 +192,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
 
     <main class="main">
@@ -257,14 +291,14 @@
 </tbody></table>
 <h3 id="1-1-1-朴素匹配算法"><a href="#1-1-1-朴素匹配算法" class="headerlink" title="1.1.1 朴素匹配算法"></a>1.1.1 朴素匹配算法</h3><p>暴力求解</p>
 <h3 id="1-1-2-Robin-Karp算法"><a href="#1-1-2-Robin-Karp算法" class="headerlink" title="1.1.2 Robin-Karp算法"></a>1.1.2 Robin-Karp算法</h3><p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。<br>选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中 $0&lt;m&lt;n$，$Hash(t[i,j])$代表字符串t[i, j]的哈希值。</p>
-<p>当 $Hash(t[0, m-1])!=Hash(p[0,m-1])$ 时，我们很自然的会把 $Hash(t[1, m])$ 拿过来继续比较。在这个过程中，若我们重新计算字符串t[1, m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0, m-1]与t[1, m]中有 m-1 个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为 O(1)。</p>
+<p>当 $Hash(t[0, m-1])!&#x3D;Hash(p[0,m-1])$ 时，我们很自然的会把 $Hash(t[1, m])$ 拿过来继续比较。在这个过程中，若我们重新计算字符串t[1, m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0, m-1]与t[1, m]中有 m-1 个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为 O(1)。</p>
 <p>Rabin-Karp 算法选用的滚动哈希函数主要是利用$Rabin fingerprint$的思想，举个例子，计算字符串t[0, m - 1]的哈希值的公式如下，</p>
-<p>$$Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+…+t[m−1]∗b_0$$</p>
+<p>$$Hash(t[0,m−1])&#x3D;t[0]∗b_{m−1}+t[1]∗b_{m−2}+…+t[m−1]∗b_0$$</p>
 <p>其中的 b_k 可以是一个常数，在 Rabin-Karp 算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取 101。</p>
 <p>则计算字符串t[1, m]的哈希值公式如下，</p>
-<p>$$Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0$$</p>
+<p>$$Hash(t[1,m])&#x3D;(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0$$</p>
 <h3 id="1-1-3-KMP算法"><a href="#1-1-3-KMP算法" class="headerlink" title="1.1.3 KMP算法"></a>1.1.3 KMP算法</h3><p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p>
-<p><a href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html" target="_blank" rel="noopener">阮一峰KMP算法</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html">阮一峰KMP算法</a></p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true">#KMP</span>
 <span class="token keyword">def</span> <span class="token function">kmp_match</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">:</span>
     m <span class="token operator">=</span> len<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span> n <span class="token operator">=</span> len<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
@@ -287,9 +321,10 @@
     ret <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
     <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>len<span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
         prefix<span class="token punctuation">.</span>add<span class="token punctuation">(</span>p<span class="token punctuation">[</span><span class="token punctuation">:</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
-        postfix <span class="token operator">=</span> <span class="token punctuation">{</span>p<span class="token punctuation">[</span>j<span class="token punctuation">:</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> j <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
-        ret<span class="token punctuation">.</span>append<span class="token punctuation">(</span>len<span class="token punctuation">(</span><span class="token punctuation">(</span>prefix<span class="token operator">&amp;</span>postfix <span class="token operator">or</span> <span class="token punctuation">{</span><span class="token string">''</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>pop<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> ret<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+        postfix <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;p[j:i+1] for j in range(1,i+1)&amp;#125;</span>
+        ret<span class="token punctuation">.</span>append<span class="token punctuation">(</span>len<span class="token punctuation">(</span><span class="token punctuation">(</span>prefix<span class="token operator">&amp;</span>postfix <span class="token operator">or</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;''&amp;#125;).pop()))</span>
+    <span class="token keyword">return</span> ret
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -373,7 +408,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-字符串匹配算法"><span class="nav-number">1.</span> <span class="nav-text">1.1 字符串匹配算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-朴素匹配算法"><span class="nav-number">1.1.</span> <span class="nav-text">1.1.1 朴素匹配算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-Robin-Karp算法"><span class="nav-number">1.2.</span> <span class="nav-text">1.1.2 Robin-Karp算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-KMP算法"><span class="nav-number">1.3.</span> <span class="nav-text">1.1.3 KMP算法</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">1.1 字符串匹配算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-%E6%9C%B4%E7%B4%A0%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1.1 朴素匹配算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-Robin-Karp%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">1.1.2 Robin-Karp算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-KMP%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">1.1.3 KMP算法</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -433,7 +468,7 @@
       <div class="footer-inner">
         
 
-        
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <div class="copyright">
   
@@ -446,6 +481,12 @@
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
+
+
+  <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+
 
         
 
@@ -541,6 +582,10 @@ window.addEventListener('pjax:success', () => {
   
 
 
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 

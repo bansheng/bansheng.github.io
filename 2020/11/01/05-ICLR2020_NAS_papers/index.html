@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 6.0.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"dydcoding.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"dydcoding.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="节选了ICLR2020部分NAS投稿论文解读">
@@ -27,16 +27,16 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="节选了ICLR2020部分NAS投稿论文解读">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/12-PC-DARTS.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/01-pdarts1.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/14-in_four_hours.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/16-snas.png">
+<meta property="og:image" content="https://dydcoding.cn/05-ICLR2020_NAS_papers/12-PC-DARTS.png">
+<meta property="og:image" content="https://dydcoding.cn/05-ICLR2020_NAS_papers/01-pdarts1.png">
+<meta property="og:image" content="https://dydcoding.cn/05-ICLR2020_NAS_papers/14-in_four_hours.png">
+<meta property="og:image" content="https://dydcoding.cn/05-ICLR2020_NAS_papers/16-snas.png">
 <meta property="article:published_time" content="2020-11-01T06:00:54.000Z">
 <meta property="article:modified_time" content="2022-02-08T07:36:35.372Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="NAS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/12-PC-DARTS.png">
+<meta name="twitter:image" content="https://dydcoding.cn/05-ICLR2020_NAS_papers/12-PC-DARTS.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/">
 
@@ -111,6 +111,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -150,11 +151,43 @@
     <a href="/contact/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>contact</a>
 
   </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -164,6 +197,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
 
     <main class="main">
@@ -232,10 +266,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters"><a href="#1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters" class="headerlink" title="1.stabilizing DARTS with Amended grarident estimation on architectural parameters"></a>1.stabilizing DARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。<br>$$<br>\mathbf{g}<em>{2}^{\prime}=-\left.\left.\eta \cdot \nabla</em>{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\boldsymbol{\omega}=\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>$$</p>
+        <h2 id="1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters"><a href="#1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters" class="headerlink" title="1.stabilizing DARTS with Amended grarident estimation on architectural parameters"></a>1.stabilizing DARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。<br>$$<br>\mathbf{g}<em>{2}^{\prime}&#x3D;-\left.\left.\eta \cdot \nabla</em>{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\boldsymbol{\omega}&#x3D;\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>$$</p>
 <p>提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为$g_1$，通过梯度的反向传播得到。第二部分称为$g_2$，更合理的近似为$g_2’$。</p>
-<p>$$<br>\begin{aligned}<br>\nabla_{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}), \boldsymbol{\alpha}\right)|</em>{\boldsymbol{\alpha}=\boldsymbol{\alpha}<em>{t}} =&amp; \nabla</em>{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\boldsymbol{\omega}=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} -<br>\<br>&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega},<br>\boldsymbol{\alpha})|</em>{\omega=\boldsymbol{\omega}^{</em>}<br>\left(\boldsymbol{\alpha}<em>{t}\right),<br>\boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
-<p>$$<br>\begin{aligned}<br>\left\langle\mathbf{g}<em>{2}^{\prime}, \mathbf{g}</em>{2}\right\rangle=&amp;\left.\left.\eta \cdot \nabla_{\omega} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\omega^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} ^{\top} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}, \boldsymbol{\alpha}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \ &amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\omega^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
+<p>$$<br>\begin{aligned}<br>\nabla_{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}), \boldsymbol{\alpha}\right)|</em>{\boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}<em>{t}} &#x3D;&amp; \nabla</em>{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\boldsymbol{\omega}&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} -<br>\<br>&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega},<br>\boldsymbol{\alpha})|</em>{\omega&#x3D;\boldsymbol{\omega}^{</em>}<br>\left(\boldsymbol{\alpha}<em>{t}\right),<br>\boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\omega&#x3D;\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
+<p>$$<br>\begin{aligned}<br>\left\langle\mathbf{g}<em>{2}^{\prime}, \mathbf{g}</em>{2}\right\rangle&#x3D;&amp;\left.\left.\eta \cdot \nabla_{\omega} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\omega^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} ^{\top} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}, \boldsymbol{\alpha}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \ &amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega&#x3D;\omega^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}&#x3D;\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
 <p>并证明$g_2’$与$g_2$的乘积恒大于0，也就是夹角小于90度。</p>
 <h2 id="2-DARTS-Improved-Differentiable-Architecture-Search-with-Early-Stopping"><a href="#2-DARTS-Improved-Differentiable-Architecture-Search-with-Early-Stopping" class="headerlink" title="2. DARTS+: Improved Differentiable Architecture Search with Early Stopping"></a>2. DARTS+: Improved Differentiable Architecture Search with Early Stopping</h2><p>随着epoch数量的增多，DARTS倾向于skip-connection，造成模型的表现下降</p>
 <p>提出一种提前停止训练的标准，让模型搜索提前停止。</p>
@@ -244,10 +278,10 @@
 <li>当模型中的$\alpha$参数的排列顺序不再发生改变的时候($\alpha$的值是各个Primitives的概率)</li>
 </ol>
 <h2 id="3-PC-DARTS"><a href="#3-PC-DARTS" class="headerlink" title="3. PC-DARTS"></a>3. PC-DARTS</h2><p>uses partial- channel connections to reduce search time,</p>
-<p><img src="/2020/11/01/05-ICLR2020_NAS_papers/12-PC-DARTS.png" alt="PC-DARTS"></p>
+<p><img src="/05-ICLR2020_NAS_papers/12-PC-DARTS.png" alt="PC-DARTS"></p>
 <ol>
 <li><p>Partial Channel Connections</p>
-<p>只将1/K 的channels使用primitives连接，其余的channels选择直接连接，也就是，从$node_i$到$node_j$的边中，选出一部分channel使用非identity的方式连接，其余的使用identity，经过非identity方式的channel乘以softmax以后的$\alpha$权重相加，再和原来的channel一起concat。<strong>这样做的处理，是希望占用的内存更小，使用更大的batch_size，提升训练和模型表现。</strong></p>
+<p>只将1&#x2F;K 的channels使用primitives连接，其余的channels选择直接连接，也就是，从$node_i$到$node_j$的边中，选出一部分channel使用非identity的方式连接，其余的使用identity，经过非identity方式的channel乘以softmax以后的$\alpha$权重相加，再和原来的channel一起concat。<strong>这样做的处理，是希望占用的内存更小，使用更大的batch_size，提升训练和模型表现。</strong></p>
 <p>削弱了weight-free操作的影响。</p>
 </li>
 <li><p>Edge Normalization</p>
@@ -255,18 +289,18 @@
 </li>
 </ol>
 <h2 id="4-P-DARTS"><a href="#4-P-DARTS" class="headerlink" title="4. P-DARTS"></a>4. P-DARTS</h2><p>将layer的数目慢慢增加。</p>
-<p><img src="/2020/11/01/05-ICLR2020_NAS_papers/01-pdarts1.png" alt="P-DARTS"></p>
+<p><img src="/05-ICLR2020_NAS_papers/01-pdarts1.png" alt="P-DARTS"></p>
 <ol>
 <li>searching for 25 epochs instead of 50 epochs,</li>
 <li>adopting <em>dropout</em> after <em>skip-connect</em>s</li>
 <li>manually reducing the number of <em>skip-connect</em>s to two</li>
 </ol>
 <p>修剪<em>skip-connection</em>的数目操作只能发生在第一个</p>
-<h2 id="5-Searching-for-A-Robust-Neural-Architecture-in-Four-GPU-Hours"><a href="#5-Searching-for-A-Robust-Neural-Architecture-in-Four-GPU-Hours" class="headerlink" title="5. Searching for A Robust Neural Architecture in Four GPU Hours"></a>5. Searching for A Robust Neural Architecture in Four GPU Hours</h2><p><img src="/2020/11/01/05-ICLR2020_NAS_papers/14-in_four_hours.png" alt="overview"></p>
+<h2 id="5-Searching-for-A-Robust-Neural-Architecture-in-Four-GPU-Hours"><a href="#5-Searching-for-A-Robust-Neural-Architecture-in-Four-GPU-Hours" class="headerlink" title="5. Searching for A Robust Neural Architecture in Four GPU Hours"></a>5. Searching for A Robust Neural Architecture in Four GPU Hours</h2><p><img src="/05-ICLR2020_NAS_papers/14-in_four_hours.png" alt="overview"></p>
 <p>每次只计算最大权重的梯度，只BP最大权重的梯度，以此来减少计算量和GPU显存。</p>
 <h2 id="6-ProxylessNAS"><a href="#6-ProxylessNAS" class="headerlink" title="6. ProxylessNAS"></a>6. ProxylessNAS</h2><p>ProxylessNAS 不同于以前的在代理数据集上面进行搜索以后转移到大数据集类似ImageNet上面进行训练测试，而是直接在大数据集上面进行搜索，它的搜素的算子数目被大大减少以减小搜索的空间，降低搜索的难度。</p>
 <h2 id="7-SNAS"><a href="#7-SNAS" class="headerlink" title="7. SNAS"></a>7. SNAS</h2><p>SNAS故事讲的不一样，但是本质上来说，跟DARTS基本一样的原理，即使用operation的加权和来代替单独的operation。<br>它使用了gumble-softmax trick，<strong>使用概率采样出的权值而不是固定的权值来计算加权和</strong>，同时增加temperature，使得采样出的权值更加接近one-hot的权值，来拟合单独的operation。</p>
-<p><img src="/2020/11/01/05-ICLR2020_NAS_papers/16-snas.png" alt="snas"></p>
+<p><img src="/05-ICLR2020_NAS_papers/16-snas.png" alt="snas"></p>
 
     </div>
 
@@ -410,7 +444,7 @@
       <div class="footer-inner">
         
 
-        
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <div class="copyright">
   
@@ -423,6 +457,12 @@
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
+
+
+  <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+
 
         
 
@@ -518,6 +558,10 @@ window.addEventListener('pjax:success', () => {
   
 
 
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 

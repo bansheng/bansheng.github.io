@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 6.0.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"dydcoding.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"dydcoding.cn","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="联邦学习概述">
@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="联邦学习概述">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/10-FL/01-FL_problem.png">
+<meta property="og:image" content="https://dydcoding.cn/10-FL/01-FL_problem.png">
 <meta property="article:published_time" content="2020-11-01T06:14:59.000Z">
 <meta property="article:modified_time" content="2022-02-08T07:36:35.395Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="Federated Learning">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/2020/11/01/10-FL/01-FL_problem.png">
+<meta name="twitter:image" content="https://dydcoding.cn/10-FL/01-FL_problem.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/11/01/10-FL/">
 
@@ -108,6 +108,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -147,11 +148,43 @@
     <a href="/contact/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>contact</a>
 
   </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -161,6 +194,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
 
     <main class="main">
@@ -230,7 +264,7 @@
 
       
         <p>Examples of potential applications include: learning sentiment, semantic location, or activities of mobile phone users; adapting to pedestrian behavior in autonomous vehicles; and predicting health events like heart attack risk from wearable devices [6, 52, 84].</p>
-<h2 id="1-Overview"><a href="#1-Overview" class="headerlink" title="1. Overview"></a>1. Overview</h2><h3 id="1-1-问题定义"><a href="#1-1-问题定义" class="headerlink" title="1.1 问题定义"></a>1.1 问题定义</h3><p><img src="/2020/11/01/10-FL/01-FL_problem.png" alt="problem definition"><br>简单来说，就是说联邦学习的目标是训练一个”尽可能接近把各个节点数据聚合起来训练”的模型。</p>
+<h2 id="1-Overview"><a href="#1-Overview" class="headerlink" title="1. Overview"></a>1. Overview</h2><h3 id="1-1-问题定义"><a href="#1-1-问题定义" class="headerlink" title="1.1 问题定义"></a>1.1 问题定义</h3><p><img src="/10-FL/01-FL_problem.png" alt="problem definition"><br>简单来说，就是说联邦学习的目标是训练一个”尽可能接近把各个节点数据聚合起来训练”的模型。</p>
 <h3 id="1-2-典型应用"><a href="#1-2-典型应用" class="headerlink" title="1.2 典型应用"></a>1.2 典型应用</h3><ul>
 <li>smart phone</li>
 <li>Organizations</li>
@@ -279,12 +313,10 @@
 <ol>
 <li><p>Secure Multi-party Computation (SMC) 安全的多方计算<br> 各方除了输入和输出外一无所知</p>
 <ul>
-<li><p>复杂的计算协议</p>
-</li>
-<li><p>如果提供安全保证，则部分知识公开可能被认为是可以接受的</p>
-<p>要求参与者的数据在非冲突服务器之间秘密共享</p>
-</li>
+<li>复杂的计算协议</li>
+<li>如果提供安全保证，则部分知识公开可能被认为是可以接受的</li>
 </ul>
+<p> 要求参与者的数据在非冲突服务器之间秘密共享</p>
 </li>
 <li><p>Differential Privacy 差异隐私<br> 向数据添加噪音，或使用归纳方法遮盖某些敏感属性，直到第三方无法区分个人</p>
 <ul>
@@ -302,7 +334,7 @@
 <h2 id="3-future-directions"><a href="#3-future-directions" class="headerlink" title="3. future directions"></a>3. future directions</h2><ol>
 <li>Extreme communication schemes<ul>
 <li>one- shot or divide-and-conquer communication schemes</li>
-<li>one-shot/few-shot heuristics</li>
+<li>one-shot&#x2F;few-shot heuristics</li>
 </ul>
 </li>
 <li>Communication reduction and the Pareto frontier<ul>
@@ -423,7 +455,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Overview"><span class="nav-number">1.</span> <span class="nav-text">1. Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-问题定义"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-典型应用"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 典型应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-主要挑战"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 主要挑战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-related-and-current-work"><span class="nav-number">2.</span> <span class="nav-text">2. related and current work</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Communication-efficiency"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Communication-efficiency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Systems-Heterogeneity"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Systems Heterogeneity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Statistical-Heterogeneity"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Statistical Heterogeneity</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-Modeling-heterogeneous-Data"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1 Modeling heterogeneous Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-Convergence-Guarantees-for-Non-IID-Data"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2 Convergence Guarantees for Non-IID Data</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Ptivacy"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 Ptivacy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-1-privacy-in-Machine-learning"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 privacy in Machine learning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-2-Privacy-in-Federated-Learning"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 Privacy in Federated Learning</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-future-directions"><span class="nav-number">3.</span> <span class="nav-text">3. future directions</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Overview"><span class="nav-number">1.</span> <span class="nav-text">1. Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 典型应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E4%B8%BB%E8%A6%81%E6%8C%91%E6%88%98"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 主要挑战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-related-and-current-work"><span class="nav-number">2.</span> <span class="nav-text">2. related and current work</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Communication-efficiency"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Communication-efficiency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Systems-Heterogeneity"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Systems Heterogeneity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Statistical-Heterogeneity"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Statistical Heterogeneity</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-Modeling-heterogeneous-Data"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1 Modeling heterogeneous Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-Convergence-Guarantees-for-Non-IID-Data"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2 Convergence Guarantees for Non-IID Data</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Ptivacy"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 Ptivacy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-1-privacy-in-Machine-learning"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 privacy in Machine learning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-2-Privacy-in-Federated-Learning"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 Privacy in Federated Learning</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-future-directions"><span class="nav-number">3.</span> <span class="nav-text">3. future directions</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -483,7 +515,7 @@
       <div class="footer-inner">
         
 
-        
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <div class="copyright">
   
@@ -496,6 +528,12 @@
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
+
+
+  <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  <span class="post-meta-divider">|</span>
+  <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+
 
         
 
@@ -591,6 +629,10 @@ window.addEventListener('pjax:success', () => {
   
 
 
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 
