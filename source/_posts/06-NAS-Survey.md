@@ -25,7 +25,7 @@ NAS的方法分为三类：
 2. search strategy
 3. performance estimation strategy
 
-![NAS methods](06-NAS-Survey/01-NAS-methods.png)
+![](https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png)
 
 + Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了search space，同时也可能漏掉超出人类认知的架构
 + Search Strategy.搜索策略详细描述了如何探索搜索空间(通常是指数级大的，甚至是无界的)。它包含了物理的探索-利用权衡，因为一方面，快速找到性能良好的架构是可取的，而另一方面，应该避免过早地收敛到次优架构的区域。
@@ -36,7 +36,7 @@ NAS的方法分为三类：
 
 ### chain-structured neural network architecture
 
-![chain](06-NAS-Survey/09-chain.png)
+![](https://s2.loli.net/2022/02/08/xBnSYOeg3GVafry.png)
 搜索空间的影响因素
 
 1. 层的数目
@@ -45,7 +45,7 @@ NAS的方法分为三类：
 
 ### cell-based model
 
-![cell](06-NAS-Survey/10-cell.png)
+![](https://s2.loli.net/2022/02/08/P2AJEhNYIbfxSXv.png)
 
 + normal cell
 + reduction cell
@@ -97,7 +97,7 @@ how many cells shall be used and how should they be connected to build the actua
 
 ## 3. Performance Estimation Strategy
 
-![speed-up method](06-NAS-Survey/11-overview_of_different_methods_for_speeding_up.png)
+![](https://s2.loli.net/2022/02/08/HdpxLUvrX9DFSyZ.png)
 
 ## 4. directions
 

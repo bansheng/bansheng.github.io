@@ -8,18 +8,18 @@ date: 2020-11-01 14:00:54
 password:
 description: 节选了ICLR2020部分NAS投稿论文解读
 tags: NAS
-categories: Papers
+categories: Paper
 ---
 
 ## 1.stabilizing DARTS with Amended grarident estimation on architectural parameters
 
 将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。
-$$
-\mathbf{g}_{2}^{\prime}=-\left.\left.\eta \cdot \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}_{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\boldsymbol{\omega}=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
-$$
+
+$$\begin{equation}
+\mathbf{g}_{2}^{\prime}=-\left.\left.\eta \cdot \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}_{\text {train }}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}_{\text {val }}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\boldsymbol{\omega}=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
+\end{equation}$$
 
 提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为$g_1$，通过梯度的反向传播得到。第二部分称为$g_2$，更合理的近似为$g_2'$。
-
 $$
 \begin{aligned}
 \nabla_{\boldsymbol{\alpha}} \mathcal{L}_{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}), \boldsymbol{\alpha}\right)|_{\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} =& \nabla_{\boldsymbol{\alpha}} \mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|_{\boldsymbol{\omega}=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} -
@@ -30,13 +30,11 @@ $$
 \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
 \end{aligned}
 $$
-
 $$
 \begin{aligned}
 \left\langle\mathbf{g}_{2}^{\prime}, \mathbf{g}_{2}\right\rangle=&\left.\left.\eta \cdot \nabla_{\omega} \mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\omega=\omega^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} ^{\top} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}, \boldsymbol{\alpha}}^{2} \mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \\ &\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|_{\omega=\omega^{*}\left(\boldsymbol{\alpha}_{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
 \end{aligned}
 $$
-
 并证明$g_2'$与$g_2$的乘积恒大于0，也就是夹角小于90度。
 
 ## 2. DARTS+: Improved Differentiable Architecture Search with Early Stopping
@@ -52,7 +50,7 @@ $$
 
 uses partial- channel connections to reduce search time,
 
-![PC-DARTS](05-ICLR2020_NAS_papers/12-PC-DARTS.png)
+![](https://s2.loli.net/2022/02/08/UXSkptfxLQnYilV.png)
 
 1. Partial Channel Connections
 
@@ -68,7 +66,7 @@ uses partial- channel connections to reduce search time,
 
 将layer的数目慢慢增加。
 
-![P-DARTS](05-ICLR2020_NAS_papers/01-pdarts1.png)
+![](https://s2.loli.net/2022/02/08/KfydxUwRnXJpDVq.png)
 
 1. searching for 25 epochs instead of 50 epochs,
 2. adopting *dropout* after *skip-connect*s
@@ -78,7 +76,7 @@ uses partial- channel connections to reduce search time,
 
 ## 5. Searching for A Robust Neural Architecture in Four GPU Hours
 
-![overview](05-ICLR2020_NAS_papers/14-in_four_hours.png)
+![](https://s2.loli.net/2022/02/08/er6QUMHciAq45nd.png)
 
 每次只计算最大权重的梯度，只BP最大权重的梯度，以此来减少计算量和GPU显存。
 
@@ -91,4 +89,6 @@ ProxylessNAS 不同于以前的在代理数据集上面进行搜索以后转移�
 SNAS故事讲的不一样，但是本质上来说，跟DARTS基本一样的原理，即使用operation的加权和来代替单独的operation。
 它使用了gumble-softmax trick，**使用概率采样出的权值而不是固定的权值来计算加权和**，同时增加temperature，使得采样出的权值更加接近one-hot的权值，来拟合单独的operation。
 
-![snas](05-ICLR2020_NAS_papers/16-snas.png)
+SNAS论文里面证明了，使用这种方式采样进行优化的过程，近似等价于强化学习采样网络学习进行优化的过程
+
+![](https://s2.loli.net/2022/02/08/TVlXyQ7DapMkLiC.png)

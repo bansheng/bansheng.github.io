@@ -65,7 +65,7 @@ categories: Survey
 2. 异构图：即图中存在多种类型的节点。处理异构图的最简单方法是将每个节点的类型转换为与原始特征连接的 one-hot 特征向量。
 3. 带有边信息的图：即图中的每条边也存在权重或类型等信息。这种类型的图有两种解决办法，一种是将图形转化为二部图，原始边也作为节点，并将其分割成两条新的边，分别连接原始边的两端节点；第二种方法是调整不同的权重矩阵，以便在不同类型的边缘上传播。
 
-![graph types](07-gnn-review1/01-graph_types.png)
+![](https://s2.loli.net/2022/02/08/U5n17s9Ode3Pbiq.png)
 
 #### 2.2.2 传播类型
 
@@ -76,7 +76,7 @@ categories: Survey
 3. 门机制。这些变体将门机制应用于节点更新阶段。Gated graph neural network 将 GRU 机制应用于节点更新。很多工作致力于将 LSTM 应用于不同类型的图上，根据具体情境的不同，可以分为 Tree LSTM、Graph LSTM 和 Sentence LSTM 等。
 4. 残差连接。注意到堆叠多层图神经网络可能引起信息平滑的问题，很多工作将残差机制应用于图神经网络中，文中介绍了 Highway GNN 和 Jump Knowledge Network 两种不同的处理方式
 
-![propagation types](07-gnn-review1/02-propagation_types.png)
+![](https://s2.loli.net/2022/02/08/KS7JX1uljVzvcbA.png)
 
 #### 2.2.3 训练方法
 
@@ -101,7 +101,7 @@ categories: Survey
 
 ## 3. 应用
 
-![applications](07-gnn-review1/03-applications.png)
+![](https://s2.loli.net/2022/02/08/Yq8MQOcyP7D1tZ4.png)
 
 ## 4. 开放性问题
 

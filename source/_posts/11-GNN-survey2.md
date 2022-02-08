@@ -30,7 +30,7 @@ GNN vs 图嵌入
    2. 随机游走
    3. 深度学习
 
-![network embedding](11-GNN-survey2/04-network_embedding.png)
+![](https://s2.loli.net/2022/02/08/KJHiDeqxzIypEda.png)
 
 ## 2 GNN分类及框架
 
@@ -42,14 +42,14 @@ GNN vs 图嵌入
 
 GCNs将传统数据的卷积算子泛化到图数据，这个算法的关键是学习一个函数$f$，能够结合$v_i$邻居节点的特征$X_j$和其本身特征$X_i$生成$v_i$的新表示.
 
-![GCN的多层变体](11-GNN-survey2/05-gcn_mlp.png)
-![GCN 构建网络](11-GNN-survey2/06-gcn_构建的网络.png)
+![](https://s2.loli.net/2022/02/08/LQsn6CPGMKwiTIX.png)
+![](https://s2.loli.net/2022/02/08/lJX7qUViS8F5hk3.png)
 
 #### 2.1.2 GAN
 
 GAN与GCN类似，致力于寻找一个聚合函数，融合图中相邻的节点，随机游动和候选模型，学习一种新的表示。**关键区别是：GAN使用注意力机制为更重要的节点，步或者模型分配更大的权重，权重个网络一起学习。**下图展示了GCN和GAN在聚合邻居节点信息时候的不同。
 
-![GAN](11-GNN-survey2/07-GAN.png)
+![](https://s2.loli.net/2022/02/08/dXy6H2wcZxfbDOR.png)
 
 #### 2.1.3 GAE
 
@@ -103,7 +103,7 @@ $$
 ### 3.2 基于空间的GCN
 
 分为基于循环和基于组合的GCNs。基于循环的GCN使用一个相同的GCL个更新隐含表示，基于组合GCN则使用不同的GCL更新隐含表示。
-![spatial gcn](11-GNN-survey2/08-spatial_GCN.png)
+![](https://s2.loli.net/2022/02/08/hTzZ3KFHLXjU6Wf.png)
 
 **基于循环的空间GCNs**
 基于递归的方法的主要思想是递归地更新节点的潜在表示，直到达到稳定的不动点。通过对循环函数施加约束、使用门循环单元架构、异步和随机更新节点潜在表示来实现。

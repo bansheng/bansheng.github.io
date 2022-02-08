@@ -31,7 +31,7 @@ controller设计
 1. 当前节点连接的前一个节点
 2. 使用什么激活函数(relu, sigmod, tanh, identity)4种
 
-![rnn cells](03-ENAS/01-rnn-cells.png)
+![](https://s2.loli.net/2022/02/08/YzISjdOGJL9Flke.png)
 
 search space:the search space has$4N × N!$configurations. In our experiments, N = 12,
 
@@ -42,7 +42,7 @@ controller设计
 1. 当前节点连接的前一个节点
 2. 使用什么计算函数(`conv3*3, conv5*5, sep3*3, sep5*5, maxpooling3*3, average pooling3*3`)6种
 
-![cnn](03-ENAS/02-cnn.png)
+![](https://s2.loli.net/2022/02/08/LfFwBabU9i1AvhS.png)
 
 search space:
 Making the described set of decisions for a total of L times, we can sample a network of L layers. Since all decisions are independent, there are 6L × 2L(L−1)/2 networks in the search space. In our experiments, L = 12, resulting in 1.6 × 1029 possible networks.
@@ -54,7 +54,7 @@ controller设计
 1. 两个前置连接的节点
 2. 两条边的计算种类(`identity, sep3*3, spe5*5, avepooling3*3, maxpooling3*3`) 5种
 
-![cnn cells](03-ENAS/03-cnn-cells.png)
+![](https://s2.loli.net/2022/02/08/ZMcOLn3kFSYilJs.png)
 
 search space:
 Finally, we estimate the complexity of this search space.

@@ -38,7 +38,7 @@ $$
 min_{\alpha} L_{val}(w^*(\alpha), \alpha) \\
 s.t. w^*(\alpha) = argmin_w L_{train}(w, \alpha)
 $$
-![algorithm](02-DARTS/01-algorithm.png)
+![](https://s2.loli.net/2022/02/08/QWc1fC3shg4q2tb.png)
 
 ### 1.3 approximate architecture gradient
 

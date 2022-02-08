@@ -13,7 +13,7 @@ categories: Paper
 
 分层设计，底层为一个个最基本的计算操作，顶层为整体架构。
 
-![hiarchical architecture representation](04-HREAS/01-hierarchical-architecture-representation.png)
+![](https://s2.loli.net/2022/02/08/O3EAIcUJZo7nKma.png)
 
 ## evolutionary architecture search
 
