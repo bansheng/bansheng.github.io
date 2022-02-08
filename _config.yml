@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Ingaong's Blogs
+title: 昔我往矣，杨柳依依。今我来思，雨雪霏霏。
 subtitle: 'Head forward.'
 description: '嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔'
 keywords:
@@ -13,7 +13,8 @@ timezone: ''
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://bansheng.github.io/
+# url: https://bansheng.github.io/
+url: https://dydcoding.cn/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -81,7 +82,7 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## Use post's date for updated date unless set in front-matter
-use_date_for_updated: false
+updated_option: false
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -97,7 +98,9 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
+plugins: hexo-generator-sitemap
 theme: next-new
+
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
