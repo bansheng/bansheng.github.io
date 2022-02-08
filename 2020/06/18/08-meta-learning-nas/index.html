@@ -27,18 +27,13 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="papers for nas using meta-learning">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/01-towards1.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/02-towards2.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/03-auto_meta.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/04-meta_architecture_search.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/05-MetAdapt.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/06-meta_learning_of_NAS4FS.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/GRloLut4PFAKsin.png">
 <meta property="article:published_time" content="2020-06-18T01:01:49.000Z">
-<meta property="article:modified_time" content="2022-02-08T07:36:35.433Z">
+<meta property="article:modified_time" content="2022-02-08T10:46:44.248Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="NAS, meta-learning">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/01-towards1.png">
+<meta name="twitter:image" content="https://s2.loli.net/2022/02/08/GRloLut4PFAKsin.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/06/18/08-meta-learning-nas/">
 
@@ -244,7 +239,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-08 15:36:35" itemprop="dateModified" datetime="2022-02-08T15:36:35+08:00">2022-02-08</time>
+                <time title="Modified: 2022-02-08 18:46:44" itemprop="dateModified" datetime="2022-02-08T18:46:44+08:00">2022-02-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -268,35 +263,49 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="towards-fast-adaptation-of-neural-architectures-with-meta-learning">1.
+        <h2
+id="towards-fast-adaptation-of-neural-architectures-with-meta-learning">1.
 Towards fast adaptation of neural architectures with meta learning</h2>
 <p><a target="_blank" rel="noopener" href="https://openreview.net/forum?id=r1eowANFvr">ICLR2020</a></p>
 <p>文章的的主要思想是，在meta-learning的setting上面，通过不同的task，学习一个可以泛化的architecture，然后在query集上面进行fune-tuning，微调这个结构，使得该结构对不同test
-task有良好的适用性。 <img src="/2020/06/18/08-meta-learning-nas/01-towards1.png" alt="towards"></p>
-<p>在mini-imagenet上面5-way的结果 <img src="/2020/06/18/08-meta-learning-nas/02-towards2.png" alt="towards_result"></p>
+task有良好的适用性。 <img
+src="https://s2.loli.net/2022/02/08/WdiwUbqfGHBDFO5.png" /></p>
+<p>在mini-imagenet上面5-way的结果 <img
+src="https://s2.loli.net/2022/02/08/DjiUZRg9dThlMSP.png" /></p>
 <h2 id="auto-meta-automated-gradient-based-meta-learner-search">2.
 Auto-Meta: Automated Gradient Based Meta Learner Search</h2>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1806.06927">https://arxiv.org/abs/1806.06927</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1806.06927">https://arxiv.org/abs/1806.06927</a>
+NIPS2018 workshop</p>
 <p>也是构造cell去stack起来，获取整个的network，但是一开始的cell并不是整个的supernet，而是在搜索的过程中，逐步往这个cell里面去添加opetator，<strong>然后使用一个predictor去预测这个cell的性能</strong>，选择top
-k性能的cell组成网络进行测试。 <img src="/2020/06/18/08-meta-learning-nas/03-auto_meta.png" alt="auto meta"></p>
+k性能的cell组成网络进行测试。 <img
+src="https://s2.loli.net/2022/02/08/vZe5xTgW9UGLHEJ.png" /></p>
 <h2 id="meta-architecture-search">3. Meta Architecture Search</h2>
-<p><a target="_blank" rel="noopener" href="https://openreview.net/forum?id=B1M0gBSlLB">NIPS19</a></p>
+<p><img src="https://s2.loli.net/2022/02/08/GRloLut4PFAKsin.png" /></p>
 <p>本文从Bayesian的角度，推理了一遍NAS的原理，提出用Coupled Variational
 Bayes (CVB)去生成参数的表达，同时进行了推理（hard
 math）。本质上来说，这篇工作基本上还是darts，不过它首先将meta
 learning的在imagenet上面获取的先验知识拿出来放到其他任务上去train。
 首先使用gumble_softmaxed darts(参见SNAS)，取得meta
-network的arch和init，然后针对不同任务进行fine tuning。 <img src="/2020/06/18/08-meta-learning-nas/04-meta_architecture_search.png" alt="meta as"></p>
-<h2 id="metadapt-meta-learned-task-adaptive-architecture-for-few-shot-classification">MetAdapt:
+network的arch和init，然后针对不同任务进行fine tuning。 <img
+src="08-meta-learning-nas/04-meta_architecture_search.png"
+alt="meta as" /></p>
+<h2
+id="metadapt-meta-learned-task-adaptive-architecture-for-few-shot-classification">MetAdapt:
 Meta-Learned Task-Adaptive Architecture for Few-Shot Classification</h2>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1912.00412">https://arxiv.org/abs/1912.00412</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1912.00412">https://arxiv.org/abs/1912.00412</a></p>
 <p>在darts的基础上，提出了一个MetAdapt
-Controllers，就是说，对于不同的task，产生不同的叠加权重 <img src="/2020/06/18/08-meta-learning-nas/05-MetAdapt.png" alt="MetAdapt"></p>
-<h2 id="meta-learning-of-neural-architectures-for-few-shot-learning">Meta-Learning
+Controllers，就是说，对于不同的task，产生不同的叠加权重 <img
+src="https://s2.loli.net/2022/02/08/7ZFXxTMz5uiRHD8.png" /></p>
+<h2
+id="meta-learning-of-neural-architectures-for-few-shot-learning">Meta-Learning
 of Neural Architectures for Few-Shot Learning</h2>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1911.11090">https://arxiv.org/abs/1911.11090</a>
+<p><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1911.11090">https://arxiv.org/abs/1911.11090</a>
 提出了gradient-based NAS + meta learning
-结合的框架，直接想把所有方法都框到自己下面。 <img src="/2020/06/18/08-meta-learning-nas/06-meta_learning_of_NAS4FS.png" alt="06-meta_learning_of_NAS4FS"></p>
+结合的框架，直接想把所有方法都框到自己下面。 <img
+src="https://s2.loli.net/2022/02/08/Y95WIqhJoeTRkAU.png" /></p>
 
     </div>
 

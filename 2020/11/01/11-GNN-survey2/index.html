@@ -27,17 +27,16 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="A Comprehensive Survey on Graph Neural Networks解读">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/11-GNN-survey2/04-network_embedding.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/11-GNN-survey2/05-gcn_mlp.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/11-GNN-survey2/06-gcn_构建的网络.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/11-GNN-survey2/07-GAN.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/11-GNN-survey2/08-spatial_GCN.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/KJHiDeqxzIypEda.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/LQsn6CPGMKwiTIX.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/dXy6H2wcZxfbDOR.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/hTzZ3KFHLXjU6Wf.png">
 <meta property="article:published_time" content="2020-11-01T06:34:26.000Z">
-<meta property="article:modified_time" content="2022-02-08T07:36:35.372Z">
+<meta property="article:modified_time" content="2022-02-08T10:52:31.187Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="GNN">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/2020/11/01/11-GNN-survey2/04-network_embedding.png">
+<meta name="twitter:image" content="https://s2.loli.net/2022/02/08/KJHiDeqxzIypEda.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/11/01/11-GNN-survey2/">
 
@@ -243,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-08 15:36:35" itemprop="dateModified" datetime="2022-02-08T15:36:35+08:00">2022-02-08</time>
+                <time title="Modified: 2022-02-08 18:52:31" itemprop="dateModified" datetime="2022-02-08T18:52:31+08:00">2022-02-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -284,22 +283,22 @@
 <li>随机游走</li>
 <li>深度学习</li>
 </ol>
-<figure>
-<img src="/2020/11/01/11-GNN-survey2/04-network_embedding.png" alt="network embedding">
-<figcaption aria-hidden="true">network embedding</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/KJHiDeqxzIypEda.png" /></p>
 <h2 id="gnn分类及框架">2 GNN分类及框架</h2>
 <p>五种类型 GCN GAN GAE GGN GSTN</p>
 <h3 id="分类">2.1 分类</h3>
 <h4 id="gcn">2.1.1 GCN</h4>
-<p>GCNs将传统数据的卷积算子泛化到图数据，这个算法的关键是学习一个函数<span class="math inline">\(f\)</span>，能够结合<span class="math inline">\(v_i\)</span>邻居节点的特征<span class="math inline">\(X_j\)</span>和其本身特征<span class="math inline">\(X_i\)</span>生成<span class="math inline">\(v_i\)</span>的新表示.</p>
-<p><img src="/2020/11/01/11-GNN-survey2/05-gcn_mlp.png" alt="GCN的多层变体"> <img src="/2020/11/01/11-GNN-survey2/06-gcn_构建的网络.png" alt="GCN 构建网络"></p>
+<p>GCNs将传统数据的卷积算子泛化到图数据，这个算法的关键是学习一个函数<span
+class="math inline">\(f\)</span>，能够结合<span
+class="math inline">\(v_i\)</span>邻居节点的特征<span
+class="math inline">\(X_j\)</span>和其本身特征<span
+class="math inline">\(X_i\)</span>生成<span
+class="math inline">\(v_i\)</span>的新表示.</p>
+<p><img src="https://s2.loli.net/2022/02/08/LQsn6CPGMKwiTIX.png" /> <img
+src="https://s2.loli.net/2022/02/08/lJX7qUViS8F5hk3.png" /></p>
 <h4 id="gan">2.1.2 GAN</h4>
 <p>GAN与GCN类似，致力于寻找一个聚合函数，融合图中相邻的节点，随机游动和候选模型，学习一种新的表示。<strong>关键区别是：GAN使用注意力机制为更重要的节点，步或者模型分配更大的权重，权重个网络一起学习。</strong>下图展示了GCN和GAN在聚合邻居节点信息时候的不同。</p>
-<figure>
-<img src="/2020/11/01/11-GNN-survey2/07-GAN.png" alt="GAN">
-<figcaption aria-hidden="true">GAN</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/dXy6H2wcZxfbDOR.png" /></p>
 <h4 id="gae">2.1.3 GAE</h4>
 <p>GAE是一种无监督学习框架，通过编码器学习一种低维点向量，然后通过解码器重构图数据。GAE是一种常用的学习图嵌入的方法，既适用于无属性信息的普通图，还适用于是有属性图。对于普通的图，大多数算法直接预先得到一个邻接矩阵，或者构建一个信息丰富的矩阵，也就是点对互信息矩阵，或者邻接矩阵填充自编码模型，并捕获一阶和二阶信息。对于属性图，图自编码模型利用GCN作为一个构建块用于编码，并且通过链路预测解码器重构结构信息。</p>
 <h4 id="ggn">2.1.4 GGN</h4>
@@ -335,13 +334,16 @@
 <p><span class="math display">\[
 x * G g_{\theta}=U g_{\theta} U^{T} x
 \]</span></p>
-<p>基于谱的GCN都遵循这个定义，不同的是滤波器<span class="math inline">\(g_{\theta}\)</span>的选择不同。</p>
+<p>基于谱的GCN都遵循这个定义，不同的是滤波器<span
+class="math inline">\(g_{\theta}\)</span>的选择不同。</p>
 <p><strong>缺陷</strong>
-首先，对图的任何扰动都会导致特征基的变化。其次，学习的过滤器依赖于不同领域，这意味着它们不能应用于具有不同结构的图。第三，特征分解需要<span class="math inline">\(O(N^3)\)</span>计算和<span class="math inline">\(O(N^2)\)</span>内存</p>
+首先，对图的任何扰动都会导致特征基的变化。其次，学习的过滤器依赖于不同领域，这意味着它们不能应用于具有不同结构的图。第三，特征分解需要<span
+class="math inline">\(O(N^3)\)</span>计算和<span
+class="math inline">\(O(N^2)\)</span>内存</p>
 <p>谱方法的一个常见缺点是需要将整个图加载到内存中进行图卷积，这在处理大图时效率不高。</p>
 <h3 id="基于空间的gcn">3.2 基于空间的GCN</h3>
 <p>分为基于循环和基于组合的GCNs。基于循环的GCN使用一个相同的GCL个更新隐含表示，基于组合GCN则使用不同的GCL更新隐含表示。
-<img src="/2020/11/01/11-GNN-survey2/08-spatial_GCN.png" alt="spatial gcn"></p>
+<img src="https://s2.loli.net/2022/02/08/hTzZ3KFHLXjU6Wf.png" /></p>
 <p><strong>基于循环的空间GCNs</strong>
 基于递归的方法的主要思想是递归地更新节点的潜在表示，直到达到稳定的不动点。通过对循环函数施加约束、使用门循环单元架构、异步和随机更新节点潜在表示来实现。</p>
 <p><strong>基于组合的空间GCNs</strong>
@@ -375,7 +377,8 @@ PPMI)或一阶和二阶近似。近期，研究员探索将GCN[作为编码器,�
 <p>这些方法都学习节点嵌入，但是DNGR和SDNE只给定拓扑结构，而GAE、ARGA、NetRA和DRNE不仅给定拓扑结构而且给定节点内容特性。图自编码的一个挑战是邻接矩阵的稀疏性，使解码器的正项数远少于负项数。为了解决这个问题，DNGR重构了一个更紧密的矩阵即PPMI矩阵，SDNE对邻接矩阵的零项进行了惩罚，GAE对邻接矩阵中的项进行了加权，NetRA将图线性化为序列。</p>
 <h3 id="图生成网络">4.3 图生成网络</h3>
 <p>图生成网络（GGN）的目标是，在给定一组观察到的图的前提下生成图。很多图生成方法是与特定领域相关的，例如，分子图生成，一些方法是对分子图进行字符串表示建模，叫做SMILES，自然语言处理，以给定的句子为条件生成语义图或者知识图。最近，提出了一些统一的生成方法，一些方法将生成过程看作交替生成节点和边，其他的方法利用生成对抗训练。GGN中的方法或者利用GCN作为构建块，或者使用不同的架构。</p>
-<p>对生成的图进行评估仍然是一个难题。与人工合成图像或者音频不同，他们能够直接被人类专家评估，生成的图的质量很难直观检测。MolGAN和DGMG利用外部知识来评估生成分子图的有效性。GraphRNN和NetGAN通过图统计信息(如节点度)评估生成的图形。DGMG和GraphRNN依次生成节点和边缘，MolGAN和NetGAN同时生成节点和边缘。根据[68]，前一种方法的缺点是当图变大时，对长序列建模是不现实的。后一种方法的挑战是很难控制图的全局属性。最近一种方法[68]采用变分自编码器通过生成邻接矩阵来生成图形，引入惩罚项来解决有效性约束。然而，由于具有n个节点的图的输出空间为<span class="math inline">\(n^2\)</span> ，这些方法都不能扩展到大型图。</p>
+<p>对生成的图进行评估仍然是一个难题。与人工合成图像或者音频不同，他们能够直接被人类专家评估，生成的图的质量很难直观检测。MolGAN和DGMG利用外部知识来评估生成分子图的有效性。GraphRNN和NetGAN通过图统计信息(如节点度)评估生成的图形。DGMG和GraphRNN依次生成节点和边缘，MolGAN和NetGAN同时生成节点和边缘。根据[68]，前一种方法的缺点是当图变大时，对长序列建模是不现实的。后一种方法的挑战是很难控制图的全局属性。最近一种方法[68]采用变分自编码器通过生成邻接矩阵来生成图形，引入惩罚项来解决有效性约束。然而，由于具有n个节点的图的输出空间为<span
+class="math inline">\(n^2\)</span> ，这些方法都不能扩展到大型图。</p>
 <h3 id="图时空网络">4.4 图时空网络</h3>
 <p>图时空网络同时捕获时空图的时空依赖性。时空图具有全局图结构，每个节点的输入随时间变化。例如，在交通网络中，将每个传感器作为一个节点，连续记录某条道路的交通速度，其中交通网络的边由传感器对之间的距离决定。图时空网络的目标是预测未来的节点值或标签，或预测时空图标签。最近的研究探索了单独使用GCNs[72]，结GCNs与RNN[70]或CNN[71]，以及一种为图结构定制的循环架构[73]。</p>
 <p>DCRNN由于利用了循环网络架构能够处理长时间依赖关系。虽然CNN-GCN比DCRNN简单，但是由于他首先实现了1D-CNN，所以在处理时空图上更加高效。ST-GCN将时间流作为图的边，使邻接矩阵的大小呈二次增长。一方面，增加了图卷积层的计算成本。另一方面，为了捕获长期依赖关系，图卷积层必须多次叠加。Structural-RNN通过在相同的语义组共享相同的RNN提高了模型的有效性。但是，需要人类先验知识来划分语义组。</p>

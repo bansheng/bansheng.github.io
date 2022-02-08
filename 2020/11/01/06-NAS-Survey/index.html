@@ -27,16 +27,16 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="Neural Architecture Search: A Survey解读">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/06-NAS-Survey/01-NAS-methods.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/06-NAS-Survey/09-chain.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/06-NAS-Survey/10-cell.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/11/01/06-NAS-Survey/11-overview_of_different_methods_for_speeding_up.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/xBnSYOeg3GVafry.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/P2AJEhNYIbfxSXv.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/HdpxLUvrX9DFSyZ.png">
 <meta property="article:published_time" content="2020-11-01T06:05:25.000Z">
-<meta property="article:modified_time" content="2022-02-08T07:36:35.372Z">
+<meta property="article:modified_time" content="2022-02-08T10:36:12.536Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="NAS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/2020/11/01/06-NAS-Survey/01-NAS-methods.png">
+<meta name="twitter:image" content="https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/11/01/06-NAS-Survey/">
 
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-08 15:36:35" itemprop="dateModified" datetime="2022-02-08T15:36:35+08:00">2022-02-08</time>
+                <time title="Modified: 2022-02-08 18:36:12" itemprop="dateModified" datetime="2022-02-08T18:36:12+08:00">2022-02-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -278,10 +278,7 @@ NAS与元学习和超参数优化有很多重合的地方</p>
 <li>search strategy</li>
 <li>performance estimation strategy</li>
 </ol>
-<figure>
-<img src="/2020/11/01/06-NAS-Survey/01-NAS-methods.png" alt="NAS methods">
-<figcaption aria-hidden="true">NAS methods</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png" /></p>
 <ul>
 <li>Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了search
 space，同时也可能漏掉超出人类认知的架构</li>
@@ -293,7 +290,7 @@ Strategy.搜索策略详细描述了如何探索搜索空间(通常是指数级�
 <h2 id="search-space">1. search space</h2>
 <h3 id="chain-structured-neural-network-architecture">chain-structured
 neural network architecture</h3>
-<p><img src="/2020/11/01/06-NAS-Survey/09-chain.png" alt="chain">
+<p><img src="https://s2.loli.net/2022/02/08/xBnSYOeg3GVafry.png" />
 搜索空间的影响因素</p>
 <ol type="1">
 <li>层的数目</li>
@@ -301,10 +298,7 @@ neural network architecture</h3>
 <li>超参数</li>
 </ol>
 <h3 id="cell-based-model">cell-based model</h3>
-<figure>
-<img src="/2020/11/01/06-NAS-Survey/10-cell.png" alt="cell">
-<figcaption aria-hidden="true">cell</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/P2AJEhNYIbfxSXv.png" /></p>
 <ul>
 <li>normal cell</li>
 <li>reduction cell</li>
@@ -360,10 +354,7 @@ validation data for architectural parameters such as.
 </ol>
 <h2 id="performance-estimation-strategy">3. Performance Estimation
 Strategy</h2>
-<figure>
-<img src="/2020/11/01/06-NAS-Survey/11-overview_of_different_methods_for_speeding_up.png" alt="speed-up method">
-<figcaption aria-hidden="true">speed-up method</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/HdpxLUvrX9DFSyZ.png" /></p>
 <h2 id="directions">4. directions</h2>
 <p>人类定义搜索空间的大小相比较寻找性能更好的网络架构更简单，但同时也限制了NAS不太可能找到本质上优于现在架构的网络架构</p>
 <p>应用在image restoration semantic segmentation reinforcement learning

@@ -266,9 +266,12 @@
 <thead>
 <tr class="header">
 <th style="text-align: left;">algorithm</th>
-<th style="text-align: center;"><span class="math inline">\(T_{best}\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(T_{avg}\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(T_{worst}\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(T_{best}\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(T_{avg}\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(T_{worst}\)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -297,28 +300,35 @@
 <h3 id="robin-karp算法">1.1.2 Robin-Karp算法</h3>
 <p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。
 选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中
-<span class="math inline">\(0&lt;m&lt;n\)</span>，<span class="math inline">\(Hash(t[i,j])\)</span>代表字符串t[i,
+<span class="math inline">\(0&lt;m&lt;n\)</span>，<span
+class="math inline">\(Hash(t[i,j])\)</span>代表字符串t[i,
 j]的哈希值。</p>
 <p>当 <span class="math inline">\(Hash(t[0,
-m-1])!=Hash(p[0,m-1])\)</span> 时，我们很自然的会把 <span class="math inline">\(Hash(t[1, m])\)</span>
+m-1])!=Hash(p[0,m-1])\)</span> 时，我们很自然的会把 <span
+class="math inline">\(Hash(t[1, m])\)</span>
 拿过来继续比较。在这个过程中，若我们重新计算字符串t[1,
 m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0,
 m-1]与t[1, m]中有 m-1
 个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为
 O(1)。</p>
-<p>Rabin-Karp 算法选用的滚动哈希函数主要是利用<span class="math inline">\(Rabin
+<p>Rabin-Karp 算法选用的滚动哈希函数主要是利用<span
+class="math inline">\(Rabin
 fingerprint\)</span>的思想，举个例子，计算字符串t[0, m -
 1]的哈希值的公式如下，</p>
-<p><span class="math display">\[Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+...+t[m−1]∗b_0\]</span></p>
+<p><span
+class="math display">\[Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+...+t[m−1]∗b_0\]</span></p>
 <p>其中的 b_k 可以是一个常数，在 Rabin-Karp
 算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取
 101。</p>
 <p>则计算字符串t[1, m]的哈希值公式如下，</p>
-<p><span class="math display">\[Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0\]</span></p>
+<p><span
+class="math display">\[Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0\]</span></p>
 <h3 id="kmp算法">1.1.3 KMP算法</h3>
 <p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p>
-<p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html">阮一峰KMP算法</a></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#KMP</span></span>
+<p><a
+target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html">阮一峰KMP算法</a></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#KMP</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kmp_match(s, p):</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="bu">len</span>(s)<span class="op">;</span> n <span class="op">=</span> <span class="bu">len</span>(p)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    cur <span class="op">=</span> <span class="dv">0</span><span class="co">#起始指针cur</span></span>

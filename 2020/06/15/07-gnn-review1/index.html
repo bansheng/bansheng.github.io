@@ -27,15 +27,15 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="note for &quot;Graph Neural Networks A review of methods and applications&quot;">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/15/07-gnn-review1/01-graph_types.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/15/07-gnn-review1/02-propagation_types.png">
-<meta property="og:image" content="https://dydcoding.cn/2020/06/15/07-gnn-review1/03-applications.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/U5n17s9Ode3Pbiq.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/KS7JX1uljVzvcbA.png">
+<meta property="og:image" content="https://s2.loli.net/2022/02/08/Yq8MQOcyP7D1tZ4.png">
 <meta property="article:published_time" content="2020-06-15T04:41:07.000Z">
-<meta property="article:modified_time" content="2022-02-08T07:36:35.414Z">
+<meta property="article:modified_time" content="2022-02-08T10:39:59.083Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="GNN">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/2020/06/15/07-gnn-review1/01-graph_types.png">
+<meta name="twitter:image" content="https://s2.loli.net/2022/02/08/U5n17s9Ode3Pbiq.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/06/15/07-gnn-review1/">
 
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-02-08 15:36:35" itemprop="dateModified" datetime="2022-02-08T15:36:35+08:00">2022-02-08</time>
+                <time title="Modified: 2022-02-08 18:39:59" itemprop="dateModified" datetime="2022-02-08T18:39:59+08:00">2022-02-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -265,7 +265,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="graph-neural-networks-a-review-of-methods-and-applications">Graph
+        <h2
+id="graph-neural-networks-a-review-of-methods-and-applications">Graph
 Neural Networks: A review of methods and applications</h2>
 <h2 id="introduction">1. introduction</h2>
 <ol type="1">
@@ -328,10 +329,7 @@ RNN 内核，如 GRU 和 LSTM，来进一步优化。</li>
 one-hot 特征向量。</li>
 <li>带有边信息的图：即图中的每条边也存在权重或类型等信息。这种类型的图有两种解决办法，一种是将图形转化为二部图，原始边也作为节点，并将其分割成两条新的边，分别连接原始边的两端节点；第二种方法是调整不同的权重矩阵，以便在不同类型的边缘上传播。</li>
 </ol>
-<figure>
-<img src="/2020/06/15/07-gnn-review1/01-graph_types.png" alt="graph types">
-<figcaption aria-hidden="true">graph types</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/U5n17s9Ode3Pbiq.png" /></p>
 <h4 id="传播类型">2.2.2 传播类型</h4>
 <p>对于获取节点或者边的隐藏状态，神经网络中的传播步骤和输出步骤至关重要。在传播步骤方面的改进主要有卷积、注意力机制、门机制和跳跃连接（skip
 connection），而在输出步骤通常遵循简单的前馈神经网络设置。</p>
@@ -350,16 +348,14 @@ network 将 GRU 机制应用于节点更新。很多工作致力于将 LSTM
 <li>残差连接。注意到堆叠多层图神经网络可能引起信息平滑的问题，很多工作将残差机制应用于图神经网络中，文中介绍了
 Highway GNN 和 Jump Knowledge Network 两种不同的处理方式</li>
 </ol>
-<figure>
-<img src="/2020/06/15/07-gnn-review1/02-propagation_types.png" alt="propagation types">
-<figcaption aria-hidden="true">propagation types</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/KS7JX1uljVzvcbA.png" /></p>
 <h4 id="训练方法">2.2.3 训练方法</h4>
 <p>原始图卷积神经网络在训练和优化方法中具有若干缺点。例如，</p>
 <ol type="1">
 <li>GCN
 需要完整的图拉普拉斯算子，这对于大图来说是<strong>计算成本十分高</strong>。</li>
-<li>而且，层 𝐿 的节点的嵌入是通过层 <span class="math inline">\(𝐿−1\)</span>
+<li>而且，层 𝐿 的节点的嵌入是通过层 <span
+class="math inline">\(𝐿−1\)</span>
 的所有该节点的邻居来进行计算的。因此，单个节点的感知域相对于层数呈指数增长，<strong>单个节点的计算梯度成本很高</strong>。</li>
 <li>最后，GCN
 针对固定图形进行独立训练，<strong>缺乏归纳学习的能力</strong>。</li>
@@ -378,10 +374,7 @@ NLNN 方法。本文主要介绍了图的定义、GN block、核心 GN
 计算单元、计算步骤和基本设计原则。详细的内容扩展会另外写到专门针对该文献的阅读笔记当中。</p></li>
 </ol>
 <h2 id="应用">3. 应用</h2>
-<figure>
-<img src="/2020/06/15/07-gnn-review1/03-applications.png" alt="applications">
-<figcaption aria-hidden="true">applications</figcaption>
-</figure>
+<p><img src="https://s2.loli.net/2022/02/08/Yq8MQOcyP7D1tZ4.png" /></p>
 <h2 id="开放性问题">4. 开放性问题</h2>
 <h3 id="浅层结构">4.1 浅层结构</h3>
 <p>传统的深度神经网络可以堆叠数百层以获得更好的性能，因为更深的结构具有更多的参数，从而能够显著提高表示能力。而图神经网络通常都很浅，大多数不超过三层。正如
