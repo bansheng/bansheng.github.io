@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://dydcoding.cn/2022/02/08/12-ads-overview/</loc>
+    
+    <lastmod>2022-02-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://dydcoding.cn/2020/11/01/11-GNN-survey2/</loc>
     
     <lastmod>2022-02-08</lastmod>
@@ -199,6 +208,13 @@
   </url>
   
   <url>
+    <loc>https://dydcoding.cn/tags/ads/</loc>
+    <lastmod>2022-02-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://dydcoding.cn/tags/Federated-Learning/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -230,6 +246,13 @@
   
   <url>
     <loc>https://dydcoding.cn/categories/Algorithm/</loc>
+    <lastmod>2022-02-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dydcoding.cn/categories/%E6%8A%80%E6%9C%AF/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
