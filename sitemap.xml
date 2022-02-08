@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://dydcoding.cn/2020/11/01/01-AutoML/</loc>
+    
+    <lastmod>2022-02-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://dydcoding.cn/2020/11/01/05-ICLR2020_NAS_papers/</loc>
     
     <lastmod>2022-02-08</lastmod>
@@ -30,15 +39,6 @@
   
   <url>
     <loc>https://dydcoding.cn/2020/06/18/08-meta-learning-nas/</loc>
-    
-    <lastmod>2022-02-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://dydcoding.cn/2020/11/01/01-AutoML/</loc>
     
     <lastmod>2022-02-08</lastmod>
     
@@ -128,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://dydcoding.cn/categories/index.html</loc>
+    <loc>https://dydcoding.cn/contact/index.html</loc>
     
     <lastmod>2022-02-08</lastmod>
     
@@ -137,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://dydcoding.cn/contact/index.html</loc>
+    <loc>https://dydcoding.cn/categories/index.html</loc>
     
     <lastmod>2022-02-08</lastmod>
     
@@ -185,14 +185,14 @@
   </url>
   
   <url>
-    <loc>https://dydcoding.cn/tags/NAS-meta-learning/</loc>
+    <loc>https://dydcoding.cn/tags/string/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://dydcoding.cn/tags/string/</loc>
+    <loc>https://dydcoding.cn/tags/NAS-meta-learning/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

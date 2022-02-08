@@ -27,15 +27,15 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="Efficient Neural Architecture Search via Parameter Sharing">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/03-ENAS/01-rnn-cells.png">
-<meta property="og:image" content="https://dydcoding.cn/03-ENAS/02-cnn.png">
-<meta property="og:image" content="https://dydcoding.cn/03-ENAS/03-cnn-cells.png">
+<meta property="og:image" content="https://dydcoding.cn/2020/02/09/03-ENAS/01-rnn-cells.png">
+<meta property="og:image" content="https://dydcoding.cn/2020/02/09/03-ENAS/02-cnn.png">
+<meta property="og:image" content="https://dydcoding.cn/2020/02/09/03-ENAS/03-cnn-cells.png">
 <meta property="article:published_time" content="2020-02-09T10:45:45.000Z">
 <meta property="article:modified_time" content="2022-02-08T07:36:35.372Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="NAS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/03-ENAS/01-rnn-cells.png">
+<meta name="twitter:image" content="https://dydcoding.cn/2020/02/09/03-ENAS/01-rnn-cells.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/02/09/03-ENAS/">
 
@@ -265,30 +265,63 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Efficient-Neural-Architecture-Search-via-Parameter-Sharing"><a href="#Efficient-Neural-Architecture-Search-via-Parameter-Sharing" class="headerlink" title="Efficient Neural Architecture Search via Parameter Sharing"></a>Efficient Neural Architecture Search via Parameter Sharing</h2><p>an RNN controller is trained in a loop: the controller first samples a candidate architecture, i.e. a child model, and then trains it to convergence to measure its performance on the task of desire.</p>
-<h2 id="0-训练"><a href="#0-训练" class="headerlink" title="0. 训练"></a>0. 训练</h2><p>分为两个网络，controller选择设计子网络的架构，<br>子网络是一个entire网络的一个子图</p>
-<p>分为两种参数 RNN的参数$\theta$ sample网络的$w$<br>分别使用adam 在validation set训练<br>SGD在training set上面训练</p>
-<h2 id="1-RNN-cells的设计"><a href="#1-RNN-cells的设计" class="headerlink" title="1. RNN cells的设计"></a>1. RNN cells的设计</h2><p>controller设计</p>
-<ol>
+        <h2 id="efficient-neural-architecture-search-via-parameter-sharing">Efficient
+Neural Architecture Search via Parameter Sharing</h2>
+<p>an RNN controller is trained in a loop: the controller first samples
+a candidate architecture, i.e. a child model, and then trains it to
+convergence to measure its performance on the task of desire.</p>
+<h2 id="训练">0. 训练</h2>
+<p>分为两个网络，controller选择设计子网络的架构，
+子网络是一个entire网络的一个子图</p>
+<p>分为两种参数 RNN的参数<span class="math inline">\(\theta\)</span>
+sample网络的<span class="math inline">\(w\)</span> 分别使用adam
+在validation set训练 SGD在training set上面训练</p>
+<h2 id="rnn-cells的设计">1. RNN cells的设计</h2>
+<p>controller设计</p>
+<ol type="1">
 <li>当前节点连接的前一个节点</li>
 <li>使用什么激活函数(relu, sigmod, tanh, identity)4种</li>
 </ol>
-<p><img src="/03-ENAS/01-rnn-cells.png" alt="rnn cells"></p>
-<p>search space:the search space has$4N × N!$configurations. In our experiments, N &#x3D; 12,</p>
-<h2 id="2-cnn的设计"><a href="#2-cnn的设计" class="headerlink" title="2. cnn的设计"></a>2. cnn的设计</h2><p>controller设计</p>
-<ol>
+<figure>
+<img src="/2020/02/09/03-ENAS/01-rnn-cells.png" alt="rnn cells">
+<figcaption aria-hidden="true">rnn cells</figcaption>
+</figure>
+<p>search space:the search space has<span class="math inline">\(4N ×
+N!\)</span>configurations. In our experiments, N = 12,</p>
+<h2 id="cnn的设计">2. cnn的设计</h2>
+<p>controller设计</p>
+<ol type="1">
 <li>当前节点连接的前一个节点</li>
 <li>使用什么计算函数(<code>conv3*3, conv5*5, sep3*3, sep5*5, maxpooling3*3, average pooling3*3</code>)6种</li>
 </ol>
-<p><img src="/03-ENAS/02-cnn.png" alt="cnn"></p>
-<p>search space:<br>Making the described set of decisions for a total of L times, we can sample a network of L layers. Since all decisions are independent, there are 6L × 2L(L−1)&#x2F;2 networks in the search space. In our experiments, L &#x3D; 12, resulting in 1.6 × 1029 possible networks.</p>
-<h2 id="3-cnn-cells设计"><a href="#3-cnn-cells设计" class="headerlink" title="3. cnn cells设计"></a>3. cnn cells设计</h2><p>controller设计</p>
-<ol>
+<figure>
+<img src="/2020/02/09/03-ENAS/02-cnn.png" alt="cnn">
+<figcaption aria-hidden="true">cnn</figcaption>
+</figure>
+<p>search space: Making the described set of decisions for a total of L
+times, we can sample a network of L layers. Since all decisions are
+independent, there are 6L × 2L(L−1)/2 networks in the search space. In
+our experiments, L = 12, resulting in 1.6 × 1029 possible networks.</p>
+<h2 id="cnn-cells设计">3. cnn cells设计</h2>
+<p>controller设计</p>
+<ol type="1">
 <li>两个前置连接的节点</li>
-<li>两条边的计算种类(<code>identity, sep3*3, spe5*5, avepooling3*3, maxpooling3*3</code>) 5种</li>
+<li>两条边的计算种类(<code>identity, sep3*3, spe5*5, avepooling3*3, maxpooling3*3</code>)
+5种</li>
 </ol>
-<p><img src="/03-ENAS/03-cnn-cells.png" alt="cnn cells"></p>
-<p>search space:<br>Finally, we estimate the complexity of this search space.<br>At node i (3 ≤ i ≤ B), the controller can select any two nodes from the i − 1 previous nodes, and any two operations from 5 operations. As all decisions are independent, there are (5 × (B − 2)!)2 possible cells. Since we independently sample for a convolutional cell and a reduction cell, the final size of the search space is (5 × (B − 2)!) . With B &#x3D; 7 as in our experiments, the search space can realize 1.3 × 1011 final networks, making it significantly smaller than the search space for entire convolutional networks</p>
+<figure>
+<img src="/2020/02/09/03-ENAS/03-cnn-cells.png" alt="cnn cells">
+<figcaption aria-hidden="true">cnn cells</figcaption>
+</figure>
+<p>search space: Finally, we estimate the complexity of this search
+space. At node i (3 ≤ i ≤ B), the controller can select any two nodes
+from the i − 1 previous nodes, and any two operations from 5 operations.
+As all decisions are independent, there are (5 × (B − 2)!)2 possible
+cells. Since we independently sample for a convolutional cell and a
+reduction cell, the final size of the search space is (5 × (B − 2)!) .
+With B = 7 as in our experiments, the search space can realize 1.3 ×
+1011 final networks, making it significantly smaller than the search
+space for entire convolutional networks</p>
 
     </div>
 
@@ -369,7 +402,8 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Efficient-Neural-Architecture-Search-via-Parameter-Sharing"><span class="nav-number">1.</span> <span class="nav-text">Efficient Neural Architecture Search via Parameter Sharing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E8%AE%AD%E7%BB%83"><span class="nav-number">2.</span> <span class="nav-text">0. 训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-RNN-cells%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">1. RNN cells的设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-cnn%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">2. cnn的设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-cnn-cells%E8%AE%BE%E8%AE%A1"><span class="nav-number">5.</span> <span class="nav-text">3. cnn cells设计</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#efficient-neural-architecture-search-via-parameter-sharing"><span class="nav-number">1.</span> <span class="nav-text">Efficient
+Neural Architecture Search via Parameter Sharing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-number">2.</span> <span class="nav-text">0. 训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rnn-cells%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">1. RNN cells的设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cnn%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">2. cnn的设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cnn-cells%E8%AE%BE%E8%AE%A1"><span class="nav-number">5.</span> <span class="nav-text">3. cnn cells设计</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

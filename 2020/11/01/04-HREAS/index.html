@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="hierarchical representations for efficient architecture search解读">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/04-HREAS/01-hierarchical-architecture-representation.png">
+<meta property="og:image" content="https://dydcoding.cn/2020/11/01/04-HREAS/01-hierarchical-architecture-representation.png">
 <meta property="article:published_time" content="2020-11-01T05:58:15.000Z">
 <meta property="article:modified_time" content="2022-02-08T07:36:35.414Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="NAS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/04-HREAS/01-hierarchical-architecture-representation.png">
+<meta name="twitter:image" content="https://dydcoding.cn/2020/11/01/04-HREAS/01-hierarchical-architecture-representation.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/11/01/04-HREAS/">
 
@@ -264,18 +264,36 @@
 
       
         <p>分层设计，底层为一个个最基本的计算操作，顶层为整体架构。</p>
-<p><img src="/04-HREAS/01-hierarchical-architecture-representation.png" alt="hiarchical architecture representation"></p>
-<h2 id="evolutionary-architecture-search"><a href="#evolutionary-architecture-search" class="headerlink" title="evolutionary architecture search"></a>evolutionary architecture search</h2><h3 id="mutation"><a href="#mutation" class="headerlink" title="mutation"></a>mutation</h3><p>找到non-primitive level l&gt;&#x3D;2，选择这个level里面的一个motif，选择motif里面的两个节点，把两个节点中间的边置换为另一种边(三种情况，1.新增边；2.去除边；3.置换边)。</p>
-<h3 id="initialization"><a href="#initialization" class="headerlink" title="initialization"></a>initialization</h3><p>原型初始化的处理</p>
-<ol>
+<figure>
+<img src="/2020/11/01/04-HREAS/01-hierarchical-architecture-representation.png" alt="hiarchical architecture representation">
+<figcaption aria-hidden="true">hiarchical architecture
+representation</figcaption>
+</figure>
+<h2 id="evolutionary-architecture-search">evolutionary architecture
+search</h2>
+<h3 id="mutation">mutation</h3>
+<p>找到non-primitive level
+l&gt;=2，选择这个level里面的一个motif，选择motif里面的两个节点，把两个节点中间的边置换为另一种边(三种情况，1.新增边；2.去除边；3.置换边)。</p>
+<h3 id="initialization">initialization</h3>
+<p>原型初始化的处理</p>
+<ol type="1">
 <li>先把所有的边置换为identity</li>
 <li>执行很大数目(e.g. 1000)次的mutation</li>
 </ol>
-<h3 id="search-algorithm"><a href="#search-algorithm" class="headerlink" title="search algorithm"></a>search algorithm</h3><p>Tournament selection</p>
-<p>从初始的随机原型集合中，tournament selection选出最promising 原型，把它的mutated后代放到集合中，重复这个过程，集合中的原型表现会随时间缓慢优化。选择原型集合中在validation set上面表现最好的genotype作为一段时间进化的最后输出。</p>
+<h3 id="search-algorithm">search algorithm</h3>
+<p>Tournament selection</p>
+<p>从初始的随机原型集合中，tournament selection选出最promising
+原型，把它的mutated后代放到集合中，重复这个过程，集合中的原型表现会随时间缓慢优化。选择原型集合中在validation
+set上面表现最好的genotype作为一段时间进化的最后输出。</p>
 <p>randon search</p>
-<p>不同于tournament selection，random search随机选择集合中的原型进行突变，这样突变的过程可以并行，减少了search time</p>
-<h3 id="implementation"><a href="#implementation" class="headerlink" title="implementation"></a>implementation</h3><p>异步的 一个controller负责执行所有原型的进化，其余的worker负责对原型的表现做evaluation。Architectures are trained from scratch for a fixed number of steps with random weight initialization。</p>
+<p>不同于tournament selection，random
+search随机选择集合中的原型进行突变，这样突变的过程可以并行，减少了search
+time</p>
+<h3 id="implementation">implementation</h3>
+<p>异步的
+一个controller负责执行所有原型的进化，其余的worker负责对原型的表现做evaluation。Architectures
+are trained from scratch for a fixed number of steps with random weight
+initialization。</p>
 
     </div>
 
@@ -359,7 +377,8 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#evolutionary-architecture-search"><span class="nav-number">1.</span> <span class="nav-text">evolutionary architecture search</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mutation"><span class="nav-number">1.1.</span> <span class="nav-text">mutation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initialization"><span class="nav-number">1.2.</span> <span class="nav-text">initialization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search-algorithm"><span class="nav-number">1.3.</span> <span class="nav-text">search algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation"><span class="nav-number">1.4.</span> <span class="nav-text">implementation</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#evolutionary-architecture-search"><span class="nav-number">1.</span> <span class="nav-text">evolutionary architecture
+search</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mutation"><span class="nav-number">1.1.</span> <span class="nav-text">mutation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initialization"><span class="nav-number">1.2.</span> <span class="nav-text">initialization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#search-algorithm"><span class="nav-number">1.3.</span> <span class="nav-text">search algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation"><span class="nav-number">1.4.</span> <span class="nav-text">implementation</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

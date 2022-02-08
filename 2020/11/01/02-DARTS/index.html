@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="可微分架构搜索DARTS">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://dydcoding.cn/02-DARTS/01-algorithm.png">
+<meta property="og:image" content="https://dydcoding.cn/2020/11/01/02-DARTS/01-algorithm.png">
 <meta property="article:published_time" content="2020-11-01T05:43:04.000Z">
 <meta property="article:modified_time" content="2022-02-08T07:36:35.372Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="NAS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://dydcoding.cn/02-DARTS/01-algorithm.png">
+<meta name="twitter:image" content="https://dydcoding.cn/2020/11/01/02-DARTS/01-algorithm.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2020/11/01/02-DARTS/">
 
@@ -263,28 +263,82 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-DARTS"><a href="#1-DARTS" class="headerlink" title="1. DARTS"></a>1. DARTS</h2><p> the computation procedure for an architecture (or a cell in it) is represented as a directed acyclic graph. 表示为有向图。</p>
-<h3 id="1-1-search-space"><a href="#1-1-search-space" class="headerlink" title="1.1 search space"></a>1.1 search space</h3><p>寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。</p>
+        <h2 id="darts">1. DARTS</h2>
+<p>the computation procedure for an architecture (or a cell in it) is
+represented as a directed acyclic graph. 表示为有向图。</p>
+<h3 id="search-space">1.1 search space</h3>
+<p>寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。</p>
 <p>cell是由N个有序序列node组成的有向无环图。每一条edge都是一个计算。我们假设这个cell有两个input和一个output，对于cnn，它就是前面两个层的输出，对于rnn，它是上个step的state以及这个step的Input。cell的输出是通过对所有中间节点应用reduction得到的。</p>
-<p>所有中间节点的计算依赖前置节点。<br>$$<br>x^{(j)} &#x3D; \sum_{i&lt;j}o^{(i,j)}(x^{(i)})<br>$$<br>注意zero operation也是可以被允许的edge类型。</p>
-<h3 id="1-2-continuous-relaxation-and-optimization"><a href="#1-2-continuous-relaxation-and-optimization" class="headerlink" title="1.2 continuous relaxation and optimization"></a>1.2 continuous relaxation and optimization</h3><p>找到每一个操作对应的权重矩阵$\alpha^{(i,j)}$，这样所有的权重矩阵集合为$\alpha$，我们将NAS的任务减小为学习一个连续变量的集合$\alpha$。</p>
-<p>DARTS使用的是<strong>GD</strong>来优化validation loss。相似的有RL(<a href>Learning transferable architectures for scalable image recognition</a>)，EA(<a href>Hierarchical representations for efficient architecture search</a>)</p>
-<p>NAS的目标是找到$\alpha^*$使得validation loss$L_{val}(w^*, \alpha^*)$最小，$w^*$是使得training loss$L_{train}(w, \alpha^*)$最小的w。<br>$$<br>min_{\alpha} L_{val}(w^*(\alpha), \alpha) \<br>s.t. w^*(\alpha) &#x3D; argmin_w L_{train}(w, \alpha)<br>$$<br><img src="/02-DARTS/01-algorithm.png" alt="algorithm"></p>
-<h3 id="1-3-approximate-architecture-gradient"><a href="#1-3-approximate-architecture-gradient" class="headerlink" title="1.3 approximate architecture gradient"></a>1.3 approximate architecture gradient</h3><p>$$<br>\begin{aligned} &amp; \nabla_{\alpha} \mathcal{L}<em>{v a l}\left(w^{*}(\alpha), \alpha\right) \ \approx &amp; \nabla</em>{\alpha} \mathcal{L}<em>{v a l}\left(w-\xi \nabla</em>{w} \mathcal{L}_{t r a i n}(w, \alpha), \alpha\right) \end{aligned}<br>$$</p>
-<p>运用chain rule。将上式进一步处理。<br>$$<br>\triangledown_\alpha L_{val}(w’, \alpha - \xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha) \triangledown_{w’}L_{val}(w’, \alpha))<br>$$<br>其中的$w’ &#x3D; w - \xi\triangledown_w L_{train}(w, \alpha)$指的就是one-step forward model。</p>
-<p>使用the finite difference approximation(有限差分近似)可以减少复杂度。<br>$$<br>\epsilon 是极小量 \<br>w^{\pm} &#x3D; w \pm \epsilon \triangledown_{w’}L_{val}(w’, \alpha) \<br>\xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha) \triangledown_{w’}L_{val}(w’, \alpha)) \approx \frac{\triangledown_\alpha L_{train}(w^{+}, \alpha) - \triangledown_\alpha L_{train}(w^{-}, \alpha)}{2\xi}<br>$$<br>将$\xi &#x3D; 0$作为一阶近似，将$\xi &gt; 0$作为两阶近似。</p>
-<h3 id="1-4-deriving-discrete-architecture"><a href="#1-4-deriving-discrete-architecture" class="headerlink" title="1.4 deriving discrete architecture"></a>1.4 deriving discrete architecture</h3><p>在所有非0的候选operations保留top-k strongest operations，为了使得出的网络可以和现有网络比较，我们选择k&#x3D;2 for cnn, k&#x3D;1 for rnn。</p>
+<p>所有中间节点的计算依赖前置节点。 <span class="math display">\[
+x^{(j)} = \sum_{i&lt;j}o^{(i,j)}(x^{(i)})
+\]</span> 注意zero operation也是可以被允许的edge类型。</p>
+<h3 id="continuous-relaxation-and-optimization">1.2 continuous
+relaxation and optimization</h3>
+<p>找到每一个操作对应的权重矩阵<span class="math inline">\(\alpha^{(i,j)}\)</span>，这样所有的权重矩阵集合为<span class="math inline">\(\alpha\)</span>，我们将NAS的任务减小为学习一个连续变量的集合<span class="math inline">\(\alpha\)</span>。</p>
+<p>DARTS使用的是<strong>GD</strong>来优化validation loss。相似的有RL(<a href>Learning transferable architectures for scalable image
+recognition</a>)，EA(<a href>Hierarchical representations for
+efficient architecture search</a>)</p>
+<p>NAS的目标是找到<span class="math inline">\(\alpha^*\)</span>使得validation loss<span class="math inline">\(L_{val}(w^*, \alpha^*)\)</span>最小，<span class="math inline">\(w^*\)</span>是使得training loss<span class="math inline">\(L_{train}(w, \alpha^*)\)</span>最小的w。 <span class="math display">\[
+min_{\alpha} L_{val}(w^*(\alpha), \alpha) \\
+s.t. w^*(\alpha) = argmin_w L_{train}(w, \alpha)
+\]</span> <img src="/2020/11/01/02-DARTS/01-algorithm.png" alt="algorithm"></p>
+<h3 id="approximate-architecture-gradient">1.3 approximate architecture
+gradient</h3>
+<p><span class="math display">\[
+\begin{aligned} &amp; \nabla_{\alpha} \mathcal{L}_{v a
+l}\left(w^{*}(\alpha), \alpha\right) \\ \approx &amp; \nabla_{\alpha}
+\mathcal{L}_{v a l}\left(w-\xi \nabla_{w} \mathcal{L}_{t r a i n}(w,
+\alpha), \alpha\right) \end{aligned}
+\]</span></p>
+<p>运用chain rule。将上式进一步处理。 <span class="math display">\[
+\triangledown_\alpha L_{val}(w&#39;, \alpha - \xi
+\triangledown^2_{\alpha, w} L_{train}(w, \alpha)
+\triangledown_{w&#39;}L_{val}(w&#39;, \alpha))
+\]</span> 其中的<span class="math inline">\(w&#39; = w -
+\xi\triangledown_w L_{train}(w, \alpha)\)</span>指的就是one-step forward
+model。</p>
+<p>使用the finite difference approximation(有限差分近似)可以减少复杂度。
+<span class="math display">\[
+\epsilon 是极小量 \\
+w^{\pm} = w \pm \epsilon \triangledown_{w&#39;}L_{val}(w&#39;, \alpha)
+\\
+\xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha)
+\triangledown_{w&#39;}L_{val}(w&#39;, \alpha)) \approx
+\frac{\triangledown_\alpha L_{train}(w^{+}, \alpha) -
+\triangledown_\alpha L_{train}(w^{-}, \alpha)}{2\xi}
+\]</span> 将<span class="math inline">\(\xi =
+0\)</span>作为一阶近似，将<span class="math inline">\(\xi &gt;
+0\)</span>作为两阶近似。</p>
+<h3 id="deriving-discrete-architecture">1.4 deriving discrete
+architecture</h3>
+<p>在所有非0的候选operations保留top-k strongest
+operations，为了使得出的网络可以和现有网络比较，我们选择k=2 for cnn, k=1
+for rnn。</p>
 <p>为什么不使用zero operation呢？</p>
-<ol>
+<ol type="1">
 <li>为了与现有模型进行公平的比较，我们需要每个节点恰好有k条非零的引入边</li>
 <li>因为增加零操作的logits只会影响结果节点表示的规模，由于BN处理的存在而不会而影响最终的分类结果</li>
 </ol>
-<h2 id="2-Experiments-and-results"><a href="#2-Experiments-and-results" class="headerlink" title="2. Experiments and results"></a>2. Experiments and results</h2><h3 id="2-1-architecture-search"><a href="#2-1-architecture-search" class="headerlink" title="2.1 architecture search"></a>2.1 architecture search</h3><h4 id="2-1-1-search-for-convolutional-cells-on-cifar-10"><a href="#2-1-1-search-for-convolutional-cells-on-cifar-10" class="headerlink" title="2.1.1 search for convolutional cells on cifar-10"></a>2.1.1 search for convolutional cells on cifar-10</h4><p>包含8种operation。 3 × 3 and 5 × 5 separable convolutions, 3 × 3 and 5 × 5 dilated separable convolutions, 3 × 3 max pooling, 3 × 3 average pooling, identity, and zero。</p>
-<p>We use the ReLU-Conv-BN order for convolutional operations, and each separable convolution is always applied twice</p>
-<p>在整个网络的1&#x2F;3和2&#x2F;3处，设立reduce cell。缩小空间分辨率。</p>
-<h4 id="2-1-2-searching-for-recurrent-cells-for-penn-treebank"><a href="#2-1-2-searching-for-recurrent-cells-for-penn-treebank" class="headerlink" title="2.1.2 searching for recurrent cells for penn treebank"></a>2.1.2 searching for recurrent cells for penn treebank</h4><p>operation的种类：linear transformations followed by one of tanh, relu, sigmoid activations, as well as the identity mapping and the <em>zero</em> operation.</p>
-<p>总共12个node，最初的intermediate node是由两个input node通过线性变换，求和，然后传过一个tanh激活函数得到的。</p>
-<h3 id="2-2-architecture-evaluation"><a href="#2-2-architecture-evaluation" class="headerlink" title="2.2 architecture evaluation"></a>2.2 architecture evaluation</h3><p><strong>寻找多次，避免初始化的影响</strong> 。从cifar-10上迁移到imagenet上，从PTB上迁移到wikitext-2上。</p>
+<h2 id="experiments-and-results">2. Experiments and results</h2>
+<h3 id="architecture-search">2.1 architecture search</h3>
+<h4 id="search-for-convolutional-cells-on-cifar-10">2.1.1 search for
+convolutional cells on cifar-10</h4>
+<p>包含8种operation。 3 × 3 and 5 × 5 separable convolutions, 3 × 3 and
+5 × 5 dilated separable convolutions, 3 × 3 max pooling, 3 × 3 average
+pooling, identity, and zero。</p>
+<p>We use the ReLU-Conv-BN order for convolutional operations, and each
+separable convolution is always applied twice</p>
+<p>在整个网络的1/3和2/3处，设立reduce cell。缩小空间分辨率。</p>
+<h4 id="searching-for-recurrent-cells-for-penn-treebank">2.1.2 searching
+for recurrent cells for penn treebank</h4>
+<p>operation的种类：linear transformations followed by one of tanh,
+relu, sigmoid activations, as well as the identity mapping and the
+<em>zero</em> operation.</p>
+<p>总共12个node，最初的intermediate node是由两个input
+node通过线性变换，求和，然后传过一个tanh激活函数得到的。</p>
+<h3 id="architecture-evaluation">2.2 architecture evaluation</h3>
+<p><strong>寻找多次，避免初始化的影响</strong>
+。从cifar-10上迁移到imagenet上，从PTB上迁移到wikitext-2上。</p>
 
     </div>
 
@@ -368,7 +422,12 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-DARTS"><span class="nav-number">1.</span> <span class="nav-text">1. DARTS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-search-space"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 search space</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-continuous-relaxation-and-optimization"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 continuous relaxation and optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-approximate-architecture-gradient"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 approximate architecture gradient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-deriving-discrete-architecture"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 deriving discrete architecture</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Experiments-and-results"><span class="nav-number">2.</span> <span class="nav-text">2. Experiments and results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-architecture-search"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 architecture search</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-search-for-convolutional-cells-on-cifar-10"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 search for convolutional cells on cifar-10</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-searching-for-recurrent-cells-for-penn-treebank"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 searching for recurrent cells for penn treebank</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-architecture-evaluation"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 architecture evaluation</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#darts"><span class="nav-number">1.</span> <span class="nav-text">1. DARTS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#search-space"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 search space</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#continuous-relaxation-and-optimization"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 continuous
+relaxation and optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#approximate-architecture-gradient"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 approximate architecture
+gradient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deriving-discrete-architecture"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 deriving discrete
+architecture</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments-and-results"><span class="nav-number">2.</span> <span class="nav-text">2. Experiments and results</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#architecture-search"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 architecture search</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#search-for-convolutional-cells-on-cifar-10"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 search for
+convolutional cells on cifar-10</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#searching-for-recurrent-cells-for-penn-treebank"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 searching
+for recurrent cells for penn treebank</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#architecture-evaluation"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 architecture evaluation</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

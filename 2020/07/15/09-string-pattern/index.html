@@ -261,70 +261,88 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-1-字符串匹配算法"><a href="#1-1-字符串匹配算法" class="headerlink" title="1.1 字符串匹配算法"></a>1.1 字符串匹配算法</h2><table>
+        <h2 id="字符串匹配算法">1.1 字符串匹配算法</h2>
+<table>
 <thead>
-<tr>
-<th align="left">algorithm</th>
-<th align="center">$T_{best}$</th>
-<th align="center">$T_{avg}$</th>
-<th align="center">$T_{worst}$</th>
+<tr class="header">
+<th style="text-align: left;">algorithm</th>
+<th style="text-align: center;"><span class="math inline">\(T_{best}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(T_{avg}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(T_{worst}\)</span></th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">1. 朴素匹配算法</td>
-<td align="center">O(nm)</td>
-<td align="center">O(nm)</td>
-<td align="center">O(nm)</td>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1. 朴素匹配算法</td>
+<td style="text-align: center;">O(nm)</td>
+<td style="text-align: center;">O(nm)</td>
+<td style="text-align: center;">O(nm)</td>
 </tr>
-<tr>
-<td align="left">2. Robin-Karp 算法</td>
-<td align="center">O(n)</td>
-<td align="center">O(nm)</td>
-<td align="center">O(nm)</td>
+<tr class="even">
+<td style="text-align: left;">2. Robin-Karp 算法</td>
+<td style="text-align: center;">O(n)</td>
+<td style="text-align: center;">O(nm)</td>
+<td style="text-align: center;">O(nm)</td>
 </tr>
-<tr>
-<td align="left">3. KMP算法</td>
-<td align="center">O(n+m)</td>
-<td align="center">O(n+m)</td>
-<td align="center">O(n+m)</td>
+<tr class="odd">
+<td style="text-align: left;">3. KMP算法</td>
+<td style="text-align: center;">O(n+m)</td>
+<td style="text-align: center;">O(n+m)</td>
+<td style="text-align: center;">O(n+m)</td>
 </tr>
-</tbody></table>
-<h3 id="1-1-1-朴素匹配算法"><a href="#1-1-1-朴素匹配算法" class="headerlink" title="1.1.1 朴素匹配算法"></a>1.1.1 朴素匹配算法</h3><p>暴力求解</p>
-<h3 id="1-1-2-Robin-Karp算法"><a href="#1-1-2-Robin-Karp算法" class="headerlink" title="1.1.2 Robin-Karp算法"></a>1.1.2 Robin-Karp算法</h3><p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。<br>选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中 $0&lt;m&lt;n$，$Hash(t[i,j])$代表字符串t[i, j]的哈希值。</p>
-<p>当 $Hash(t[0, m-1])!&#x3D;Hash(p[0,m-1])$ 时，我们很自然的会把 $Hash(t[1, m])$ 拿过来继续比较。在这个过程中，若我们重新计算字符串t[1, m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0, m-1]与t[1, m]中有 m-1 个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为 O(1)。</p>
-<p>Rabin-Karp 算法选用的滚动哈希函数主要是利用$Rabin fingerprint$的思想，举个例子，计算字符串t[0, m - 1]的哈希值的公式如下，</p>
-<p>$$Hash(t[0,m−1])&#x3D;t[0]∗b_{m−1}+t[1]∗b_{m−2}+…+t[m−1]∗b_0$$</p>
-<p>其中的 b_k 可以是一个常数，在 Rabin-Karp 算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取 101。</p>
+</tbody>
+</table>
+<h3 id="朴素匹配算法">1.1.1 朴素匹配算法</h3>
+<p>暴力求解</p>
+<h3 id="robin-karp算法">1.1.2 Robin-Karp算法</h3>
+<p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。
+选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中
+<span class="math inline">\(0&lt;m&lt;n\)</span>，<span class="math inline">\(Hash(t[i,j])\)</span>代表字符串t[i,
+j]的哈希值。</p>
+<p>当 <span class="math inline">\(Hash(t[0,
+m-1])!=Hash(p[0,m-1])\)</span> 时，我们很自然的会把 <span class="math inline">\(Hash(t[1, m])\)</span>
+拿过来继续比较。在这个过程中，若我们重新计算字符串t[1,
+m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0,
+m-1]与t[1, m]中有 m-1
+个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为
+O(1)。</p>
+<p>Rabin-Karp 算法选用的滚动哈希函数主要是利用<span class="math inline">\(Rabin
+fingerprint\)</span>的思想，举个例子，计算字符串t[0, m -
+1]的哈希值的公式如下，</p>
+<p><span class="math display">\[Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+...+t[m−1]∗b_0\]</span></p>
+<p>其中的 b_k 可以是一个常数，在 Rabin-Karp
+算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取
+101。</p>
 <p>则计算字符串t[1, m]的哈希值公式如下，</p>
-<p>$$Hash(t[1,m])&#x3D;(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0$$</p>
-<h3 id="1-1-3-KMP算法"><a href="#1-1-3-KMP算法" class="headerlink" title="1.1.3 KMP算法"></a>1.1.3 KMP算法</h3><p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p>
+<p><span class="math display">\[Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0\]</span></p>
+<h3 id="kmp算法">1.1.3 KMP算法</h3>
+<p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p>
 <p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html">阮一峰KMP算法</a></p>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true">#KMP</span>
-<span class="token keyword">def</span> <span class="token function">kmp_match</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    m <span class="token operator">=</span> len<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span> n <span class="token operator">=</span> len<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
-    cur <span class="token operator">=</span> <span class="token number">0</span><span class="token comment" spellcheck="true">#起始指针cur</span>
-    table <span class="token operator">=</span> partial_table<span class="token punctuation">(</span>p<span class="token punctuation">)</span>
-    <span class="token keyword">while</span> cur<span class="token operator">&lt;=</span>m<span class="token operator">-</span>n<span class="token punctuation">:</span>
-        <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">:</span>
-            <span class="token keyword">if</span> s<span class="token punctuation">[</span>i<span class="token operator">+</span>cur<span class="token punctuation">]</span><span class="token operator">!=</span>p<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">:</span>
-                cur <span class="token operator">+=</span> max<span class="token punctuation">(</span>i <span class="token operator">-</span> table<span class="token punctuation">[</span>i<span class="token number">-1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">#有了部分匹配表,我们不只是单纯的1位1位往右移,可以一次移动多位</span>
-                <span class="token keyword">break</span>
-        <span class="token keyword">else</span><span class="token punctuation">:</span>
-            <span class="token keyword">return</span> <span class="token boolean">True</span>
-    <span class="token keyword">return</span> <span class="token boolean">False</span>
-
-<span class="token comment" spellcheck="true">#部分匹配表</span>
-<span class="token keyword">def</span> <span class="token function">partial_table</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token triple-quoted-string string">'''partial_table("ABCDABD") -> [0, 0, 0, 0, 1, 2, 0]'''</span>
-    prefix <span class="token operator">=</span> set<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    postfix <span class="token operator">=</span> set<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    ret <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>len<span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-        prefix<span class="token punctuation">.</span>add<span class="token punctuation">(</span>p<span class="token punctuation">[</span><span class="token punctuation">:</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
-        postfix <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;p[j:i+1] for j in range(1,i+1)&amp;#125;</span>
-        ret<span class="token punctuation">.</span>append<span class="token punctuation">(</span>len<span class="token punctuation">(</span><span class="token punctuation">(</span>prefix<span class="token operator">&amp;</span>postfix <span class="token operator">or</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;''&amp;#125;).pop()))</span>
-    <span class="token keyword">return</span> ret
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#KMP</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kmp_match(s, p):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="bu">len</span>(s)<span class="op">;</span> n <span class="op">=</span> <span class="bu">len</span>(p)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    cur <span class="op">=</span> <span class="dv">0</span><span class="co">#起始指针cur</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    table <span class="op">=</span> partial_table(p)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> cur<span class="op">&lt;=</span>m<span class="op">-</span>n:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> s[i<span class="op">+</span>cur]<span class="op">!=</span>p[i]:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                cur <span class="op">+=</span> <span class="bu">max</span>(i <span class="op">-</span> table[i<span class="op">-</span><span class="dv">1</span>], <span class="dv">1</span>)<span class="co">#有了部分匹配表,我们不只是单纯的1位1位往右移,可以一次移动多位</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#部分匹配表</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> partial_table(p):</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">&#39;&#39;&#39;partial_table(&quot;ABCDABD&quot;) -&gt; [0, 0, 0, 0, 1, 2, 0]&#39;&#39;&#39;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    prefix <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    postfix <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    ret <span class="op">=</span> [<span class="dv">0</span>]</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="bu">len</span>(p)):</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        prefix.add(p[:i])</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        postfix <span class="op">=</span> &#123;p[j:i<span class="op">+</span><span class="dv">1</span>] <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,i<span class="op">+</span><span class="dv">1</span>)&#125;</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        ret.append(<span class="bu">len</span>((prefix<span class="op">&amp;</span>postfix <span class="kw">or</span> &#123;<span class="st">&#39;&#39;</span>&#125;).pop()))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ret</span></code></pre></div>
 
     </div>
 
@@ -408,7 +426,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">1.1 字符串匹配算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-%E6%9C%B4%E7%B4%A0%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1.1 朴素匹配算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-Robin-Karp%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">1.1.2 Robin-Karp算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-KMP%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">1.1.3 KMP算法</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">1.1 字符串匹配算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">1.1.1 朴素匹配算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#robin-karp%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">1.1.2 Robin-Karp算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kmp%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">1.1.3 KMP算法</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
