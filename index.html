@@ -1,85 +1,26 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="en">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"bansheng.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT" />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
+  <meta name="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Ingaong&#39;s Blogs">
 <meta property="og:url" content="https://bansheng.github.io/index.html">
@@ -89,39 +30,18 @@
 <meta property="article:author" content="bansheng">
 <meta name="twitter:card" content="summary">
 
+<link rel="canonical" href="https://bansheng.github.io/">
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'en'
   };
 </script>
-
-
-
-  <link rel="canonical" href="https://bansheng.github.io/"/>
-
-
-
-
 
   <title>Ingaong's Blogs</title>
   
@@ -131,238 +51,171 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
 
-<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Ingaong's Blogs</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-      
-        <p class="site-subtitle">Head forward.</p>
-      
   </div>
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ingaong's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Head forward.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
+
+
+
 <nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            Home
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            About
-          </a>
-        </li>
-      
-        
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
-        
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            Categories
-          </a>
-        </li>
-      
-        
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
-        
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
         <li class="menu-item menu-item-contact">
-          <a href="/contact/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            contact
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-commonweal">
-          <a href="/404" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
-            
-            Commonweal 404
-          </a>
-        </li>
-      
 
-      
-    </ul>
-  
+    <a href="/contact/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>contact</a>
 
-  
+  </li>
+  </ul>
 </nav>
 
 
 
- </div>
+
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content index posts-expand">
             
-  <section id="posts" class="posts-expand">
-    
       
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/11-GNN-survey2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bansheng">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Ingaong's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/01/11-GNN-survey2/" itemprop="url">A Comprehensive Survey on Graph Neural Networks</a></h1>
-        
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/01/11-GNN-survey2/" class="post-title-link" itemprop="url">A Comprehensive Survey on Graph Neural Networks</a>
+        </h2>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T14:34:26+08:00">
-                2020-11-01
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Survey/" itemprop="url" rel="index">
-                    <span itemprop="name">Survey</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2020-11-01 14:34:26" itemprop="dateCreated datePublished" datetime="2020-11-01T14:34:26+08:00">2020-11-01</time>
             </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-08 11:38:14" itemprop="dateModified" datetime="2022-02-08T11:38:14+08:00">2022-02-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Survey/" itemprop="url" rel="index"><span itemprop="name">Survey</span></a>
+                </span>
+            </span>
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -370,12 +223,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h2><p>欧式数据：图片，文本，语言，视频<br>非欧式数据：图</p>
+          <h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h2><p>欧式数据：图片，文本，语言，视频<br>非欧式数据：图</p>
 <p>图数据不规则，每个图的无序节点大小是可变的，且每个结点有不同数量的邻居结点，因此一些重要的操作如卷积能够在图像数据上轻易计算，但是不适用于图数据，可见图数据的复杂性给现有的机器学习算法带来了巨大的挑战 。此外，现有的机器学习算法假设数据之间是相互独立的，但是，图数据中每个结点都通过一些复杂的连接信息与其他邻居相关，这些连接信息用于捕获数据之间的相互依赖关系，包括，引用，关系，交互。</p>
 <ol>
 <li>Graph attention networks（图注意力网络)</li>
@@ -444,134 +292,71 @@
 <h3 id="4-4-图时空网络"><a href="#4-4-图时空网络" class="headerlink" title="4.4 图时空网络"></a>4.4 图时空网络</h3><p>图时空网络同时捕获时空图的时空依赖性。时空图具有全局图结构，每个节点的输入随时间变化。例如，在交通网络中，将每个传感器作为一个节点，连续记录某条道路的交通速度，其中交通网络的边由传感器对之间的距离决定。图时空网络的目标是预测未来的节点值或标签，或预测时空图标签。最近的研究探索了单独使用GCNs[72]，结GCNs与RNN[70]或CNN[71]，以及一种为图结构定制的循环架构[73]。</p>
 <p>DCRNN由于利用了循环网络架构能够处理长时间依赖关系。虽然CNN-GCN比DCRNN简单，但是由于他首先实现了1D-CNN，所以在处理时空图上更加高效。ST-GCN将时间流作为图的边，使邻接矩阵的大小呈二次增长。一方面，增加了图卷积层的计算成本。另一方面，为了捕获长期依赖关系，图卷积层必须多次叠加。Structural-RNN通过在相同的语义组共享相同的RNN提高了模型的有效性。但是，需要人类先验知识来划分语义组。</p>
 
-          
-        
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
       
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/10-FL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bansheng">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Ingaong's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/01/10-FL/" itemprop="url">联邦学习概述</a></h1>
-        
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/01/10-FL/" class="post-title-link" itemprop="url">联邦学习概述</a>
+        </h2>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T14:14:59+08:00">
-                2020-11-01
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Survey/" itemprop="url" rel="index">
-                    <span itemprop="name">Survey</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2020-11-01 14:14:59" itemprop="dateCreated datePublished" datetime="2020-11-01T14:14:59+08:00">2020-11-01</time>
             </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-08 11:38:14" itemprop="dateModified" datetime="2022-02-08T11:38:14+08:00">2022-02-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Survey/" itemprop="url" rel="index"><span itemprop="name">Survey</span></a>
+                </span>
+            </span>
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -579,12 +364,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>Examples of potential applications include: learning sentiment, semantic location, or activities of mobile phone users; adapting to pedestrian behavior in autonomous vehicles; and predicting health events like heart attack risk from wearable devices [6, 52, 84].</p>
+          <p>Examples of potential applications include: learning sentiment, semantic location, or activities of mobile phone users; adapting to pedestrian behavior in autonomous vehicles; and predicting health events like heart attack risk from wearable devices [6, 52, 84].</p>
 <h2 id="1-Overview"><a href="#1-Overview" class="headerlink" title="1. Overview"></a>1. Overview</h2><h3 id="1-1-问题定义"><a href="#1-1-问题定义" class="headerlink" title="1.1 问题定义"></a>1.1 问题定义</h3><p><img src="/2020/11/01/10-FL/01-FL_problem.png" alt="problem definition"><br>简单来说，就是说联邦学习的目标是训练一个”尽可能接近把各个节点数据聚合起来训练”的模型。</p>
 <h3 id="1-2-典型应用"><a href="#1-2-典型应用" class="headerlink" title="1.2 典型应用"></a>1.2 典型应用</h3><ul>
 <li>smart phone</li>
@@ -696,134 +476,71 @@
 </li>
 </ol>
 
-          
-        
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
       
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/06-NAS-Survey/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bansheng">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Ingaong's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/01/06-NAS-Survey/" itemprop="url">Neural Architecture Search: A Survey</a></h1>
-        
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/01/06-NAS-Survey/" class="post-title-link" itemprop="url">Neural Architecture Search: A Survey</a>
+        </h2>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T14:05:25+08:00">
-                2020-11-01
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Survey/" itemprop="url" rel="index">
-                    <span itemprop="name">Survey</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2020-11-01 14:05:25" itemprop="dateCreated datePublished" datetime="2020-11-01T14:05:25+08:00">2020-11-01</time>
             </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-08 11:38:14" itemprop="dateModified" datetime="2022-02-08T11:38:14+08:00">2022-02-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Survey/" itemprop="url" rel="index"><span itemprop="name">Survey</span></a>
+                </span>
+            </span>
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -831,12 +548,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>目前存在的应用<br>image classification<br>object detection<br>semantic segmentation</p>
+          <p>目前存在的应用<br>image classification<br>object detection<br>semantic segmentation</p>
 <p>NAS can be seen as subfield of AutoML (Hutter et al., 2019) and has significant overlap with hyperparameter optimization (Feurer and Hutter, 2019) and meta-learning (Vanschoren, 2019).<br>AutoML的子领域<br>NAS与元学习和超参数优化有很多重合的地方</p>
 <p>NAS的方法分为三类：</p>
 <ol>
@@ -911,134 +623,71 @@
 <p>新的数据集：Nas-bench-101: Towards reproducible neural architecture search</p>
 <p>Learning Augmentation Policies from Data</p>
 
-          
-        
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
       
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/05-ICLR2020_NAS_papers/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bansheng">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Ingaong's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/01/05-ICLR2020_NAS_papers/" itemprop="url">ICLR2020部分NAS投稿论文解读</a></h1>
-        
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/01/05-ICLR2020_NAS_papers/" class="post-title-link" itemprop="url">ICLR2020部分NAS投稿论文解读</a>
+        </h2>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T14:00:54+08:00">
-                2020-11-01
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Papers/" itemprop="url" rel="index">
-                    <span itemprop="name">Papers</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2020-11-01 14:00:54" itemprop="dateCreated datePublished" datetime="2020-11-01T14:00:54+08:00">2020-11-01</time>
             </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-08 11:38:14" itemprop="dateModified" datetime="2022-02-08T11:38:14+08:00">2022-02-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Papers/" itemprop="url" rel="index"><span itemprop="name">Papers</span></a>
+                </span>
+            </span>
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -1046,12 +695,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters"><a href="#1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters" class="headerlink" title="1.stabilizing DARTS with Amended grarident estimation on architectural parameters"></a>1.stabilizing DARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。<br>$$<br>\mathbf{g}<em>{2}^{\prime}=-\left.\left.\eta \cdot \nabla</em>{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\boldsymbol{\omega}=\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>$$</p>
+          <h2 id="1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters"><a href="#1-stabilizing-DARTS-with-Amended-grarident-estimation-on-architectural-parameters" class="headerlink" title="1.stabilizing DARTS with Amended grarident estimation on architectural parameters"></a>1.stabilizing DARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。<br>$$<br>\mathbf{g}<em>{2}^{\prime}=-\left.\left.\eta \cdot \nabla</em>{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\operatorname{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\boldsymbol{\omega}=\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>$$</p>
 <p>提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为$g_1$，通过梯度的反向传播得到。第二部分称为$g_2$，更合理的近似为$g_2’$。</p>
 <p>$$<br>\begin{aligned}<br>\nabla_{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}), \boldsymbol{\alpha}\right)|</em>{\boldsymbol{\alpha}=\boldsymbol{\alpha}<em>{t}} =&amp; \nabla</em>{\boldsymbol{\alpha}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\boldsymbol{\omega}=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} -<br>\<br>&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega},<br>\boldsymbol{\alpha})|</em>{\omega=\boldsymbol{\omega}^{</em>}<br>\left(\boldsymbol{\alpha}<em>{t}\right),<br>\boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})|</em>{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
 <p>$$<br>\begin{aligned}<br>\left\langle\mathbf{g}<em>{2}^{\prime}, \mathbf{g}</em>{2}\right\rangle=&amp;\left.\left.\eta \cdot \nabla_{\omega} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\omega^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} ^{\top} \cdot \mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega}, \boldsymbol{\alpha}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \ &amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}<em>{\mathrm{train}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\boldsymbol{\omega}^{<em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}} \cdot \mathbf{H} \cdot \nabla_{\boldsymbol{\omega}} \mathcal{L}<em>{\mathrm{val}}(\boldsymbol{\omega}, \boldsymbol{\alpha})\right|</em>{\omega=\omega^{</em>}\left(\boldsymbol{\alpha}<em>{t}\right), \boldsymbol{\alpha}=\boldsymbol{\alpha}</em>{t}}<br>\end{aligned}<br>$$</p>
@@ -1087,134 +731,71 @@
 <h2 id="7-SNAS"><a href="#7-SNAS" class="headerlink" title="7. SNAS"></a>7. SNAS</h2><p>SNAS故事讲的不一样，但是本质上来说，跟DARTS基本一样的原理，即使用operation的加权和来代替单独的operation。<br>它使用了gumble-softmax trick，<strong>使用概率采样出的权值而不是固定的权值来计算加权和</strong>，同时增加temperature，使得采样出的权值更加接近one-hot的权值，来拟合单独的operation。</p>
 <p><img src="/2020/11/01/05-ICLR2020_NAS_papers/16-snas.png" alt="snas"></p>
 
-          
-        
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
       
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/04-HREAS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bansheng">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Ingaong's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/01/04-HREAS/" itemprop="url">hierarchical representations for efficient architecture search</a></h1>
-        
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/01/04-HREAS/" class="post-title-link" itemprop="url">hierarchical representations for efficient architecture search</a>
+        </h2>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T13:58:15+08:00">
-                2020-11-01
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Paper/" itemprop="url" rel="index">
-                    <span itemprop="name">Paper</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2020-11-01 13:58:15" itemprop="dateCreated datePublished" datetime="2020-11-01T13:58:15+08:00">2020-11-01</time>
             </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-08 11:38:14" itemprop="dateModified" datetime="2022-02-08T11:38:14+08:00">2022-02-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index"><span itemprop="name">Paper</span></a>
+                </span>
+            </span>
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -1222,12 +803,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>分层设计，底层为一个个最基本的计算操作，顶层为整体架构。</p>
+          <p>分层设计，底层为一个个最基本的计算操作，顶层为整体架构。</p>
 <p><img src="/2020/11/01/04-HREAS/01-hierarchical-architecture-representation.png" alt="hiarchical architecture representation"></p>
 <h2 id="evolutionary-architecture-search"><a href="#evolutionary-architecture-search" class="headerlink" title="evolutionary architecture search"></a>evolutionary architecture search</h2><h3 id="mutation"><a href="#mutation" class="headerlink" title="mutation"></a>mutation</h3><p>找到non-primitive level l&gt;=2，选择这个level里面的一个motif，选择motif里面的两个节点，把两个节点中间的边置换为另一种边(三种情况，1.新增边；2.去除边；3.置换边)。</p>
 <h3 id="initialization"><a href="#initialization" class="headerlink" title="initialization"></a>initialization</h3><p>原型初始化的处理</p>
@@ -1241,134 +817,71 @@
 <p>不同于tournament selection，random search随机选择集合中的原型进行突变，这样突变的过程可以并行，减少了search time</p>
 <h3 id="implementation"><a href="#implementation" class="headerlink" title="implementation"></a>implementation</h3><p>异步的 一个controller负责执行所有原型的进化，其余的worker负责对原型的表现做evaluation。Architectures are trained from scratch for a fixed number of steps with random weight initialization。</p>
 
-          
-        
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
       
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://bansheng.github.io/2020/11/01/02-DARTS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bansheng">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="bansheng">
+      <meta itemprop="description" content="嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Ingaong's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/01/02-DARTS/" itemprop="url">DARTS 可微分架构搜索</a></h1>
-        
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/01/02-DARTS/" class="post-title-link" itemprop="url">DARTS 可微分架构搜索</a>
+        </h2>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T13:43:04+08:00">
-                2020-11-01
-              </time>
-            
+              <span class="post-meta-item-text">Posted on</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Paper/" itemprop="url" rel="index">
-                    <span itemprop="name">Paper</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Created: 2020-11-01 13:43:04" itemprop="dateCreated datePublished" datetime="2020-11-01T13:43:04+08:00">2020-11-01</time>
             </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-08 11:38:14" itemprop="dateModified" datetime="2022-02-08T11:38:14+08:00">2022-02-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index"><span itemprop="name">Paper</span></a>
+                </span>
+            </span>
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -1376,12 +889,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <h2 id="1-DARTS"><a href="#1-DARTS" class="headerlink" title="1. DARTS"></a>1. DARTS</h2><p> the computation procedure for an architecture (or a cell in it) is represented as a directed acyclic graph. 表示为有向图。</p>
+          <h2 id="1-DARTS"><a href="#1-DARTS" class="headerlink" title="1. DARTS"></a>1. DARTS</h2><p> the computation procedure for an architecture (or a cell in it) is represented as a directed acyclic graph. 表示为有向图。</p>
 <h3 id="1-1-search-space"><a href="#1-1-search-space" class="headerlink" title="1.1 search space"></a>1.1 search space</h3><p>寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。</p>
 <p>cell是由N个有序序列node组成的有向无环图。每一条edge都是一个计算。我们假设这个cell有两个input和一个output，对于cnn，它就是前面两个层的输出，对于rnn，它是上个step的state以及这个step的Input。cell的输出是通过对所有中间节点应用reduction得到的。</p>
 <p>所有中间节点的计算依赖前置节点。<br>$$<br>x^{(j)} = \sum_{i&lt;j}o^{(i,j)}(x^{(i)})<br>$$<br>注意zero operation也是可以被允许的edge类型。</p>
@@ -1404,45 +912,24 @@
 <p>总共12个node，最初的intermediate node是由两个input node通过线性变换，求和，然后传过一个tanh激活函数得到的。</p>
 <h3 id="2-2-architecture-evaluation"><a href="#2-2-architecture-evaluation" class="headerlink" title="2.2 architecture evaluation"></a>2.2 architecture evaluation</h3><p><strong>寻找多次，避免初始化的影响</strong> 。从cifar-10上迁移到imagenet上，从PTB上迁移到wikitext-2上。</p>
 
-          
-        
       
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
+      <footer class="post-footer">
         <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
+      </footer>
   </article>
+  
+  
+  
 
-
-    
-  </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1450,183 +937,151 @@
           </div>
           
 
-
-          
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">bansheng</p>
-              <p class="site-description motion-element" itemprop="description">嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/%7C%7C%20archive">
-              
-                  <span class="site-state-item-count">11</span>
-                  <span class="site-state-item-name">posts</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">categories</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
-                  <span class="site-state-item-name">tags</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/bansheng" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="mailto:dyadongcs@gmail.com" target="_blank" title="E-Mail">
-                      
-                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="https://www.zhihu.com/people/lemon-dong" target="_blank" title="Zhihu">
-                      
-                        <i class="fa fa-fw fa-globe"></i>Zhihu</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">bansheng</span>
-
-  
-</div>
-
-
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">bansheng</p>
+  <div class="site-description" itemprop="description">嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/bansheng" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;bansheng" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dyadongcs@gmail.com" title="E-Mail → mailto:dyadongcs@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lemon-dong" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;lemon-dong" rel="noopener" target="_blank"><i class="fa fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bansheng</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
 
 
 
 
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 
@@ -1644,99 +1099,8 @@
 
 
 
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
 
 
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
 
   
 
