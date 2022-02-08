@@ -6,7 +6,7 @@ oc: true
 mathjax: true
 date: 2020-11-01 13:36:56
 password:
-summary: 一篇关于AutoML的简单概述
+description: 一篇关于AutoML的简单概述
 tags: AutoML
 categories: Survey
 ---

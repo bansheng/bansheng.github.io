@@ -4,7 +4,7 @@
 
 # Site
 title: Ingaong's Blogs
-subtitle: 'From now, to the future.'
+subtitle: 'Head forward.'
 description: '嗨，欢迎大家来到我的个人博客，主要记录的是我阅读的一些论文及思考，或者是一些随笔'
 keywords:
 author: bansheng
@@ -97,7 +97,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-matery
+theme: next-new
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -124,3 +124,6 @@ live2d:
     show: true
   react:
     opacity: 0.7
+
+# comments
+disqus_shortname: your-disqus-shortname

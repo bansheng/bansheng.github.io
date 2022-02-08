@@ -6,7 +6,7 @@ oc: true
 mathjax: true
 date: 2020-11-01 13:58:15
 password:
-summary: "hierarchical representations for efficient architecture search解读"
+description: "hierarchical representations for efficient architecture search解读"
 tags: NAS
 categories: Paper
 ---

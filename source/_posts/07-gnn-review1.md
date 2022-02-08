@@ -6,7 +6,7 @@ oc: true
 mathjax: true
 date: 2020-06-15 12:41:07
 password:
-summary: note for "Graph Neural Networks A review of methods and applications"
+description: note for "Graph Neural Networks A review of methods and applications"
 tags: GNN
 categories: Survey
 ---

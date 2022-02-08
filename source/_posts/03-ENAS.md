@@ -6,7 +6,7 @@ oc: true
 mathjax: true
 date: 2020-02-09 18:45:45
 password:
-summary: "Efficient Neural Architecture Search via Parameter Sharing"
+description: "Efficient Neural Architecture Search via Parameter Sharing"
 tags: NAS
 categories: Paper
 ---

@@ -6,7 +6,7 @@ oc: true
 mathjax: true
 date: 2020-07-15 14:08:05
 password:
-summary: 字符子串匹配算法
+description: 字符子串匹配算法
 tags: string
 categories: Algorithm
 ---

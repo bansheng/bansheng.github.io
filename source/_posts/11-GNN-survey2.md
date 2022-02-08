@@ -6,7 +6,7 @@ oc: true
 mathjax: true
 date: 2020-11-01 14:34:26
 password:
-summary: "A Comprehensive Survey on Graph Neural Networks解读"
+description: "A Comprehensive Survey on Graph Neural Networks解读"
 tags: GNN
 categories: Survey
 ---
