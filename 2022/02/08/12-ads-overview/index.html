@@ -27,11 +27,13 @@
 <meta property="og:site_name" content="昔我往矣，杨柳依依。今我来思，雨雪霏霏。">
 <meta property="og:description" content="本文主要介绍了广告算法入门的一些基础知识。主要介绍了广告投放漏斗的几个部分承担的功能、各自的特点以及常见的一些算法。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://s2.loli.net/2022/02/09/N8eOyfJzvIkbS7a.png">
 <meta property="article:published_time" content="2022-02-08T12:13:52.000Z">
-<meta property="article:modified_time" content="2022-02-08T12:32:29.977Z">
+<meta property="article:modified_time" content="2022-02-09T08:25:11.421Z">
 <meta property="article:author" content="bansheng">
 <meta property="article:tag" content="ads">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/02/09/N8eOyfJzvIkbS7a.png">
 
 <link rel="canonical" href="https://dydcoding.cn/2022/02/08/12-ads-overview/">
 
@@ -229,10 +231,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2022-02-08 20:13:52 / Modified: 20:32:29" itemprop="dateCreated datePublished" datetime="2022-02-08T20:13:52+08:00">2022-02-08</time>
+              <time title="Created: 2022-02-08 20:13:52" itemprop="dateCreated datePublished" datetime="2022-02-08T20:13:52+08:00">2022-02-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-09 16:25:11" itemprop="dateModified" datetime="2022-02-09T16:25:11+08:00">2022-02-09</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -260,10 +268,12 @@
 广告系统按照漏斗的形式，从数百数千万候选广告中，对用户的每一刷（以抖音为例）筛选出几十个广告，然后发送给用户。</p>
 <p>广告投放系统的漏斗大致可以分为 [定向/召回/粗排/精排/混排]
 5个部分，有些系统可能没有混排，或者把粗排精排放在一起（当系统候选规模较小的时候）。</p>
-<p>未完待续...</p>
-<!-- ## 定向
-
-1. 定向的 -->
+<h2 id="定向">1. 定向</h2>
+<p>广告主设定广告面向的人群对象筛选条件，结合业务上对每个用户可投广告的控制（流控、频控、其它规则）对广告全集进行筛选。
+一般受制于latency（系统耗时），我们选择定向与召回结果取交集送粗排。
+定向的基本检索方式为建立倒排索引，map&lt;filed, map&lt;value, bitmap&gt;
+&gt;。 <img src="https://s2.loli.net/2022/02/09/N8eOyfJzvIkbS7a.png" />
+bitmap中的每一个bit，对应一个广告id，几个规则索引一起按位取交集，得到定向的结果candidate广告。</p>
 
     </div>
 
@@ -344,6 +354,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%90%91"><span class="nav-number">1.</span> <span class="nav-text">1. 定向</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
