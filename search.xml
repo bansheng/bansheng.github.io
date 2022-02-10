@@ -595,6 +595,119 @@ trick，<strong>使用概率采样出的权值而不是固定的权值来计算�
       </tags>
   </entry>
   <entry>
+    <title>Neural Architecture Search: A Survey</title>
+    <url>/2020/11/01/06-NAS-Survey/</url>
+    <content><![CDATA[<p>目前存在的应用 image classification object detection semantic
+segmentation</p>
+<p>NAS can be seen as subfield of AutoML (Hutter et al., 2019) and has
+significant overlap with hyperparameter optimization (Feurer and Hutter,
+2019) and meta-learning (Vanschoren, 2019). AutoML的子领域
+NAS与元学习和超参数优化有很多重合的地方</p>
+<p>NAS的方法分为三类：</p>
+<ol type="1">
+<li>search space</li>
+<li>search strategy</li>
+<li>performance estimation strategy</li>
+</ol>
+<p><img src="https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png" /></p>
+<ul>
+<li>Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了search
+space，同时也可能漏掉超出人类认知的架构</li>
+<li>Search
+Strategy.搜索策略详细描述了如何探索搜索空间(通常是指数级大的，甚至是无界的)。它包含了物理的探索-利用权衡，因为一方面，快速找到性能良好的架构是可取的，而另一方面，应该避免过早地收敛到次优架构的区域。</li>
+<li>Performance Estimation Strategy.
+简单的对所有数据进行标准训练和测试，但是这种方案计算太过昂贵，并且限制了可以研究的体系结构的数量</li>
+</ul>
+<h2 id="search-space">1. search space</h2>
+<h3 id="chain-structured-neural-network-architecture">chain-structured
+neural network architecture</h3>
+<p><img src="https://s2.loli.net/2022/02/08/xBnSYOeg3GVafry.png" />
+搜索空间的影响因素</p>
+<ol type="1">
+<li>层的数目</li>
+<li>每一层的种类 pooling, conv, skip-connection, etc</li>
+<li>超参数</li>
+</ol>
+<h3 id="cell-based-model">cell-based model</h3>
+<p><img src="https://s2.loli.net/2022/02/08/P2AJEhNYIbfxSXv.png" /></p>
+<ul>
+<li>normal cell</li>
+<li>reduction cell</li>
+</ul>
+<p>优点：</p>
+<ol type="1">
+<li>The size of the search space is drastically reduced
+搜索空间大大减小</li>
+<li>Architectures built from cells can more easily be transferred or
+adapted to other data sets by simply varying the number of cells and
+filters used within a model 可移植性比较好</li>
+<li>Creating architectures by repeating building blocks has proven a
+useful design prin- ciple in general, such as repeating an LSTM block in
+RNNs or stacking a residual block.
+已经证明叠加网络是有效的设计准则，如LSTM，RNN，res-block</li>
+</ol>
+<h3 id="macro-architecture">macro-architecture</h3>
+<p>how many cells shall be used and how should they be connected to
+build the actual model</p>
+<h2 id="search-strategy">2. search strategy</h2>
+<ul>
+<li>random search</li>
+<li>Bayesian optimization</li>
+<li>evolutionary methods</li>
+<li>reinforcement learning (RL)</li>
+<li>gradient-based methods.</li>
+</ul>
+<ol type="1">
+<li><p>no interaction with an environment occurs during this sequential
+process (no external state is observed, and there are no intermediate
+rewards) 将架构取样的过程当做single
+action的线性生成过程，将RL问题转换为无状态多武装强盗问题。</p></li>
+<li><p>frame NAS as a sequential decision process</p></li>
+<li><p>deal with variable-length network architectures <strong>use a
+bi-directional LSTM to encode architectures into a fixed-length
+representation</strong></p></li>
+<li><p>使用gradient-based
+method去优化权重，使用进化算法仅仅去优化神经网络的架构</p></li>
+<li><p>Neuro-evolutionary方法不同的地方在于how they sample parents,
+update populations, and generate offsprings</p>
+<p><a href="https://arxiv.org/abs/1804.09081">Efficient multi-objective
+neural architecture search via lamarckian evolution.</a>
+后代从父网络中继承权重</p>
+<p><a href="https://arxiv.org/pdf/1703.01041.pdf">Large-scale evolution
+of image classifiers</a> 后代从父网络中继承没有被突变影响的权重</p></li>
+<li><p>Monte Carlo Tree Search. hill climbing</p></li>
+<li><p>optimize both the network weights and the network architecture by
+alternating gradient descent steps on training data for weights and on
+validation data for architectural parameters such as.
+交替使用梯度下降法，在训练集上训练权重，在验证集上更改架构参数</p></li>
+<li><p>在可能的操作集合上面优化带参的分布</p></li>
+<li><p>优化层的超参数和连接模式</p></li>
+</ol>
+<h2 id="performance-estimation-strategy">3. Performance Estimation
+Strategy</h2>
+<p><img src="https://s2.loli.net/2022/02/08/HdpxLUvrX9DFSyZ.png" /></p>
+<h2 id="directions">4. directions</h2>
+<p>人类定义搜索空间的大小相比较寻找性能更好的网络架构更简单，但同时也限制了NAS不太可能找到本质上优于现在架构的网络架构</p>
+<p>应用在image restoration semantic segmentation reinforcement learning
+等等上面</p>
+<p>GAN sensor, fusion</p>
+<p>multi-task problems multi-objective problems</p>
+<p>extending one-shot NAS to generate different architectures depending
+on the task or instance on-the-fly.</p>
+<p>search space的选择</p>
+<p>更加细粒度cell的构建，能否大大加强NAS的能力</p>
+<p>新的数据集：Nas-bench-101: Towards reproducible neural architecture
+search</p>
+<p>Learning Augmentation Policies from Data</p>
+]]></content>
+      <categories>
+        <category>Survey</category>
+      </categories>
+      <tags>
+        <tag>NAS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Graph Neural Networks: A review of methods and applications</title>
     <url>/2020/06/15/07-gnn-review1/</url>
     <content><![CDATA[<h2
@@ -733,119 +846,6 @@ GNN 也不例外。扩展 GNN
       </categories>
       <tags>
         <tag>GNN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Neural Architecture Search: A Survey</title>
-    <url>/2020/11/01/06-NAS-Survey/</url>
-    <content><![CDATA[<p>目前存在的应用 image classification object detection semantic
-segmentation</p>
-<p>NAS can be seen as subfield of AutoML (Hutter et al., 2019) and has
-significant overlap with hyperparameter optimization (Feurer and Hutter,
-2019) and meta-learning (Vanschoren, 2019). AutoML的子领域
-NAS与元学习和超参数优化有很多重合的地方</p>
-<p>NAS的方法分为三类：</p>
-<ol type="1">
-<li>search space</li>
-<li>search strategy</li>
-<li>performance estimation strategy</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png" /></p>
-<ul>
-<li>Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了search
-space，同时也可能漏掉超出人类认知的架构</li>
-<li>Search
-Strategy.搜索策略详细描述了如何探索搜索空间(通常是指数级大的，甚至是无界的)。它包含了物理的探索-利用权衡，因为一方面，快速找到性能良好的架构是可取的，而另一方面，应该避免过早地收敛到次优架构的区域。</li>
-<li>Performance Estimation Strategy.
-简单的对所有数据进行标准训练和测试，但是这种方案计算太过昂贵，并且限制了可以研究的体系结构的数量</li>
-</ul>
-<h2 id="search-space">1. search space</h2>
-<h3 id="chain-structured-neural-network-architecture">chain-structured
-neural network architecture</h3>
-<p><img src="https://s2.loli.net/2022/02/08/xBnSYOeg3GVafry.png" />
-搜索空间的影响因素</p>
-<ol type="1">
-<li>层的数目</li>
-<li>每一层的种类 pooling, conv, skip-connection, etc</li>
-<li>超参数</li>
-</ol>
-<h3 id="cell-based-model">cell-based model</h3>
-<p><img src="https://s2.loli.net/2022/02/08/P2AJEhNYIbfxSXv.png" /></p>
-<ul>
-<li>normal cell</li>
-<li>reduction cell</li>
-</ul>
-<p>优点：</p>
-<ol type="1">
-<li>The size of the search space is drastically reduced
-搜索空间大大减小</li>
-<li>Architectures built from cells can more easily be transferred or
-adapted to other data sets by simply varying the number of cells and
-filters used within a model 可移植性比较好</li>
-<li>Creating architectures by repeating building blocks has proven a
-useful design prin- ciple in general, such as repeating an LSTM block in
-RNNs or stacking a residual block.
-已经证明叠加网络是有效的设计准则，如LSTM，RNN，res-block</li>
-</ol>
-<h3 id="macro-architecture">macro-architecture</h3>
-<p>how many cells shall be used and how should they be connected to
-build the actual model</p>
-<h2 id="search-strategy">2. search strategy</h2>
-<ul>
-<li>random search</li>
-<li>Bayesian optimization</li>
-<li>evolutionary methods</li>
-<li>reinforcement learning (RL)</li>
-<li>gradient-based methods.</li>
-</ul>
-<ol type="1">
-<li><p>no interaction with an environment occurs during this sequential
-process (no external state is observed, and there are no intermediate
-rewards) 将架构取样的过程当做single
-action的线性生成过程，将RL问题转换为无状态多武装强盗问题。</p></li>
-<li><p>frame NAS as a sequential decision process</p></li>
-<li><p>deal with variable-length network architectures <strong>use a
-bi-directional LSTM to encode architectures into a fixed-length
-representation</strong></p></li>
-<li><p>使用gradient-based
-method去优化权重，使用进化算法仅仅去优化神经网络的架构</p></li>
-<li><p>Neuro-evolutionary方法不同的地方在于how they sample parents,
-update populations, and generate offsprings</p>
-<p><a href="https://arxiv.org/abs/1804.09081">Efficient multi-objective
-neural architecture search via lamarckian evolution.</a>
-后代从父网络中继承权重</p>
-<p><a href="https://arxiv.org/pdf/1703.01041.pdf">Large-scale evolution
-of image classifiers</a> 后代从父网络中继承没有被突变影响的权重</p></li>
-<li><p>Monte Carlo Tree Search. hill climbing</p></li>
-<li><p>optimize both the network weights and the network architecture by
-alternating gradient descent steps on training data for weights and on
-validation data for architectural parameters such as.
-交替使用梯度下降法，在训练集上训练权重，在验证集上更改架构参数</p></li>
-<li><p>在可能的操作集合上面优化带参的分布</p></li>
-<li><p>优化层的超参数和连接模式</p></li>
-</ol>
-<h2 id="performance-estimation-strategy">3. Performance Estimation
-Strategy</h2>
-<p><img src="https://s2.loli.net/2022/02/08/HdpxLUvrX9DFSyZ.png" /></p>
-<h2 id="directions">4. directions</h2>
-<p>人类定义搜索空间的大小相比较寻找性能更好的网络架构更简单，但同时也限制了NAS不太可能找到本质上优于现在架构的网络架构</p>
-<p>应用在image restoration semantic segmentation reinforcement learning
-等等上面</p>
-<p>GAN sensor, fusion</p>
-<p>multi-task problems multi-objective problems</p>
-<p>extending one-shot NAS to generate different architectures depending
-on the task or instance on-the-fly.</p>
-<p>search space的选择</p>
-<p>更加细粒度cell的构建，能否大大加强NAS的能力</p>
-<p>新的数据集：Nas-bench-101: Towards reproducible neural architecture
-search</p>
-<p>Learning Augmentation Policies from Data</p>
-]]></content>
-      <categories>
-        <category>Survey</category>
-      </categories>
-      <tags>
-        <tag>NAS</tag>
       </tags>
   </entry>
   <entry>
@@ -1003,29 +1003,6 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
       </categories>
       <tags>
         <tag>string</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>广告投放系统简介</title>
-    <url>/2022/02/08/12-ads-overview/</url>
-    <content><![CDATA[<p>本文主要介绍了广告算法入门的一些基础知识。主要介绍了广告投放漏斗的几个部分承担的功能、各自的特点以及常见的一些算法。</p>
-<span id="more"></span>
-<p>所谓搜广推是一家，本质上来说，[推荐/广告]和[搜索]的所使用的技术都是非常类似的，不同的是搜索有个很强的query特征（用户自己输入的信息，比如你去淘宝上面搜索的商品名称），而推荐或者广告的缺少query特征，只能从<strong>用户特征/商品特征/上下文特征/历史行为特征</strong>中对用户的兴趣进行挖掘。
-广告系统按照漏斗的形式，从数百数千万候选广告中，对用户的每一刷（以抖音为例）筛选出几十个广告，然后发送给用户。</p>
-<p>广告投放系统的漏斗大致可以分为 [定向/召回/粗排/精排/混排]
-5个部分，有些系统可能没有混排，或者把粗排精排放在一起（当系统候选规模较小的时候）。</p>
-<h2 id="定向">1. 定向</h2>
-<p>广告主设定广告面向的人群对象筛选条件，结合业务上对每个用户可投广告的控制（流控、频控、其它规则）对广告全集进行筛选。
-一般受制于latency（系统耗时），我们选择定向与召回结果取交集送粗排。
-定向的基本检索方式为建立倒排索引，map&lt;filed, map&lt;value, bitmap&gt;
-&gt;。 <img src="https://s2.loli.net/2022/02/09/N8eOyfJzvIkbS7a.png" />
-bitmap中的每一个bit，对应一个广告id，几个规则索引一起按位取交集，得到定向的结果candidate广告。</p>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>ads</tag>
       </tags>
   </entry>
   <entry>
@@ -1298,6 +1275,29 @@ class="math inline">\(n^2\)</span> ，这些方法都不能扩展到大型图。
       </categories>
       <tags>
         <tag>GNN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>广告投放系统简介</title>
+    <url>/2022/02/08/12-ads-overview/</url>
+    <content><![CDATA[<p>本文主要介绍了广告算法入门的一些基础知识。主要介绍了广告投放漏斗的几个部分承担的功能、各自的特点以及常见的一些算法。</p>
+<span id="more"></span>
+<p>所谓搜广推是一家，本质上来说，[推荐/广告]和[搜索]的所使用的技术都是非常类似的，不同的是搜索有个很强的query特征（用户自己输入的信息，比如你去淘宝上面搜索的商品名称），而推荐或者广告的缺少query特征，只能从<strong>用户特征/商品特征/上下文特征/历史行为特征</strong>中对用户的兴趣进行挖掘。
+广告系统按照漏斗的形式，从数百数千万候选广告中，对用户的每一刷（以抖音为例）筛选出几十个广告，然后发送给用户。</p>
+<p>广告投放系统的漏斗大致可以分为 [定向/召回/粗排/精排/混排]
+5个部分，有些系统可能没有混排，或者把粗排精排放在一起（当系统候选规模较小的时候）。</p>
+<h2 id="定向">1. 定向</h2>
+<p>广告主设定广告面向的人群对象筛选条件，结合业务上对每个用户可投广告的控制（流控、频控、其它规则）对广告全集进行筛选。
+一般受制于latency（系统耗时），我们选择定向与召回结果取交集送粗排。
+定向的基本检索方式为建立倒排索引，map&lt;filed, map&lt;value, bitmap&gt;
+&gt;。 <img src="https://s2.loli.net/2022/02/09/N8eOyfJzvIkbS7a.png" />
+bitmap中的每一个bit，对应一个广告id，几个规则索引一起按位取交集，得到定向的结果candidate广告。</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>ads</tag>
       </tags>
   </entry>
   <entry>
