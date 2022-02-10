@@ -1,1324 +1,332 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title>AutoML自动机器学习</title>
-    <url>/2020/11/01/01-AutoML/</url>
-    <content><![CDATA[<p>wiki definition: AutoML is the process of automating the end-to-end
-process of applying appropriate data-preprocessing, feature engineering,
-model selection, and model evaluation to solve the certain task</p>
-<ul>
-<li>Google AutoML</li>
-<li><a href="https://arxiv.org/abs/1611.01578">Neural Architecture
-Search with Reinforcement Learning</a></li>
-</ul>
-<p>We will introduce NAS from two perspectives.</p>
-<ul>
-<li>The first is the structures of the model.
-<ul>
-<li>entire structure</li>
-<li>cell-based structure</li>
-<li>hierarchical structure</li>
-<li>morphism-based structure</li>
-</ul></li>
-<li>The second is hyperparameter optimization (HPO) for designing the
-model structure.
-<ul>
-<li>Reinforcement Learning</li>
-<li>Evolutionary Algorithms</li>
-<li>Gradient-based</li>
-<li>Bayesian Optimization</li>
-</ul></li>
-</ul>
-<p>AutoML</p>
-<ul>
-<li>data preparation</li>
-<li>feature engineering</li>
-<li>model generation</li>
-<li>model evaluation</li>
-</ul>
-<h2 id="data-preparation">1. Data preparation</h2>
-<h3 id="data-collection">1.1 data collection</h3>
-<ol type="1">
-<li>data synthesis
-<ul>
-<li>augment the exsiting dataset CV: cropping, flipping, padding,
-rotation and resize, etc. Library: torchvision augmentor</li>
-<li>data warping generates additional samples by applying transformation
-on data-space</li>
-<li>synthetic over-sampling creates additional samples in
-feature-space.</li>
-<li>For text data, synonym insertion is a common way of
-augmenting同义词插入</li>
-<li>first translate the text into some foreign language, and then
-translate it back to the original language</li>
-<li>non-domain-specific data augmentation strategy that uses noising in
-RNNs</li>
-<li>back-translation</li>
-<li>data simulator <strong>OpenAI Gym</strong> is a popular toolkit that
-provides various simulation environment</li>
-<li>GAN</li>
-</ul></li>
-<li>data searching(search for web data)
-<ul>
-<li>On the one hand, sometimes the <strong>search results do not exactly
-match the keywords</strong>.(filter unrelated data)</li>
-<li>The other problem is that web data may <strong>have wrong labels or
-even no labels.</strong>(learning-based <strong>self-labeling</strong>
-method, 分为self-training, co-training, co-learning)</li>
-<li>the distribution of web data can be extremely different from the
-target dataset, which would increase the difficulty of training the
-model.(fine-tune these web data)</li>
-<li>dataset inbalance(SMOTE, combines boosting method with data
-generation)</li>
-</ul></li>
-</ol>
-<h3 id="data-cleaning">1.2 data cleaning</h3>
-<p>redundant, incomplete, or incorrect data</p>
-<p>standardization, scaling, binarization of quantitative
-characteristic, one-hot encoding qualitative characteristic, and filling
-missing values with mean value, etc.</p>
-<h2 id="feature-engneering">2. feature engneering</h2>
-<ul>
-<li>feature selection 减少冗余特征</li>
-<li>extraction 减少特征的维度</li>
-<li>construction 展开原始特征空间</li>
-</ul>
-<h3 id="feature-selection">2.1 feature selection</h3>
-<p><img src="https://s2.loli.net/2022/02/08/qla6Yzn7WjADF15.png" /></p>
-<p>search strategy</p>
-<ul>
-<li>complete
-<ul>
-<li>exhaustive</li>
-<li>non-exhaustive</li>
-</ul></li>
-<li>heuristic
-<ul>
-<li>Sequential Forward Selection(SFS)</li>
-<li>Sequential Backward Selection(SBS)</li>
-<li>Bidirectional Search(BS)</li>
-</ul></li>
-<li>random search algorithm
-<ul>
-<li>Simulated Annealing(SA)</li>
-<li>Genetic Algorithms(GA)</li>
-</ul></li>
-</ul>
-<p>subset evaluation</p>
-<ul>
-<li>filter method scores each feature according to divergence or
-correlation, and then select features by a threshold</li>
-<li>Wrapper method classifies the sample set with the selected feature
-subset, the classification accuracy is used as the criterion to measure
-the quality of the feature subset</li>
-<li>embedded method performs variable selection as part of the learning
-procedure. Regularization, decision tree, <strong>DL</strong></li>
-</ul>
-<h3 id="feature-construction">2.2 feature construction</h3>
-<h4 id="definition">definition</h4>
-<p><strong>constructs new features</strong> from the basic feature space
-or raw data to help enhance the robustness and generalization of the
-model, and its essence is to increase the representative ability of
-original features.</p>
-<h4 id="常用方法-preprocessing-transformation">常用方法 preprocessing
-transformation</h4>
-<p>包括</p>
-<ul>
-<li>standardization</li>
-<li>normalization</li>
-<li>feature discretization</li>
-</ul>
-<h4 id="自动化检索">自动化检索</h4>
-<p>人力很难检索所有可能 some automatic feature construction methods have
-been proposed</p>
-<p>These algorithms mainly aim to automate <strong>the process of
-searching and evaluating the operation
-combination</strong>实现操作组合搜索和评价的自动化</p>
-<p>searching 算法</p>
-<ul>
-<li>decision tree-based methods</li>
-<li>genetic algorithm 需要pre-defined operation space</li>
-<li>annotation-based approaches
-不需要，将domain知识以注释的形式与训练示例一起使用
-引入了交互式特征空间构建协议，学习者识别出特征空间的不足区域，并与领域专家协作，通过现有的语义资源增加描述性</li>
-</ul>
-<h3 id="feature-extraction">2.3 feature extraction</h3>
-<p>a dimensionality reduction process through some mapping functions</p>
-<p>mapping function</p>
-<ul>
-<li>Principal Component Analysis(PCA)</li>
-<li>Independent COmponent Analysis(ICA)</li>
-<li>isomap</li>
-<li>nonlinear dimensionality reduction</li>
-<li>Linear discriminant analysis(LDA)</li>
-<li><strong>feed-forward neural networks approach</strong></li>
-</ul>
-<h2 id="model-generation">3. model generation</h2>
-<p>two types of approaches for model selection:</p>
-<ul>
-<li>traditional model selection
-<ul>
-<li>SVM</li>
-<li>KNN</li>
-<li>decision tree</li>
-<li>K-means</li>
-</ul></li>
-<li>NAS</li>
-</ul>
-<p>主要介绍NAS</p>
-<h3 id="model-structures">3.1 model structures</h3>
-<p>The model is generated by selecting and combining a set of primitive
-operations, which are pre-defined in the search space. The operations
-can be broadly divided into convolution, pooling, concatenation,
-elemental addition, skip connection, etc.</p>
-<ol type="1">
-<li><p>entire structure
-缺点：太深，搜索空间太大，消耗时间和计算资源，找到的model的transferability差，意味着小的数据集上找到的模型在完整数据集上表现很差</p></li>
-<li><p>Cell-based structure 先生成cell，再连起来 <img
-src="https://s2.loli.net/2022/02/08/lXtrU6DbuFhz3pa.png" />
-优点：搜索空间大大减小，并且更容易从小dataset上转换到大的dataset上(简单叠加cells))
-分成两级：</p>
-<ul>
-<li>inner:cell level, selects the operation and connection for each
-node</li>
-<li>outter level:network level, controls the spatial resolution
-changes</li>
-</ul></li>
-<li><p>Hierarchical structure for a hierarchical structure, there are
-many levels, each with a fixed number of cells. The higher-level cell is
-generated by incorporating lower-level cell iteratively. <img
-src="https://s2.loli.net/2022/02/08/tyW2gcCQA8XVIko.png" />
-可以发现更多复杂、灵活的网络结构类型。</p></li>
-<li><p>Network Morphism based structure transferring the information
-stored in an existing neural network into a new neural network
-从现有网络到新网络 保证性能不低于原有网络</p></li>
-</ol>
-<h3 id="hyperparameter-optimizationhpo">3.2 hyperparameter
-optimization(HPO)</h3>
-<ol type="1">
-<li><p>Grid &amp; Random Search 最广泛使用的 <img
-src="https://s2.loli.net/2022/02/08/7QgozVqm4BS6dPe.png" /></p></li>
-<li><p>Reinforcement Learning 分为两部分</p>
-<ul>
-<li>controller:RNN, used to generate different child networks at
-different epoch</li>
-<li>reward network:trains and evaluates the generated child networks and
-uses the reward (e.g. accuracy) to update RNN controller.</li>
-<li>缺点：训练时间长，资源需求大</li>
-<li>ENAS:子架构被看做是预定义搜索空间的子图，共享参数，从而避免从零开始到收敛地训练每个子模型</li>
-</ul></li>
-<li><p>Evolutionary Algorithm 通用的基于种群的元启发式优化算法，
-有两种类型的编码方案:直接编码和间接编码。direct, indirect
-直接编码是一种广泛使用的方法，它显式地指定了表现型：Genetic CNN</p>
-<ul>
-<li>selection 选择
-<ul>
-<li>fitness selection</li>
-<li>rank selection</li>
-<li>Tournament selection</li>
-</ul></li>
-<li>crossover 杂交</li>
-<li>mutation 突变</li>
-<li>update 更新</li>
-</ul>
-<p><img
-src="https://s2.loli.net/2022/02/08/EzichSUZ8lHJVLy.png" /></p></li>
-<li><p>Bayesian Optimization</p>
-<ul>
-<li>BO</li>
-<li>Sequential model-based optimization(SMBO)</li>
-<li>Bayesian Optimization-based Hyperband (BOHB)</li>
-</ul></li>
-<li><p>Gradient Descent</p></li>
-</ol>
-<h2 id="model-estimation">4. model estimation</h2>
-<h3 id="low-fidelity">4.1 low fidelity</h3>
-<p>On the one hand, we can reduce the number of images or the resolution
-of images (for image classification tasks)
-在子集上面训练,在低精度训练集上面训练 On the other hand, low fidelity
-model evaluation can be realized by reducing the model size, such as
-training with less number of filters per layer
-减少网络的大小，比如每层的filter的数目</p>
-<h3 id="transfer-learning">4.2 Transfer learning</h3>
-<ul>
-<li>Transfer Neural AutoML uses knowledge from prior tasks to speed up
-network design</li>
-<li>ENAS shares parameters among child networks</li>
-<li>The network morphism based algorithms inherit the weights of
-previous architectures</li>
-</ul>
-<h3 id="surrogate代理">4.3 Surrogate代理</h3>
-<p>一般来说，一旦获得了一个良好的近似，就很容易找到最佳配置，而不是直接优化原来昂贵的目标。
-PNAS</p>
-<p>this method is not applicable when the optimization space is too
-large and hard to quantize, and the evaluation of each configuration is
-extremely expensive</p>
-<h3 id="early-stopping">4.4 Early stopping</h3>
-<p>is now being used to speed up model evaluation by <strong>stopping
-the evaluations which predicted to perform poorly on the validation
-set</strong></p>
-<h2 id="nas-performance-summary">5. NAS PERFORMANCE SUMMARY</h2>
-<p><img src="https://s2.loli.net/2022/02/08/EI2y6sAf8vUdchb.png" /></p>
-<h2 id="future-work">6. future work</h2>
-<ol type="1">
-<li>Complete AutoML Pipeline 数据部分</li>
-<li>Interpretability</li>
-<li>Reproducibility</li>
-<li>Flexible Encoding Scheme</li>
-<li>More Area cnn: image classification rnn: language modeling more</li>
-<li>Lifelong Learn</li>
-</ol>
-]]></content>
+<search> 
+  
+  
+    
+    <entry>
+      <title>广告投放系统简介</title>
+      <link href="/2022/02/08/12-ads-overview/"/>
+      <url>/2022/02/08/12-ads-overview/</url>
+      
+        <content type="html"><![CDATA[<p>本文主要介绍了广告算法入门的一些基础知识。主要介绍了广告投放漏斗的几个部分承担的功能、各自的特点以及常见的一些算法。</p><span id="more"></span><p>所谓搜广推是一家，本质上来说，[推荐/广告]和[搜索]的所使用的技术都是非常类似的，不同的是搜索有个很强的query特征（用户自己输入的信息，比如你去淘宝上面搜索的商品名称），而推荐或者广告的缺少query特征，只能从<strong>用户特征/商品特征/上下文特征/历史行为特征</strong>中对用户的兴趣进行挖掘。广告系统按照漏斗的形式，从数百数千万候选广告中，对用户的每一刷（以抖音为例）筛选出几十个广告，然后发送给用户。</p><p>广告投放系统的漏斗大致可以分为 [定向/召回/粗排/精排/混排]5个部分，有些系统可能没有混排，或者把粗排精排放在一起（当系统候选规模较小的时候）。</p><h2 id="定向">1. 定向</h2><p>广告主设定广告面向的人群对象筛选条件，结合业务上对每个用户可投广告的控制（流控、频控、其它规则）对广告全集进行筛选。一般受制于latency（系统耗时），我们选择定向与召回结果取交集送粗排。定向的基本检索方式为建立倒排索引，map&lt;filed, map&lt;value, bitmap&gt;&gt;。 <img src="https://s2.loli.net/2022/02/09/N8eOyfJzvIkbS7a.png" />bitmap中的每一个bit，对应一个广告id，几个规则索引一起按位取交集，得到定向的结果candidate广告。</p>]]></content>
+      
+      
       <categories>
-        <category>Survey</category>
+          
+          <category> 技术 </category>
+          
       </categories>
-      <tags>
-        <tag>AutoML</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>DARTS 可微分架构搜索</title>
-    <url>/2020/11/01/02-DARTS/</url>
-    <content><![CDATA[<h2 id="darts">1. DARTS</h2>
-<p>the computation procedure for an architecture (or a cell in it) is
-represented as a directed acyclic graph. 表示为有向图。</p>
-<h3 id="search-space">1.1 search space</h3>
-<p>寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。</p>
-<p>cell是由N个有序序列node组成的有向无环图。每一条edge都是一个计算。我们假设这个cell有两个input和一个output，对于cnn，它就是前面两个层的输出，对于rnn，它是上个step的state以及这个step的Input。cell的输出是通过对所有中间节点应用reduction得到的。</p>
-<p>所有中间节点的计算依赖前置节点。 <span class="math display">\[
-x^{(j)} = \sum_{i&lt;j}o^{(i,j)}(x^{(i)})
-\]</span> 注意zero operation也是可以被允许的edge类型。</p>
-<h3 id="continuous-relaxation-and-optimization">1.2 continuous
-relaxation and optimization</h3>
-<p>找到每一个操作对应的权重矩阵<span
-class="math inline">\(\alpha^{(i,j)}\)</span>，这样所有的权重矩阵集合为<span
-class="math inline">\(\alpha\)</span>，我们将NAS的任务减小为学习一个连续变量的集合<span
-class="math inline">\(\alpha\)</span>。</p>
-<p>DARTS使用的是<strong>GD</strong>来优化validation loss。相似的有RL(<a
-href="">Learning transferable architectures for scalable image
-recognition</a>)，EA(<a href="">Hierarchical representations for
-efficient architecture search</a>)</p>
-<p>NAS的目标是找到<span
-class="math inline">\(\alpha^*\)</span>使得validation loss<span
-class="math inline">\(L_{val}(w^*, \alpha^*)\)</span>最小，<span
-class="math inline">\(w^*\)</span>是使得training loss<span
-class="math inline">\(L_{train}(w, \alpha^*)\)</span>最小的w。 <span
-class="math display">\[
-min_{\alpha} L_{val}(w^*(\alpha), \alpha) \\
-s.t. w^*(\alpha) = argmin_w L_{train}(w, \alpha)
-\]</span> <img
-src="https://s2.loli.net/2022/02/08/QWc1fC3shg4q2tb.png" /></p>
-<h3 id="approximate-architecture-gradient">1.3 approximate architecture
-gradient</h3>
-<p><span class="math display">\[
-\begin{aligned} &amp; \nabla_{\alpha} \mathcal{L}_{v a
-l}\left(w^{*}(\alpha), \alpha\right) \\ \approx &amp; \nabla_{\alpha}
-\mathcal{L}_{v a l}\left(w-\xi \nabla_{w} \mathcal{L}_{t r a i n}(w,
-\alpha), \alpha\right) \end{aligned}
-\]</span></p>
-<p>运用chain rule。将上式进一步处理。 <span class="math display">\[
-\triangledown_\alpha L_{val}(w&#39;, \alpha - \xi
-\triangledown^2_{\alpha, w} L_{train}(w, \alpha)
-\triangledown_{w&#39;}L_{val}(w&#39;, \alpha))
-\]</span> 其中的<span class="math inline">\(w&#39; = w -
-\xi\triangledown_w L_{train}(w, \alpha)\)</span>指的就是one-step forward
-model。</p>
-<p>使用the finite difference approximation(有限差分近似)可以减少复杂度。
-<span class="math display">\[
-\epsilon 是极小量 \\
-w^{\pm} = w \pm \epsilon \triangledown_{w&#39;}L_{val}(w&#39;, \alpha)
-\\
-\xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha)
-\triangledown_{w&#39;}L_{val}(w&#39;, \alpha)) \approx
-\frac{\triangledown_\alpha L_{train}(w^{+}, \alpha) -
-\triangledown_\alpha L_{train}(w^{-}, \alpha)}{2\xi}
-\]</span> 将<span class="math inline">\(\xi =
-0\)</span>作为一阶近似，将<span class="math inline">\(\xi &gt;
-0\)</span>作为两阶近似。</p>
-<h3 id="deriving-discrete-architecture">1.4 deriving discrete
-architecture</h3>
-<p>在所有非0的候选operations保留top-k strongest
-operations，为了使得出的网络可以和现有网络比较，我们选择k=2 for cnn, k=1
-for rnn。</p>
-<p>为什么不使用zero operation呢？</p>
-<ol type="1">
-<li>为了与现有模型进行公平的比较，我们需要每个节点恰好有k条非零的引入边</li>
-<li>因为增加零操作的logits只会影响结果节点表示的规模，由于BN处理的存在而不会而影响最终的分类结果</li>
-</ol>
-<h2 id="experiments-and-results">2. Experiments and results</h2>
-<h3 id="architecture-search">2.1 architecture search</h3>
-<h4 id="search-for-convolutional-cells-on-cifar-10">2.1.1 search for
-convolutional cells on cifar-10</h4>
-<p>包含8种operation。 3 × 3 and 5 × 5 separable convolutions, 3 × 3 and
-5 × 5 dilated separable convolutions, 3 × 3 max pooling, 3 × 3 average
-pooling, identity, and zero。</p>
-<p>We use the ReLU-Conv-BN order for convolutional operations, and each
-separable convolution is always applied twice</p>
-<p>在整个网络的1/3和2/3处，设立reduce cell。缩小空间分辨率。</p>
-<h4 id="searching-for-recurrent-cells-for-penn-treebank">2.1.2 searching
-for recurrent cells for penn treebank</h4>
-<p>operation的种类：linear transformations followed by one of tanh,
-relu, sigmoid activations, as well as the identity mapping and the
-<em>zero</em> operation.</p>
-<p>总共12个node，最初的intermediate node是由两个input
-node通过线性变换，求和，然后传过一个tanh激活函数得到的。</p>
-<h3 id="architecture-evaluation">2.2 architecture evaluation</h3>
-<p><strong>寻找多次，避免初始化的影响</strong>
-。从cifar-10上迁移到imagenet上，从PTB上迁移到wikitext-2上。</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> ads </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>最近的一些进展 2022.02</title>
+      <link href="/2022/02/08/thoughts-01/"/>
+      <url>/2022/02/08/thoughts-01/</url>
+      
+        <content type="html"><![CDATA[<h2 id="简单记录一下最近的进展">1. 简单记录一下最近的进展</h2><p>上次写博客也是好久之前了，研究生刚开始的时候还兴冲冲的，希望养成写博客的好习惯，记录一下自己的成长，也记录一下日常学习生活踩过的坑。但是骨子里的懒惰还是抵不住，兴起的热情在写了几篇以后就被浇灭了。其实感觉这个东西写起来成本也没有那么高。配置环境也是计算机人常常要蹚过的浑水，到写的时候，看着自己的文字被渲染成网页，稍微感受了一下前端人的快乐了。</p><p>最近几个月经历的事情可能比整个研究生阶段经历的都要多了。喜忧都有，这里倒不知从何开头，也就顺着时间讲一下吧。</p><p>首先是实习转正，感觉其实有点惊险，组里面的hc大抵是不多的，我又是靠后几个提起答辩的，按道理允许你提起答辩其实就是默认能过的，但是今年互联网的形势十分严峻，字节并没有采取扩招，而是使用了少量hc提高人均package的策略。当时其实我也是不知道有这个情况，在8月中旬慢吞吞的提交了答辩，其实当时我并没有什么明显的产出，只是自己探索了一些NAS在广告里面的应用方向，我理解我的offer即便能够拿到，可能也只是组内的一个门槛水平（小SP？）。当时还是心有不甘的，觉得自己能力不止于此，因此反而对这个offer期望不大，但是最后选择字节反而有点阴差阳错了。当然即便如此，这个offer也是尽力要拿到，稳定一下军心。当时已经面过了虾皮，一心想run去sg。这个后面再谈了。答辩有惊无险，向wq和sx两位大佬进行汇报，压力属实有点大，感觉说话有点结巴，这个也是个人问题，从小到大，在重要场合展示自己总是紧张到不行。</p><p>第二件事情，就是爸爸的病情。爸爸当时在三月份的时候检查出脑部基底巨大动脉瘤，基本上也属于疑难杂症了，发病率极低，但是全国治好的例子也不多。三月份由于丘脑出血，他但是的语言表达能力已经受到了很大的影响，检测出来动脉瘤对我们家着实是个巨大的打击。当时医生也看不清，丘脑出血半年以后，也就是8月初到中旬的时候，正好我还在上海实习，爸妈就来上海的华山医院，找到了tyl主任，也找了很多关系打了招呼，住院检查，准备说如果能做手术，还是准备先把这个动脉瘤给解决掉。但是检查结果令人泄气，医生把我和妈妈拉到一个单独的会谈室，周围全是监控，跟我们讲了一下爸爸的情况，基本上已经到了做不了手术的时候，当时发现的时候就已经非常大，到现在这个瘤进一步扩大，医生说只有一半的把握能够切除，另外一半人就没了，而且即便手术成功，短期并没有对病人明显帮助，我们考虑了很久，最终还是决定接受保守治疗，回到了合肥。之后我妈就想找个轻松一点的工作，在家看着照顾一下我爸，我小姨就让他们俩回桐城，管一下仓库的记账工作，每天也就几个小时。10月初回家的时候还是挺好的，我爸天天还要去上班，说他身体好得很（我不知道他是盲目自信还是盲目乐观了，一般人感觉不抑郁已经很难了，他跟没事人一样）。</p><p>但是他的盲目乐观感觉是他第二次发病的重要原因之一，他每天还要出去散好几个小时的步，仅仅一个多月以后，他就第二次出现了问题，如医生所说，动脉瘤并不是他最大的风险，脑血栓才是，而他血栓的地方，更是人体最重要的地方——脑干。11月尾，他出去散步，回来就说脑子不对劲，仅仅一个多小时以后，人就已经站不起来说不了话了，我妈打电话给我说他发病了，我给他叫了滴滴，司机在门口磨蹭半天还是拒接了，还是我小姨夫从家里赶过来把他背上了车，路上交给了120。但是到医院，医生说治不了，转院去合肥吧，又急急忙忙往合肥送，路上急性胃溃疡已经在吐血了，几个亲戚赶到省立医院南院，直接送进了ICU，我也在当天半夜坐车回了家。ICU不允许家属探视，每天就去那个小门口，等等医生叫你一下，了解一下病情，这时候医生已经说了，片子显示脑干小脑基本上全部堵死，如果熬过这几天，出去也是跟植物人一样，能不能醒看造化。顺利熬过了ICU的几天，让拉出去去其他医院做康复治疗，出来的时候几个人都哭成了泪人。但是生活还得继续，到现在还在几个医院来回转，我妈跟着后面照顾着，请一个护工都不够，何况还请不到负责的合适的护工。过年这几天我回家，吃住都是在医院的，他现在还是没有什么好转，但是在医院这么久，我妈也累死了，偶尔我姐替她一下，但是说实话医院里面吃住都不方便，每天从早到晚不能停，身心的损伤真的非常大，我们倒是想等他好一点，接回家去慢慢疗养，也让几个人休息一下。</p><p>未完待续...</p>]]></content>
+      
+      
       <categories>
-        <category>Paper</category>
+          
+          <category> 随想 </category>
+          
       </categories>
-      <tags>
-        <tag>NAS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ENAS</title>
-    <url>/2020/02/09/03-ENAS/</url>
-    <content><![CDATA[<h2
-id="efficient-neural-architecture-search-via-parameter-sharing">Efficient
-Neural Architecture Search via Parameter Sharing</h2>
-<p>an RNN controller is trained in a loop: the controller first samples
-a candidate architecture, i.e. a child model, and then trains it to
-convergence to measure its performance on the task of desire.</p>
-<h2 id="训练">0. 训练</h2>
-<p>分为两个网络，controller选择设计子网络的架构，
-子网络是一个entire网络的一个子图</p>
-<p>分为两种参数 RNN的参数<span class="math inline">\(\theta\)</span>
-sample网络的<span class="math inline">\(w\)</span> 分别使用adam
-在validation set训练 SGD在training set上面训练</p>
-<h2 id="rnn-cells的设计">1. RNN cells的设计</h2>
-<p>controller设计</p>
-<ol type="1">
-<li>当前节点连接的前一个节点</li>
-<li>使用什么激活函数(relu, sigmod, tanh, identity)4种</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/YzISjdOGJL9Flke.png" /></p>
-<p>search space:the search space has<span class="math inline">\(4N ×
-N!\)</span>configurations. In our experiments, N = 12,</p>
-<h2 id="cnn的设计">2. cnn的设计</h2>
-<p>controller设计</p>
-<ol type="1">
-<li>当前节点连接的前一个节点</li>
-<li>使用什么计算函数(<code>conv3*3, conv5*5, sep3*3, sep5*5, maxpooling3*3, average pooling3*3</code>)6种</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/LfFwBabU9i1AvhS.png" /></p>
-<p>search space: Making the described set of decisions for a total of L
-times, we can sample a network of L layers. Since all decisions are
-independent, there are 6L × 2L(L−1)/2 networks in the search space. In
-our experiments, L = 12, resulting in 1.6 × 1029 possible networks.</p>
-<h2 id="cnn-cells设计">3. cnn cells设计</h2>
-<p>controller设计</p>
-<ol type="1">
-<li>两个前置连接的节点</li>
-<li>两条边的计算种类(<code>identity, sep3*3, spe5*5, avepooling3*3, maxpooling3*3</code>)
-5种</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/ZMcOLn3kFSYilJs.png" /></p>
-<p>search space: Finally, we estimate the complexity of this search
-space. At node i (3 ≤ i ≤ B), the controller can select any two nodes
-from the i − 1 previous nodes, and any two operations from 5 operations.
-As all decisions are independent, there are (5 × (B − 2)!)2 possible
-cells. Since we independently sample for a convolutional cell and a
-reduction cell, the final size of the search space is (5 × (B − 2)!) .
-With B = 7 as in our experiments, the search space can realize 1.3 ×
-1011 final networks, making it significantly smaller than the search
-space for entire convolutional networks</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> Thoughts </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>A Comprehensive Survey on Graph Neural Networks</title>
+      <link href="/2020/11/01/11-GNN-survey2/"/>
+      <url>/2020/11/01/11-GNN-survey2/</url>
+      
+        <content type="html"><![CDATA[<h2 id="简介">1 简介</h2><p>欧式数据：图片，文本，语言，视频 非欧式数据：图</p><p>图数据不规则，每个图的无序节点大小是可变的，且每个结点有不同数量的邻居结点，因此一些重要的操作如卷积能够在图像数据上轻易计算，但是不适用于图数据，可见图数据的复杂性给现有的机器学习算法带来了巨大的挑战。此外，现有的机器学习算法假设数据之间是相互独立的，但是，图数据中每个结点都通过一些复杂的连接信息与其他邻居相关，这些连接信息用于捕获数据之间的相互依赖关系，包括，引用，关系，交互。</p><ol type="1"><li>Graph attention networks（图注意力网络)</li><li>Graph autoencoders（图自编码）</li><li>Graph generative networks（图生成网络）</li><li>Graph spatial-temporal networks（图时空网络</li></ol><p>GNN vs 图嵌入</p><p>网络嵌入致力于<strong>在一个低维向量空间进行网络节点表示，同时保护网络拓扑结构和节点的信息</strong>，便于后续的图像分析任务，包括分类，聚类，推荐等，能够使用简单现成的机器学习算法（例如，使用SVM分类）。许多网络嵌入算法都是典型的无监督算法，它们可以大致分为三种类型，即，</p><ol type="1"><li>矩阵分解</li><li>随机游走</li><li>深度学习</li></ol><p><img src="https://s2.loli.net/2022/02/08/KJHiDeqxzIypEda.png" /></p><h2 id="gnn分类及框架">2 GNN分类及框架</h2><p>五种类型 GCN GAN GAE GGN GSTN</p><h3 id="分类">2.1 分类</h3><h4 id="gcn">2.1.1 GCN</h4><p>GCNs将传统数据的卷积算子泛化到图数据，这个算法的关键是学习一个函数<spanclass="math inline">\(f\)</span>，能够结合<spanclass="math inline">\(v_i\)</span>邻居节点的特征<spanclass="math inline">\(X_j\)</span>和其本身特征<spanclass="math inline">\(X_i\)</span>生成<spanclass="math inline">\(v_i\)</span>的新表示.</p><p><img src="https://s2.loli.net/2022/02/08/LQsn6CPGMKwiTIX.png" /> <imgsrc="https://s2.loli.net/2022/02/08/lJX7qUViS8F5hk3.png" /></p><h4 id="gan">2.1.2 GAN</h4><p>GAN与GCN类似，致力于寻找一个聚合函数，融合图中相邻的节点，随机游动和候选模型，学习一种新的表示。<strong>关键区别是：GAN使用注意力机制为更重要的节点，步或者模型分配更大的权重，权重个网络一起学习。</strong>下图展示了GCN和GAN在聚合邻居节点信息时候的不同。</p><p><img src="https://s2.loli.net/2022/02/08/dXy6H2wcZxfbDOR.png" /></p><h4 id="gae">2.1.3 GAE</h4><p>GAE是一种无监督学习框架，通过编码器学习一种低维点向量，然后通过解码器重构图数据。GAE是一种常用的学习图嵌入的方法，既适用于无属性信息的普通图，还适用于是有属性图。对于普通的图，大多数算法直接预先得到一个邻接矩阵，或者构建一个信息丰富的矩阵，也就是点对互信息矩阵，或者邻接矩阵填充自编码模型，并捕获一阶和二阶信息。对于属性图，图自编码模型利用GCN作为一个构建块用于编码，并且通过链路预测解码器重构结构信息。</p><h4 id="ggn">2.1.4 GGN</h4><p>GGN旨在从数据中生成可信的信息，生成给定图经验分布的图从根本上来说是具有挑战性的，主要因为图是复杂的数据结构。为了解决这个问题，研究员探索了将交替形成节点和边作为生成过程的因素，并借助作为训练过程。GGN一个很有前途的应用领域是化合物合成。在化学图中，视原子为节点，化学键为边，任务是发现具有一定化学和物理性质的可合成的新分子。</p><h4 id="gstn">2.1.5 GSTN</h4><p>GSTN从时空图中学习不可见的模式，在交通预测和人类活动预测等应用中越来越重要。例如，底层道路交通网络是一个自然图，其中每个关键位置是一个节点，它的交通数据是被连续监测的。通过建立有效的GSTN，能够准确预测整个交通的系统的交通状态。GSTN的核心观点是，<strong>同时考虑空间依赖性和时间依赖性。</strong>目前很多方法使用GCNs捕获依赖性，同时使用RNN,或者CNN建模时间依赖关系。</p><h3 id="框架">2.2 框架</h3><ol type="1"><li>node_level输出用于<strong>点回归和分类任务</strong>。图卷积模型直接给定节点的潜在表示，然后一个多层感知机或者softmax层用作GCN最后一层。</li><li>Edge-level输出与<strong>边分类和链路预测任务</strong>相关。为了预测一条边的标签或者连接强度，附加函数从图卷积模型中提取两个节点的潜在表示作为输入。</li><li>Graph-level输出和<strong>图分类任务</strong>相关，池化模块用于池化一个图为子图或者对节点表示求和/求平均，以获得图级别上的紧凑表示。</li></ol><p>端到端训练框架：GCN可以在端到端学习框架中进行(半)监督或无监督的训练，取决于学习任务和标签信息的可用性。</p><ol type="1"><li>node-level半监督分类。给定一个部分节点被标记而其他节点未标记的网络，GCN可以学习一个鲁棒的模型，有效地识别未标记节点的类标签。为此，可以构建一个端到端的多分类框架，通过叠加几个图形卷积层，紧跟着一个softmax层。</li><li>graph-level监督分类。给定一个图数据集，图级分类旨在预测整个图的类标签(s)，端到端学习框架，通过结合GCN和池化过程实现。具体的，通过GCN获得每个图里每个节点固定维数的特征表示，然后，通过池化求图中所有节点的表示向量的和，以得到整个图的表示。最后，加上多层感知机和softmax层，可以构造一个端到端的图分类。图5（a）展示了这样一个过程。</li><li>无监督图嵌入。图中没有标签数据的时候，可以在端到端的框架中以无监督的方式学习一种图嵌入。这些算法以两种方式利用边级信息。一种简单的：利用自编码框架，编码器利用GCN将图嵌入到潜在的表示中，解码器利用潜在的表示重构图结构。另一种方式：利用负采样方法，抽取一部分节点对作为负对，图中剩余的节点对作为正对，之后利用逻辑回归层，形成一个端到端的学习框架。</li></ol><h2 id="图卷积网络">3. 图卷积网络</h2><p>分为两类</p><ol type="1"><li>Spectral-based方法从图信号处理的角度引入滤波器来定义图卷积，此使图卷积被解释为从图信号中去除噪声。</li><li>Spatial-based的方法 将图卷积表示为来自邻居节点的特征信息的结合</li></ol><h3 id="基于图谱的gcn">3.1 基于图谱的GCN</h3><p><span class="math display">\[x * G g_{\theta}=U g_{\theta} U^{T} x\]</span></p><p>基于谱的GCN都遵循这个定义，不同的是滤波器<spanclass="math inline">\(g_{\theta}\)</span>的选择不同。</p><p><strong>缺陷</strong>首先，对图的任何扰动都会导致特征基的变化。其次，学习的过滤器依赖于不同领域，这意味着它们不能应用于具有不同结构的图。第三，特征分解需要<spanclass="math inline">\(O(N^3)\)</span>计算和<spanclass="math inline">\(O(N^2)\)</span>内存</p><p>谱方法的一个常见缺点是需要将整个图加载到内存中进行图卷积，这在处理大图时效率不高。</p><h3 id="基于空间的gcn">3.2 基于空间的GCN</h3><p>分为基于循环和基于组合的GCNs。基于循环的GCN使用一个相同的GCL个更新隐含表示，基于组合GCN则使用不同的GCL更新隐含表示。<img src="https://s2.loli.net/2022/02/08/hTzZ3KFHLXjU6Wf.png" /></p><p><strong>基于循环的空间GCNs</strong>基于递归的方法的主要思想是递归地更新节点的潜在表示，直到达到稳定的不动点。通过对循环函数施加约束、使用门循环单元架构、异步和随机更新节点潜在表示来实现。</p><p><strong>基于组合的空间GCNs</strong>基于组合的方法通过叠加多个图的卷积层来更新节点的表示。</p><h3 id="图池模块">3.3 图池模块</h3><h3 id="基于光谱和空间的gcns的对比">3.4 基于光谱和空间的GCNs的对比</h3><ol type="1"><li>效率基于光谱的方法的计算量会随着图的大小急剧增加，因为模型需要同时计算特征向量或者同时处理大图，这就使得模型很难对大图进行并行处理或缩放。基于空间的图方法由于直接对图域的邻居节点进行聚合，所以有潜力处理大图，方法是对一个batch数据计算而不是在整个图上计算。如果邻居节点的数量增加，能够通过采样技术提高效率。</li><li>通用性基于光谱的图方法假设图是固定的，因此对新的或者不同的图泛化性能很差。基于空间的方法在每个节点上进行局部图卷积，权值可以很容易地在不同地位置和结构之间共享。</li><li>灵活性基于谱的模型只适用于无向图，谱方法用于有向图的唯一方法是u将有向图转换为无向图，因为没有有向图的拉普拉斯矩阵明确的定义。基于空间的模型可以将输入合并到聚合函数中，所以在处理多源输入像是边特征，边方向上更灵活。</li></ol><p>因此，近年来，基于空间的方法更受关注。</p><h2 id="超gcn网络">4. 超GCN网络</h2><p>GAN GAT GGN GSTN</p><h3 id="图注意力网络gan">4.1 图注意力网络GAN</h3><ol type="1"><li>GAT</li><li>GAAN</li><li>GAM</li><li>注意力游走</li><li>深度游走</li></ol><p>注意力机制对GNN的贡献分为三个方面，在聚合特征信息的时候对不同的邻居节点分配不同的权值，根据注意力权重集成多个模型，使用注意力权重指导随机游走。尽管将GAT和GAAN归为图的注意网络的范畴，它们也同时是基于空间的GCN。GAT和GAAN的优点是可以自适应学习邻居的重要性权重，如图6所示。但是，由于必须计算每对邻居之间的注意力权重，计算成本和内存消耗迅速增加。</p><h3 id="图自编码">4.2 图自编码</h3><p>网络嵌入致力于使用神经网络架构将<strong>网络顶点在低维向量空间进行表示</strong>，图自编码是网络嵌入的一种类型。典型做法是利用多层感知机作为编码器，获得节点嵌入，然后解码器据此重构节点的邻域统计信息，如正点态互信息(positivepointwise mutual information,PPMI)或一阶和二阶近似。近期，研究员探索将GCN[作为编码器,设计图自编码器的时候或结合HCN与GAN，或结合GAN与LSTM。</p><p>这些方法都学习节点嵌入，但是DNGR和SDNE只给定拓扑结构，而GAE、ARGA、NetRA和DRNE不仅给定拓扑结构而且给定节点内容特性。图自编码的一个挑战是邻接矩阵的稀疏性，使解码器的正项数远少于负项数。为了解决这个问题，DNGR重构了一个更紧密的矩阵即PPMI矩阵，SDNE对邻接矩阵的零项进行了惩罚，GAE对邻接矩阵中的项进行了加权，NetRA将图线性化为序列。</p><h3 id="图生成网络">4.3 图生成网络</h3><p>图生成网络（GGN）的目标是，在给定一组观察到的图的前提下生成图。很多图生成方法是与特定领域相关的，例如，分子图生成，一些方法是对分子图进行字符串表示建模，叫做SMILES，自然语言处理，以给定的句子为条件生成语义图或者知识图。最近，提出了一些统一的生成方法，一些方法将生成过程看作交替生成节点和边，其他的方法利用生成对抗训练。GGN中的方法或者利用GCN作为构建块，或者使用不同的架构。</p><p>对生成的图进行评估仍然是一个难题。与人工合成图像或者音频不同，他们能够直接被人类专家评估，生成的图的质量很难直观检测。MolGAN和DGMG利用外部知识来评估生成分子图的有效性。GraphRNN和NetGAN通过图统计信息(如节点度)评估生成的图形。DGMG和GraphRNN依次生成节点和边缘，MolGAN和NetGAN同时生成节点和边缘。根据[68]，前一种方法的缺点是当图变大时，对长序列建模是不现实的。后一种方法的挑战是很难控制图的全局属性。最近一种方法[68]采用变分自编码器通过生成邻接矩阵来生成图形，引入惩罚项来解决有效性约束。然而，由于具有n个节点的图的输出空间为<spanclass="math inline">\(n^2\)</span> ，这些方法都不能扩展到大型图。</p><h3 id="图时空网络">4.4 图时空网络</h3><p>图时空网络同时捕获时空图的时空依赖性。时空图具有全局图结构，每个节点的输入随时间变化。例如，在交通网络中，将每个传感器作为一个节点，连续记录某条道路的交通速度，其中交通网络的边由传感器对之间的距离决定。图时空网络的目标是预测未来的节点值或标签，或预测时空图标签。最近的研究探索了单独使用GCNs[72]，结GCNs与RNN[70]或CNN[71]，以及一种为图结构定制的循环架构[73]。</p><p>DCRNN由于利用了循环网络架构能够处理长时间依赖关系。虽然CNN-GCN比DCRNN简单，但是由于他首先实现了1D-CNN，所以在处理时空图上更加高效。ST-GCN将时间流作为图的边，使邻接矩阵的大小呈二次增长。一方面，增加了图卷积层的计算成本。另一方面，为了捕获长期依赖关系，图卷积层必须多次叠加。Structural-RNN通过在相同的语义组共享相同的RNN提高了模型的有效性。但是，需要人类先验知识来划分语义组。</p>]]></content>
+      
+      
       <categories>
-        <category>Paper</category>
+          
+          <category> Survey </category>
+          
       </categories>
-      <tags>
-        <tag>NAS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hierarchical representations for efficient architecture search</title>
-    <url>/2020/11/01/04-HREAS/</url>
-    <content><![CDATA[<p>分层设计，底层为一个个最基本的计算操作，顶层为整体架构。</p>
-<p><img src="https://s2.loli.net/2022/02/08/O3EAIcUJZo7nKma.png" /></p>
-<h2 id="evolutionary-architecture-search">evolutionary architecture
-search</h2>
-<h3 id="mutation">mutation</h3>
-<p>找到non-primitive level
-l&gt;=2，选择这个level里面的一个motif，选择motif里面的两个节点，把两个节点中间的边置换为另一种边(三种情况，1.新增边；2.去除边；3.置换边)。</p>
-<h3 id="initialization">initialization</h3>
-<p>原型初始化的处理</p>
-<ol type="1">
-<li>先把所有的边置换为identity</li>
-<li>执行很大数目(e.g. 1000)次的mutation</li>
-</ol>
-<h3 id="search-algorithm">search algorithm</h3>
-<p>Tournament selection</p>
-<p>从初始的随机原型集合中，tournament selection选出最promising
-原型，把它的mutated后代放到集合中，重复这个过程，集合中的原型表现会随时间缓慢优化。选择原型集合中在validation
-set上面表现最好的genotype作为一段时间进化的最后输出。</p>
-<p>randon search</p>
-<p>不同于tournament selection，random
-search随机选择集合中的原型进行突变，这样突变的过程可以并行，减少了search
-time</p>
-<h3 id="implementation">implementation</h3>
-<p>异步的
-一个controller负责执行所有原型的进化，其余的worker负责对原型的表现做evaluation。Architectures
-are trained from scratch for a fixed number of steps with random weight
-initialization。</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> GNN </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>联邦学习概述</title>
+      <link href="/2020/11/01/10-FL/"/>
+      <url>/2020/11/01/10-FL/</url>
+      
+        <content type="html"><![CDATA[<h2 id="overview">1. Overview</h2><h3 id="问题定义">1.1 问题定义</h3><p><img src="https://s2.loli.net/2022/02/08/83DClsfSqIRK7gk.png" />简单来说，就是说联邦学习的目标是训练一个"尽可能接近把各个节点数据聚合起来训练"的模型。</p><h3 id="典型应用">1.2 典型应用</h3><ul><li>smart phone</li><li>Organizations</li><li>internet of things 物联网 收集各种模态的信息</li></ul><h3 id="主要挑战">1.3 主要挑战</h3><ol type="1"><li>expensive communication<ul><li>reducing the total number of communication rounds</li><li>reducing the size of transmitted messages at each round.</li></ul></li><li>systems heterogeneity<ul><li>only a small fraction of the devices being active at once</li><li>anticipate a low amount of participation</li><li>tolerate heterogeneous hardware</li><li>be robust to dropped devices in the network.</li></ul></li><li>Statistical Heterogeneity<ul><li>independent and identically distributed</li><li>Both the multi-task and meta-learning perspectives enablepersonalized or device-specific modeling, which is often a more naturalapproach to handle the statistical heterogeneity of the data.</li></ul></li><li>Privacy Concern<ul><li>secure multiparty computation or differential privacy</li><li>at the cost of reduced model performance or system efficiency.</li></ul></li></ol><h2 id="related-and-current-work">2. related and current work</h2><h3 id="communication-efficiency">2.1 Communication-efficiency</h3><ol type="1"><li>local updating methods</li><li>compression schemes</li><li>decentralized training</li></ol><h3 id="systems-heterogeneity">2.2 Systems Heterogeneity</h3><h3 id="statistical-heterogeneity">2.3 Statistical Heterogeneity</h3><h4 id="modeling-heterogeneous-data">2.3.1 Modeling heterogeneousData</h4><ul><li>fairness</li><li>accountability</li><li>interpretability</li></ul><h4 id="convergence-guarantees-for-non-iid-data">2.3.2 ConvergenceGuarantees for Non-IID Data</h4><p>Indeed, when data is not identically distributed across devices inthe network, methods such as <strong>FedAvg</strong> have been shown todiverge in practice</p><p>Parallel SGD and related variants</p><p>FedProx</p><h3 id="ptivacy">2.4 Ptivacy</h3><h4 id="privacy-in-machine-learning">2.4.1 privacy in Machinelearning</h4><p>differential privacy： strong information theoretic guarantees,algorithmic simplicity, and relatively small systems overhead</p><p>homomorphic encryption同态加密</p><h4 id="privacy-in-federated-learning">2.4.2 Privacy in FederatedLearning</h4><p>计算廉价，交流高效，允许丢失device--不能对accuracy做很大让步</p><ol type="1"><li><p>Secure Multi-party Computation (SMC) 安全的多方计算各方除了输入和输出外一无所知</p><ul><li>复杂的计算协议</li><li>如果提供安全保证，则部分知识公开可能被认为是可以接受的</li></ul><p>要求参与者的数据在非冲突服务器之间秘密共享</p></li><li><p>Differential Privacy 差异隐私向数据添加噪音，或使用归纳方法遮盖某些敏感属性，直到第三方无法区分个人</p><ul><li>数据也被传输到给了其他人</li><li>涉及准确性和隐私之间的权衡</li></ul></li><li><p>Homomorphic Encryption 同态加密在机器学习期间通过加密机制下的参数交换来保护用户数据隐私</p><ul><li>数据和模型本身不传输</li><li>准确性与私密性之间的权衡</li></ul></li></ol><h2 id="future-directions">3. future directions</h2><ol type="1"><li>Extreme communication schemes<ul><li>one- shot or divide-and-conquer communication schemes</li><li>one-shot/few-shot heuristics</li></ul></li><li>Communication reduction and the Pareto frontier<ul><li>local updatding 本地更新</li><li>model compression 模型压缩</li></ul></li><li>Novel models of asynchrony<ul><li>任何设备在任何迭代中都有可能失联</li><li>设备随时通过<strong>事件驱动</strong>和central server交换信息</li></ul></li><li>Heterogeneity diagnostics<ul><li>是否存在简单的诊断方法来预先快速确定联合网络的异构程度?</li><li>能否开发出类似的诊断方法来量化与系统相关的异质性的数量</li><li>可以利用现有的或新的异构定义进一步改进联邦优化方法的收敛性吗?</li></ul></li><li>Granular privacy constraints<ul><li>thus providing a weaker form of privacy in exchange for moreaccurate models</li></ul></li><li>Beyond supervised learning<ul><li>scalability, heterogeneity, and privacy.</li></ul></li><li>Productionizing federated learning<ul><li>实际落地的问题 concept drift</li><li>diurnal variations 设备不同时间表现不同</li><li>cold start problems 设备新加入</li></ul></li><li>Benchmarks<ul><li>reproducibility of empirical results and the dissemination of newsolutions for federated learning.</li></ul></li></ol>]]></content>
+      
+      
       <categories>
-        <category>Paper</category>
+          
+          <category> Survey </category>
+          
       </categories>
-      <tags>
-        <tag>NAS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ICLR2020部分NAS投稿论文解读</title>
-    <url>/2020/11/01/05-ICLR2020_NAS_papers/</url>
-    <content><![CDATA[<h2
-id="stabilizing-darts-with-amended-grarident-estimation-on-architectural-parameters">1.stabilizing
-DARTS with Amended grarident estimation on architectural parameters</h2>
-<p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。</p>
-<p><span class="math display">\[\begin{equation}
-\mathbf{g}_{2}^{\prime}=-\left.\left.\eta \cdot
-\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}_{\text
-{train }}(\boldsymbol{\omega},
-\boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H} \cdot
-\nabla_{\boldsymbol{\omega}} \mathcal{L}_{\text {val
-}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})\right|_{\boldsymbol{\omega}=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
-\end{equation}\]</span></p>
-<p>提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为<span
-class="math inline">\(g_1\)</span>，通过梯度的反向传播得到。第二部分称为<span
-class="math inline">\(g_2\)</span>，更合理的近似为<span
-class="math inline">\(g_2&#39;\)</span>。 <span class="math display">\[
-\begin{aligned}
-\nabla_{\boldsymbol{\alpha}}
-\mathcal{L}_{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}),
-\boldsymbol{\alpha}\right)|_{\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
-=&amp; \nabla_{\boldsymbol{\alpha}}
-\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})|_{\boldsymbol{\omega}=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} -
-\\
-&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2}
-\mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})|_{\omega=\boldsymbol{\omega}^{*}
-\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H}^{-1} \cdot
-\nabla_{\boldsymbol{\omega}}
-\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
-\end{aligned}
-\]</span> <span class="math display">\[
-\begin{aligned}
-\left\langle\mathbf{g}_{2}^{\prime},
-\mathbf{g}_{2}\right\rangle=&amp;\left.\left.\eta \cdot \nabla_{\omega}
-\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})\right|_{\omega=\omega^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} ^{\top} \cdot
-\mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega},
-\boldsymbol{\alpha}}^{2}
-\mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \\
-&amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2}
-\mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H} \cdot
-\nabla_{\boldsymbol{\omega}}
-\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},
-\boldsymbol{\alpha})\right|_{\omega=\omega^{*}\left(\boldsymbol{\alpha}_{t}\right),
-\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}
-\end{aligned}
-\]</span> 并证明<span class="math inline">\(g_2&#39;\)</span>与<span
-class="math inline">\(g_2\)</span>的乘积恒大于0，也就是夹角小于90度。</p>
-<h2
-id="darts-improved-differentiable-architecture-search-with-early-stopping">2.
-DARTS+: Improved Differentiable Architecture Search with Early
-Stopping</h2>
-<p>随着epoch数量的增多，DARTS倾向于skip-connection，造成模型的表现下降</p>
-<p>提出一种提前停止训练的标准，让模型搜索提前停止。</p>
-<ol type="1">
-<li>当模型中出现两个skip-connection的时候</li>
-<li>当模型中的<span
-class="math inline">\(\alpha\)</span>参数的排列顺序不再发生改变的时候(<span
-class="math inline">\(\alpha\)</span>的值是各个Primitives的概率)</li>
-</ol>
-<h2 id="pc-darts">3. PC-DARTS</h2>
-<p>uses partial- channel connections to reduce search time,</p>
-<p><img src="https://s2.loli.net/2022/02/08/UXSkptfxLQnYilV.png" /></p>
-<ol type="1">
-<li><p>Partial Channel Connections</p>
-<p>只将1/K
-的channels使用primitives连接，其余的channels选择直接连接，也就是，从<span
-class="math inline">\(node_i\)</span>到<span
-class="math inline">\(node_j\)</span>的边中，选出一部分channel使用非identity的方式连接，其余的使用identity，经过非identity方式的channel乘以softmax以后的<span
-class="math inline">\(\alpha\)</span>权重相加，再和原来的channel一起concat。<strong>这样做的处理，是希望占用的内存更小，使用更大的batch_size，提升训练和模型表现。</strong></p>
-<p>削弱了weight-free操作的影响。</p></li>
-<li><p>Edge Normalization</p>
-<p><span class="math inline">\(node_i\)</span>前面所有的<span
-class="math inline">\(node\)</span>都需要输出到它，设计权重<span
-class="math inline">\(\beta\)</span>，乘以这些边，得到<span
-class="math inline">\(node_i\)</span>的值。</p></li>
-</ol>
-<h2 id="p-darts">4. P-DARTS</h2>
-<p>将layer的数目慢慢增加。</p>
-<p><img src="https://s2.loli.net/2022/02/08/KfydxUwRnXJpDVq.png" /></p>
-<ol type="1">
-<li>searching for 25 epochs instead of 50 epochs,</li>
-<li>adopting <em>dropout</em> after <em>skip-connect</em>s</li>
-<li>manually reducing the number of <em>skip-connect</em>s to two</li>
-</ol>
-<p>修剪<em>skip-connection</em>的数目操作只能发生在第一个</p>
-<h2 id="searching-for-a-robust-neural-architecture-in-four-gpu-hours">5.
-Searching for A Robust Neural Architecture in Four GPU Hours</h2>
-<p><img src="https://s2.loli.net/2022/02/08/er6QUMHciAq45nd.png" /></p>
-<p>每次只计算最大权重的梯度，只BP最大权重的梯度，以此来减少计算量和GPU显存。</p>
-<h2 id="proxylessnas">6. ProxylessNAS</h2>
-<p>ProxylessNAS
-不同于以前的在代理数据集上面进行搜索以后转移到大数据集类似ImageNet上面进行训练测试，而是直接在大数据集上面进行搜索，它的搜素的算子数目被大大减少以减小搜索的空间，降低搜索的难度。</p>
-<h2 id="snas">7. SNAS</h2>
-<p>SNAS故事讲的不一样，但是本质上来说，跟DARTS基本一样的原理，即使用operation的加权和来代替单独的operation。
-它使用了gumble-softmax
-trick，<strong>使用概率采样出的权值而不是固定的权值来计算加权和</strong>，同时增加temperature，使得采样出的权值更加接近one-hot的权值，来拟合单独的operation。</p>
-<p>SNAS论文里面证明了，使用这种方式采样进行优化的过程，近似等价于强化学习采样网络学习进行优化的过程</p>
-<p><img src="https://s2.loli.net/2022/02/08/TVlXyQ7DapMkLiC.png" /></p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> Federated Learning </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Neural Architecture Search: A Survey</title>
+      <link href="/2020/11/01/06-NAS-Survey/"/>
+      <url>/2020/11/01/06-NAS-Survey/</url>
+      
+        <content type="html"><![CDATA[<p>目前存在的应用 image classification object detection semanticsegmentation</p><p>NAS can be seen as subfield of AutoML (Hutter et al., 2019) and hassignificant overlap with hyperparameter optimization (Feurer and Hutter,2019) and meta-learning (Vanschoren, 2019). AutoML的子领域NAS与元学习和超参数优化有很多重合的地方</p><p>NAS的方法分为三类：</p><ol type="1"><li>search space</li><li>search strategy</li><li>performance estimation strategy</li></ol><p><img src="https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png" /></p><ul><li>Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了searchspace，同时也可能漏掉超出人类认知的架构</li><li>SearchStrategy.搜索策略详细描述了如何探索搜索空间(通常是指数级大的，甚至是无界的)。它包含了物理的探索-利用权衡，因为一方面，快速找到性能良好的架构是可取的，而另一方面，应该避免过早地收敛到次优架构的区域。</li><li>Performance Estimation Strategy.简单的对所有数据进行标准训练和测试，但是这种方案计算太过昂贵，并且限制了可以研究的体系结构的数量</li></ul><h2 id="search-space">1. search space</h2><h3 id="chain-structured-neural-network-architecture">chain-structuredneural network architecture</h3><p><img src="https://s2.loli.net/2022/02/08/xBnSYOeg3GVafry.png" />搜索空间的影响因素</p><ol type="1"><li>层的数目</li><li>每一层的种类 pooling, conv, skip-connection, etc</li><li>超参数</li></ol><h3 id="cell-based-model">cell-based model</h3><p><img src="https://s2.loli.net/2022/02/08/P2AJEhNYIbfxSXv.png" /></p><ul><li>normal cell</li><li>reduction cell</li></ul><p>优点：</p><ol type="1"><li>The size of the search space is drastically reduced搜索空间大大减小</li><li>Architectures built from cells can more easily be transferred oradapted to other data sets by simply varying the number of cells andfilters used within a model 可移植性比较好</li><li>Creating architectures by repeating building blocks has proven auseful design prin- ciple in general, such as repeating an LSTM block inRNNs or stacking a residual block.已经证明叠加网络是有效的设计准则，如LSTM，RNN，res-block</li></ol><h3 id="macro-architecture">macro-architecture</h3><p>how many cells shall be used and how should they be connected tobuild the actual model</p><h2 id="search-strategy">2. search strategy</h2><ul><li>random search</li><li>Bayesian optimization</li><li>evolutionary methods</li><li>reinforcement learning (RL)</li><li>gradient-based methods.</li></ul><ol type="1"><li><p>no interaction with an environment occurs during this sequentialprocess (no external state is observed, and there are no intermediaterewards) 将架构取样的过程当做singleaction的线性生成过程，将RL问题转换为无状态多武装强盗问题。</p></li><li><p>frame NAS as a sequential decision process</p></li><li><p>deal with variable-length network architectures <strong>use abi-directional LSTM to encode architectures into a fixed-lengthrepresentation</strong></p></li><li><p>使用gradient-basedmethod去优化权重，使用进化算法仅仅去优化神经网络的架构</p></li><li><p>Neuro-evolutionary方法不同的地方在于how they sample parents,update populations, and generate offsprings</p><p><a href="https://arxiv.org/abs/1804.09081">Efficient multi-objectiveneural architecture search via lamarckian evolution.</a>后代从父网络中继承权重</p><p><a href="https://arxiv.org/pdf/1703.01041.pdf">Large-scale evolutionof image classifiers</a> 后代从父网络中继承没有被突变影响的权重</p></li><li><p>Monte Carlo Tree Search. hill climbing</p></li><li><p>optimize both the network weights and the network architecture byalternating gradient descent steps on training data for weights and onvalidation data for architectural parameters such as.交替使用梯度下降法，在训练集上训练权重，在验证集上更改架构参数</p></li><li><p>在可能的操作集合上面优化带参的分布</p></li><li><p>优化层的超参数和连接模式</p></li></ol><h2 id="performance-estimation-strategy">3. Performance EstimationStrategy</h2><p><img src="https://s2.loli.net/2022/02/08/HdpxLUvrX9DFSyZ.png" /></p><h2 id="directions">4. directions</h2><p>人类定义搜索空间的大小相比较寻找性能更好的网络架构更简单，但同时也限制了NAS不太可能找到本质上优于现在架构的网络架构</p><p>应用在image restoration semantic segmentation reinforcement learning等等上面</p><p>GAN sensor, fusion</p><p>multi-task problems multi-objective problems</p><p>extending one-shot NAS to generate different architectures dependingon the task or instance on-the-fly.</p><p>search space的选择</p><p>更加细粒度cell的构建，能否大大加强NAS的能力</p><p>新的数据集：Nas-bench-101: Towards reproducible neural architecturesearch</p><p>Learning Augmentation Policies from Data</p>]]></content>
+      
+      
       <categories>
-        <category>Paper</category>
+          
+          <category> Survey </category>
+          
       </categories>
-      <tags>
-        <tag>NAS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Neural Architecture Search: A Survey</title>
-    <url>/2020/11/01/06-NAS-Survey/</url>
-    <content><![CDATA[<p>目前存在的应用 image classification object detection semantic
-segmentation</p>
-<p>NAS can be seen as subfield of AutoML (Hutter et al., 2019) and has
-significant overlap with hyperparameter optimization (Feurer and Hutter,
-2019) and meta-learning (Vanschoren, 2019). AutoML的子领域
-NAS与元学习和超参数优化有很多重合的地方</p>
-<p>NAS的方法分为三类：</p>
-<ol type="1">
-<li>search space</li>
-<li>search strategy</li>
-<li>performance estimation strategy</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/1csTrtfijkH9E4C.png" /></p>
-<ul>
-<li>Search Space. 原则上定义了哪些架构可以被表示，先验知识缩小了search
-space，同时也可能漏掉超出人类认知的架构</li>
-<li>Search
-Strategy.搜索策略详细描述了如何探索搜索空间(通常是指数级大的，甚至是无界的)。它包含了物理的探索-利用权衡，因为一方面，快速找到性能良好的架构是可取的，而另一方面，应该避免过早地收敛到次优架构的区域。</li>
-<li>Performance Estimation Strategy.
-简单的对所有数据进行标准训练和测试，但是这种方案计算太过昂贵，并且限制了可以研究的体系结构的数量</li>
-</ul>
-<h2 id="search-space">1. search space</h2>
-<h3 id="chain-structured-neural-network-architecture">chain-structured
-neural network architecture</h3>
-<p><img src="https://s2.loli.net/2022/02/08/xBnSYOeg3GVafry.png" />
-搜索空间的影响因素</p>
-<ol type="1">
-<li>层的数目</li>
-<li>每一层的种类 pooling, conv, skip-connection, etc</li>
-<li>超参数</li>
-</ol>
-<h3 id="cell-based-model">cell-based model</h3>
-<p><img src="https://s2.loli.net/2022/02/08/P2AJEhNYIbfxSXv.png" /></p>
-<ul>
-<li>normal cell</li>
-<li>reduction cell</li>
-</ul>
-<p>优点：</p>
-<ol type="1">
-<li>The size of the search space is drastically reduced
-搜索空间大大减小</li>
-<li>Architectures built from cells can more easily be transferred or
-adapted to other data sets by simply varying the number of cells and
-filters used within a model 可移植性比较好</li>
-<li>Creating architectures by repeating building blocks has proven a
-useful design prin- ciple in general, such as repeating an LSTM block in
-RNNs or stacking a residual block.
-已经证明叠加网络是有效的设计准则，如LSTM，RNN，res-block</li>
-</ol>
-<h3 id="macro-architecture">macro-architecture</h3>
-<p>how many cells shall be used and how should they be connected to
-build the actual model</p>
-<h2 id="search-strategy">2. search strategy</h2>
-<ul>
-<li>random search</li>
-<li>Bayesian optimization</li>
-<li>evolutionary methods</li>
-<li>reinforcement learning (RL)</li>
-<li>gradient-based methods.</li>
-</ul>
-<ol type="1">
-<li><p>no interaction with an environment occurs during this sequential
-process (no external state is observed, and there are no intermediate
-rewards) 将架构取样的过程当做single
-action的线性生成过程，将RL问题转换为无状态多武装强盗问题。</p></li>
-<li><p>frame NAS as a sequential decision process</p></li>
-<li><p>deal with variable-length network architectures <strong>use a
-bi-directional LSTM to encode architectures into a fixed-length
-representation</strong></p></li>
-<li><p>使用gradient-based
-method去优化权重，使用进化算法仅仅去优化神经网络的架构</p></li>
-<li><p>Neuro-evolutionary方法不同的地方在于how they sample parents,
-update populations, and generate offsprings</p>
-<p><a href="https://arxiv.org/abs/1804.09081">Efficient multi-objective
-neural architecture search via lamarckian evolution.</a>
-后代从父网络中继承权重</p>
-<p><a href="https://arxiv.org/pdf/1703.01041.pdf">Large-scale evolution
-of image classifiers</a> 后代从父网络中继承没有被突变影响的权重</p></li>
-<li><p>Monte Carlo Tree Search. hill climbing</p></li>
-<li><p>optimize both the network weights and the network architecture by
-alternating gradient descent steps on training data for weights and on
-validation data for architectural parameters such as.
-交替使用梯度下降法，在训练集上训练权重，在验证集上更改架构参数</p></li>
-<li><p>在可能的操作集合上面优化带参的分布</p></li>
-<li><p>优化层的超参数和连接模式</p></li>
-</ol>
-<h2 id="performance-estimation-strategy">3. Performance Estimation
-Strategy</h2>
-<p><img src="https://s2.loli.net/2022/02/08/HdpxLUvrX9DFSyZ.png" /></p>
-<h2 id="directions">4. directions</h2>
-<p>人类定义搜索空间的大小相比较寻找性能更好的网络架构更简单，但同时也限制了NAS不太可能找到本质上优于现在架构的网络架构</p>
-<p>应用在image restoration semantic segmentation reinforcement learning
-等等上面</p>
-<p>GAN sensor, fusion</p>
-<p>multi-task problems multi-objective problems</p>
-<p>extending one-shot NAS to generate different architectures depending
-on the task or instance on-the-fly.</p>
-<p>search space的选择</p>
-<p>更加细粒度cell的构建，能否大大加强NAS的能力</p>
-<p>新的数据集：Nas-bench-101: Towards reproducible neural architecture
-search</p>
-<p>Learning Augmentation Policies from Data</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>ICLR2020部分NAS投稿论文解读</title>
+      <link href="/2020/11/01/05-ICLR2020_NAS_papers/"/>
+      <url>/2020/11/01/05-ICLR2020_NAS_papers/</url>
+      
+        <content type="html"><![CDATA[<h2id="stabilizing-darts-with-amended-grarident-estimation-on-architectural-parameters">1.stabilizingDARTS with Amended grarident estimation on architectural parameters</h2><p>将darts的loss分为两个部分，对第二个部分进行了推证，提出了新的一种数学形式去近似这个loss，并进行了solid的数学证明。</p><p><span class="math display">\[\begin{equation}\mathbf{g}_{2}^{\prime}=-\left.\left.\eta \cdot\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2} \mathcal{L}_{\text{train }}(\boldsymbol{\omega},\boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H} \cdot\nabla_{\boldsymbol{\omega}} \mathcal{L}_{\text {val}}(\boldsymbol{\omega},\boldsymbol{\alpha})\right|_{\boldsymbol{\omega}=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}\end{equation}\]</span></p><p>提出DARTS的二阶偏导的更合理的近似，下面这个公式，第一个部分称为<spanclass="math inline">\(g_1\)</span>，通过梯度的反向传播得到。第二部分称为<spanclass="math inline">\(g_2\)</span>，更合理的近似为<spanclass="math inline">\(g_2&#39;\)</span>。 <span class="math display">\[\begin{aligned}\nabla_{\boldsymbol{\alpha}}\mathcal{L}_{\mathrm{val}}\left(\boldsymbol{\omega}^{\star}(\boldsymbol{\alpha}),\boldsymbol{\alpha}\right)|_{\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}=&amp; \nabla_{\boldsymbol{\alpha}}\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},\boldsymbol{\alpha})|_{\boldsymbol{\omega}=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} -\\&amp; \nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2}\mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega},\boldsymbol{\alpha})|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H}^{-1} \cdot\nabla_{\boldsymbol{\omega}}\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},\boldsymbol{\alpha})|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}\end{aligned}\]</span> <span class="math display">\[\begin{aligned}\left\langle\mathbf{g}_{2}^{\prime},\mathbf{g}_{2}\right\rangle=&amp;\left.\left.\eta \cdot \nabla_{\omega}\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},\boldsymbol{\alpha})\right|_{\omega=\omega^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} ^{\top} \cdot\mathbf{H}^{-1} \cdot \nabla_{\boldsymbol{\omega},\boldsymbol{\alpha}}^{2}\mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega},\boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \\&amp;\left.\left.\nabla_{\boldsymbol{\alpha}, \boldsymbol{\omega}}^{2}\mathcal{L}_{\mathrm{train}}(\boldsymbol{\omega},\boldsymbol{\alpha})\right|_{\omega=\boldsymbol{\omega}^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}} \cdot \mathbf{H} \cdot\nabla_{\boldsymbol{\omega}}\mathcal{L}_{\mathrm{val}}(\boldsymbol{\omega},\boldsymbol{\alpha})\right|_{\omega=\omega^{*}\left(\boldsymbol{\alpha}_{t}\right),\boldsymbol{\alpha}=\boldsymbol{\alpha}_{t}}\end{aligned}\]</span> 并证明<span class="math inline">\(g_2&#39;\)</span>与<spanclass="math inline">\(g_2\)</span>的乘积恒大于0，也就是夹角小于90度。</p><h2id="darts-improved-differentiable-architecture-search-with-early-stopping">2.DARTS+: Improved Differentiable Architecture Search with EarlyStopping</h2><p>随着epoch数量的增多，DARTS倾向于skip-connection，造成模型的表现下降</p><p>提出一种提前停止训练的标准，让模型搜索提前停止。</p><ol type="1"><li>当模型中出现两个skip-connection的时候</li><li>当模型中的<spanclass="math inline">\(\alpha\)</span>参数的排列顺序不再发生改变的时候(<spanclass="math inline">\(\alpha\)</span>的值是各个Primitives的概率)</li></ol><h2 id="pc-darts">3. PC-DARTS</h2><p>uses partial- channel connections to reduce search time,</p><p><img src="https://s2.loli.net/2022/02/08/UXSkptfxLQnYilV.png" /></p><ol type="1"><li><p>Partial Channel Connections</p><p>只将1/K的channels使用primitives连接，其余的channels选择直接连接，也就是，从<spanclass="math inline">\(node_i\)</span>到<spanclass="math inline">\(node_j\)</span>的边中，选出一部分channel使用非identity的方式连接，其余的使用identity，经过非identity方式的channel乘以softmax以后的<spanclass="math inline">\(\alpha\)</span>权重相加，再和原来的channel一起concat。<strong>这样做的处理，是希望占用的内存更小，使用更大的batch_size，提升训练和模型表现。</strong></p><p>削弱了weight-free操作的影响。</p></li><li><p>Edge Normalization</p><p><span class="math inline">\(node_i\)</span>前面所有的<spanclass="math inline">\(node\)</span>都需要输出到它，设计权重<spanclass="math inline">\(\beta\)</span>，乘以这些边，得到<spanclass="math inline">\(node_i\)</span>的值。</p></li></ol><h2 id="p-darts">4. P-DARTS</h2><p>将layer的数目慢慢增加。</p><p><img src="https://s2.loli.net/2022/02/08/KfydxUwRnXJpDVq.png" /></p><ol type="1"><li>searching for 25 epochs instead of 50 epochs,</li><li>adopting <em>dropout</em> after <em>skip-connect</em>s</li><li>manually reducing the number of <em>skip-connect</em>s to two</li></ol><p>修剪<em>skip-connection</em>的数目操作只能发生在第一个</p><h2 id="searching-for-a-robust-neural-architecture-in-four-gpu-hours">5.Searching for A Robust Neural Architecture in Four GPU Hours</h2><p><img src="https://s2.loli.net/2022/02/08/er6QUMHciAq45nd.png" /></p><p>每次只计算最大权重的梯度，只BP最大权重的梯度，以此来减少计算量和GPU显存。</p><h2 id="proxylessnas">6. ProxylessNAS</h2><p>ProxylessNAS不同于以前的在代理数据集上面进行搜索以后转移到大数据集类似ImageNet上面进行训练测试，而是直接在大数据集上面进行搜索，它的搜素的算子数目被大大减少以减小搜索的空间，降低搜索的难度。</p><h2 id="snas">7. SNAS</h2><p>SNAS故事讲的不一样，但是本质上来说，跟DARTS基本一样的原理，即使用operation的加权和来代替单独的operation。它使用了gumble-softmaxtrick，<strong>使用概率采样出的权值而不是固定的权值来计算加权和</strong>，同时增加temperature，使得采样出的权值更加接近one-hot的权值，来拟合单独的operation。</p><p>SNAS论文里面证明了，使用这种方式采样进行优化的过程，近似等价于强化学习采样网络学习进行优化的过程</p><p><img src="https://s2.loli.net/2022/02/08/TVlXyQ7DapMkLiC.png" /></p>]]></content>
+      
+      
       <categories>
-        <category>Survey</category>
+          
+          <category> Paper </category>
+          
       </categories>
-      <tags>
-        <tag>NAS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Graph Neural Networks: A review of methods and applications</title>
-    <url>/2020/06/15/07-gnn-review1/</url>
-    <content><![CDATA[<h2
-id="graph-neural-networks-a-review-of-methods-and-applications">Graph
-Neural Networks: A review of methods and applications</h2>
-<h2 id="introduction">1. introduction</h2>
-<ol type="1">
-<li>social science (social networks)</li>
-<li>natural science (physical systems</li>
-<li>protein-protein interaction networks</li>
-<li>knowledge graphs</li>
-</ol>
-<p>常见的欧几里得结构化数据主要包含：</p>
-<p>1D：声音，时间序列等； 2D：图像等； 3D：视频，高光谱图像等；</p>
-<h3 id="motivation">1.1 motivation</h3>
-<ol type="1">
-<li>CNN
-<ul>
-<li>局部连接</li>
-<li>共享权重</li>
-<li>多层网络</li>
-</ul></li>
-<li>graph embedding
-<ul>
-<li>在 encoder
-中，节点之间没有共享参数，这导致计算效率低下，因为这意味着参数的数量随着节点的数量线性增长</li>
-<li>直接嵌入方法缺乏泛化能力，这意味着它们无法处理动态图形或推广到新图形</li>
-</ul></li>
-</ol>
-<h3 id="优点">1.2 优点</h3>
-<ol type="1">
-<li><p>CNN 和 RNN
-这样的标准神经网络无法处理没有自然节点顺序的不规则图数据，而 GNN
-在每个节点上分别传播，忽略了节点的输入顺序。即，GNN
-的输出对于节点的输入顺序是不变的。</p></li>
-<li><p>图中的边表示了两个节点之间的依赖关系的信息。在标准的神经网络中，这些依赖信息只是作为节点的特征。然后，GNN
-可以通过图形结构进行传播，而不是将其作为特征的一部分。通常，GNN
-通过其邻域的状态的<strong>加权和</strong>来更新节点的隐藏状态。</p></li>
-<li><p>推理是高级人工智能的一个非常重要的研究课题，人脑中的推理过程几乎都是基于从日常经验中提取的图形。标准神经网络已经显示出通过学习数据分布来生成合成图像和文档的能力，同时它们仍然无法从大型实验数据中学习推理图。然而，GNN
-探索从场景图片和故事文档等非结构性数据生成图形，这可以成为进一步高级 AI
-的强大神经模型。</p></li>
-</ol>
-<h2 id="模型">2. 模型</h2>
-<h3 id="限制">2.1 限制</h3>
-<p>虽然实验结果表明 GNN 是一种用于建模结构数据的强大架构，但原始 GNN
-仍然存在一些局限性。</p>
-<ol type="1">
-<li>对于固定点来迭代更新节点的隐藏状态是十分低效的。如果放宽固定点的假设，可以设计一个多层
-GNN 来获得节点及其邻域的稳定表示。</li>
-<li>GNN
-在迭代中使用相同的参数，而大多数流行的神经网络在不同的层中使用不同的参数来进行分层特征提取。此外，节点隐藏状态的更新是一个顺序过程，可以利用
-RNN 内核，如 GRU 和 LSTM，来进一步优化。</li>
-<li>存在一些边缘（edges）的信息特征无法在原始 GNN
-中有效建模。例如，知识图中的边缘具有关系类型，并且通过不同边缘的消息传播应根据其类型而不同。此外，如何学习边缘的隐藏状态也是一个重要问题。</li>
-<li>如果我们专注于节点的表示而不是图形，则不适合使用固定点，因为固定点中的表示分布将在值上非常平滑并且用于区分每个节点的信息量较少。</li>
-</ol>
-<h3 id="gnn的-变体">2.2 GNN的 变体</h3>
-<h4 id="图类型">2.2.1 图类型</h4>
-<p>在原始的 GNN
-中，输入的图形包括带有标签信息的节点和无向的边，这是一种最简单的图形式。但在现实生活中，存在多种图的变体，主要包括有向图、异构图和带有边信息的图。</p>
-<ol type="1">
-<li>有向图：即图中的边是存在方向的。有向边可以带来比无向边更多的信息。</li>
-<li>异构图：即图中存在多种类型的节点。处理异构图的最简单方法是将每个节点的类型转换为与原始特征连接的
-one-hot 特征向量。</li>
-<li>带有边信息的图：即图中的每条边也存在权重或类型等信息。这种类型的图有两种解决办法，一种是将图形转化为二部图，原始边也作为节点，并将其分割成两条新的边，分别连接原始边的两端节点；第二种方法是调整不同的权重矩阵，以便在不同类型的边缘上传播。</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/U5n17s9Ode3Pbiq.png" /></p>
-<h4 id="传播类型">2.2.2 传播类型</h4>
-<p>对于获取节点或者边的隐藏状态，神经网络中的传播步骤和输出步骤至关重要。在传播步骤方面的改进主要有卷积、注意力机制、门机制和跳跃连接（skip
-connection），而在输出步骤通常遵循简单的前馈神经网络设置。</p>
-<ol type="1">
-<li>卷积。Graph Convolutional
-Network（GCN）希望将卷积操作应用在图结构数据上，主要分为 Spectral Method
-和 Spatial Method（Non-spectral Method）两类。Spectral Method
-希望使用谱分解的方法，应用图的拉普拉斯矩阵分解进行节点的信息收集。Spatial
-Method 直接使用图的拓扑结构，根据图的邻居信息进行信息收集。</li>
-<li>注意力机制。Graph Attention Network
-致力于将注意力机制应用在图中的信息收集阶段。</li>
-<li>门机制。这些变体将门机制应用于节点更新阶段。Gated graph neural
-network 将 GRU 机制应用于节点更新。很多工作致力于将 LSTM
-应用于不同类型的图上，根据具体情境的不同，可以分为 Tree LSTM、Graph LSTM
-和 Sentence LSTM 等。</li>
-<li>残差连接。注意到堆叠多层图神经网络可能引起信息平滑的问题，很多工作将残差机制应用于图神经网络中，文中介绍了
-Highway GNN 和 Jump Knowledge Network 两种不同的处理方式</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/KS7JX1uljVzvcbA.png" /></p>
-<h4 id="训练方法">2.2.3 训练方法</h4>
-<p>原始图卷积神经网络在训练和优化方法中具有若干缺点。例如，</p>
-<ol type="1">
-<li>GCN
-需要完整的图拉普拉斯算子，这对于大图来说是<strong>计算成本十分高</strong>。</li>
-<li>而且，层 𝐿 的节点的嵌入是通过层 <span
-class="math inline">\(𝐿−1\)</span>
-的所有该节点的邻居来进行计算的。因此，单个节点的感知域相对于层数呈指数增长，<strong>单个节点的计算梯度成本很高</strong>。</li>
-<li>最后，GCN
-针对固定图形进行独立训练，<strong>缺乏归纳学习的能力</strong>。</li>
-</ol>
-<h3 id="通用框架">2.3 通用框架</h3>
-<p>除了提出图神经网络的不同变体之外，一些研究人员从神经网络的框架入手，提出了一些通用框架，旨在将不同模型集成到一个单一框架中。主要包括
-Message Passing Neural Networks（MPNN）、Non-local Neural
-Networks（NLNN）以及 Graph Network（GN）等。</p>
-<ol type="1">
-<li><p>Message Passing Neural Networks
-针对图结构的监督学习框架，MPNN框架抽象了几种最流行的图形结构数据模型（如图卷积中的光谱方法和非光谱方法，门控神经网络，交互网络，分子图卷积，深度张量神经网络等）之间的共性，</p></li>
-<li><p>Non-local Neural Networks
-NLNN利用深度学习捕捉长范围的依赖关系，这是对非局部平均运算的一种泛化，非局部运算通过计算对所有位置的特征的加权和来得到当前位置的影响，此处的位置集合可以是空间、时间或者时空。</p></li>
-<li><p>Graph Networks GN被提出来泛化和扩展多种图神经网络，以及 MPNN 和
-NLNN 方法。本文主要介绍了图的定义、GN block、核心 GN
-计算单元、计算步骤和基本设计原则。详细的内容扩展会另外写到专门针对该文献的阅读笔记当中。</p></li>
-</ol>
-<h2 id="应用">3. 应用</h2>
-<p><img src="https://s2.loli.net/2022/02/08/Yq8MQOcyP7D1tZ4.png" /></p>
-<h2 id="开放性问题">4. 开放性问题</h2>
-<h3 id="浅层结构">4.1 浅层结构</h3>
-<p>传统的深度神经网络可以堆叠数百层以获得更好的性能，因为更深的结构具有更多的参数，从而能够显著提高表示能力。而图神经网络通常都很浅，大多数不超过三层。正如
-[5] 中的实验所示，堆叠多个 GCN
-层将导致过度平滑，也就是说，所有顶点将收敛到相同的值。尽管一些研究人员设法解决了这个问题，但它仍然是
-GNN 的最大限制。设计真正的深度 GNN
-对于未来的研究来说是一个令人兴奋的挑战，并将对理解 GNN
-做出相当大的贡献。</p>
-<h3 id="动态图结构">4.2 动态图结构</h3>
-<p>另一个具有挑战性的问题是如何处理具有动态结构的图形。静态图是稳定的，因此可以容易地建模，而动态图则引入变化的结构。当边和节点出现或消失时，GNN
-无法自适应地更改。 动态 GNN 正在积极研究中，我们认为它是一般 GNN
-的稳定性和适应性的重要里程碑。</p>
-<h3 id="非结构化场景">4.3 非结构化场景</h3>
-<p>虽然我们已经讨论了 GNN
-在非结构场景中的应用，但我们发现没有最佳方法可以从原始数据生成图形。因此，找到最佳图形生成方法将提供
-GNN 可以做出贡献的更广泛的领域。</p>
-<h3 id="可伸缩性">4.4 可伸缩性</h3>
-<p>如何在社交网络或推荐系统等网络规模条件下应用嵌入方法对于几乎所有图形嵌入算法来说都是一个致命的问题，而
-GNN 也不例外。扩展 GNN
-很困难，因为许多核心步骤在大数据环境中的计算成本都十分高。</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>hierarchical representations for efficient architecture search</title>
+      <link href="/2020/11/01/04-HREAS/"/>
+      <url>/2020/11/01/04-HREAS/</url>
+      
+        <content type="html"><![CDATA[<p>分层设计，底层为一个个最基本的计算操作，顶层为整体架构。</p><p><img src="https://s2.loli.net/2022/02/08/O3EAIcUJZo7nKma.png" /></p><h2 id="evolutionary-architecture-search">evolutionary architecturesearch</h2><h3 id="mutation">mutation</h3><p>找到non-primitive levell&gt;=2，选择这个level里面的一个motif，选择motif里面的两个节点，把两个节点中间的边置换为另一种边(三种情况，1.新增边；2.去除边；3.置换边)。</p><h3 id="initialization">initialization</h3><p>原型初始化的处理</p><ol type="1"><li>先把所有的边置换为identity</li><li>执行很大数目(e.g. 1000)次的mutation</li></ol><h3 id="search-algorithm">search algorithm</h3><p>Tournament selection</p><p>从初始的随机原型集合中，tournament selection选出最promising原型，把它的mutated后代放到集合中，重复这个过程，集合中的原型表现会随时间缓慢优化。选择原型集合中在validationset上面表现最好的genotype作为一段时间进化的最后输出。</p><p>randon search</p><p>不同于tournament selection，randomsearch随机选择集合中的原型进行突变，这样突变的过程可以并行，减少了searchtime</p><h3 id="implementation">implementation</h3><p>异步的一个controller负责执行所有原型的进化，其余的worker负责对原型的表现做evaluation。Architecturesare trained from scratch for a fixed number of steps with random weightinitialization。</p>]]></content>
+      
+      
       <categories>
-        <category>Survey</category>
+          
+          <category> Paper </category>
+          
       </categories>
-      <tags>
-        <tag>GNN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>meta-learning_nas</title>
-    <url>/2020/06/18/08-meta-learning-nas/</url>
-    <content><![CDATA[<h2
-id="towards-fast-adaptation-of-neural-architectures-with-meta-learning">1.
-Towards fast adaptation of neural architectures with meta learning</h2>
-<p><a href="https://openreview.net/forum?id=r1eowANFvr">ICLR2020</a></p>
-<p>文章的的主要思想是，在meta-learning的setting上面，通过不同的task，学习一个可以泛化的architecture，然后在query集上面进行fune-tuning，微调这个结构，使得该结构对不同test
-task有良好的适用性。 <img
-src="https://s2.loli.net/2022/02/08/WdiwUbqfGHBDFO5.png" /></p>
-<p>在mini-imagenet上面5-way的结果 <img
-src="https://s2.loli.net/2022/02/08/DjiUZRg9dThlMSP.png" /></p>
-<h2 id="auto-meta-automated-gradient-based-meta-learner-search">2.
-Auto-Meta: Automated Gradient Based Meta Learner Search</h2>
-<p><a
-href="https://arxiv.org/abs/1806.06927">https://arxiv.org/abs/1806.06927</a>
-NIPS2018 workshop</p>
-<p>也是构造cell去stack起来，获取整个的network，但是一开始的cell并不是整个的supernet，而是在搜索的过程中，逐步往这个cell里面去添加opetator，<strong>然后使用一个predictor去预测这个cell的性能</strong>，选择top
-k性能的cell组成网络进行测试。 <img
-src="https://s2.loli.net/2022/02/08/vZe5xTgW9UGLHEJ.png" /></p>
-<h2 id="meta-architecture-search">3. Meta Architecture Search</h2>
-<p><img src="https://s2.loli.net/2022/02/08/GRloLut4PFAKsin.png" /></p>
-<p>本文从Bayesian的角度，推理了一遍NAS的原理，提出用Coupled Variational
-Bayes (CVB)去生成参数的表达，同时进行了推理（hard
-math）。本质上来说，这篇工作基本上还是darts，不过它首先将meta
-learning的在imagenet上面获取的先验知识拿出来放到其他任务上去train。
-首先使用gumble_softmaxed darts(参见SNAS)，取得meta
-network的arch和init，然后针对不同任务进行fine tuning。 <img
-src="08-meta-learning-nas/04-meta_architecture_search.png"
-alt="meta as" /></p>
-<h2
-id="metadapt-meta-learned-task-adaptive-architecture-for-few-shot-classification">MetAdapt:
-Meta-Learned Task-Adaptive Architecture for Few-Shot Classification</h2>
-<p><a
-href="https://arxiv.org/abs/1912.00412">https://arxiv.org/abs/1912.00412</a></p>
-<p>在darts的基础上，提出了一个MetAdapt
-Controllers，就是说，对于不同的task，产生不同的叠加权重 <img
-src="https://s2.loli.net/2022/02/08/7ZFXxTMz5uiRHD8.png" /></p>
-<h2
-id="meta-learning-of-neural-architectures-for-few-shot-learning">Meta-Learning
-of Neural Architectures for Few-Shot Learning</h2>
-<p><a
-href="https://arxiv.org/abs/1911.11090">https://arxiv.org/abs/1911.11090</a>
-提出了gradient-based NAS + meta learning
-结合的框架，直接想把所有方法都框到自己下面。 <img
-src="https://s2.loli.net/2022/02/08/Y95WIqhJoeTRkAU.png" /></p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>DARTS 可微分架构搜索</title>
+      <link href="/2020/11/01/02-DARTS/"/>
+      <url>/2020/11/01/02-DARTS/</url>
+      
+        <content type="html"><![CDATA[<h2 id="darts">1. DARTS</h2><p>the computation procedure for an architecture (or a cell in it) isrepresented as a directed acyclic graph. 表示为有向图。</p><h3 id="search-space">1.1 search space</h3><p>寻找一个计算cell，作为最后架构的建造模块。学习出来的cell可以叠加起来组成cnn，或者递归连接起来组成rnn。</p><p>cell是由N个有序序列node组成的有向无环图。每一条edge都是一个计算。我们假设这个cell有两个input和一个output，对于cnn，它就是前面两个层的输出，对于rnn，它是上个step的state以及这个step的Input。cell的输出是通过对所有中间节点应用reduction得到的。</p><p>所有中间节点的计算依赖前置节点。 <span class="math display">\[x^{(j)} = \sum_{i&lt;j}o^{(i,j)}(x^{(i)})\]</span> 注意zero operation也是可以被允许的edge类型。</p><h3 id="continuous-relaxation-and-optimization">1.2 continuousrelaxation and optimization</h3><p>找到每一个操作对应的权重矩阵<spanclass="math inline">\(\alpha^{(i,j)}\)</span>，这样所有的权重矩阵集合为<spanclass="math inline">\(\alpha\)</span>，我们将NAS的任务减小为学习一个连续变量的集合<spanclass="math inline">\(\alpha\)</span>。</p><p>DARTS使用的是<strong>GD</strong>来优化validation loss。相似的有RL(<ahref="">Learning transferable architectures for scalable imagerecognition</a>)，EA(<a href="">Hierarchical representations forefficient architecture search</a>)</p><p>NAS的目标是找到<spanclass="math inline">\(\alpha^*\)</span>使得validation loss<spanclass="math inline">\(L_{val}(w^*, \alpha^*)\)</span>最小，<spanclass="math inline">\(w^*\)</span>是使得training loss<spanclass="math inline">\(L_{train}(w, \alpha^*)\)</span>最小的w。 <spanclass="math display">\[min_{\alpha} L_{val}(w^*(\alpha), \alpha) \\s.t. w^*(\alpha) = argmin_w L_{train}(w, \alpha)\]</span> <imgsrc="https://s2.loli.net/2022/02/08/QWc1fC3shg4q2tb.png" /></p><h3 id="approximate-architecture-gradient">1.3 approximate architecturegradient</h3><p><span class="math display">\[\begin{aligned} &amp; \nabla_{\alpha} \mathcal{L}_{v al}\left(w^{*}(\alpha), \alpha\right) \\ \approx &amp; \nabla_{\alpha}\mathcal{L}_{v a l}\left(w-\xi \nabla_{w} \mathcal{L}_{t r a i n}(w,\alpha), \alpha\right) \end{aligned}\]</span></p><p>运用chain rule。将上式进一步处理。 <span class="math display">\[\triangledown_\alpha L_{val}(w&#39;, \alpha - \xi\triangledown^2_{\alpha, w} L_{train}(w, \alpha)\triangledown_{w&#39;}L_{val}(w&#39;, \alpha))\]</span> 其中的<span class="math inline">\(w&#39; = w -\xi\triangledown_w L_{train}(w, \alpha)\)</span>指的就是one-step forwardmodel。</p><p>使用the finite difference approximation(有限差分近似)可以减少复杂度。<span class="math display">\[\epsilon 是极小量 \\w^{\pm} = w \pm \epsilon \triangledown_{w&#39;}L_{val}(w&#39;, \alpha)\\\xi \triangledown^2_{\alpha, w} L_{train}(w, \alpha)\triangledown_{w&#39;}L_{val}(w&#39;, \alpha)) \approx\frac{\triangledown_\alpha L_{train}(w^{+}, \alpha) -\triangledown_\alpha L_{train}(w^{-}, \alpha)}{2\xi}\]</span> 将<span class="math inline">\(\xi =0\)</span>作为一阶近似，将<span class="math inline">\(\xi &gt;0\)</span>作为两阶近似。</p><h3 id="deriving-discrete-architecture">1.4 deriving discretearchitecture</h3><p>在所有非0的候选operations保留top-k strongestoperations，为了使得出的网络可以和现有网络比较，我们选择k=2 for cnn, k=1for rnn。</p><p>为什么不使用zero operation呢？</p><ol type="1"><li>为了与现有模型进行公平的比较，我们需要每个节点恰好有k条非零的引入边</li><li>因为增加零操作的logits只会影响结果节点表示的规模，由于BN处理的存在而不会而影响最终的分类结果</li></ol><h2 id="experiments-and-results">2. Experiments and results</h2><h3 id="architecture-search">2.1 architecture search</h3><h4 id="search-for-convolutional-cells-on-cifar-10">2.1.1 search forconvolutional cells on cifar-10</h4><p>包含8种operation。 3 × 3 and 5 × 5 separable convolutions, 3 × 3 and5 × 5 dilated separable convolutions, 3 × 3 max pooling, 3 × 3 averagepooling, identity, and zero。</p><p>We use the ReLU-Conv-BN order for convolutional operations, and eachseparable convolution is always applied twice</p><p>在整个网络的1/3和2/3处，设立reduce cell。缩小空间分辨率。</p><h4 id="searching-for-recurrent-cells-for-penn-treebank">2.1.2 searchingfor recurrent cells for penn treebank</h4><p>operation的种类：linear transformations followed by one of tanh,relu, sigmoid activations, as well as the identity mapping and the<em>zero</em> operation.</p><p>总共12个node，最初的intermediate node是由两个inputnode通过线性变换，求和，然后传过一个tanh激活函数得到的。</p><h3 id="architecture-evaluation">2.2 architecture evaluation</h3><p><strong>寻找多次，避免初始化的影响</strong>。从cifar-10上迁移到imagenet上，从PTB上迁移到wikitext-2上。</p>]]></content>
+      
+      
       <categories>
-        <category>Survey</category>
+          
+          <category> Paper </category>
+          
       </categories>
-      <tags>
-        <tag>NAS, meta-learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>string_pattern</title>
-    <url>/2020/07/15/09-string-pattern/</url>
-    <content><![CDATA[<h2 id="字符串匹配算法">1.1 字符串匹配算法</h2>
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">algorithm</th>
-<th style="text-align: center;"><span
-class="math inline">\(T_{best}\)</span></th>
-<th style="text-align: center;"><span
-class="math inline">\(T_{avg}\)</span></th>
-<th style="text-align: center;"><span
-class="math inline">\(T_{worst}\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">1. 朴素匹配算法</td>
-<td style="text-align: center;">O(nm)</td>
-<td style="text-align: center;">O(nm)</td>
-<td style="text-align: center;">O(nm)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2. Robin-Karp 算法</td>
-<td style="text-align: center;">O(n)</td>
-<td style="text-align: center;">O(nm)</td>
-<td style="text-align: center;">O(nm)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">3. KMP算法</td>
-<td style="text-align: center;">O(n+m)</td>
-<td style="text-align: center;">O(n+m)</td>
-<td style="text-align: center;">O(n+m)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="朴素匹配算法">1.1.1 朴素匹配算法</h3>
-<p>暴力求解</p>
-<h3 id="robin-karp算法">1.1.2 Robin-Karp算法</h3>
-<p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。
-选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中
-<span class="math inline">\(0&lt;m&lt;n\)</span>，<span
-class="math inline">\(Hash(t[i,j])\)</span>代表字符串t[i,
-j]的哈希值。</p>
-<p>当 <span class="math inline">\(Hash(t[0,
-m-1])!=Hash(p[0,m-1])\)</span> 时，我们很自然的会把 <span
-class="math inline">\(Hash(t[1, m])\)</span>
-拿过来继续比较。在这个过程中，若我们重新计算字符串t[1,
-m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0,
-m-1]与t[1, m]中有 m-1
-个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为
-O(1)。</p>
-<p>Rabin-Karp 算法选用的滚动哈希函数主要是利用<span
-class="math inline">\(Rabin
-fingerprint\)</span>的思想，举个例子，计算字符串t[0, m -
-1]的哈希值的公式如下，</p>
-<p><span
-class="math display">\[Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+...+t[m−1]∗b_0\]</span></p>
-<p>其中的 b_k 可以是一个常数，在 Rabin-Karp
-算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取
-101。</p>
-<p>则计算字符串t[1, m]的哈希值公式如下，</p>
-<p><span
-class="math display">\[Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0\]</span></p>
-<h3 id="kmp算法">1.1.3 KMP算法</h3>
-<p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p>
-<p><a
-href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html">阮一峰KMP算法</a></p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#KMP</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kmp_match(s, p):</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="bu">len</span>(s)<span class="op">;</span> n <span class="op">=</span> <span class="bu">len</span>(p)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    cur <span class="op">=</span> <span class="dv">0</span><span class="co">#起始指针cur</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    table <span class="op">=</span> partial_table(p)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> cur<span class="op">&lt;=</span>m<span class="op">-</span>n:</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> s[i<span class="op">+</span>cur]<span class="op">!=</span>p[i]:</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                cur <span class="op">+=</span> <span class="bu">max</span>(i <span class="op">-</span> table[i<span class="op">-</span><span class="dv">1</span>], <span class="dv">1</span>)<span class="co">#有了部分匹配表,我们不只是单纯的1位1位往右移,可以一次移动多位</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#部分匹配表</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> partial_table(p):</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">&#39;&#39;&#39;partial_table(&quot;ABCDABD&quot;) -&gt; [0, 0, 0, 0, 1, 2, 0]&#39;&#39;&#39;</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    prefix <span class="op">=</span> <span class="bu">set</span>()</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    postfix <span class="op">=</span> <span class="bu">set</span>()</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    ret <span class="op">=</span> [<span class="dv">0</span>]</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="bu">len</span>(p)):</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        prefix.add(p[:i])</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        postfix <span class="op">=</span> &#123;p[j:i<span class="op">+</span><span class="dv">1</span>] <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,i<span class="op">+</span><span class="dv">1</span>)&#125;</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        ret.append(<span class="bu">len</span>((prefix<span class="op">&amp;</span>postfix <span class="kw">or</span> &#123;<span class="st">&#39;&#39;</span>&#125;).pop()))</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ret</span></code></pre></div>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>AutoML自动机器学习</title>
+      <link href="/2020/11/01/01-AutoML/"/>
+      <url>/2020/11/01/01-AutoML/</url>
+      
+        <content type="html"><![CDATA[<p>wiki definition: AutoML is the process of automating the end-to-endprocess of applying appropriate data-preprocessing, feature engineering,model selection, and model evaluation to solve the certain task</p><ul><li>Google AutoML</li><li><a href="https://arxiv.org/abs/1611.01578">Neural ArchitectureSearch with Reinforcement Learning</a></li></ul><p>We will introduce NAS from two perspectives.</p><ul><li>The first is the structures of the model.<ul><li>entire structure</li><li>cell-based structure</li><li>hierarchical structure</li><li>morphism-based structure</li></ul></li><li>The second is hyperparameter optimization (HPO) for designing themodel structure.<ul><li>Reinforcement Learning</li><li>Evolutionary Algorithms</li><li>Gradient-based</li><li>Bayesian Optimization</li></ul></li></ul><p>AutoML</p><ul><li>data preparation</li><li>feature engineering</li><li>model generation</li><li>model evaluation</li></ul><h2 id="data-preparation">1. Data preparation</h2><h3 id="data-collection">1.1 data collection</h3><ol type="1"><li>data synthesis<ul><li>augment the exsiting dataset CV: cropping, flipping, padding,rotation and resize, etc. Library: torchvision augmentor</li><li>data warping generates additional samples by applying transformationon data-space</li><li>synthetic over-sampling creates additional samples infeature-space.</li><li>For text data, synonym insertion is a common way ofaugmenting同义词插入</li><li>first translate the text into some foreign language, and thentranslate it back to the original language</li><li>non-domain-specific data augmentation strategy that uses noising inRNNs</li><li>back-translation</li><li>data simulator <strong>OpenAI Gym</strong> is a popular toolkit thatprovides various simulation environment</li><li>GAN</li></ul></li><li>data searching(search for web data)<ul><li>On the one hand, sometimes the <strong>search results do not exactlymatch the keywords</strong>.(filter unrelated data)</li><li>The other problem is that web data may <strong>have wrong labels oreven no labels.</strong>(learning-based <strong>self-labeling</strong>method, 分为self-training, co-training, co-learning)</li><li>the distribution of web data can be extremely different from thetarget dataset, which would increase the difficulty of training themodel.(fine-tune these web data)</li><li>dataset inbalance(SMOTE, combines boosting method with datageneration)</li></ul></li></ol><h3 id="data-cleaning">1.2 data cleaning</h3><p>redundant, incomplete, or incorrect data</p><p>standardization, scaling, binarization of quantitativecharacteristic, one-hot encoding qualitative characteristic, and fillingmissing values with mean value, etc.</p><h2 id="feature-engneering">2. feature engneering</h2><ul><li>feature selection 减少冗余特征</li><li>extraction 减少特征的维度</li><li>construction 展开原始特征空间</li></ul><h3 id="feature-selection">2.1 feature selection</h3><p><img src="https://s2.loli.net/2022/02/08/qla6Yzn7WjADF15.png" /></p><p>search strategy</p><ul><li>complete<ul><li>exhaustive</li><li>non-exhaustive</li></ul></li><li>heuristic<ul><li>Sequential Forward Selection(SFS)</li><li>Sequential Backward Selection(SBS)</li><li>Bidirectional Search(BS)</li></ul></li><li>random search algorithm<ul><li>Simulated Annealing(SA)</li><li>Genetic Algorithms(GA)</li></ul></li></ul><p>subset evaluation</p><ul><li>filter method scores each feature according to divergence orcorrelation, and then select features by a threshold</li><li>Wrapper method classifies the sample set with the selected featuresubset, the classification accuracy is used as the criterion to measurethe quality of the feature subset</li><li>embedded method performs variable selection as part of the learningprocedure. Regularization, decision tree, <strong>DL</strong></li></ul><h3 id="feature-construction">2.2 feature construction</h3><h4 id="definition">definition</h4><p><strong>constructs new features</strong> from the basic feature spaceor raw data to help enhance the robustness and generalization of themodel, and its essence is to increase the representative ability oforiginal features.</p><h4 id="常用方法-preprocessing-transformation">常用方法 preprocessingtransformation</h4><p>包括</p><ul><li>standardization</li><li>normalization</li><li>feature discretization</li></ul><h4 id="自动化检索">自动化检索</h4><p>人力很难检索所有可能 some automatic feature construction methods havebeen proposed</p><p>These algorithms mainly aim to automate <strong>the process ofsearching and evaluating the operationcombination</strong>实现操作组合搜索和评价的自动化</p><p>searching 算法</p><ul><li>decision tree-based methods</li><li>genetic algorithm 需要pre-defined operation space</li><li>annotation-based approaches不需要，将domain知识以注释的形式与训练示例一起使用引入了交互式特征空间构建协议，学习者识别出特征空间的不足区域，并与领域专家协作，通过现有的语义资源增加描述性</li></ul><h3 id="feature-extraction">2.3 feature extraction</h3><p>a dimensionality reduction process through some mapping functions</p><p>mapping function</p><ul><li>Principal Component Analysis(PCA)</li><li>Independent COmponent Analysis(ICA)</li><li>isomap</li><li>nonlinear dimensionality reduction</li><li>Linear discriminant analysis(LDA)</li><li><strong>feed-forward neural networks approach</strong></li></ul><h2 id="model-generation">3. model generation</h2><p>two types of approaches for model selection:</p><ul><li>traditional model selection<ul><li>SVM</li><li>KNN</li><li>decision tree</li><li>K-means</li></ul></li><li>NAS</li></ul><p>主要介绍NAS</p><h3 id="model-structures">3.1 model structures</h3><p>The model is generated by selecting and combining a set of primitiveoperations, which are pre-defined in the search space. The operationscan be broadly divided into convolution, pooling, concatenation,elemental addition, skip connection, etc.</p><ol type="1"><li><p>entire structure缺点：太深，搜索空间太大，消耗时间和计算资源，找到的model的transferability差，意味着小的数据集上找到的模型在完整数据集上表现很差</p></li><li><p>Cell-based structure 先生成cell，再连起来 <imgsrc="https://s2.loli.net/2022/02/08/lXtrU6DbuFhz3pa.png" />优点：搜索空间大大减小，并且更容易从小dataset上转换到大的dataset上(简单叠加cells))分成两级：</p><ul><li>inner:cell level, selects the operation and connection for eachnode</li><li>outter level:network level, controls the spatial resolutionchanges</li></ul></li><li><p>Hierarchical structure for a hierarchical structure, there aremany levels, each with a fixed number of cells. The higher-level cell isgenerated by incorporating lower-level cell iteratively. <imgsrc="https://s2.loli.net/2022/02/08/tyW2gcCQA8XVIko.png" />可以发现更多复杂、灵活的网络结构类型。</p></li><li><p>Network Morphism based structure transferring the informationstored in an existing neural network into a new neural network从现有网络到新网络 保证性能不低于原有网络</p></li></ol><h3 id="hyperparameter-optimizationhpo">3.2 hyperparameteroptimization(HPO)</h3><ol type="1"><li><p>Grid &amp; Random Search 最广泛使用的 <imgsrc="https://s2.loli.net/2022/02/08/7QgozVqm4BS6dPe.png" /></p></li><li><p>Reinforcement Learning 分为两部分</p><ul><li>controller:RNN, used to generate different child networks atdifferent epoch</li><li>reward network:trains and evaluates the generated child networks anduses the reward (e.g. accuracy) to update RNN controller.</li><li>缺点：训练时间长，资源需求大</li><li>ENAS:子架构被看做是预定义搜索空间的子图，共享参数，从而避免从零开始到收敛地训练每个子模型</li></ul></li><li><p>Evolutionary Algorithm 通用的基于种群的元启发式优化算法，有两种类型的编码方案:直接编码和间接编码。direct, indirect直接编码是一种广泛使用的方法，它显式地指定了表现型：Genetic CNN</p><ul><li>selection 选择<ul><li>fitness selection</li><li>rank selection</li><li>Tournament selection</li></ul></li><li>crossover 杂交</li><li>mutation 突变</li><li>update 更新</li></ul><p><imgsrc="https://s2.loli.net/2022/02/08/EzichSUZ8lHJVLy.png" /></p></li><li><p>Bayesian Optimization</p><ul><li>BO</li><li>Sequential model-based optimization(SMBO)</li><li>Bayesian Optimization-based Hyperband (BOHB)</li></ul></li><li><p>Gradient Descent</p></li></ol><h2 id="model-estimation">4. model estimation</h2><h3 id="low-fidelity">4.1 low fidelity</h3><p>On the one hand, we can reduce the number of images or the resolutionof images (for image classification tasks)在子集上面训练,在低精度训练集上面训练 On the other hand, low fidelitymodel evaluation can be realized by reducing the model size, such astraining with less number of filters per layer减少网络的大小，比如每层的filter的数目</p><h3 id="transfer-learning">4.2 Transfer learning</h3><ul><li>Transfer Neural AutoML uses knowledge from prior tasks to speed upnetwork design</li><li>ENAS shares parameters among child networks</li><li>The network morphism based algorithms inherit the weights ofprevious architectures</li></ul><h3 id="surrogate代理">4.3 Surrogate代理</h3><p>一般来说，一旦获得了一个良好的近似，就很容易找到最佳配置，而不是直接优化原来昂贵的目标。PNAS</p><p>this method is not applicable when the optimization space is toolarge and hard to quantize, and the evaluation of each configuration isextremely expensive</p><h3 id="early-stopping">4.4 Early stopping</h3><p>is now being used to speed up model evaluation by <strong>stoppingthe evaluations which predicted to perform poorly on the validationset</strong></p><h2 id="nas-performance-summary">5. NAS PERFORMANCE SUMMARY</h2><p><img src="https://s2.loli.net/2022/02/08/EI2y6sAf8vUdchb.png" /></p><h2 id="future-work">6. future work</h2><ol type="1"><li>Complete AutoML Pipeline 数据部分</li><li>Interpretability</li><li>Reproducibility</li><li>Flexible Encoding Scheme</li><li>More Area cnn: image classification rnn: language modeling more</li><li>Lifelong Learn</li></ol>]]></content>
+      
+      
       <categories>
-        <category>Algorithm</category>
+          
+          <category> Survey </category>
+          
       </categories>
-      <tags>
-        <tag>string</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>联邦学习概述</title>
-    <url>/2020/11/01/10-FL/</url>
-    <content><![CDATA[<h2 id="overview">1. Overview</h2>
-<h3 id="问题定义">1.1 问题定义</h3>
-<p><img src="https://s2.loli.net/2022/02/08/83DClsfSqIRK7gk.png" />
-简单来说，就是说联邦学习的目标是训练一个"尽可能接近把各个节点数据聚合起来训练"的模型。</p>
-<h3 id="典型应用">1.2 典型应用</h3>
-<ul>
-<li>smart phone</li>
-<li>Organizations</li>
-<li>internet of things 物联网 收集各种模态的信息</li>
-</ul>
-<h3 id="主要挑战">1.3 主要挑战</h3>
-<ol type="1">
-<li>expensive communication
-<ul>
-<li>reducing the total number of communication rounds</li>
-<li>reducing the size of transmitted messages at each round.</li>
-</ul></li>
-<li>systems heterogeneity
-<ul>
-<li>only a small fraction of the devices being active at once</li>
-<li>anticipate a low amount of participation</li>
-<li>tolerate heterogeneous hardware</li>
-<li>be robust to dropped devices in the network.</li>
-</ul></li>
-<li>Statistical Heterogeneity
-<ul>
-<li>independent and identically distributed</li>
-<li>Both the multi-task and meta-learning perspectives enable
-personalized or device-specific modeling, which is often a more natural
-approach to handle the statistical heterogeneity of the data.</li>
-</ul></li>
-<li>Privacy Concern
-<ul>
-<li>secure multiparty computation or differential privacy</li>
-<li>at the cost of reduced model performance or system efficiency.</li>
-</ul></li>
-</ol>
-<h2 id="related-and-current-work">2. related and current work</h2>
-<h3 id="communication-efficiency">2.1 Communication-efficiency</h3>
-<ol type="1">
-<li>local updating methods</li>
-<li>compression schemes</li>
-<li>decentralized training</li>
-</ol>
-<h3 id="systems-heterogeneity">2.2 Systems Heterogeneity</h3>
-<h3 id="statistical-heterogeneity">2.3 Statistical Heterogeneity</h3>
-<h4 id="modeling-heterogeneous-data">2.3.1 Modeling heterogeneous
-Data</h4>
-<ul>
-<li>fairness</li>
-<li>accountability</li>
-<li>interpretability</li>
-</ul>
-<h4 id="convergence-guarantees-for-non-iid-data">2.3.2 Convergence
-Guarantees for Non-IID Data</h4>
-<p>Indeed, when data is not identically distributed across devices in
-the network, methods such as <strong>FedAvg</strong> have been shown to
-diverge in practice</p>
-<p>Parallel SGD and related variants</p>
-<p>FedProx</p>
-<h3 id="ptivacy">2.4 Ptivacy</h3>
-<h4 id="privacy-in-machine-learning">2.4.1 privacy in Machine
-learning</h4>
-<p>differential privacy： strong information theoretic guarantees,
-algorithmic simplicity, and relatively small systems overhead</p>
-<p>homomorphic encryption同态加密</p>
-<h4 id="privacy-in-federated-learning">2.4.2 Privacy in Federated
-Learning</h4>
-<p>计算廉价，交流高效，允许丢失device--不能对accuracy做很大让步</p>
-<ol type="1">
-<li><p>Secure Multi-party Computation (SMC) 安全的多方计算
-各方除了输入和输出外一无所知</p>
-<ul>
-<li>复杂的计算协议</li>
-<li>如果提供安全保证，则部分知识公开可能被认为是可以接受的</li>
-</ul>
-<p>要求参与者的数据在非冲突服务器之间秘密共享</p></li>
-<li><p>Differential Privacy 差异隐私
-向数据添加噪音，或使用归纳方法遮盖某些敏感属性，直到第三方无法区分个人</p>
-<ul>
-<li>数据也被传输到给了其他人</li>
-<li>涉及准确性和隐私之间的权衡</li>
-</ul></li>
-<li><p>Homomorphic Encryption 同态加密
-在机器学习期间通过加密机制下的参数交换来保护用户数据隐私</p>
-<ul>
-<li>数据和模型本身不传输</li>
-<li>准确性与私密性之间的权衡</li>
-</ul></li>
-</ol>
-<h2 id="future-directions">3. future directions</h2>
-<ol type="1">
-<li>Extreme communication schemes
-<ul>
-<li>one- shot or divide-and-conquer communication schemes</li>
-<li>one-shot/few-shot heuristics</li>
-</ul></li>
-<li>Communication reduction and the Pareto frontier
-<ul>
-<li>local updatding 本地更新</li>
-<li>model compression 模型压缩</li>
-</ul></li>
-<li>Novel models of asynchrony
-<ul>
-<li>任何设备在任何迭代中都有可能失联</li>
-<li>设备随时通过<strong>事件驱动</strong>和central server交换信息</li>
-</ul></li>
-<li>Heterogeneity diagnostics
-<ul>
-<li>是否存在简单的诊断方法来预先快速确定联合网络的异构程度?</li>
-<li>能否开发出类似的诊断方法来量化与系统相关的异质性的数量</li>
-<li>可以利用现有的或新的异构定义进一步改进联邦优化方法的收敛性吗?</li>
-</ul></li>
-<li>Granular privacy constraints
-<ul>
-<li>thus providing a weaker form of privacy in exchange for more
-accurate models</li>
-</ul></li>
-<li>Beyond supervised learning
-<ul>
-<li>scalability, heterogeneity, and privacy.</li>
-</ul></li>
-<li>Productionizing federated learning
-<ul>
-<li>实际落地的问题 concept drift</li>
-<li>diurnal variations 设备不同时间表现不同</li>
-<li>cold start problems 设备新加入</li>
-</ul></li>
-<li>Benchmarks
-<ul>
-<li>reproducibility of empirical results and the dissemination of new
-solutions for federated learning.</li>
-</ul></li>
-</ol>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> AutoML </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>string_pattern</title>
+      <link href="/2020/07/15/09-string-pattern/"/>
+      <url>/2020/07/15/09-string-pattern/</url>
+      
+        <content type="html"><![CDATA[<h2 id="字符串匹配算法">1.1 字符串匹配算法</h2><table><thead><tr class="header"><th style="text-align: left;">algorithm</th><th style="text-align: center;"><spanclass="math inline">\(T_{best}\)</span></th><th style="text-align: center;"><spanclass="math inline">\(T_{avg}\)</span></th><th style="text-align: center;"><spanclass="math inline">\(T_{worst}\)</span></th></tr></thead><tbody><tr class="odd"><td style="text-align: left;">1. 朴素匹配算法</td><td style="text-align: center;">O(nm)</td><td style="text-align: center;">O(nm)</td><td style="text-align: center;">O(nm)</td></tr><tr class="even"><td style="text-align: left;">2. Robin-Karp 算法</td><td style="text-align: center;">O(n)</td><td style="text-align: center;">O(nm)</td><td style="text-align: center;">O(nm)</td></tr><tr class="odd"><td style="text-align: left;">3. KMP算法</td><td style="text-align: center;">O(n+m)</td><td style="text-align: center;">O(n+m)</td><td style="text-align: center;">O(n+m)</td></tr></tbody></table><h3 id="朴素匹配算法">1.1.1 朴素匹配算法</h3><p>暴力求解</p><h3 id="robin-karp算法">1.1.2 Robin-Karp算法</h3><p>先是计算两个字符串的哈希值，然后通过比较这两个哈希值的大小来判断是否出现匹配。选择一个合适的哈希函数很重要。假设文本串为t[0, n)，模式串为p[0, m)，其中<span class="math inline">\(0&lt;m&lt;n\)</span>，<spanclass="math inline">\(Hash(t[i,j])\)</span>代表字符串t[i,j]的哈希值。</p><p>当 <span class="math inline">\(Hash(t[0,m-1])!=Hash(p[0,m-1])\)</span> 时，我们很自然的会把 <spanclass="math inline">\(Hash(t[1, m])\)</span>拿过来继续比较。在这个过程中，若我们重新计算字符串t[1,m]的哈希值，还需要 O(n) 的时间复杂度，不划算。观察到字符串t[0,m-1]与t[1, m]中有 m-1个字符是重合的，因此我们可以选用<strong>滚动哈希函数</strong>，那么重新计算的时间复杂度就降为O(1)。</p><p>Rabin-Karp 算法选用的滚动哈希函数主要是利用<spanclass="math inline">\(Rabinfingerprint\)</span>的思想，举个例子，计算字符串t[0, m -1]的哈希值的公式如下，</p><p><spanclass="math display">\[Hash(t[0,m−1])=t[0]∗b_{m−1}+t[1]∗b_{m−2}+...+t[m−1]∗b_0\]</span></p><p>其中的 b_k 可以是一个常数，在 Rabin-Karp算法中，我们一般取值为256，因为一个字符的最大值不超过255。上面的公式还有一个问题，哈希值如果过大可能会溢出，因此我们还需要对其取模，这个值应该尽可能大，且是质数，这样可以减小哈希碰撞的概率，在这里我们就取101。</p><p>则计算字符串t[1, m]的哈希值公式如下，</p><p><spanclass="math display">\[Hash(t[1,m])=(Hash(t[0,m−1])−t[0]∗b_{m−1})∗b+t[m]∗b_0\]</span></p><h3 id="kmp算法">1.1.3 KMP算法</h3><p>KMP算法的精髓在于，对于一个不匹配的子串，我们将整个模式串向后面移动更多的位数而不是1，来加速子串的识别，这个移动步数跟只需要根据模式子串计算一次就可以得到。</p><p><ahref="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html">阮一峰KMP算法</a></p><div class="sourceCode" id="cb1"><preclass="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#KMP</span></span><span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kmp_match(s, p):</span><span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="bu">len</span>(s)<span class="op">;</span> n <span class="op">=</span> <span class="bu">len</span>(p)</span><span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    cur <span class="op">=</span> <span class="dv">0</span><span class="co">#起始指针cur</span></span><span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    table <span class="op">=</span> partial_table(p)</span><span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> cur<span class="op">&lt;=</span>m<span class="op">-</span>n:</span><span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span><span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> s[i<span class="op">+</span>cur]<span class="op">!=</span>p[i]:</span><span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                cur <span class="op">+=</span> <span class="bu">max</span>(i <span class="op">-</span> table[i<span class="op">-</span><span class="dv">1</span>], <span class="dv">1</span>)<span class="co">#有了部分匹配表,我们不只是单纯的1位1位往右移,可以一次移动多位</span></span><span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span><span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span><span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span><span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span><span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span><span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#部分匹配表</span></span><span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> partial_table(p):</span><span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">&#39;&#39;&#39;partial_table(&quot;ABCDABD&quot;) -&gt; [0, 0, 0, 0, 1, 2, 0]&#39;&#39;&#39;</span></span><span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    prefix <span class="op">=</span> <span class="bu">set</span>()</span><span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    postfix <span class="op">=</span> <span class="bu">set</span>()</span><span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    ret <span class="op">=</span> [<span class="dv">0</span>]</span><span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="bu">len</span>(p)):</span><span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        prefix.add(p[:i])</span><span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        postfix <span class="op">=</span> &#123;p[j:i<span class="op">+</span><span class="dv">1</span>] <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,i<span class="op">+</span><span class="dv">1</span>)&#125;</span><span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        ret.append(<span class="bu">len</span>((prefix<span class="op">&amp;</span>postfix <span class="kw">or</span> &#123;<span class="st">&#39;&#39;</span>&#125;).pop()))</span><span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ret</span></code></pre></div>]]></content>
+      
+      
       <categories>
-        <category>Survey</category>
+          
+          <category> Algorithm </category>
+          
       </categories>
-      <tags>
-        <tag>Federated Learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>A Comprehensive Survey on Graph Neural Networks</title>
-    <url>/2020/11/01/11-GNN-survey2/</url>
-    <content><![CDATA[<h2 id="简介">1 简介</h2>
-<p>欧式数据：图片，文本，语言，视频 非欧式数据：图</p>
-<p>图数据不规则，每个图的无序节点大小是可变的，且每个结点有不同数量的邻居结点，因此一些重要的操作如卷积能够在图像数据上轻易计算，但是不适用于图数据，可见图数据的复杂性给现有的机器学习算法带来了巨大的挑战
-。此外，现有的机器学习算法假设数据之间是相互独立的，但是，图数据中每个结点都通过一些复杂的连接信息与其他邻居相关，这些连接信息用于捕获数据之间的相互依赖关系，包括，引用，关系，交互。</p>
-<ol type="1">
-<li>Graph attention networks（图注意力网络)</li>
-<li>Graph autoencoders（图自编码）</li>
-<li>Graph generative networks（图生成网络）</li>
-<li>Graph spatial-temporal networks（图时空网络</li>
-</ol>
-<p>GNN vs 图嵌入</p>
-<p>网络嵌入致力于<strong>在一个低维向量空间进行网络节点表示，同时保护网络拓扑结构和节点的信息</strong>，便于后续的图像分析任务，包括分类，聚类，推荐等，能够使用简单现成的机器学习算法（例如，使用SVM分类）。许多网络嵌入算法都是典型的无监督算法，它们可以大致分为三种类型，即，</p>
-<ol type="1">
-<li>矩阵分解</li>
-<li>随机游走</li>
-<li>深度学习</li>
-</ol>
-<p><img src="https://s2.loli.net/2022/02/08/KJHiDeqxzIypEda.png" /></p>
-<h2 id="gnn分类及框架">2 GNN分类及框架</h2>
-<p>五种类型 GCN GAN GAE GGN GSTN</p>
-<h3 id="分类">2.1 分类</h3>
-<h4 id="gcn">2.1.1 GCN</h4>
-<p>GCNs将传统数据的卷积算子泛化到图数据，这个算法的关键是学习一个函数<span
-class="math inline">\(f\)</span>，能够结合<span
-class="math inline">\(v_i\)</span>邻居节点的特征<span
-class="math inline">\(X_j\)</span>和其本身特征<span
-class="math inline">\(X_i\)</span>生成<span
-class="math inline">\(v_i\)</span>的新表示.</p>
-<p><img src="https://s2.loli.net/2022/02/08/LQsn6CPGMKwiTIX.png" /> <img
-src="https://s2.loli.net/2022/02/08/lJX7qUViS8F5hk3.png" /></p>
-<h4 id="gan">2.1.2 GAN</h4>
-<p>GAN与GCN类似，致力于寻找一个聚合函数，融合图中相邻的节点，随机游动和候选模型，学习一种新的表示。<strong>关键区别是：GAN使用注意力机制为更重要的节点，步或者模型分配更大的权重，权重个网络一起学习。</strong>下图展示了GCN和GAN在聚合邻居节点信息时候的不同。</p>
-<p><img src="https://s2.loli.net/2022/02/08/dXy6H2wcZxfbDOR.png" /></p>
-<h4 id="gae">2.1.3 GAE</h4>
-<p>GAE是一种无监督学习框架，通过编码器学习一种低维点向量，然后通过解码器重构图数据。GAE是一种常用的学习图嵌入的方法，既适用于无属性信息的普通图，还适用于是有属性图。对于普通的图，大多数算法直接预先得到一个邻接矩阵，或者构建一个信息丰富的矩阵，也就是点对互信息矩阵，或者邻接矩阵填充自编码模型，并捕获一阶和二阶信息。对于属性图，图自编码模型利用GCN作为一个构建块用于编码，并且通过链路预测解码器重构结构信息。</p>
-<h4 id="ggn">2.1.4 GGN</h4>
-<p>GGN旨在从数据中生成可信的信息，生成给定图经验分布的图从根本上来说是具有挑战性的，主要因为图是复杂的数据结构。为了解决这个问题，研究员探索了将交替形成节点和边作为生成过程的因素，并借助作为训练过程。GGN一个很有前途的应用领域是化合物合成。在化学图中，视原子为节点，化学键为边，任务是发现具有一定化学和物理性质的可合成的新分子。</p>
-<h4 id="gstn">2.1.5 GSTN</h4>
-<p>GSTN从时空图中学习不可见的模式，在交通预测和人类活动预测等应用中越来越重要。例如，底层道路交通网络是一个自然图，其中每个关键位置是一个节点，它的交通数据是被连续监测的。通过建立有效的GSTN，能够准确预测整个交通的系统的交通状态。GSTN的核心观点是，<strong>同时考虑空间依赖性和时间依赖性。</strong>
-目前很多方法使用GCNs捕获依赖性，同时使用RNN,或者CNN建模时间依赖关系。</p>
-<h3 id="框架">2.2 框架</h3>
-<ol type="1">
-<li>node_level
-输出用于<strong>点回归和分类任务</strong>。图卷积模型直接给定节点的潜在表示，然后一个多层感知机或者softmax层用作GCN最后一层。</li>
-<li>Edge-level
-输出与<strong>边分类和链路预测任务</strong>相关。为了预测一条边的标签或者连接强度，附加函数从图卷积模型中提取两个节点的潜在表示作为输入。</li>
-<li>Graph-level
-输出和<strong>图分类任务</strong>相关，池化模块用于池化一个图为子图或者对节点表示求和/求平均，以获得图级别上的紧凑表示。</li>
-</ol>
-<p>端到端训练框架：GCN可以在端到端学习框架中进行(半)监督或无监督的训练，取决于学习任务和标签信息的可用性。</p>
-<ol type="1">
-<li>node-level
-半监督分类。给定一个部分节点被标记而其他节点未标记的网络，GCN可以学习一个鲁棒的模型，有效地识别未标记节点的类标签。为此，可以构建一个端到端的多分类框架，通过叠加几个图形卷积层，紧跟着一个softmax层。</li>
-<li>graph-level
-监督分类。给定一个图数据集，图级分类旨在预测整个图的类标签(s)，端到端学习框架，通过结合GCN和池化过程实现。具体的，通过GCN获得每个图里每个节点固定维数的特征表示，然后，通过池化求图中所有节点的表示向量的和，以得到整个图的表示。最后，加上多层感知机和softmax层，可以构造一个端到端的图分类。图5（a）展示了这样一个过程。</li>
-<li>无监督图嵌入。图中没有标签数据的时候，可以在端到端的框架中以无监督的方式学习一种图嵌入。这些算法以两种方式利用边级信息。一种简单的：利用自编码框架，编码器利用GCN将图嵌入到潜在的表示中，解码器利用潜在的表示重构图结构。另一种方式：利用负采样方法，抽取一部分节点对作为负对，图中剩余的节点对作为正对，之后利用逻辑回归层，形成一个端到端的学习框架。</li>
-</ol>
-<h2 id="图卷积网络">3. 图卷积网络</h2>
-<p>分为两类</p>
-<ol type="1">
-<li>Spectral-based方法
-从图信号处理的角度引入滤波器来定义图卷积，此使图卷积被解释为从图信号中去除噪声。</li>
-<li>Spatial-based的方法 将图卷积表示为来自邻居节点的特征信息的结合</li>
-</ol>
-<h3 id="基于图谱的gcn">3.1 基于图谱的GCN</h3>
-<p><span class="math display">\[
-x * G g_{\theta}=U g_{\theta} U^{T} x
-\]</span></p>
-<p>基于谱的GCN都遵循这个定义，不同的是滤波器<span
-class="math inline">\(g_{\theta}\)</span>的选择不同。</p>
-<p><strong>缺陷</strong>
-首先，对图的任何扰动都会导致特征基的变化。其次，学习的过滤器依赖于不同领域，这意味着它们不能应用于具有不同结构的图。第三，特征分解需要<span
-class="math inline">\(O(N^3)\)</span>计算和<span
-class="math inline">\(O(N^2)\)</span>内存</p>
-<p>谱方法的一个常见缺点是需要将整个图加载到内存中进行图卷积，这在处理大图时效率不高。</p>
-<h3 id="基于空间的gcn">3.2 基于空间的GCN</h3>
-<p>分为基于循环和基于组合的GCNs。基于循环的GCN使用一个相同的GCL个更新隐含表示，基于组合GCN则使用不同的GCL更新隐含表示。
-<img src="https://s2.loli.net/2022/02/08/hTzZ3KFHLXjU6Wf.png" /></p>
-<p><strong>基于循环的空间GCNs</strong>
-基于递归的方法的主要思想是递归地更新节点的潜在表示，直到达到稳定的不动点。通过对循环函数施加约束、使用门循环单元架构、异步和随机更新节点潜在表示来实现。</p>
-<p><strong>基于组合的空间GCNs</strong>
-基于组合的方法通过叠加多个图的卷积层来更新节点的表示。</p>
-<h3 id="图池模块">3.3 图池模块</h3>
-<h3 id="基于光谱和空间的gcns的对比">3.4 基于光谱和空间的GCNs的对比</h3>
-<ol type="1">
-<li>效率
-基于光谱的方法的计算量会随着图的大小急剧增加，因为模型需要同时计算特征向量或者同时处理大图，这就使得模型很难对大图进行并行处理或缩放。基于空间的图方法由于直接对图域的邻居节点进行聚合，所以有潜力处理大图，方法是对一个batch数据计算而不是在整个图上计算。如果邻居节点的数量增加，能够通过采样技术提高效率。</li>
-<li>通用性
-基于光谱的图方法假设图是固定的，因此对新的或者不同的图泛化性能很差。基于空间的方法在每个节点上进行局部图卷积，权值可以很容易地在不同地位置和结构之间共享。</li>
-<li>灵活性
-基于谱的模型只适用于无向图，谱方法用于有向图的唯一方法是u将有向图转换为无向图，因为没有有向图的拉普拉斯矩阵明确的定义。基于空间的模型可以将输入合并到聚合函数中，所以在处理多源输入像是边特征，边方向上更灵活。</li>
-</ol>
-<p>因此，近年来，基于空间的方法更受关注。</p>
-<h2 id="超gcn网络">4. 超GCN网络</h2>
-<p>GAN GAT GGN GSTN</p>
-<h3 id="图注意力网络gan">4.1 图注意力网络GAN</h3>
-<ol type="1">
-<li>GAT</li>
-<li>GAAN</li>
-<li>GAM</li>
-<li>注意力游走</li>
-<li>深度游走</li>
-</ol>
-<p>注意力机制对GNN的贡献分为三个方面，在聚合特征信息的时候对不同的邻居节点分配不同的权值，根据注意力权重集成多个模型，使用注意力权重指导随机游走。尽管将GAT和GAAN归为图的注意网络的范畴，它们也同时是基于空间的GCN。GAT和GAAN的优点是可以自适应学习邻居的重要性权重，如图6所示。但是，由于必须计算每对邻居之间的注意力权重，计算成本和内存消耗迅速增加。</p>
-<h3 id="图自编码">4.2 图自编码</h3>
-<p>网络嵌入致力于使用神经网络架构将<strong>网络顶点在低维向量空间进行表示</strong>，图自编码是网络嵌入的一种类型。典型做法是利用多层感知机作为编码器，获得节点嵌入，然后解码器据此重构节点的邻域统计信息，如正点态互信息(positive
-pointwise mutual information,
-PPMI)或一阶和二阶近似。近期，研究员探索将GCN[作为编码器,设计图自编码器的时候或结合HCN与GAN，或结合GAN与LSTM。</p>
-<p>这些方法都学习节点嵌入，但是DNGR和SDNE只给定拓扑结构，而GAE、ARGA、NetRA和DRNE不仅给定拓扑结构而且给定节点内容特性。图自编码的一个挑战是邻接矩阵的稀疏性，使解码器的正项数远少于负项数。为了解决这个问题，DNGR重构了一个更紧密的矩阵即PPMI矩阵，SDNE对邻接矩阵的零项进行了惩罚，GAE对邻接矩阵中的项进行了加权，NetRA将图线性化为序列。</p>
-<h3 id="图生成网络">4.3 图生成网络</h3>
-<p>图生成网络（GGN）的目标是，在给定一组观察到的图的前提下生成图。很多图生成方法是与特定领域相关的，例如，分子图生成，一些方法是对分子图进行字符串表示建模，叫做SMILES，自然语言处理，以给定的句子为条件生成语义图或者知识图。最近，提出了一些统一的生成方法，一些方法将生成过程看作交替生成节点和边，其他的方法利用生成对抗训练。GGN中的方法或者利用GCN作为构建块，或者使用不同的架构。</p>
-<p>对生成的图进行评估仍然是一个难题。与人工合成图像或者音频不同，他们能够直接被人类专家评估，生成的图的质量很难直观检测。MolGAN和DGMG利用外部知识来评估生成分子图的有效性。GraphRNN和NetGAN通过图统计信息(如节点度)评估生成的图形。DGMG和GraphRNN依次生成节点和边缘，MolGAN和NetGAN同时生成节点和边缘。根据[68]，前一种方法的缺点是当图变大时，对长序列建模是不现实的。后一种方法的挑战是很难控制图的全局属性。最近一种方法[68]采用变分自编码器通过生成邻接矩阵来生成图形，引入惩罚项来解决有效性约束。然而，由于具有n个节点的图的输出空间为<span
-class="math inline">\(n^2\)</span> ，这些方法都不能扩展到大型图。</p>
-<h3 id="图时空网络">4.4 图时空网络</h3>
-<p>图时空网络同时捕获时空图的时空依赖性。时空图具有全局图结构，每个节点的输入随时间变化。例如，在交通网络中，将每个传感器作为一个节点，连续记录某条道路的交通速度，其中交通网络的边由传感器对之间的距离决定。图时空网络的目标是预测未来的节点值或标签，或预测时空图标签。最近的研究探索了单独使用GCNs[72]，结GCNs与RNN[70]或CNN[71]，以及一种为图结构定制的循环架构[73]。</p>
-<p>DCRNN由于利用了循环网络架构能够处理长时间依赖关系。虽然CNN-GCN比DCRNN简单，但是由于他首先实现了1D-CNN，所以在处理时空图上更加高效。ST-GCN将时间流作为图的边，使邻接矩阵的大小呈二次增长。一方面，增加了图卷积层的计算成本。另一方面，为了捕获长期依赖关系，图卷积层必须多次叠加。Structural-RNN通过在相同的语义组共享相同的RNN提高了模型的有效性。但是，需要人类先验知识来划分语义组。</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> string </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>meta-learning_nas</title>
+      <link href="/2020/06/18/08-meta-learning-nas/"/>
+      <url>/2020/06/18/08-meta-learning-nas/</url>
+      
+        <content type="html"><![CDATA[<h2id="towards-fast-adaptation-of-neural-architectures-with-meta-learning">1.Towards fast adaptation of neural architectures with meta learning</h2><p><a href="https://openreview.net/forum?id=r1eowANFvr">ICLR2020</a></p><p>文章的的主要思想是，在meta-learning的setting上面，通过不同的task，学习一个可以泛化的architecture，然后在query集上面进行fune-tuning，微调这个结构，使得该结构对不同testtask有良好的适用性。 <imgsrc="https://s2.loli.net/2022/02/08/WdiwUbqfGHBDFO5.png" /></p><p>在mini-imagenet上面5-way的结果 <imgsrc="https://s2.loli.net/2022/02/08/DjiUZRg9dThlMSP.png" /></p><h2 id="auto-meta-automated-gradient-based-meta-learner-search">2.Auto-Meta: Automated Gradient Based Meta Learner Search</h2><p><ahref="https://arxiv.org/abs/1806.06927">https://arxiv.org/abs/1806.06927</a>NIPS2018 workshop</p><p>也是构造cell去stack起来，获取整个的network，但是一开始的cell并不是整个的supernet，而是在搜索的过程中，逐步往这个cell里面去添加opetator，<strong>然后使用一个predictor去预测这个cell的性能</strong>，选择topk性能的cell组成网络进行测试。 <imgsrc="https://s2.loli.net/2022/02/08/vZe5xTgW9UGLHEJ.png" /></p><h2 id="meta-architecture-search">3. Meta Architecture Search</h2><p><img src="https://s2.loli.net/2022/02/08/GRloLut4PFAKsin.png" /></p><p>本文从Bayesian的角度，推理了一遍NAS的原理，提出用Coupled VariationalBayes (CVB)去生成参数的表达，同时进行了推理（hardmath）。本质上来说，这篇工作基本上还是darts，不过它首先将metalearning的在imagenet上面获取的先验知识拿出来放到其他任务上去train。首先使用gumble_softmaxed darts(参见SNAS)，取得metanetwork的arch和init，然后针对不同任务进行fine tuning。 <imgsrc="08-meta-learning-nas/04-meta_architecture_search.png"alt="meta as" /></p><h2id="metadapt-meta-learned-task-adaptive-architecture-for-few-shot-classification">MetAdapt:Meta-Learned Task-Adaptive Architecture for Few-Shot Classification</h2><p><ahref="https://arxiv.org/abs/1912.00412">https://arxiv.org/abs/1912.00412</a></p><p>在darts的基础上，提出了一个MetAdaptControllers，就是说，对于不同的task，产生不同的叠加权重 <imgsrc="https://s2.loli.net/2022/02/08/7ZFXxTMz5uiRHD8.png" /></p><h2id="meta-learning-of-neural-architectures-for-few-shot-learning">Meta-Learningof Neural Architectures for Few-Shot Learning</h2><p><ahref="https://arxiv.org/abs/1911.11090">https://arxiv.org/abs/1911.11090</a>提出了gradient-based NAS + meta learning结合的框架，直接想把所有方法都框到自己下面。 <imgsrc="https://s2.loli.net/2022/02/08/Y95WIqhJoeTRkAU.png" /></p>]]></content>
+      
+      
       <categories>
-        <category>Survey</category>
+          
+          <category> Survey </category>
+          
       </categories>
-      <tags>
-        <tag>GNN</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>最近的一些进展 2022.02</title>
-    <url>/2022/02/08/thoughts-01/</url>
-    <content><![CDATA[<h2 id="简单记录一下最近的进展">1. 简单记录一下最近的进展</h2>
-<p>上次写博客也是好久之前了，研究生刚开始的时候还兴冲冲的，希望养成写博客的好习惯，记录一下自己的成长，也记录一下日常学习生活踩过的坑。
-但是骨子里的懒惰还是抵不住，兴起的热情在写了几篇以后就被浇灭了。
-其实感觉这个东西写起来成本也没有那么高。配置环境也是计算机人常常要蹚过的浑水，到写的时候，看着自己的文字被渲染成网页，稍微感受了一下前端人的快乐了。</p>
-<p>最近几个月经历的事情可能比整个研究生阶段经历的都要多了。喜忧都有，这里倒不知从何开头，也就顺着时间讲一下吧。</p>
-<p>首先是实习转正，感觉其实有点惊险，组里面的hc大抵是不多的，我又是靠后几个提起答辩的，按道理允许你提起答辩其实就是默认能过的，但是今年互联网的形势十分严峻，
-字节并没有采取扩招，而是使用了少量hc提高人均package的策略。当时其实我也是不知道有这个情况，在8月中旬慢吞吞的提交了答辩，其实当时我并没有什么明显的产出，只是自己探索了一些NAS在广告里面的应用方向，我理解我的offer即便能够拿到，可能也只是组内的一个门槛水平（小SP？）。当时还是心有不甘的，觉得自己能力不止于此，因此反而对这个offer期望不大，但是最后选择字节反而有点阴差阳错了。当然即便如此，这个offer也是尽力要拿到，稳定一下军心。当时已经面过了虾皮，一心想run去sg。这个后面再谈了。答辩有惊无险，向wq和sx两位大佬进行汇报，压力属实有点大，感觉说话有点结巴，这个也是个人问题，从小到大，在重要场合展示自己总是紧张到不行。</p>
-<p>第二件事情，就是爸爸的病情。爸爸当时在三月份的时候检查出脑部基底巨大动脉瘤，基本上也属于疑难杂症了，发病率极低，但是全国治好的例子也不多。三月份由于丘脑出血，他但是的语言表达能力已经受到了很大的影响，检测出来动脉瘤对我们家着实是个巨大的打击。当时医生也看不清，丘脑出血半年以后，也就是8月初到中旬的时候，正好我还在上海实习，爸妈就来上海的华山医院，找到了tyl主任，也找了很多关系打了招呼，住院检查，准备说如果能做手术，还是准备先把这个动脉瘤给解决掉。但是检查结果令人泄气，医生把我和妈妈拉到一个单独的会谈室，周围全是监控，跟我们讲了一下爸爸的情况，基本上已经到了做不了手术的时候，当时发现的时候就已经非常大，到现在这个瘤进一步扩大，医生说只有一半的把握能够切除，另外一半人就没了，而且即便手术成功，短期并没有对病人明显帮助，我们考虑了很久，最终还是决定接受保守治疗，回到了合肥。之后我妈就想找个轻松一点的工作，在家看着照顾一下我爸，我小姨就让他们俩回桐城，管一下仓库的记账工作，每天也就几个小时。10月初回家的时候还是挺好的，我爸天天还要去上班，说他身体好得很（我不知道他是盲目自信还是盲目乐观了，一般人感觉不抑郁已经很难了，他跟没事人一样）。</p>
-<p>但是他的盲目乐观感觉是他第二次发病的重要原因之一，他每天还要出去散好几个小时的步，仅仅一个多月以后，他就第二次出现了问题，如医生所说，动脉瘤并不是他最大的风险，脑血栓才是，而他血栓的地方，更是人体最重要的地方——脑干。11月尾，他出去散步，回来就说脑子不对劲，仅仅一个多小时以后，人就已经站不起来说不了话了，我妈打电话给我说他发病了，我给他叫了滴滴，司机在门口磨蹭半天还是拒接了，还是我小姨夫从家里赶过来把他背上了车，路上交给了120。但是到医院，医生说治不了，转院去合肥吧，又急急忙忙往合肥送，路上急性胃溃疡已经在吐血了，几个亲戚赶到省立医院南院，直接送进了ICU，我也在当天半夜坐车回了家。ICU不允许家属探视，每天就去那个小门口，等等医生叫你一下，了解一下病情，这时候医生已经说了，片子显示脑干小脑基本上全部堵死，如果熬过这几天，出去也是跟植物人一样，能不能醒看造化。顺利熬过了ICU的几天，让拉出去去其他医院做康复治疗，出来的时候几个人都哭成了泪人。但是生活还得继续，到现在还在几个医院来回转，我妈跟着后面照顾着，请一个护工都不够，何况还请不到负责的合适的护工。过年这几天我回家，吃住都是在医院的，他现在还是没有什么好转，但是在医院这么久，我妈也累死了，偶尔我姐替她一下，但是说实话医院里面吃住都不方便，每天从早到晚不能停，身心的损伤真的非常大，我们倒是想等他好一点，接回家去慢慢疗养，也让几个人休息一下。</p>
-<p>未完待续...</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> NAS, meta-learning </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Graph Neural Networks: A review of methods and applications</title>
+      <link href="/2020/06/15/07-gnn-review1/"/>
+      <url>/2020/06/15/07-gnn-review1/</url>
+      
+        <content type="html"><![CDATA[<h2id="graph-neural-networks-a-review-of-methods-and-applications">GraphNeural Networks: A review of methods and applications</h2><h2 id="introduction">1. introduction</h2><ol type="1"><li>social science (social networks)</li><li>natural science (physical systems</li><li>protein-protein interaction networks</li><li>knowledge graphs</li></ol><p>常见的欧几里得结构化数据主要包含：</p><p>1D：声音，时间序列等； 2D：图像等； 3D：视频，高光谱图像等；</p><h3 id="motivation">1.1 motivation</h3><ol type="1"><li>CNN<ul><li>局部连接</li><li>共享权重</li><li>多层网络</li></ul></li><li>graph embedding<ul><li>在 encoder中，节点之间没有共享参数，这导致计算效率低下，因为这意味着参数的数量随着节点的数量线性增长</li><li>直接嵌入方法缺乏泛化能力，这意味着它们无法处理动态图形或推广到新图形</li></ul></li></ol><h3 id="优点">1.2 优点</h3><ol type="1"><li><p>CNN 和 RNN这样的标准神经网络无法处理没有自然节点顺序的不规则图数据，而 GNN在每个节点上分别传播，忽略了节点的输入顺序。即，GNN的输出对于节点的输入顺序是不变的。</p></li><li><p>图中的边表示了两个节点之间的依赖关系的信息。在标准的神经网络中，这些依赖信息只是作为节点的特征。然后，GNN可以通过图形结构进行传播，而不是将其作为特征的一部分。通常，GNN通过其邻域的状态的<strong>加权和</strong>来更新节点的隐藏状态。</p></li><li><p>推理是高级人工智能的一个非常重要的研究课题，人脑中的推理过程几乎都是基于从日常经验中提取的图形。标准神经网络已经显示出通过学习数据分布来生成合成图像和文档的能力，同时它们仍然无法从大型实验数据中学习推理图。然而，GNN探索从场景图片和故事文档等非结构性数据生成图形，这可以成为进一步高级 AI的强大神经模型。</p></li></ol><h2 id="模型">2. 模型</h2><h3 id="限制">2.1 限制</h3><p>虽然实验结果表明 GNN 是一种用于建模结构数据的强大架构，但原始 GNN仍然存在一些局限性。</p><ol type="1"><li>对于固定点来迭代更新节点的隐藏状态是十分低效的。如果放宽固定点的假设，可以设计一个多层GNN 来获得节点及其邻域的稳定表示。</li><li>GNN在迭代中使用相同的参数，而大多数流行的神经网络在不同的层中使用不同的参数来进行分层特征提取。此外，节点隐藏状态的更新是一个顺序过程，可以利用RNN 内核，如 GRU 和 LSTM，来进一步优化。</li><li>存在一些边缘（edges）的信息特征无法在原始 GNN中有效建模。例如，知识图中的边缘具有关系类型，并且通过不同边缘的消息传播应根据其类型而不同。此外，如何学习边缘的隐藏状态也是一个重要问题。</li><li>如果我们专注于节点的表示而不是图形，则不适合使用固定点，因为固定点中的表示分布将在值上非常平滑并且用于区分每个节点的信息量较少。</li></ol><h3 id="gnn的-变体">2.2 GNN的 变体</h3><h4 id="图类型">2.2.1 图类型</h4><p>在原始的 GNN中，输入的图形包括带有标签信息的节点和无向的边，这是一种最简单的图形式。但在现实生活中，存在多种图的变体，主要包括有向图、异构图和带有边信息的图。</p><ol type="1"><li>有向图：即图中的边是存在方向的。有向边可以带来比无向边更多的信息。</li><li>异构图：即图中存在多种类型的节点。处理异构图的最简单方法是将每个节点的类型转换为与原始特征连接的one-hot 特征向量。</li><li>带有边信息的图：即图中的每条边也存在权重或类型等信息。这种类型的图有两种解决办法，一种是将图形转化为二部图，原始边也作为节点，并将其分割成两条新的边，分别连接原始边的两端节点；第二种方法是调整不同的权重矩阵，以便在不同类型的边缘上传播。</li></ol><p><img src="https://s2.loli.net/2022/02/08/U5n17s9Ode3Pbiq.png" /></p><h4 id="传播类型">2.2.2 传播类型</h4><p>对于获取节点或者边的隐藏状态，神经网络中的传播步骤和输出步骤至关重要。在传播步骤方面的改进主要有卷积、注意力机制、门机制和跳跃连接（skipconnection），而在输出步骤通常遵循简单的前馈神经网络设置。</p><ol type="1"><li>卷积。Graph ConvolutionalNetwork（GCN）希望将卷积操作应用在图结构数据上，主要分为 Spectral Method和 Spatial Method（Non-spectral Method）两类。Spectral Method希望使用谱分解的方法，应用图的拉普拉斯矩阵分解进行节点的信息收集。SpatialMethod 直接使用图的拓扑结构，根据图的邻居信息进行信息收集。</li><li>注意力机制。Graph Attention Network致力于将注意力机制应用在图中的信息收集阶段。</li><li>门机制。这些变体将门机制应用于节点更新阶段。Gated graph neuralnetwork 将 GRU 机制应用于节点更新。很多工作致力于将 LSTM应用于不同类型的图上，根据具体情境的不同，可以分为 Tree LSTM、Graph LSTM和 Sentence LSTM 等。</li><li>残差连接。注意到堆叠多层图神经网络可能引起信息平滑的问题，很多工作将残差机制应用于图神经网络中，文中介绍了Highway GNN 和 Jump Knowledge Network 两种不同的处理方式</li></ol><p><img src="https://s2.loli.net/2022/02/08/KS7JX1uljVzvcbA.png" /></p><h4 id="训练方法">2.2.3 训练方法</h4><p>原始图卷积神经网络在训练和优化方法中具有若干缺点。例如，</p><ol type="1"><li>GCN需要完整的图拉普拉斯算子，这对于大图来说是<strong>计算成本十分高</strong>。</li><li>而且，层 𝐿 的节点的嵌入是通过层 <spanclass="math inline">\(𝐿−1\)</span>的所有该节点的邻居来进行计算的。因此，单个节点的感知域相对于层数呈指数增长，<strong>单个节点的计算梯度成本很高</strong>。</li><li>最后，GCN针对固定图形进行独立训练，<strong>缺乏归纳学习的能力</strong>。</li></ol><h3 id="通用框架">2.3 通用框架</h3><p>除了提出图神经网络的不同变体之外，一些研究人员从神经网络的框架入手，提出了一些通用框架，旨在将不同模型集成到一个单一框架中。主要包括Message Passing Neural Networks（MPNN）、Non-local NeuralNetworks（NLNN）以及 Graph Network（GN）等。</p><ol type="1"><li><p>Message Passing Neural Networks针对图结构的监督学习框架，MPNN框架抽象了几种最流行的图形结构数据模型（如图卷积中的光谱方法和非光谱方法，门控神经网络，交互网络，分子图卷积，深度张量神经网络等）之间的共性，</p></li><li><p>Non-local Neural NetworksNLNN利用深度学习捕捉长范围的依赖关系，这是对非局部平均运算的一种泛化，非局部运算通过计算对所有位置的特征的加权和来得到当前位置的影响，此处的位置集合可以是空间、时间或者时空。</p></li><li><p>Graph Networks GN被提出来泛化和扩展多种图神经网络，以及 MPNN 和NLNN 方法。本文主要介绍了图的定义、GN block、核心 GN计算单元、计算步骤和基本设计原则。详细的内容扩展会另外写到专门针对该文献的阅读笔记当中。</p></li></ol><h2 id="应用">3. 应用</h2><p><img src="https://s2.loli.net/2022/02/08/Yq8MQOcyP7D1tZ4.png" /></p><h2 id="开放性问题">4. 开放性问题</h2><h3 id="浅层结构">4.1 浅层结构</h3><p>传统的深度神经网络可以堆叠数百层以获得更好的性能，因为更深的结构具有更多的参数，从而能够显著提高表示能力。而图神经网络通常都很浅，大多数不超过三层。正如[5] 中的实验所示，堆叠多个 GCN层将导致过度平滑，也就是说，所有顶点将收敛到相同的值。尽管一些研究人员设法解决了这个问题，但它仍然是GNN 的最大限制。设计真正的深度 GNN对于未来的研究来说是一个令人兴奋的挑战，并将对理解 GNN做出相当大的贡献。</p><h3 id="动态图结构">4.2 动态图结构</h3><p>另一个具有挑战性的问题是如何处理具有动态结构的图形。静态图是稳定的，因此可以容易地建模，而动态图则引入变化的结构。当边和节点出现或消失时，GNN无法自适应地更改。 动态 GNN 正在积极研究中，我们认为它是一般 GNN的稳定性和适应性的重要里程碑。</p><h3 id="非结构化场景">4.3 非结构化场景</h3><p>虽然我们已经讨论了 GNN在非结构场景中的应用，但我们发现没有最佳方法可以从原始数据生成图形。因此，找到最佳图形生成方法将提供GNN 可以做出贡献的更广泛的领域。</p><h3 id="可伸缩性">4.4 可伸缩性</h3><p>如何在社交网络或推荐系统等网络规模条件下应用嵌入方法对于几乎所有图形嵌入算法来说都是一个致命的问题，而GNN 也不例外。扩展 GNN很困难，因为许多核心步骤在大数据环境中的计算成本都十分高。</p>]]></content>
+      
+      
       <categories>
-        <category>随想</category>
+          
+          <category> Survey </category>
+          
       </categories>
-      <tags>
-        <tag>Thoughts</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>广告投放系统简介</title>
-    <url>/2022/02/08/12-ads-overview/</url>
-    <content><![CDATA[<p>本文主要介绍了广告算法入门的一些基础知识。主要介绍了广告投放漏斗的几个部分承担的功能、各自的特点以及常见的一些算法。</p>
-<span id="more"></span>
-<p>所谓搜广推是一家，本质上来说，[推荐/广告]和[搜索]的所使用的技术都是非常类似的，不同的是搜索有个很强的query特征（用户自己输入的信息，比如你去淘宝上面搜索的商品名称），而推荐或者广告的缺少query特征，只能从<strong>用户特征/商品特征/上下文特征/历史行为特征</strong>中对用户的兴趣进行挖掘。
-广告系统按照漏斗的形式，从数百数千万候选广告中，对用户的每一刷（以抖音为例）筛选出几十个广告，然后发送给用户。</p>
-<p>广告投放系统的漏斗大致可以分为 [定向/召回/粗排/精排/混排]
-5个部分，有些系统可能没有混排，或者把粗排精排放在一起（当系统候选规模较小的时候）。</p>
-<h2 id="定向">1. 定向</h2>
-<p>广告主设定广告面向的人群对象筛选条件，结合业务上对每个用户可投广告的控制（流控、频控、其它规则）对广告全集进行筛选。
-一般受制于latency（系统耗时），我们选择定向与召回结果取交集送粗排。
-定向的基本检索方式为建立倒排索引，map&lt;filed, map&lt;value, bitmap&gt;
-&gt;。 <img src="https://s2.loli.net/2022/02/09/N8eOyfJzvIkbS7a.png" />
-bitmap中的每一个bit，对应一个广告id，几个规则索引一起按位取交集，得到定向的结果candidate广告。</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> GNN </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>ENAS</title>
+      <link href="/2020/02/09/03-ENAS/"/>
+      <url>/2020/02/09/03-ENAS/</url>
+      
+        <content type="html"><![CDATA[<h2id="efficient-neural-architecture-search-via-parameter-sharing">EfficientNeural Architecture Search via Parameter Sharing</h2><p>an RNN controller is trained in a loop: the controller first samplesa candidate architecture, i.e. a child model, and then trains it toconvergence to measure its performance on the task of desire.</p><h2 id="训练">0. 训练</h2><p>分为两个网络，controller选择设计子网络的架构，子网络是一个entire网络的一个子图</p><p>分为两种参数 RNN的参数<span class="math inline">\(\theta\)</span>sample网络的<span class="math inline">\(w\)</span> 分别使用adam在validation set训练 SGD在training set上面训练</p><h2 id="rnn-cells的设计">1. RNN cells的设计</h2><p>controller设计</p><ol type="1"><li>当前节点连接的前一个节点</li><li>使用什么激活函数(relu, sigmod, tanh, identity)4种</li></ol><p><img src="https://s2.loli.net/2022/02/08/YzISjdOGJL9Flke.png" /></p><p>search space:the search space has<span class="math inline">\(4N ×N!\)</span>configurations. In our experiments, N = 12,</p><h2 id="cnn的设计">2. cnn的设计</h2><p>controller设计</p><ol type="1"><li>当前节点连接的前一个节点</li><li>使用什么计算函数(<code>conv3*3, conv5*5, sep3*3, sep5*5, maxpooling3*3, average pooling3*3</code>)6种</li></ol><p><img src="https://s2.loli.net/2022/02/08/LfFwBabU9i1AvhS.png" /></p><p>search space: Making the described set of decisions for a total of Ltimes, we can sample a network of L layers. Since all decisions areindependent, there are 6L × 2L(L−1)/2 networks in the search space. Inour experiments, L = 12, resulting in 1.6 × 1029 possible networks.</p><h2 id="cnn-cells设计">3. cnn cells设计</h2><p>controller设计</p><ol type="1"><li>两个前置连接的节点</li><li>两条边的计算种类(<code>identity, sep3*3, spe5*5, avepooling3*3, maxpooling3*3</code>)5种</li></ol><p><img src="https://s2.loli.net/2022/02/08/ZMcOLn3kFSYilJs.png" /></p><p>search space: Finally, we estimate the complexity of this searchspace. At node i (3 ≤ i ≤ B), the controller can select any two nodesfrom the i − 1 previous nodes, and any two operations from 5 operations.As all decisions are independent, there are (5 × (B − 2)!)2 possiblecells. Since we independently sample for a convolutional cell and areduction cell, the final size of the search space is (5 × (B − 2)!) .With B = 7 as in our experiments, the search space can realize 1.3 ×1011 final networks, making it significantly smaller than the searchspace for entire convolutional networks</p>]]></content>
+      
+      
       <categories>
-        <category>技术</category>
+          
+          <category> Paper </category>
+          
       </categories>
-      <tags>
-        <tag>ads</tag>
-      </tags>
-  </entry>
+      
+      
+        <tags>
+            
+            <tag> NAS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
 </search>
