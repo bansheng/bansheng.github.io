@@ -12,6 +12,8 @@
     "version": "6.0.0"
   },
   "dependencies": {
+    "@waline/hexo-next": "^2.0.6",
+    "gitalk": "^1.7.2",
     "hexo": "^6.0.0",
     "hexo-asset-image": "git+https://github.com/7ym0n/hexo-asset-image.git",
     "hexo-deployer-git": "^3.0.0",
@@ -30,6 +32,7 @@
     "hexo-renderer-stylus": "^2.0.1",
     "hexo-server": "^3.0.0",
     "hexo-wordcount": "^6.0.1",
-    "live2d-widget-model-shizuku": "^1.0.5"
+    "live2d-widget-model-shizuku": "^1.0.5",
+    "valine": "^1.4.16"
   }
 }
