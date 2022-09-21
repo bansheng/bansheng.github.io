@@ -33,6 +33,6 @@
     "hexo-server": "^3.0.0",
     "hexo-wordcount": "^6.0.1",
     "live2d-widget-model-shizuku": "^1.0.5",
-    "valine": "^1.4.16"
+    "valine": "^1.5.0"
   }
 }
