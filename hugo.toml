@@ -1,0 +1,10 @@
+baseURL = 'https://dingyadong.top/'
+languageCode = 'zh-cn'
+title = 'bansheng's blog'
+theme = 'PaperMod'
+
+[params]
+    defaultTheme = "auto"
+    displayFullContent = false
+    showReadingTime = true
+    showCodeCopyButtons = true
