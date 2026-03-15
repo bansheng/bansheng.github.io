@@ -3,7 +3,7 @@ name: Deploy Hugo site to Pages
 on:
   push:
     branches:
-      - source  # 如果你的分支叫 master，请改为 master
+      - source  # 看你截图里显示分支名是 source，请务必匹配
 
 jobs:
   deploy:
@@ -12,8 +12,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive # 自动拉取子模块
           fetch-depth: 0
+
+      # 如果你没用子模块，就在这里强制下载主题
+      - name: Force Download Theme
+        run: |
+          mkdir -p themes
+          git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
