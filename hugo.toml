@@ -18,8 +18,8 @@ theme = 'PaperMod'
         [params.comments.giscus]
             repo = "bansheng/bansheng.github.io"
             repoId = "MDEwOlJlcG9zaXRvcnkyMzQwMjExOTE="
-        category = "General"
-        categoryId = "DIC_kwDODfLhR84C4l9B"
+            category = "General"
+            categoryId = "DIC_kwDODfLhR84C4l9B"
             mapping = "pathname"
             strict = "0"
             reactionsEnabled = "1"
