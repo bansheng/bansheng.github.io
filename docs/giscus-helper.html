@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Giscus 配置助手</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .card { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .result { background: #e8f5e9; padding: 15px; border-radius: 4px; margin-top: 10px; }
+        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #45a049; }
+        pre { background: #333; color: #fff; padding: 15px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Giscus 配置助手</h1>
+
+    <div class="card">
+        <h2>步骤 1：获取 Repo ID</h2>
+        <button onclick="getRepoId()">获取 Repo ID</button>
+        <div id="repoIdResult" class="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>步骤 2：获取 Category ID</h2>
+        <button onclick="getCategoryId()">获取 Category ID</button>
+        <div id="categoryIdResult" class="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>步骤 3：完整配置</h2>
+        <div id="configResult" class="result"></div>
+    </div>
+
+    <script>
+        function getRepoId() {
+            fetch('https://api.github.com/repos/bansheng/bansheng.github.io')
+                .then(r => r.json())
+                .then(data => {
+                    const repoId = data.id;
+                    const formattedRepoId = 'R_kgDON' + repoId.toString(36).toUpperCase();
+                    document.getElementById('repoIdResult').innerHTML =
+                        '<strong>Repo ID:</strong><br>' +
+                        'GitHub 格式: ' + data.id + '<br>' +
+                        'Giscus 格式: <code>' + formattedRepoId + '</code>';
+                    return formattedRepoId;
+                })
+                .catch(err => {
+                    document.getElementById('repoIdResult').innerHTML = '<strong>错误:</strong> ' + err.message;
+                });
+        }
+
+        let repoId = '';
+
+        function getRepoId() {
+            fetch('https://api.github.com/repos/bansheng/bansheng.github.io')
+                .then(r => r.json())
+                .then(data => {
+                    repoId = data.id;
+                    const formattedRepoId = 'R_kgDON' + repoId.toString(36).toUpperCase();
+                    document.getElementById('repoIdResult').innerHTML =
+                        '<strong>Repo ID:</strong><br>' +
+                        'GitHub 格式: ' + data.id + '<br>' +
+                        'Giscus 格式: <code>' + formattedRepoId + '</code>';
+                })
+                .catch(err => {
+                    document.getElementById('repoIdResult').innerHTML = '<strong>错误:</strong> ' + err.message;
+                });
+        }
+
+        function getCategoryId() {
+            if (!repoId) {
+                alert('请先点击"获取 Repo ID"按钮');
+                return;
+            }
+
+            fetch('https://api.github.com/repos/bansheng/bansheng.github.io/discussions_categories')
+                .then(r => r.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        const category = data.find(c => c.name === 'General') || data[0];
+                        const categoryId = category.id;
+                        const formattedCategoryId = 'DIC_kwDON' + categoryId.toString(36).toUpperCase();
+                        document.getElementById('categoryIdResult').innerHTML =
+                            '<strong>Category ID:</strong><br>' +
+                            'GitHub 格式: ' + categoryId + '<br>' +
+                            'Giscus 格式: <code>' + formattedCategoryId + '</code>';
+                        const config = {
+                            repoId: 'R_kgDON' + repoId.toString(36).toUpperCase(),
+                            categoryId: formattedCategoryId
+                        };
+                        document.getElementById('configResult').innerHTML =
+                            '<strong>配置:</strong><br>' +
+                            '<pre>repo = "bansheng/bansheng.github.io"\nrepoId = "' + config.repoId + '"\ncategory = "General"\ncategoryId = "' + config.categoryId + '"</pre>';
+                    } else {
+                        document.getElementById('categoryIdResult').innerHTML =
+                            '<strong>错误:</strong> 未找到分类，请确保已创建 General 分类';
+                        document.getElementById('configResult').innerHTML = '';
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('categoryIdResult').innerHTML = '<strong>错误:</strong> ' + err.message;
+                });
+        }
+    </script>
+</body>
+</html>

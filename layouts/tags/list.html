@@ -1,0 +1,117 @@
+{{- define "main" }}
+<header class="header">
+    <h1>标签：{{ .Title }}</h1>
+</header>
+
+<div class="posts-list">
+    {{- range .Pages }}
+    <article class="post">
+        <h2 class="post-title">
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </h2>
+        <div class="post-meta">
+            <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+                {{ .Date.Format "2006-01-02" }}
+            </time>
+            {{- if .Params.tags }}
+            <div class="post-tags">
+                {{- range .Params.tags }}
+                <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}" class="tag">
+                    {{ . }}
+                </a>
+                {{- end }}
+            </div>
+            {{- end }}
+        </div>
+        <div class="post-summary">
+            {{ .Summary }}
+        </div>
+    </article>
+    {{- end }}
+</div>
+
+<style>
+.header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary);
+}
+
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.post {
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.post:hover {
+    transform: translateX(5px);
+}
+
+.post-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+}
+
+.post-title a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.post-title a:hover {
+    color: var(--primary);
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--secondary);
+    flex-wrap: wrap;
+}
+
+.post-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag {
+    padding: 0.2rem 0.6rem;
+    background: var(--theme);
+    border-radius: 15px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.post-summary {
+    color: var(--secondary);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .post {
+        padding: 1rem;
+    }
+    
+    .post-title {
+        font-size: 1.3rem;
+    }
+}
+</style>
+{{- end }}

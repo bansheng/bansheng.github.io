@@ -1,0 +1,78 @@
+{{- $tags := .Site.Taxonomies.tags }}
+{{- if gt (len $tags) 0 }}
+<div class="tags-cloud">
+    <h3>标签云</h3>
+    <div class="tags-list">
+        {{- range $name, $taxonomy := $tags }}
+            {{- with $.Site.GetPage (printf "/tags/%s" $name) }}
+            <a href="{{ .Permalink }}" class="tag-link" style="font-size: {{ add (mul (len $taxonomy) 2) 10 }}px;">
+                <span class="tag-name">{{ $name }}</span>
+                <span class="tag-count">{{ len $taxonomy }}</span>
+            </a>
+            {{- end }}
+        {{- end }}
+    </div>
+</div>
+{{- end }}
+
+<style>
+.tags-cloud {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: 8px;
+}
+
+.tags-cloud h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.tag-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    background: var(--theme);
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.tag-link:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.tag-name {
+    margin-right: 0.5rem;
+}
+
+.tag-count {
+    font-size: 0.75em;
+    background: rgba(0,0,0,0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .tags-cloud {
+        padding: 1rem;
+    }
+    
+    .tag-link {
+        padding: 0.3rem 0.6rem;
+    }
+}
+</style>
