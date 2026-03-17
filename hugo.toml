@@ -6,7 +6,7 @@ theme = 'PaperMod'
 [params]
     defaultTheme = "auto"
     showCodeCopyButtons = true
-    
+
     [[params.socialIcons]]
         name = "github"
         url = "https://github.com/bansheng"
