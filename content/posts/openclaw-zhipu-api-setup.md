@@ -11,7 +11,7 @@ tags: ["OpenClaw", "火山引擎", "智谱AI", "API", "教程"]
 
 本文将详细介绍如何在火山引擎 OpenClaw 中配置智谱 AI 的 API Key，实现自定义模型接入。
 
-## 准备工作
+## 步骤
 
 ### 1. 注册智谱 AI 账号
 
@@ -29,148 +29,182 @@ tags: ["OpenClaw", "火山引擎", "智谱AI", "API", "教程"]
 2. 为 Key 命名（如 "OpenClaw-Config"）
 3. 复制生成的 API Key（格式为 `sk-xxxxxxxxxxxxxxxx`）
 
-**注意**：新注册用户通常有免费的额度，足够个人开发使用。
+> **注意**：新注册用户通常有免费的额度，足够个人开发使用。
 
-### 3. 确认火山引擎 OpenClaw 已安装
+### 3. 确认火山引擎 OpenClaw 已安装并配置好了飞书机器人
 
-确保你已经在 IDE 中安装了 OpenClaw 插件：
+此时发送消息，飞书机器人报错提示并不存在 API Key。
 
-- **VS Code**: 在扩展商店搜索 "OpenClaw" 并安装
-- **JetBrains 系列**: 在插件市场搜索 "OpenClaw" 安装
-
-## 配置步骤
-
-### 第一步：打开 OpenClaw 设置
-
-在 IDE 中找到 OpenClaw 的设置入口：
-
-**VS Code:**
-1. 按 `Ctrl/Cmd + Shift + P` 打开命令面板
-2. 输入 "OpenClaw: Open Settings"
-3. 或点击左下角 OpenClaw 图标进入设置
-
-**JetBrains:**
-1. 打开 `Settings/Preferences`
-2. 找到 `Tools -> OpenClaw`
-
-### 第二步：切换模型提供商
-
-在 OpenClaw 设置中找到模型配置部分：
-
-1. 找到 **Model Provider** 或 **模型提供商** 选项
-2. 从下拉菜单中选择 **Custom** 或 **自定义**
-3. 如果没有自定义选项，选择 **OpenAI Compatible**（OpenAI 兼容模式）
-
-### 第三步：配置智谱 API 端点
-
-智谱 AI 提供 OpenAI 兼容的 API 接口，配置如下：
-
-```
-Base URL: https://open.bigmodel.cn/api/paas/v4/
-API Key: sk-xxxxxxxxxxxxxxxx（你的智谱 API Key）
-```
-
-在 OpenClaw 设置中填写：
-
-| 配置项 | 值 |
-|--------|-----|
-| API Base URL | `https://open.bigmodel.cn/api/paas/v4/` |
-| API Key | `sk-xxxxxxxxxxxxxxxx` |
-| Model | `glm-4` 或 `glm-4-flash` |
-
-### 第四步：选择模型
-
-智谱 AI 提供多个模型供选择：
-
-| 模型 | 说明 | 适用场景 |
-|------|------|----------|
-| `glm-4` | 旗舰模型，能力最强 | 复杂编程任务 |
-| `glm-4-flash` | 轻量级模型，响应快 | 日常代码补全 |
-| `glm-4-air` | 性价比模型 | 平衡性能和成本 |
-| `chatglm-3-turbo` | 上一代模型 | 简单任务 |
-
-推荐配置：
-- **代码生成**: `glm-4`
-- **代码补全**: `glm-4-flash`
-- **对话问答**: `glm-4-air`
-
-### 第五步：高级配置（可选）
-
-根据需求调整以下参数：
+我们直接修改 `~/.openclaw/openclaw.json`：
 
 ```json
-{
-  "temperature": 0.2,
-  "max_tokens": 4096,
-  "top_p": 0.95
-}
-```
-
-**参数说明**：
-- **temperature**: 创造性程度，建议 0.1-0.3（代码需要确定性）
-- **max_tokens**: 最大输出长度，根据任务调整
-- **top_p**: 核采样参数，通常保持默认
-
-### 第六步：测试连接
-
-配置完成后，进行连接测试：
-
-1. 在 OpenClaw 设置中找到 **Test Connection** 按钮
-2. 点击测试，确认能正常连接到智谱 API
-3. 如果失败，检查：
-   - API Key 是否正确
-   - Base URL 是否填写完整（注意末尾的 `/`）
-   - 网络是否能访问智谱 API
-
-### 第七步：验证功能
-
-打开一个代码文件，测试以下功能：
-
-1. **代码补全**: 输入部分代码，看是否能自动补全
-2. **代码解释**: 选中代码，询问 "解释这段代码"
-3. **代码重构**: 要求优化或重构某段代码
-4. **生成注释**: 让 AI 为代码添加注释
-
-## 完整配置示例
-
-### VS Code settings.json
-
-```json
-{
-  "openclaw.modelProvider": "custom",
-  "openclaw.custom": {
-    "baseUrl": "https://open.bigmodel.cn/api/paas/v4/",
-    "apiKey": "sk-xxxxxxxxxxxxxxxx",
-    "model": "glm-4"
+"auth": {
+  "profiles": {
+    "zai:default": {
+      "provider": "zai",
+      "mode": "api_key"
+    }
+  }
+},
+"models": {
+  "mode": "merge",
+  "providers": {
+    "zai": {
+      "baseUrl": "https://open.bigmodel.cn/api/paas/v4",
+      "api": "openai-completions",
+      "models": [
+        {
+          "id": "glm-5",
+          "name": "GLM-5",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 204800,
+          "maxTokens": 131072
+        },
+        {
+          "id": "glm-4.7",
+          "name": "GLM-4.7",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 204800,
+          "maxTokens": 131072
+        },
+        {
+          "id": "glm-4.7-flash",
+          "name": "GLM-4.7 Flash",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 204800,
+          "maxTokens": 131072
+        },
+        {
+          "id": "glm-4.7-flashx",
+          "name": "GLM-4.7 FlashX",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 204800,
+          "maxTokens": 131072
+        }
+      ]
+    }
+  }
+},
+"agents": {
+  "defaults": {
+    "models": {
+      "zai/glm-4.7-flash": {
+        "alias": "GLM"
+      }
+    },
+    "workspace": "/root/.openclaw/workspace",
+    "compaction": {
+      "mode": "safeguard"
+    },
+    "maxConcurrent": 4,
+    "subagents": {
+      "maxConcurrent": 8
+    }
   },
-  "openclaw.temperature": 0.2,
-  "openclaw.maxTokens": 4096
+  "list": [
+    {
+      "id": "main",
+      "name": "main",
+      "workspace": "/root/.openclaw/workspace",
+      "agentDir": "/root/.openclaw/agents/main/agent",
+      "model": "zai/glm-4.7-flash"
+    }
+  ]
 }
 ```
 
-### JetBrains 配置界面
+修改里面 `auth`、`models`、`agents` 的配置项，直接写死模型提供商和模型名。
 
-在 OpenClaw 配置面板中：
+接着配置 API Key：
+
+```bash
+vi ~/.openclaw/auth-profiles.json
+```
+
+写入以下内容（替换为你的 API Key）：
+
+```json
+{
+  "zai": {
+    "apiKey": "sk-xxxxxxxxxxxxxxxx",
+    "baseURL": "https://open.bigmodel.cn/api/paas/v4/"
+  },
+  "openai": {
+    "apiKey": "sk-xxxxxxxxxxxxxxxx",
+    "baseURL": "https://open.bigmodel.cn/api/paas/v4/"
+  },
+  "anthropic": {
+    "apiKey": "dummy-key"
+  }
+}
+```
+
+保存配置后退出编辑器。
+
+### 4. 重启 OpenClaw Gateway
+
+```bash
+openclaw gateway restart
+```
+
+### 5. 飞书发送消息切换模型
+
+在前端发送以下命令切换模型：
 
 ```
-Provider: Custom
-Base URL: https://open.bigmodel.cn/api/paas/v4/
-API Key: sk-xxxxxxxxxxxxxxxx
-Model: glm-4
-Temperature: 0.2
-Max Tokens: 4096
+/model zai/glm-4.7-flash
 ```
+
+切换成功后，就可以使用你配置好的智谱 API Key 来调用 OpenClaw 了。
 
 ## 常见问题
 
 ### Q1: 配置后无法连接
 
 **可能原因**：
+
 - API Key 错误或已过期
 - Base URL 拼写错误
 - 网络问题
 
 **解决方法**：
+
 1. 在智谱控制台确认 API Key 状态
 2. 检查 URL 是否为 `https://open.bigmodel.cn/api/paas/v4/`
 3. 尝试在浏览器访问智谱官网确认网络正常
@@ -178,20 +212,22 @@ Max Tokens: 4096
 ### Q2: 响应速度慢
 
 **优化建议**：
-- 切换到 `glm-4-flash` 模型
+
+- 切换到 `glm-4.7-flash` 模型
 - 减少 `max_tokens` 值
 - 检查网络连接质量
 
 ### Q3: 代码质量不如预期
 
 **改进方法**：
-- 使用 `glm-4` 旗舰模型
-- 调整 temperature 到 0.1-0.2
+
+- 使用 `glm-5` 旗舰模型
 - 在提示词中提供更详细的上下文
 
 ### Q4: 免费额度用完了怎么办
 
 **解决方案**：
+
 1. 智谱新用户通常有充足的免费额度
 2. 可以关注智谱官方活动获取额外额度
 3. 如果用量大，考虑购买付费套餐（比 Coding Plan 便宜）
@@ -223,6 +259,7 @@ Max Tokens: 4096
 - ✅ 避免被锁定在单一供应商
 
 这种配置方式特别适合：
+
 - 个人开发者学习使用
 - 小型项目快速开发
 - 对成本敏感的场景
