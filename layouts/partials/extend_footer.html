@@ -1,7 +1,16 @@
 {{ if .Page.Store.Get "hasMermaid" }}
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  
+  // 动态检测当前主题模式并初始化 mermaid
+  const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark' || 
+                     (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  
+  mermaid.initialize({ 
+    startOnLoad: true, 
+    theme: isDarkMode ? 'dark' : 'neutral',
+    securityLevel: 'loose'
+  });
 </script>
 {{ end }}
 

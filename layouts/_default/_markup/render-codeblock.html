@@ -1,6 +1,6 @@
 {{- if eq .Type "mermaid" -}}
   {{- .Page.Store.Set "hasMermaid" true -}}
-  <div class="mermaid">
+  <div class="mermaid" style="background: transparent;">
     {{- .Inner | safeHTML }}
   </div>
 {{- else -}}
