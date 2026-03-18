@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "hugo server -D",
-    "build": "hugo --minify"
+    "build": "hugo --minify",
+    "publish": "git add . && git commit -m \"docs: update blog content\" && git push origin source"
   },
   "repository": {
     "type": "git",
