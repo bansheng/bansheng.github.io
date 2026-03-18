@@ -1,0 +1,28 @@
+{
+  "name": "bansheng.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "hugo server -D",
+    "build": "hugo --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bansheng/bansheng.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bansheng/bansheng.github.io/issues"
+  },
+  "homepage": "https://github.com/bansheng/bansheng.github.io#readme",
+  "devDependencies": {
+    "hugo-extended": "^0.158.0"
+  }
+}
