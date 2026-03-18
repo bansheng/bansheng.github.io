@@ -8,24 +8,20 @@
 &lt;/ol&gt;
 &lt;h2 id="第一步安装-hugo"&gt;第一步：安装 Hugo&lt;/h2&gt;
 &lt;p&gt;检查 Hugo 是否已安装：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hugo version
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;输出：&lt;code&gt;hugo v0.121.2-extended linux/amd64&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;hugo version&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;输出：&lt;code&gt;hugo v0.121.2-extended linux/amd64&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Hugo 已经安装成功！&lt;/p&gt;
 &lt;h2 id="第二步初始化项目"&gt;第二步：初始化项目&lt;/h2&gt;
 &lt;p&gt;创建 Hugo 站点：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hugo new site bansheng.github.io
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd bansheng.github.io
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git init
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="第三步安装-papermod-主题"&gt;第三步：安装 PaperMod 主题&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;hugo new site bansheng.github.io
+cd bansheng.github.io
+git init&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="第三步安装-papermod-主题"&gt;第三步：安装 PaperMod 主题&lt;/h2&gt;
 &lt;p&gt;PaperMod 是一个流行的 Hugo 主题，支持响应式设计和评论系统。&lt;/p&gt;
 &lt;p&gt;由于 GitHub Actions 部署时需要自动获取主题，我们在工作流中配置自动克隆：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- &lt;span style="color:#f92672"&gt;name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;Force Download Theme&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: |&lt;span style="color:#e6db74"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt; mkdir -p themes
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt; git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;同时在 &lt;code&gt;hugo.toml&lt;/code&gt; 中指定主题：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-toml" data-lang="toml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;theme&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#39;PaperMod&amp;#39;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="第四步配置-giscus-评论系统"&gt;第四步：配置 giscus 评论系统&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;- name: Force Download Theme
+run: |
+mkdir -p themes
+git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;同时在 &lt;code&gt;hugo.toml&lt;/code&gt; 中指定主题：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-toml" data-lang="toml"&gt;theme = &amp;#39;PaperMod&amp;#39;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="第四步配置-giscus-评论系统"&gt;第四步：配置 giscus 评论系统&lt;/h2&gt;
 &lt;h3 id="41-启用-github-discussions"&gt;4.1 启用 GitHub Discussions&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;访问仓库设置页面：&lt;code&gt;https://github.com/bansheng/bansheng.github.io/settings&lt;/code&gt;&lt;/li&gt;
