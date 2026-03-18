@@ -105,6 +105,18 @@ body {
 /* 链接与按钮交互 */
 a {
     transition: color 0.2s ease;
+    text-decoration: none;
+}
+
+.post-content a {
+    color: #0066cc;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.post-content a:hover {
+    color: #004499;
+    border-bottom: 1px solid #004499;
 }
 
 a:hover {
@@ -113,6 +125,7 @@ a:hover {
 
 .post-title a:hover {
     color: #0066cc;
+    border-bottom: none;
 }
 
 /* 图片阴影与圆角 */
@@ -121,11 +134,99 @@ a:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease;
     display: block;
-    margin: 24px auto; /* 居中显示 */
+    margin: 32px auto; /* 居中显示，增加上下间距 */
 }
 
 .post-content img:hover {
-    transform: scale(1.01); /* 轻微放大 */
+    transform: scale(1.02); /* 轻微放大 */
+}
+
+/* =======================================================
+   Markdown 元素美化 (代码、表格、引用)
+======================================================= */
+
+/* 行内代码 */
+.post-content code:not(pre code) {
+    background-color: #f0f3f6;
+    color: #e83e8c; /* 醒目的粉红色 */
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-size: 0.9em;
+    margin: 0 2px;
+}
+
+/* 代码块 */
+.post-content pre {
+    background-color: #282c34 !important; /* 暗色系代码块背景，类似 One Dark */
+    border-radius: 8px;
+    padding: 16px;
+    margin: 24px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background-color: transparent !important;
+    color: #abb2bf !important;
+    font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    padding: 0;
+}
+
+/* 引用块 (Blockquote) */
+.post-content blockquote {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background-color: #f7f9fa;
+    border-left: 4px solid #0066cc;
+    border-radius: 0 8px 8px 0;
+    color: #555;
+    font-style: normal; /* 移除默认斜体，更具现代感 */
+}
+
+.post-content blockquote p {
+    margin-bottom: 0;
+}
+
+/* 表格美化 */
+.post-content table {
+    width: 100%;
+    margin: 32px 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 0.95em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.post-content table th,
+.post-content table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.post-content table th {
+    background-color: #f0f3f6;
+    color: #333;
+    font-weight: 600;
+}
+
+.post-content table tr:last-child td {
+    border-bottom: none;
+}
+
+.post-content table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* 粗体与斜体强调 */
+.post-content strong {
+    color: #222;
+    font-weight: 600;
 }
 
 /* 标签样式优化 */
