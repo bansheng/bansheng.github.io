@@ -20,49 +20,8 @@
 &lt;li&gt;&lt;strong&gt;扩展性受限&lt;/strong&gt;: 受限于上述原因，工业界之前的探索仅止步于 10亿（1B）参数级别。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id="方法论-methodology"&gt;方法论 (Methodology)&lt;/h2&gt;
-&lt;h3 id="1-mixing--reverting-机制-混合与还原"&gt;1. Mixing &amp;amp; Reverting 机制 (混合与还原)&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;方法 - 改进思路&lt;/strong&gt;: 为了解决残差连接错位的问题，作者设计了对称的“双层结构”。第一层负责跨 Token 混合信息（Mixing），第二层专门将混合后的 Token 维度恢复到原始状态（Reverting）。这种设计确保了输入和输出维度的绝对一致性，从而构建出平滑且语义对齐的深度残差通道。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;伪代码&lt;/strong&gt;:&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 输入 X: [T, D], T为Token数, D为维度&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 1. Mixing 阶段&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;H &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Split_and_Concat(X) &lt;span style="color:#75715e"&gt;# 将 T 个 token 混合为 H 个, 维度 [H, T*D/H]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;H_next &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Norm(pSwiGLU(H) &lt;span style="color:#f92672"&gt;+&lt;/span&gt; H)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 2. Reverting 阶段&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;X_revert &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Split_and_Concat_Back(H_next) &lt;span style="color:#75715e"&gt;# 将 H 个 token 还原为 T 个, 维度 [T, D]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;X_next &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Norm(pSwiGLU(X_revert) &lt;span style="color:#f92672"&gt;+&lt;/span&gt; X) &lt;span style="color:#75715e"&gt;# 语义严格对齐的残差连接&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-稀疏-per-token-moe-sparse-pertoken-moe"&gt;2. 稀疏 Per-token MoE (Sparse-Pertoken MoE)&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;方法 - 改进思路&lt;/strong&gt;: 采用“先扩大，后稀疏”的策略。首先将模型做宽，然后将 Per-token SwiGLU 拆分为多个细粒度专家并进行稀疏激活。为解决稀疏带来的梯度更新不足问题，引入了&lt;strong&gt;门控值缩放 (Gate Value Scaling)&lt;/strong&gt;；同时为稳定训练加入了&lt;strong&gt;共享专家 (Shared Expert)&lt;/strong&gt;。这使得模型可以真正实现“稀疏训练与稀疏推理”。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="3-深层网络稳定性设计-deep-model-stabilization"&gt;3. 深层网络稳定性设计 (Deep Model Stabilization)&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;方法 - 改进思路&lt;/strong&gt;:
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Inter-Residual &amp;amp; Aux Loss&lt;/strong&gt;: 每隔 2-3 层引入跨层残差连接，并将底层输出与高层输出结合计算辅助损失（Auxiliary Loss），防止梯度衰减，加速底层网络收敛。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Down-Matrix Small Init&lt;/strong&gt;: 参考 Rezero，将 SwiGLU 中最后一个投影矩阵的初始化方差缩小为 0.01，使模块在训练初期接近恒等映射，极大提升了深层网络的稳定性。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="流程图-flowchart"&gt;流程图 (Flowchart)&lt;/h2&gt;
-&lt;pre tabindex="0"&gt;&lt;code class="language-mermaid" data-lang="mermaid"&gt;graph TD
-A[Raw Sparse Features] --&amp;gt; B(Embedding Layer)
-B --&amp;gt; C[Semantic Group-wise Tokenizer]
-C --&amp;gt; D[Global Token + Grouped Tokens X]
-subgraph TokenMixer-Large Block
-D --&amp;gt; E[Mixing: Split &amp;amp; Concat]
-E --&amp;gt; F[Pertoken SwiGLU + Norm]
-F --&amp;gt; G[Reverting: Split &amp;amp; Concat back to T]
-G --&amp;gt; H[Pertoken SwiGLU + Norm]
-D -.-&amp;gt;|Semantic Aligned Residual: F_revert + X| H
-end
-H --&amp;gt; I[Deep Layers with Inter-Residual &amp;amp; Aux Loss]
-I --&amp;gt; J[Sparse-Pertoken MoE Layer]
-J --&amp;gt; K[Mean Pooling &amp;amp; Task Prediction]
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id="结论-conclusion"&gt;结论 (Conclusion)&lt;/h2&gt;
-&lt;p&gt;TokenMixer-Large 验证了在去除历史碎片化算子后，“纯净架构+大规模堆叠”在推荐领域的有效性。模型在离线实验中成功扩展至 &lt;strong&gt;150亿 (15B)&lt;/strong&gt; 参数，在线部署达到了 &lt;strong&gt;70亿 (7B)&lt;/strong&gt; 参数。在字节跳动核心业务取得巨大收益：&lt;/p&gt;</description></item><item><title>火山引擎 OpenClaw 配置智谱 API：绕过 Coding Plan 使用免费 API Key</title><link>https://dingyadong.top/posts/openclaw-zhipu-api-setup/</link><pubDate>Tue, 17 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/openclaw-zhipu-api-setup/</guid><description>&lt;h2 id="背景"&gt;背景&lt;/h2&gt;
+&lt;h3 id="2-tokenmixer-large-与初代-tokenmixer-rankmixer-的核心区别"&gt;2. TokenMixer-Large 与初代 TokenMixer (RankMixer) 的核心区别&lt;/h3&gt;
+&lt;p&gt;在理解 TokenMixer-Large 的创新之前，我们必须先看清它对初代架构做了哪些大刀阔斧的“革命”。以下是四个核心差异点：&lt;/p&gt;</description></item><item><title>火山引擎 OpenClaw 配置智谱 API：绕过 Coding Plan 使用免费 API Key</title><link>https://dingyadong.top/posts/openclaw-zhipu-api-setup/</link><pubDate>Tue, 17 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/openclaw-zhipu-api-setup/</guid><description>&lt;h2 id="背景"&gt;背景&lt;/h2&gt;
 &lt;p&gt;火山引擎的 OpenClaw 是一个强大的 AI 编程助手，但默认情况下需要使用字节提供的 Coding Plan 进行计费。对于个人开发者或小型团队来说，如果能使用智谱 AI 提供的免费 API Key，可以大大降低成本。&lt;/p&gt;
 &lt;p&gt;本文将详细介绍如何在火山引擎 OpenClaw 中配置智谱 AI 的 API Key，实现自定义模型接入。&lt;/p&gt;
 &lt;h2 id="步骤"&gt;步骤&lt;/h2&gt;
