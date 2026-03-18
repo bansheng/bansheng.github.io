@@ -4,7 +4,7 @@ title = "Bansheng's Blog"
 theme = 'PaperMod'
 
 [params]
-    defaultTheme = "auto"
+    defaultTheme = "light"
     showCodeCopyButtons = true
 
     [[params.socialIcons]]
