@@ -4,6 +4,7 @@ title = "Bansheng's Blog"
 theme = 'PaperMod'
 
 [params]
+    disableSpecial1stPost = true
     defaultTheme = "light"
     showCodeCopyButtons = true
 
