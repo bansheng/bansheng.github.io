@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Sequential Recommendation on Bansheng's Blog</title><link>https://dingyadong.top/tags/sequential-recommendation/</link><description>Recent content in Sequential Recommendation on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Thu, 19 Mar 2026 21:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/sequential-recommendation/index.xml" rel="self" type="application/rss+xml"/><item><title>FuXi-Linear：释放线性注意力在超长序列推荐中的潜力</title><link>https://dingyadong.top/posts/fuxi-linear-paper-review/</link><pubDate>Thu, 19 Mar 2026 21:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/fuxi-linear-paper-review/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;本文是关于最新论文《FuXi-Linear: Unleashing the Power of Linear Attention in Long-term Time-aware Sequential Recommendation》（&lt;a href="http://arxiv.org/abs/2602.23671v1"&gt;arXiv:2602.23671&lt;/a&gt;）的阅读笔记。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在现代推荐系统中，基于 Transformer 的序列推荐模型已经成为主流。然而，传统的 Softmax 注意力机制具有二次复杂度 $\mathcal{O}(n^2)$，这导致在处理用户的超长行为序列（例如超过 $10^4$ 次交互）时，会面临严重的显存占用和推理吞吐量瓶颈。&lt;/p&gt;
+&lt;p&gt;虽然“线性注意力（Linear Attention）”架构在 NLP 领域（如 Mamba, RWKV, RetNet）展现了巨大的潜力，但将其直接生搬硬套到推荐系统中却面临着诸多水土不服。FuXi-Linear 就是为了解决这些问题而提出的一种全新架构。&lt;/p&gt;
+&lt;h2 id="1-线性模型在推荐系统中的三大挑战"&gt;1. 线性模型在推荐系统中的三大挑战&lt;/h2&gt;
+&lt;p&gt;论文指出现有线性模型在推荐系统中的应用主要面临以下痛点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;时间信号利用不佳&lt;/strong&gt;：现有的方法通常把“时间戳”当作一种特征，直接与物品的“语义特征”拼接或相加。这种强耦合会导致两种信号相互干扰，且无法显式地对用户行为的&lt;strong&gt;周期性&lt;/strong&gt;（比如周末才打游戏）进行建模。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;位置信息缺失&lt;/strong&gt;：传统 Transformer 通常使用相对位置编码（RPE，如 T5, ALiBi）来提供精确的位置感知。但 RPE 的计算是二次复杂度的，无法兼容线性模型的递归（RNN）计算形式。而线性模型自带的自然衰减机制粒度又太粗。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺乏长序列扩展性&lt;/strong&gt;：现有的线性推荐模型大多局限在短序列（长度 $\le 100$）和浅层网络上测试，从未在真正的“超长序列”和“大规模参数”下验证过 Scaling Law。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="2-fuxi-linear-的核心架构创新"&gt;2. FuXi-Linear 的核心架构创新&lt;/h2&gt;
+&lt;p&gt;为了解决上述问题，FuXi-Linear 设计了三个独立的通道来分别处理不同的信号，最后再进行融合。&lt;/p&gt;
+&lt;h3 id="21-语义保留通道-retention-channel"&gt;2.1 语义保留通道 (Retention Channel)&lt;/h3&gt;
+&lt;p&gt;采用类似 RetNet 的 Retention 机制替代传统全注意力。通过一个指数衰减矩阵 $D$，模型可以支持“并行训练”和“递归推理”两种模式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在训练时可以高效并行；&lt;/li&gt;
+&lt;li&gt;在推理时可以像 RNN 一样，复杂度降为 $\mathcal{O}(1)$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$$ Retention(Q,K,V,D) = (QK^T \odot D)V $$
+&lt;em&gt;(其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数)&lt;/em&gt;&lt;/p&gt;</description></item></channel></rss>
