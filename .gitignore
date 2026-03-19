@@ -7,4 +7,5 @@ public/
 .deploy*/
 .deploy_git/
 themes/
+hugo
 *.pdf

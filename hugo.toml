@@ -1,0 +1,34 @@
+baseURL = 'https://dingyadong.top/'
+languageCode = 'zh-cn'
+title = "Bansheng's Blog"
+theme = 'PaperMod'
+
+[params]
+    defaultTheme = "light"
+    showCodeCopyButtons = true
+
+    [[params.socialIcons]]
+        name = "github"
+        url = "https://github.com/bansheng"
+    
+    [params.comments]
+        enabled = true
+        provider = "giscus"
+        
+        [params.comments.giscus]
+            repo = "bansheng/bansheng.github.io"
+            repoId = "MDEwOlJlcG9zaXRvcnkyMzQwMjExOTE="
+            category = "General"
+            categoryId = "DIC_kwDODfLhR84C4l9B"
+            mapping = "pathname"
+            strict = "0"
+            reactionsEnabled = "1"
+            emitMetadata = "0"
+            inputPosition = "bottom"
+            theme = "preferred_color_scheme"
+            lang = "zh-CN"
+            loading = "lazy"
+
+[taxonomies]
+    tag = "tags"
+    category = "categories"
