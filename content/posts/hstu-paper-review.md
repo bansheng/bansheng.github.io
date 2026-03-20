@@ -38,28 +38,28 @@ graph TD
     classDef output fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
 
     %% Nodes
-    Input[输入序列 X <br/> N x d]:::input
+    Input["输入序列 X <br/> N x d"]:::input
     
-    subgraph HSTU_Block [HSTU Block (替代标准 Self-Attention + MLP)]
-        Norm1[Layer Norm]:::linear
-        Linear1[Linear Projection <br/> f1]:::linear
-        SiLU1[SiLU Activation <br/> φ1]:::act
-        Split[Split Channel <br/> 切分为 U, V, Q, K]:::linear
+    subgraph HSTU_Block ["HSTU Block (替代标准 Self-Attention + MLP)"]
+        Norm1["Layer Norm"]:::linear
+        Linear1["Linear Projection <br/> f1"]:::linear
+        SiLU1["SiLU Activation <br/> φ1"]:::act
+        Split["Split Channel <br/> 切分为 U, V, Q, K"]:::linear
         
-        subgraph Spatial_Aggregation [Spatial Aggregation (空间聚合)]
-            Attn[Q * K^T + Relative Bias <br/> 融合时序与位置]:::attention
-            SiLU2[SiLU Activation <br/> φ2]:::act
-            Mul_V[Attn_Score ⊙ V <br/> 聚合输出 A_V]:::attention
+        subgraph Spatial_Aggregation ["Spatial Aggregation (空间聚合)"]
+            Attn["Q * K^T + Relative Bias <br/> 融合时序与位置"]:::attention
+            SiLU2["SiLU Activation <br/> φ2"]:::act
+            Mul_V["Attn_Score ⊙ V <br/> 聚合输出 A_V"]:::attention
         end
         
-        subgraph Pointwise_Transformation [Pointwise Transformation (点式变换)]
-            Norm2[Layer Norm]:::linear
-            Mul_U[Norm(A_V) ⊙ U <br/> 门控融合]:::linear
-            Linear2[Linear Projection <br/> f2]:::linear
+        subgraph Pointwise_Transformation ["Pointwise Transformation (点式变换)"]
+            Norm2["Layer Norm"]:::linear
+            Mul_U["Norm(A_V) ⊙ U <br/> 门控融合"]:::linear
+            Linear2["Linear Projection <br/> f2"]:::linear
         end
     end
     
-    Output[输出序列 Y <br/> N x d]:::output
+    Output["输出序列 Y <br/> N x d"]:::output
 
     %% Edges
     Input --> Norm1
@@ -78,7 +78,7 @@ graph TD
     Mul_U --> Linear2
     
     Linear2 --> Output
-    Input -->|残差连接 Residual Connection| Output
+    Input -->|"残差连接 Residual Connection"| Output
 {{< /mermaid >}}
 
 **核心计算公式如下：**
