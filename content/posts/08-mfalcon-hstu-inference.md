@@ -1,6 +1,6 @@
 ---
 title: "M-FALCON：HSTU 中解决“一对多”推荐推理的终极武器"
-date: 2026-03-21T09:00:00+08:00
+date: 2026-03-20T12:00:00+08:00
 draft: false
 tags: ["Recommendation System", "HSTU", "KV-Cache", "Inference", "M-FALCON"]
 categories: ["Tech"]
@@ -41,7 +41,7 @@ M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的**微批次（Mic
 
 下面这张图直观地展示了 M-FALCON 的工作流：
 
-{{< mermaid >}}
+```mermaid
 graph TD
     %% Define Styles
     classDef user fill:#f3f4f6,stroke:#3b82f6,stroke-width:2px;
@@ -68,7 +68,7 @@ graph TD
     Scores --> Check{"是否还有剩余候选?"}
     Check -- "是 (处理下一批次)" --> Batch
     Check -- "否" --> Done["返回最终排序列表"]
-{{< /mermaid >}}
+```
 
 ## 4. 与其他大模型推理技术的对比
 
