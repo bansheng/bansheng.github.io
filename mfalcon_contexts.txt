@@ -1,0 +1,762 @@
+--- MATCH at 2082 ---
+GRs)   
+ 
+ 
+    C  Evaluation: Synthetic Data   
+    D  Evaluation: Traditional Sequential Recommender Settings   
+    E  Evaluation: Traditional DLRM Baselines   
+ 
+   F  Stochastic Length  
+ 
+    F.1  Subsequence Selection   
+    F.2  Impact of Stochastic Length on Sequence Sparsity   
+    F.3  Comparisons Against Sequence Length Extrapolation Techniques   
+ 
+ 
+    G  Sparse Grouped GEMMs and Fused Relative Attention Bias   
+ 
+   H  Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON)  
+ 
+    H.1  Evaluation of Inference Throughput: Generative Recommenders (GRs) w/ M-FALCON vs DLRMs   
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations 
+ 
+ 
+ Jiaqi Zhai
+  
+     
+ Lucy Liao
+  
+     
+ Xing Liu
+  
+     
+ Yueming Wang
+  
+     
+ Rui Li
+  
+     
+ Xuan Cao
+  
+     
+ Leon Gao
+  
+     
+ Zhaojie Gong
+  
+     
+ Fangda Gu
+  
+     
+ Michael He
+  
+     
+ Yinghai Lu
+  
+     
+ Yu Shi
+  
+ 
+ 
+ Abstract 
+ Large-scale recommendation systems are characterized by their reliance on high cardinality, heterogeneous features and the need to handle tens of billions of user actions on a daily basis. Despite being trained on huge volume of data with thousands of features,
+most Deep Learning Recommendation Models (DLRMs) in industry fail to scale with compute.
+Inspired by success achieved by Transformers in language and vision domains, we revisit fundamental design choices in recommendation systems. We reformulate recommendation problems as sequential transduction tasks
+within a generative modeling framework (“Generative Recommenders”), and propose a new architecture, HSTU, designed for
+high cardinality, non-stationary streaming recommendation data.
+HSTU outperforms baselines over synthetic and public datasets by up to 65.8% in NDCG, and is 5.3x to 15.2x faster than FlashAttention2-based Transformers on 8192 length sequences.
+HSTU-based Generative Recommenders, with
+1.5 trillion parameters, improve metrics in online A/B tests by 12.4% and have been deployed on multiple surfaces of a large internet platform with billions of users. More importantly,
+the model quality of Generative Recommenders empirically scales as a power-law of training compute across three orders of magnitude,
+up to GPT-3/LLaMa-2 scale,
+which reduces carbon footprint needed for future model developments, and further paves the way for the first foundation models in recommendations. 
+ 
+ Generative Recommenders, Generative Recommendations, Sequential Recommendations, Generative Modeling, Actions Speak Louder Than Words, HSTU, Hierarchical Sequential Transduction Units, Recommendation Systems, Recommendations, Machine Learning, ICML
+ 
+ 
+ 
+ 
+ 
+ 
+ 1  Introduction 
+  
+   Figure 1 :   Total compute used to train deep learning models over the years. DLRM results are from  (Mudigere et al.,  2022 ) ; GRs are deployed models from this work. DLRMs/GRs are continuously trained in a streaming setting; we report compute used per year.  
+ 
+ 
+ 
+--- MATCH at 2174 ---
+ecommender Settings   
+    E  Evaluation: Traditional DLRM Baselines   
+ 
+   F  Stochastic Length  
+ 
+    F.1  Subsequence Selection   
+    F.2  Impact of Stochastic Length on Sequence Sparsity   
+    F.3  Comparisons Against Sequence Length Extrapolation Techniques   
+ 
+ 
+    G  Sparse Grouped GEMMs and Fused Relative Attention Bias   
+ 
+   H  Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON)  
+ 
+    H.1  Evaluation of Inference Throughput: Generative Recommenders (GRs) w/ M-FALCON vs DLRMs   
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations 
+ 
+ 
+ Jiaqi Zhai
+  
+     
+ Lucy Liao
+  
+     
+ Xing Liu
+  
+     
+ Yueming Wang
+  
+     
+ Rui Li
+  
+     
+ Xuan Cao
+  
+     
+ Leon Gao
+  
+     
+ Zhaojie Gong
+  
+     
+ Fangda Gu
+  
+     
+ Michael He
+  
+     
+ Yinghai Lu
+  
+     
+ Yu Shi
+  
+ 
+ 
+ Abstract 
+ Large-scale recommendation systems are characterized by their reliance on high cardinality, heterogeneous features and the need to handle tens of billions of user actions on a daily basis. Despite being trained on huge volume of data with thousands of features,
+most Deep Learning Recommendation Models (DLRMs) in industry fail to scale with compute.
+Inspired by success achieved by Transformers in language and vision domains, we revisit fundamental design choices in recommendation systems. We reformulate recommendation problems as sequential transduction tasks
+within a generative modeling framework (“Generative Recommenders”), and propose a new architecture, HSTU, designed for
+high cardinality, non-stationary streaming recommendation data.
+HSTU outperforms baselines over synthetic and public datasets by up to 65.8% in NDCG, and is 5.3x to 15.2x faster than FlashAttention2-based Transformers on 8192 length sequences.
+HSTU-based Generative Recommenders, with
+1.5 trillion parameters, improve metrics in online A/B tests by 12.4% and have been deployed on multiple surfaces of a large internet platform with billions of users. More importantly,
+the model quality of Generative Recommenders empirically scales as a power-law of training compute across three orders of magnitude,
+up to GPT-3/LLaMa-2 scale,
+which reduces carbon footprint needed for future model developments, and further paves the way for the first foundation models in recommendations. 
+ 
+ Generative Recommenders, Generative Recommendations, Sequential Recommendations, Generative Modeling, Actions Speak Louder Than Words, HSTU, Hierarchical Sequential Transduction Units, Recommendation Systems, Recommendations, Machine Learning, ICML
+ 
+ 
+ 
+ 
+ 
+ 
+ 1  Introduction 
+  
+   Figure 1 :   Total compute used to train deep learning models over the years. DLRM results are from  (Mudigere et al.,  2022 ) ; GRs are deployed models from this work. DLRMs/GRs are continuously trained in a streaming setting; we report compute used per year.  
+ 
+ 
+ Recommendation systems, quintessential in the realm of online content platforms and e-commer
+--- MATCH at 9273 ---
+ more data  with the same amount of compute . 
+ 
+ 
+ We next address computational cost challenges throughout training and inference. We propose a new sequential transduction architecture,  Hierarchical Sequential Transduction Units  (HSTU). HSTU modifies attention mechanism for large, non-stationary vocabulary, and exploits characteristics of recommendation datasets to achieve 5.3x to 15.2x speedup vs FlashAttention2-based Transformers on 8192 length sequences. Further, through a new algorithm, M-FALCON, that fully amortizes computational costs via micro-batching (  Section   3.4  ), we can serve  285x more complex  GR models while achieving 1.50x-2.99x speedups, all  with the same inference budget  used by traditional DLRMs. 
+ 
+ 
+ We finally validate the proposed techniques over synthetic datasets, public datasets, and deployments on multiple surfaces of a large internet platform with billions of daily active users in   Section   4  . To the best of our knowledge, our work represents the first result that shows pure sequential transduction-based architectures, like HSTU, in generative settings (GRs) to significantly outperform DLRMs in large-scale
+industrial settings. Remarkably, not only did we overcome known scaling bottlenecks
+in traditional DLRMs, we further succeeded in showing that scaling law  (Kaplan et al.,  2020 )  applies to recommendations, representing the potential ChatGPT moment for recommendation systems. 
+ 
+ 
+ 
+ 
+ 2  Recommendation as Sequential Transduction Tasks: From DLRMs to GRs 
+ 
+ 
+ 2.1  Unifying heterogeneous feature spaces in DLRMs 
+  
+   Figure 2 :   Comparison of features and training procedures: DLRMs vs GRs.
+    E  ,  F  ,  G  ,  H     𝐸  𝐹  𝐺  𝐻    E,F,G,H  italic_E , italic_F , italic_G , italic_H    denote categorical features.     Φ  i     subscript  Φ  𝑖    \Phi_{i}  roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT    represents the    i   𝑖   i  italic_i   -th item in the merged main time series.      Ψ  k   ⁢   (   t  j   )         subscript  Ψ  𝑘    subscript  𝑡  𝑗     \Psi_{k}(t_{j})  roman_Ψ start_POSTSUBSCRIPT italic_k end_POSTSUBSCRIPT ( italic_t start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT )    denotes training example    k   𝑘   k  italic_k    emitted at time     t  j     subscript  𝑡  𝑗    t_{j}  italic_t start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT   . Full notations can be found in   Appendix   A  .  
+ 
+ 
+ Modern DLRM models are usually trained with a vast number of categorical (‘sparse’) and numerical (‘dense’) features.
+In GRs, we consolidate and encode these features into a single unified time series, as depicted in   Figure   2  . 
+ 
+ 
+  Categorical (‘sparse’) features . Examples of such features
+include items that user liked, creators in a category (e.g., Outdoors)
+that user is following, user languages, communities that user joined, cities from which requests were initiated, etc. We  sequentialize  these features as follows. We first select the longest time series, typically by merging the fe
+--- MATCH at 52328 ---
+ ranking as for retrieval, encoder cost is fully amortizable, and efficient algorithms exist for both MIPS leveraging quantization, hashing, or partitioning  (Jegou et al.,  2011 ; Shrivastava &amp; Li,  2014 ; Li et al.,  2002 ; Zhai et al.,  2011 )  and non-MIPS cases via beam search or hierarchical retrieval  (Zhuo et al.,  2020 ; Zhai et al.,  2023a ) . 
+ 
+ 
+ For ranking, we have up to tens of thousands of candidates  (Covington et al.,  2016 ; Wang et al.,  2020 ) .
+We propose an algorithm M-FALCON (Microbatched-Fast Attention Leveraging Cacheable OperatioNs) to perform inference for    m   𝑚   m  italic_m    candidates with an input sequence size of    n   𝑛   n  italic_n   . 
+ 
+ 
+ Within a forward pass, M-FALCON handles     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    candidates in parallel by modifying attention masks and     rab   p  ,  t      superscript   rab    𝑝  𝑡     \text{rab}^{p,t}  rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT    biases such that the attention operations performed for     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    candidates are exactly the same. This reduces the cost of applying cross-attention from     O  ⁢   (    b  m   ⁢   n  2   ⁢  d   )        𝑂      subscript  𝑏  𝑚    superscript  𝑛  2   𝑑     O(b_{m}n^{2}d)  italic_O ( italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d )    to      O  ⁢   (     (   n  +   b  m    )   2   ⁢  d   )    =   O  ⁢   (    n  2   ⁢  d   )            𝑂      superscript     𝑛   subscript  𝑏  𝑚    2   𝑑       𝑂      superscript  𝑛  2   𝑑      O((n+b_{m})^{2}d)=O(n^{2}d)  italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) = italic_O ( italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d )    when     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    can be considered a small constant relative to    n   𝑛   n  italic_n   . We optionally divide the overall    m   𝑚   m  italic_m    candidates into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches of size     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    to leverage encoder-level KV caching  (Pope et al.,  2022 )  either across forward passes to reduce cost, or across  requests  to minimize tail latency (More detailed discussions in   Appendix   H  ). 
+ 
+ 
+ Overall, M-FALCON enables model complexity to linearly scale up with the number of candidates in traditional DLRMs’s ranking stages; we succeeded in applying  a 285x 
+more complex target-aware cross attention model at 1.5x-3x throughput with a constant inference budget for a typical ranking
+configuration dis
+--- MATCH at 52548 ---
+,  2002 ; Zhai et al.,  2011 )  and non-MIPS cases via beam search or hierarchical retrieval  (Zhuo et al.,  2020 ; Zhai et al.,  2023a ) . 
+ 
+ 
+ For ranking, we have up to tens of thousands of candidates  (Covington et al.,  2016 ; Wang et al.,  2020 ) .
+We propose an algorithm M-FALCON (Microbatched-Fast Attention Leveraging Cacheable OperatioNs) to perform inference for    m   𝑚   m  italic_m    candidates with an input sequence size of    n   𝑛   n  italic_n   . 
+ 
+ 
+ Within a forward pass, M-FALCON handles     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    candidates in parallel by modifying attention masks and     rab   p  ,  t      superscript   rab    𝑝  𝑡     \text{rab}^{p,t}  rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT    biases such that the attention operations performed for     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    candidates are exactly the same. This reduces the cost of applying cross-attention from     O  ⁢   (    b  m   ⁢   n  2   ⁢  d   )        𝑂      subscript  𝑏  𝑚    superscript  𝑛  2   𝑑     O(b_{m}n^{2}d)  italic_O ( italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d )    to      O  ⁢   (     (   n  +   b  m    )   2   ⁢  d   )    =   O  ⁢   (    n  2   ⁢  d   )            𝑂      superscript     𝑛   subscript  𝑏  𝑚    2   𝑑       𝑂      superscript  𝑛  2   𝑑      O((n+b_{m})^{2}d)=O(n^{2}d)  italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) = italic_O ( italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d )    when     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    can be considered a small constant relative to    n   𝑛   n  italic_n   . We optionally divide the overall    m   𝑚   m  italic_m    candidates into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches of size     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    to leverage encoder-level KV caching  (Pope et al.,  2022 )  either across forward passes to reduce cost, or across  requests  to minimize tail latency (More detailed discussions in   Appendix   H  ). 
+ 
+ 
+ Overall, M-FALCON enables model complexity to linearly scale up with the number of candidates in traditional DLRMs’s ranking stages; we succeeded in applying  a 285x 
+more complex target-aware cross attention model at 1.5x-3x throughput with a constant inference budget for a typical ranking
+configuration discussed in   Section   4.3  . 
+ 
+ 
+ 
+ 
+ 
+ 4  Experiments 
+ 
+ 
+ 4.1  Validating Inductive Hypotheses of HSTU Encoder 
+ 
+  Table 4:  Evaluations of methods on public datasets in multi-pass, full-shuffle settings. 
+ 
+ 
+ 
+  
+
+--- MATCH at 54536 ---
+ates into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches of size     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    to leverage encoder-level KV caching  (Pope et al.,  2022 )  either across forward passes to reduce cost, or across  requests  to minimize tail latency (More detailed discussions in   Appendix   H  ). 
+ 
+ 
+ Overall, M-FALCON enables model complexity to linearly scale up with the number of candidates in traditional DLRMs’s ranking stages; we succeeded in applying  a 285x 
+more complex target-aware cross attention model at 1.5x-3x throughput with a constant inference budget for a typical ranking
+configuration discussed in   Section   4.3  . 
+ 
+ 
+ 
+ 
+ 
+ 4  Experiments 
+ 
+ 
+ 4.1  Validating Inductive Hypotheses of HSTU Encoder 
+ 
+  Table 4:  Evaluations of methods on public datasets in multi-pass, full-shuffle settings. 
+ 
+ 
+ 
+  
+  Method  
+  HR@10  
+  HR@50  
+  HR@200  
+  NDCG@10  
+  NDCG@200  
+ 
+ 
+ 
+ 
+  ML-1M  
+  SASRec (2023)  
+  .2853  
+  .5474  
+  .7528  
+  .1603  
+  .2498  
+ 
+ 
+  HSTU  
+  .3097 (+8.6%)  
+  .5754 (+5.1%)  
+  .7716 (+2.5%)  
+  .1720 (+7.3%)  
+  .2606 (+4.3%)  
+ 
+ 
+  HSTU-large  
+  .3294 (+15.5%)  
+  .5935 (+8.4%)  
+  .7839 (+4.1%)  
+  .1893 (+18.1%)  
+  .2771 (+10.9%)  
+ 
+ 
+  ML-20M  
+  SASRec (2023)  
+  .2906  
+  .5499  
+  .7655  
+  .1621  
+  .2521  
+ 
+ 
+  HSTU  
+  .3252 (+11.9%)  
+  .5885 (+7.0%)  
+  .7943 (+3.8%)  
+  .1878 (+15.9%)  
+  .2774 (+10.0%)  
+ 
+ 
+  HSTU-large  
+  .3567 (+22.8%)  
+  .6149 (+11.8%)  
+  .8076 (+5.5%)  
+  .2106 (+30.0%)  
+  .2971 (+17.9%)  
+ 
+ 
+  Books  
+  SASRec (2023)  
+  .0292  
+  .0729  
+  .1400  
+  .0156  
+  .0350  
+ 
+ 
+  HSTU  
+  .0404 (+38.4%)  
+  .0943 (+29.5%)  
+  .1710 (+22.1%)  
+  .0219 (+40.6%)  
+  .0450 (+28.6%)  
+ 
+ 
+  HSTU-large  
+  .0469 (+60.6%)  
+  .1066 (+46.2%)  
+  .1876 (+33.9%)  
+  .0257 (+65.8%)  
+  .0508 (+45.1%)  
+ 
+ 
+ 
+ 
+ 
+ 
+ 4.1.1  Traditional Sequential Settings 
+ 
+ We first evaluate the performance of HSTU on two popular recommender datasets, MovieLens and Amazon Reviews. We follow sequential recommendation settings in literature, including  full shuffle  and  multi-epoch  training. For baseline, we use SASRec, a state-of-the-art Transformer implementation  (Kang &amp; McAuley,  2018 )    1    1  1 Results for other baselines are reported in   Appendix   D  .   . We report Hit Rate@K and NDCG@K over the entire corpus, consistent with recent work  (Dallmann et al.,  2021 ; Zhai et al.,  2023a ) . 
+ 
+ 
+ Results are presented in   Table   4  . “SASRec (2023)” denotes the best SASRec recipe reported in  (Zhai et al.,  2023a ) . The rows labeled
+“HSTU” use identical configurations as SASRec (same number of layers, heads, etc.). “HSTU-large” represents larger HSTU encoders (4x number of layers and 2x number of heads). Results show that a) HSTU, with its design optimized for recommendations, significantly outper
+--- MATCH at 66166 ---
+content-based baselines and DLRMs/GRs underscores the significance of high cardinality user actions. 
+ 
+  
+   Figure 6 :   Comparison of inference throughput, in the most challenging ranking setup. Full results can be found in   Section   H.1  .  
+ 
+ 
+ We finally compare the efficiency of GRs with our production DLRMs in   Figure   6  .
+Despite the GR model being 285x more computationally complex, we
+achieved 1.50x/2.99x  higher 
+QPS when scoring 1024/16384 candidates, due to HSTU and the novel M-FALCON algorithm in   Section   3.4  . 
+ 
+ 
+ 
+ 4.3.1  Scaling Law for Recommendation Systems 
+ 
+ 
+   
+  
+   
+  
+   
+ 
+   Figure 7 :   Scalability: DLRMs vs GRs in large-scale industrial settings across retrieval (top, middle) and ranking (bottom). +0.005 in HR and -0.001 in NE represent significant improvements.  
+ 
+ 
+ It is commonly known that in large-scale industrial settings, DLRMs saturate in quality at certain compute and params regimes  (Zhao et al.,  2023 ) .
+We compare the scalability of GRs and DLRMs to better understand this phenomenon.  
+ 
+ 
+ Since feature interaction layers are crucial for DLRM’s performance  (Mudigere et al.,  2022 ) , we experimented with Transformers  (Vaswani et al.,  2017 ) , DHEN  (Zhang et al.,  2022 ) , and a variant of DCN  (Wang et al.,  2021 )  augmented with residual connections  (He et al.,  2015 )  used in our production settings to scale up the DLRM baseline in the ranking setting. For the retrieval baseline, given our baseline used a residual setup, we scaled up hidden layer sizes, embedding dimensions, and number of layers. For HSTU-based Generative Recommenders (GRs), we scaled up the model by adjusting the hyperparameters for HSTU, including the number of residual layers, sequence length, embedding dimensions, number of attention heads, etc. We additionally adjust the number of negatives for retrieval. 
+ 
+ 
+ Results are shown in   Figure   7  .
+In the low compute regime, DLRMs might outperform GRs due to handcrafted features, corroborating the importance of feature engineering in traditional DLRMs.
+However, GRs demonstrate substantially better scalability with respect to FLOPs, whereas DLRM performance plateaus, consistent with findings in prior work. We also observe better scalability w.r.t. both embedding parameters and non-embedding parameters, with GRs leading to 1.5 trillion parameter models, whereas DLRMs performance saturate at about 200 billion parameters. 
+ 
+ 
+ Finally, all of our main metrics, including Hit Rate@100 and Hit Rate@500 for retrieval, and NE for ranking, empirically scale as a power law of compute used given appropriate hyperparameters. We observe this phenomenon across three orders of magnitude, up till the largest models we were able to test (8,192 sequence length, 1,024 embedding dimension, 24 layers of HSTU), at which point the total amount of compute we used (normalized over 365 days as we use a standard streaming training setting) is close to the total training compute used by GPT-3  (
+--- MATCH at 72359 ---
+utperform collaborative filtering on MovieLens  (Hou et al.,  2024 ) . 
+ 
+ 
+ 
+ 
+ 6  Conclusions 
+ 
+ We have proposed Generative Recommenders (GRs), a new paradigm that formulates ranking and retrieval as sequential transduction tasks, allowing them to be trained in a generative manner.
+This is made possible by the novel HSTU encoder design, which is 5.3x-15.2x faster than
+state-of-the-art Transformers on 8192 length sequences, and through the use of
+new training and inference algorithms such as M-FALCON.
+With GRs, we deployed
+models that are  285x  more complex while using  less  inference compute. GRs and HSTU have led to 12.4% metric improvements in production
+and have shown superior scaling performance compared to traditional
+DLRMs.
+Our results corroborate that user actions represent an underexplored modality in generative modeling
+– to echo our title,  “Actions speak louder than words” . 
+ 
+ 
+ The dramatic simplification of features in our work
+paves the way for the first
+foundation models for recommendations, search, and ads by enabling a unified feature space to be used across domains. The fully sequential setup of GRs also enables recommendation to be formulated in an end-to-end, generative setting. Both of these enable recommendation systems to better assist users holistically. 
+ 
+ 
+ Impact Statements 
+ 
+ We believe that our work has broad positive implications. Reducing reliance of recommendation, search, and ads systems on the large number of heterogeneous features can make these systems much more privacy friendly while improving user experiences. Enabling recommendation systems to attribute users’ long term outcomes to short-term decisions via fully sequential formulations could reduce the prevalence of content that do not serve users’ long term goals (including clickbaits and fake news) across the web, and better align incentives of platforms with user values. Finally, applications of foundation models and scaling law can help reduce carbon footprints incurred with model research and developments needed for recommendations, search, and related use cases.
+
+ 
+ 
+ 
+ 
+ 
+ Acknowledgements 
+ 
+ This work represents the joint efforts of hundreds of people, and would not be possible without work from the following contributors (alphabetical order): Adnan Akhundov, Bugra Akyildiz, Shabab Ayub, Alex Bao, Renqin Cai, Jennifer Cao, Guoqiang Jerry Chen, Lei Chen, Sean Chen, Xianjie Chen, Huihui Cheng, Weiwei Chu, Ted Cui, Shiyan Deng, Nimit Desai, Fei Ding, Francois Fagan, Lu Fang, Liang Guo, Liz Guo, Jeevan Gyawali, Yuchen Hao, Daisy Shi He, Samuel Hsia, Jie Hua, Yanzun Huang, Hongyi Jia, Rui Jian, Jian Jin, Rahul Kindi, Changkyu Kim, Yejin Lee, Fu Li, Hong Li, Shen Li, Wei Li, Zhijing Li, Xueting Liao, Emma Lin, Hao Lin, Jingzhou Liu, Xingyu Liu, Kai Londenberg, Liang Luo, Linjian Ma, Matt Ma, Yun Mao, Bert Maher, Matthew Murphy, Satish Nadathur, Min Ni, Jongsoo Park, Jing Qian, Lijing Qin, Alex Singh, Timothy Shi, Dennis van der Staay, Xiao Sun, Colin Ta
+--- MATCH at 118163 ---
+  α   𝛼   \alpha  italic_α    
+ Parameter controlling sparsity in the  Stochastic Length  algorithm used in HSTU (  Section   3.2  ). 
+ 
+ 
+    R   𝑅   R  italic_R    
+ Register size on GPUs, in the context of the HSTU algorithm discussed in   Section   3.2  . 
+ 
+ 
+    m   𝑚   m  italic_m    
+ Number of candidates considered in a recommendation system’s ranking stage. 
+ 
+ 
+     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    
+ Microbatch size, in the M-FALCON algorithm discussed in   Section   3.4  . 
+ 
+ 
+ 
+   Table 9 :   Table of Notations (continued)  
+ 
+ 
+ 
+ 
+ Appendix B  Generative Recommenders: Background and Formulations 
+ 
+ Many readers are likely more familiar with classical Deep Learning Recommendation Models (DLRMs)  (Mudigere et al.,  2022 )  given its popularity from YouTube DNN days  (Covington et al.,  2016 )  and its widespread usage in every single large online content and e-commerce platform  (Cheng et al.,  2016 ; Zhou et al.,  2018 ; Wang et al.,  2021 ; Chang et al.,  2023 ; Xia et al.,  2023 ; Zhai et al.,  2023a ) . DLRMs operate on top of heterogeneous feature spaces using various neural networks including feature interaction modules  (Guo et al.,  2017 ; Xiao et al.,  2017 ; Wang et al.,  2021 ) , sequential pooling or target-aware pairwise attention modules  (Hidasi et al.,  2016 ; Zhou et al.,  2018 ; Chang et al.,  2023 )  and advanced multi-expert multi-task modules  (Ma et al.,  2018 ; Tang et al.,  2020 ) . We hence provided an overview of Generative Recommenders (GRs) by contrasting them with classical DLRMs explicitly in   Section   2   and   Section   3  . In this section, we give the readers an alternative perspective starting from the classical sequential recommender literature. 
+ 
+ 
+ 
+ B.1  Background: Sequential Recommendations in Academia and Industry 
+ 
+ 
+ B.1.1  Academic Research (Traditional Sequential Recommender Settings) 
+ 
+  Recurrent neural networks (RNNs)  were first applied to recommendation scenarios in GRU4Rec  (Hidasi et al.,  2016 ) .  Hidasi et al. ( 2016 )  considered Gated Recurrent Units (GRUs) and applied them over two datasets, RecSys Challenge 2015   2    2  2  http://2015.recsyschallenge.com/     and VIDEO (a proprietary dataset). In both cases,  only positive events (clicked e-commerce items or videos where users spent at least a certain amount of time watching)  were kept as part of the input sequence. We further observe that in a classical industrial-scale two-stage recommendation system setup consisting of retrieval and ranking stages  (Covington et al.,  2016 ) , the task that  Hidasi et al. ( 2016 )  solved primarily maps to the retrieval task. 
+ 
+ 
+  Transformers, sequential transduction architectures, and their variants.  Advances in sequential transduction architectures in later years, in particular Transformers  (Vaswani et al.,  2017 ) , have motivated similar advancements in recommendation systems. SASRec  (Kang &amp; McAuley,  2018 )  fir
+--- MATCH at 160435 ---
+o memory accesses.
+To address this issue, we have fused the relative bias construction and the grouped GEMMs into a single GPU kernel and managed to accumulate gradients using GPU’s fast shared memory in the backward pass. Although our algorithm requires recomputing attention and relative bias in the backward pass, it is significantly faster and uses less memory than the standard approach used in Transformers. 
+ 
+  
+ 
+ 
+ 
+ Appendix H  Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON) 
+ 
+ In this section, we provide a detailed description of the M-FALCON algorithm discussed in   Section   3.4  . We give pseudocode for M-FALCON in   Algorithm   1  . M-FALCON introduces three key ideas. 
+ 
+ 
+ 
+   
+ 
+   (a)    GR’s ranking model training (with     n  =   2  ⁢   n  c         𝑛     2   subscript  𝑛  𝑐      n=2n_{c}  italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT    tokens), in causal autoregressive settings.   
+   
+ 
+   (b)    GR’s ranking model inference utilizing the M-FALCON algorithm.  
+   Figure 11 :   Illustration of the M-FALCON algorithm. Top: model training in GR’s target-aware formulation. Bottom: model inference with    m   𝑚   m  italic_m    candidates      Φ  0  ′   ,  …  ,   Φ   m  −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′      𝑚  1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT   , divided into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches, where we show model inference for the first microbatch      Φ  0  ′   ,  …  ,   Φ    b  m   −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′       subscript  𝑏  𝑚   1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    (with      2  ⁢   n  c    +   b  m           2   subscript  𝑛  𝑐     subscript  𝑏  𝑚     2n_{c}+b_{m}  2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    total tokens after      Φ  0   ,   a  0   ,  …  ,   Φ    n  c   −  1    ,   a    n  c   −  1        subscript  Φ  0    subscript  𝑎  0   …   subscript  Φ      subscript  𝑛  𝑐   1     subscript  𝑎      subscript  𝑛  𝑐   1      \Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}  roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , ita
+--- MATCH at 160507 ---
+s construction and the grouped GEMMs into a single GPU kernel and managed to accumulate gradients using GPU’s fast shared memory in the backward pass. Although our algorithm requires recomputing attention and relative bias in the backward pass, it is significantly faster and uses less memory than the standard approach used in Transformers. 
+ 
+  
+ 
+ 
+ 
+ Appendix H  Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON) 
+ 
+ In this section, we provide a detailed description of the M-FALCON algorithm discussed in   Section   3.4  . We give pseudocode for M-FALCON in   Algorithm   1  . M-FALCON introduces three key ideas. 
+ 
+ 
+ 
+   
+ 
+   (a)    GR’s ranking model training (with     n  =   2  ⁢   n  c         𝑛     2   subscript  𝑛  𝑐      n=2n_{c}  italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT    tokens), in causal autoregressive settings.   
+   
+ 
+   (b)    GR’s ranking model inference utilizing the M-FALCON algorithm.  
+   Figure 11 :   Illustration of the M-FALCON algorithm. Top: model training in GR’s target-aware formulation. Bottom: model inference with    m   𝑚   m  italic_m    candidates      Φ  0  ′   ,  …  ,   Φ   m  −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′      𝑚  1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT   , divided into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches, where we show model inference for the first microbatch      Φ  0  ′   ,  …  ,   Φ    b  m   −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′       subscript  𝑏  𝑚   1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    (with      2  ⁢   n  c    +   b  m           2   subscript  𝑛  𝑐     subscript  𝑏  𝑚     2n_{c}+b_{m}  2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    total tokens after      Φ  0   ,   a  0   ,  …  ,   Φ    n  c   −  1    ,   a    n  c   −  1        subscript  Φ  0    subscript  𝑎  0   …   subscript  Φ      subscript  𝑛  𝑐   1     subscript  𝑎      subscript  𝑛  𝑐   1      \Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}  roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POST
+--- MATCH at 160581 ---
+to accumulate gradients using GPU’s fast shared memory in the backward pass. Although our algorithm requires recomputing attention and relative bias in the backward pass, it is significantly faster and uses less memory than the standard approach used in Transformers. 
+ 
+  
+ 
+ 
+ 
+ Appendix H  Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON) 
+ 
+ In this section, we provide a detailed description of the M-FALCON algorithm discussed in   Section   3.4  . We give pseudocode for M-FALCON in   Algorithm   1  . M-FALCON introduces three key ideas. 
+ 
+ 
+ 
+   
+ 
+   (a)    GR’s ranking model training (with     n  =   2  ⁢   n  c         𝑛     2   subscript  𝑛  𝑐      n=2n_{c}  italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT    tokens), in causal autoregressive settings.   
+   
+ 
+   (b)    GR’s ranking model inference utilizing the M-FALCON algorithm.  
+   Figure 11 :   Illustration of the M-FALCON algorithm. Top: model training in GR’s target-aware formulation. Bottom: model inference with    m   𝑚   m  italic_m    candidates      Φ  0  ′   ,  …  ,   Φ   m  −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′      𝑚  1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT   , divided into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches, where we show model inference for the first microbatch      Φ  0  ′   ,  …  ,   Φ    b  m   −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′       subscript  𝑏  𝑚   1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    (with      2  ⁢   n  c    +   b  m           2   subscript  𝑛  𝑐     subscript  𝑏  𝑚     2n_{c}+b_{m}  2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    total tokens after      Φ  0   ,   a  0   ,  …  ,   Φ    n  c   −  1    ,   a    n  c   −  1        subscript  Φ  0    subscript  𝑎  0   …   subscript  Φ      subscript  𝑛  𝑐   1     subscript  𝑎      subscript  𝑛  𝑐   1      \Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}  roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    are taken into account) above the dotte
+--- MATCH at 160612 ---
+PU’s fast shared memory in the backward pass. Although our algorithm requires recomputing attention and relative bias in the backward pass, it is significantly faster and uses less memory than the standard approach used in Transformers. 
+ 
+  
+ 
+ 
+ 
+ Appendix H  Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON) 
+ 
+ In this section, we provide a detailed description of the M-FALCON algorithm discussed in   Section   3.4  . We give pseudocode for M-FALCON in   Algorithm   1  . M-FALCON introduces three key ideas. 
+ 
+ 
+ 
+   
+ 
+   (a)    GR’s ranking model training (with     n  =   2  ⁢   n  c         𝑛     2   subscript  𝑛  𝑐      n=2n_{c}  italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT    tokens), in causal autoregressive settings.   
+   
+ 
+   (b)    GR’s ranking model inference utilizing the M-FALCON algorithm.  
+   Figure 11 :   Illustration of the M-FALCON algorithm. Top: model training in GR’s target-aware formulation. Bottom: model inference with    m   𝑚   m  italic_m    candidates      Φ  0  ′   ,  …  ,   Φ   m  −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′      𝑚  1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT   , divided into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches, where we show model inference for the first microbatch      Φ  0  ′   ,  …  ,   Φ    b  m   −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′       subscript  𝑏  𝑚   1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    (with      2  ⁢   n  c    +   b  m           2   subscript  𝑛  𝑐     subscript  𝑏  𝑚     2n_{c}+b_{m}  2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    total tokens after      Φ  0   ,   a  0   ,  …  ,   Φ    n  c   −  1    ,   a    n  c   −  1        subscript  Φ  0    subscript  𝑎  0   …   subscript  Φ      subscript  𝑛  𝑐   1     subscript  𝑎      subscript  𝑛  𝑐   1      \Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}  roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    are taken into account) above the dotted line. Note that the self-atte
+--- MATCH at 160956 ---
+ section, we provide a detailed description of the M-FALCON algorithm discussed in   Section   3.4  . We give pseudocode for M-FALCON in   Algorithm   1  . M-FALCON introduces three key ideas. 
+ 
+ 
+ 
+   
+ 
+   (a)    GR’s ranking model training (with     n  =   2  ⁢   n  c         𝑛     2   subscript  𝑛  𝑐      n=2n_{c}  italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT    tokens), in causal autoregressive settings.   
+   
+ 
+   (b)    GR’s ranking model inference utilizing the M-FALCON algorithm.  
+   Figure 11 :   Illustration of the M-FALCON algorithm. Top: model training in GR’s target-aware formulation. Bottom: model inference with    m   𝑚   m  italic_m    candidates      Φ  0  ′   ,  …  ,   Φ   m  −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′      𝑚  1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT   , divided into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches, where we show model inference for the first microbatch      Φ  0  ′   ,  …  ,   Φ    b  m   −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′       subscript  𝑏  𝑚   1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    (with      2  ⁢   n  c    +   b  m           2   subscript  𝑛  𝑐     subscript  𝑏  𝑚     2n_{c}+b_{m}  2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    total tokens after      Φ  0   ,   a  0   ,  …  ,   Φ    n  c   −  1    ,   a    n  c   −  1        subscript  Φ  0    subscript  𝑎  0   …   subscript  Φ      subscript  𝑛  𝑐   1     subscript  𝑎      subscript  𝑛  𝑐   1      \Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}  roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    are taken into account) above the dotted line. Note that the self-attention algorithm is modified such that     Φ  i  ′     subscript   superscript  Φ  ′   𝑖    \Phi^{\prime}_{i}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT    cannot attend to     Φ  j  ′     subscript   superscript  Φ  ′   𝑗    \Phi^{\prime}_{j}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUP
+--- MATCH at 161015 ---
+ algorithm discussed in   Section   3.4  . We give pseudocode for M-FALCON in   Algorithm   1  . M-FALCON introduces three key ideas. 
+ 
+ 
+ 
+   
+ 
+   (a)    GR’s ranking model training (with     n  =   2  ⁢   n  c         𝑛     2   subscript  𝑛  𝑐      n=2n_{c}  italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT    tokens), in causal autoregressive settings.   
+   
+ 
+   (b)    GR’s ranking model inference utilizing the M-FALCON algorithm.  
+   Figure 11 :   Illustration of the M-FALCON algorithm. Top: model training in GR’s target-aware formulation. Bottom: model inference with    m   𝑚   m  italic_m    candidates      Φ  0  ′   ,  …  ,   Φ   m  −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′      𝑚  1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT   , divided into     ⌈   m  /   b  m    ⌉          𝑚   subscript  𝑏  𝑚      \lceil m/b_{m}\rceil  ⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉    microbatches, where we show model inference for the first microbatch      Φ  0  ′   ,  …  ,   Φ    b  m   −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′       subscript  𝑏  𝑚   1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    (with      2  ⁢   n  c    +   b  m           2   subscript  𝑛  𝑐     subscript  𝑏  𝑚     2n_{c}+b_{m}  2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    total tokens after      Φ  0   ,   a  0   ,  …  ,   Φ    n  c   −  1    ,   a    n  c   −  1        subscript  Φ  0    subscript  𝑎  0   …   subscript  Φ      subscript  𝑛  𝑐   1     subscript  𝑎      subscript  𝑛  𝑐   1      \Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}  roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT    are taken into account) above the dotted line. Note that the self-attention algorithm is modified such that     Φ  i  ′     subscript   superscript  Φ  ′   𝑖    \Phi^{\prime}_{i}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT    cannot attend to     Φ  j  ′     subscript   superscript  Φ  ′   𝑗    \Phi^{\prime}_{j}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT    
+--- MATCH at 172918 ---
+  𝑏  𝑚    2   𝑑      O((n+b_{m})d^{2}+(n+b_{m})^{2}d)  italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) italic_d start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT + ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d )    by a factor of 2-4 even when      b  m   =  n        subscript  𝑏  𝑚   𝑛    b_{m}=n  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_n   . 
+ 
+ 
+   Algorithm 1    M-FALCON Algorithm. 
+ 
+ 
+  1:     Input:  Merged token series      x  0   ,   x  1   ,  …  ,   x   n  −  1        subscript  𝑥  0    subscript  𝑥  1   …   subscript  𝑥     𝑛  1      x_{0},x_{1},\ldots,x_{n-1}  italic_x start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_x start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_x start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT    (can be e.g.,     (   Φ  0   ,   a  0   ,  …  ,   Φ    n  c   −  1    ,   a    n  c   −  1    )      subscript  Φ  0    subscript  𝑎  0   …   subscript  Φ      subscript  𝑛  𝑐   1     subscript  𝑎      subscript  𝑛  𝑐   1      (\Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1})  ( roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT )    where     n  =   2  ⁢   n  c         𝑛     2   subscript  𝑛  𝑐      n=2n_{c}  italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT   );    m   𝑚   m  italic_m    ranking candidates      Φ  0  ′   ,  …  ,   Φ   m  −  1   ′       subscript   superscript  Φ  ′   0   …   subscript   superscript  Φ  ′      𝑚  1      \Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}  roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT   ; a    b   𝑏   b  italic_b   -layer    h   ℎ   h  italic_h   -heads self-attention model trained in causal autoregressive settings (e.g., HSTU or Transformers)      f  ⁢   (  X  ,   c  ⁢  a  ⁢  c  ⁢  h  ⁢  e  ⁢  S  ⁢  t  ⁢  a  ⁢  t  ⁢  e  ⁢  s   ,   a  ⁢  t  ⁢  t  ⁢  n  ⁢  M  ⁢  a  ⁢  s  ⁢  k   )    →   (   X  ′   ,   u  ⁢  p  ⁢  d  ⁢  a  ⁢  t  ⁢  e  ⁢  d  ⁢  C  ⁢  a  ⁢  c  ⁢  h  ⁢  e  ⁢  S  ⁢  t  ⁢  a  ⁢  t  ⁢  e  ⁢  s   )      →     𝑓   𝑋     𝑐  𝑎  𝑐  ℎ  𝑒  𝑆  𝑡  𝑎  𝑡  𝑒  𝑠      𝑎  𝑡  𝑡  𝑛  𝑀  𝑎  𝑠  𝑘       superscript  𝑋  ′      𝑢  𝑝  𝑑  𝑎  𝑡  𝑒  𝑑  𝐶  𝑎  𝑐  ℎ  𝑒  𝑆  𝑡  𝑎  𝑡  𝑒  𝑠      f(X,cacheStates,attnMask)\rightarrow(X^{\prime},updatedCacheStates)  italic_f ( italic_X , italic_c italic_a italic_c italic_h italic_e italic_S italic_t italic_a italic_t italic_e italic_s , italic_a italic_t italic_t italic_n italic_M italic_a italic_s italic_k ) → ( italic_X start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT , italic_u italic_p italic
+--- MATCH at 187594 ---
+end_POSTSUBSCRIPT )   
+ 
+ 
+  12:           i  ←   i  +  1      ←  𝑖     𝑖  1     i\leftarrow i+1  italic_i ← italic_i + 1   
+ 
+ 
+  13:     end   while 
+ 
+ 
+  14:     return      p  ⁢  r  ⁢  e  ⁢  d  ⁢  i  ⁢  c  ⁢  t  ⁢  i  ⁢  o  ⁢  n  ⁢  s       𝑝  𝑟  𝑒  𝑑  𝑖  𝑐  𝑡  𝑖  𝑜  𝑛  𝑠    predictions  italic_p italic_r italic_e italic_d italic_i italic_c italic_t italic_i italic_o italic_n italic_s   
+ 
+ 
+ 
+ 
+   Algorithm   1   is illustrated in   Figure   11   to help with understanding. We remark that M-FALCON is not only applicable to HSTUs and GRs, but also broadly applicable as an inference optimization algorithm for other target-aware causal autoregressive settings based on self-attention architectures. 
+ 
+ 
+ 
+ H.1  Evaluation of Inference Throughput: Generative Recommenders (GRs) w/ M-FALCON vs DLRMs 
+ 
+ As discussed in   Section   3.4  , M-FALCON handles     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    candidates in parallel to amortize computation costs across all    m   𝑚   m  italic_m    candidates at inference time. To understand our design, we compare the throughput (i.e., the number of candidates scored per second, QPS) of GRs and DLRMs based on the same hardware setups. 
+ 
+ 
+ As shown in   Figure   12   and   Figure   13  , GRs’ throughput scales in a sublinear way based on the number of ranking-stage candidates (   m   𝑚   m  italic_m   ), up to a certain region –     m  =  2048       𝑚  2048    m=2048  italic_m = 2048    in our case study – due to  batched inference  enabling cost amortization. This confirms the criticality of batched inference in causal autoregressive settings.
+Due to attention complexity scaling as     O  ⁢   (    (   n  +   b  m    )   2   )        𝑂   superscript     𝑛   subscript  𝑏  𝑚    2     O((n+b_{m})^{2})  italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT )   , leveraging multiple microbatches by itself improves throughput. Caching further eliminates redundant linear and attention computations on top of microbatching. The two combined resulted in up to 1.99x additional speedups relative to the      b  m   =  m  =  1024           subscript  𝑏  𝑚   𝑚        1024     b_{m}=m=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_m = 1024    baseline using a single microbatch, as shown in   Figure   13  . Overall, with the efficient HSTU encoder design and utilizing M-FALCON, HSTU-based Generative Recommenders  outperform  DLRMs in terms of throughput on a large-scale production setup by up to 2.99x, despite GRs being  285x more complex in terms of FLOPs . 
+ 
+  
+   Figure 12 :   End-to-end inference throughtput: DLRMs vs GRs (w/ M-FALCON) in large-scale industrial settings. Note that this figure is the same as   Figure   6  , and is reproduced here to facilitate reading.  
+ 
+  
+   Figure 13 :   End-to-end inference throughtput: M-FALCON throughput scaling, on top of the 285x FLOPs GR 
+--- MATCH at 187886 ---
+  italic_p italic_r italic_e italic_d italic_i italic_c italic_t italic_i italic_o italic_n italic_s   
+ 
+ 
+ 
+ 
+   Algorithm   1   is illustrated in   Figure   11   to help with understanding. We remark that M-FALCON is not only applicable to HSTUs and GRs, but also broadly applicable as an inference optimization algorithm for other target-aware causal autoregressive settings based on self-attention architectures. 
+ 
+ 
+ 
+ H.1  Evaluation of Inference Throughput: Generative Recommenders (GRs) w/ M-FALCON vs DLRMs 
+ 
+ As discussed in   Section   3.4  , M-FALCON handles     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    candidates in parallel to amortize computation costs across all    m   𝑚   m  italic_m    candidates at inference time. To understand our design, we compare the throughput (i.e., the number of candidates scored per second, QPS) of GRs and DLRMs based on the same hardware setups. 
+ 
+ 
+ As shown in   Figure   12   and   Figure   13  , GRs’ throughput scales in a sublinear way based on the number of ranking-stage candidates (   m   𝑚   m  italic_m   ), up to a certain region –     m  =  2048       𝑚  2048    m=2048  italic_m = 2048    in our case study – due to  batched inference  enabling cost amortization. This confirms the criticality of batched inference in causal autoregressive settings.
+Due to attention complexity scaling as     O  ⁢   (    (   n  +   b  m    )   2   )        𝑂   superscript     𝑛   subscript  𝑏  𝑚    2     O((n+b_{m})^{2})  italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT )   , leveraging multiple microbatches by itself improves throughput. Caching further eliminates redundant linear and attention computations on top of microbatching. The two combined resulted in up to 1.99x additional speedups relative to the      b  m   =  m  =  1024           subscript  𝑏  𝑚   𝑚        1024     b_{m}=m=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_m = 1024    baseline using a single microbatch, as shown in   Figure   13  . Overall, with the efficient HSTU encoder design and utilizing M-FALCON, HSTU-based Generative Recommenders  outperform  DLRMs in terms of throughput on a large-scale production setup by up to 2.99x, despite GRs being  285x more complex in terms of FLOPs . 
+ 
+  
+   Figure 12 :   End-to-end inference throughtput: DLRMs vs GRs (w/ M-FALCON) in large-scale industrial settings. Note that this figure is the same as   Figure   6  , and is reproduced here to facilitate reading.  
+ 
+  
+   Figure 13 :   End-to-end inference throughtput: M-FALCON throughput scaling, on top of the 285x FLOPs GR model, in large batch settings where    m   𝑚   m  italic_m    (total number of ranking candidates) ranges from 1024 to 16384, and      b  m   =  1024        subscript  𝑏  𝑚   1024    b_{m}=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = 1024   .  
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ Generated  
+--- MATCH at 187943 ---
+talic_t italic_i italic_o italic_n italic_s   
+ 
+ 
+ 
+ 
+   Algorithm   1   is illustrated in   Figure   11   to help with understanding. We remark that M-FALCON is not only applicable to HSTUs and GRs, but also broadly applicable as an inference optimization algorithm for other target-aware causal autoregressive settings based on self-attention architectures. 
+ 
+ 
+ 
+ H.1  Evaluation of Inference Throughput: Generative Recommenders (GRs) w/ M-FALCON vs DLRMs 
+ 
+ As discussed in   Section   3.4  , M-FALCON handles     b  m     subscript  𝑏  𝑚    b_{m}  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT    candidates in parallel to amortize computation costs across all    m   𝑚   m  italic_m    candidates at inference time. To understand our design, we compare the throughput (i.e., the number of candidates scored per second, QPS) of GRs and DLRMs based on the same hardware setups. 
+ 
+ 
+ As shown in   Figure   12   and   Figure   13  , GRs’ throughput scales in a sublinear way based on the number of ranking-stage candidates (   m   𝑚   m  italic_m   ), up to a certain region –     m  =  2048       𝑚  2048    m=2048  italic_m = 2048    in our case study – due to  batched inference  enabling cost amortization. This confirms the criticality of batched inference in causal autoregressive settings.
+Due to attention complexity scaling as     O  ⁢   (    (   n  +   b  m    )   2   )        𝑂   superscript     𝑛   subscript  𝑏  𝑚    2     O((n+b_{m})^{2})  italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT )   , leveraging multiple microbatches by itself improves throughput. Caching further eliminates redundant linear and attention computations on top of microbatching. The two combined resulted in up to 1.99x additional speedups relative to the      b  m   =  m  =  1024           subscript  𝑏  𝑚   𝑚        1024     b_{m}=m=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_m = 1024    baseline using a single microbatch, as shown in   Figure   13  . Overall, with the efficient HSTU encoder design and utilizing M-FALCON, HSTU-based Generative Recommenders  outperform  DLRMs in terms of throughput on a large-scale production setup by up to 2.99x, despite GRs being  285x more complex in terms of FLOPs . 
+ 
+  
+   Figure 12 :   End-to-end inference throughtput: DLRMs vs GRs (w/ M-FALCON) in large-scale industrial settings. Note that this figure is the same as   Figure   6  , and is reproduced here to facilitate reading.  
+ 
+  
+   Figure 13 :   End-to-end inference throughtput: M-FALCON throughput scaling, on top of the 285x FLOPs GR model, in large batch settings where    m   𝑚   m  italic_m    (total number of ranking candidates) ranges from 1024 to 16384, and      b  m   =  1024        subscript  𝑏  𝑚   1024    b_{m}=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = 1024   .  
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ Generated  on Mon May  6 02:05:23 2024 by   L a T e   XML   
+  
+ 
+ 
+
+--- MATCH at 189574 ---
+tches by itself improves throughput. Caching further eliminates redundant linear and attention computations on top of microbatching. The two combined resulted in up to 1.99x additional speedups relative to the      b  m   =  m  =  1024           subscript  𝑏  𝑚   𝑚        1024     b_{m}=m=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_m = 1024    baseline using a single microbatch, as shown in   Figure   13  . Overall, with the efficient HSTU encoder design and utilizing M-FALCON, HSTU-based Generative Recommenders  outperform  DLRMs in terms of throughput on a large-scale production setup by up to 2.99x, despite GRs being  285x more complex in terms of FLOPs . 
+ 
+  
+   Figure 12 :   End-to-end inference throughtput: DLRMs vs GRs (w/ M-FALCON) in large-scale industrial settings. Note that this figure is the same as   Figure   6  , and is reproduced here to facilitate reading.  
+ 
+  
+   Figure 13 :   End-to-end inference throughtput: M-FALCON throughput scaling, on top of the 285x FLOPs GR model, in large batch settings where    m   𝑚   m  italic_m    (total number of ranking candidates) ranges from 1024 to 16384, and      b  m   =  1024        subscript  𝑏  𝑚   1024    b_{m}=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = 1024   .  
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ Generated  on Mon May  6 02:05:23 2024 by   L a T e   XML   
+  
+ 
+ 
+ 
+
+--- MATCH at 189842 ---
+     1024     b_{m}=m=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_m = 1024    baseline using a single microbatch, as shown in   Figure   13  . Overall, with the efficient HSTU encoder design and utilizing M-FALCON, HSTU-based Generative Recommenders  outperform  DLRMs in terms of throughput on a large-scale production setup by up to 2.99x, despite GRs being  285x more complex in terms of FLOPs . 
+ 
+  
+   Figure 12 :   End-to-end inference throughtput: DLRMs vs GRs (w/ M-FALCON) in large-scale industrial settings. Note that this figure is the same as   Figure   6  , and is reproduced here to facilitate reading.  
+ 
+  
+   Figure 13 :   End-to-end inference throughtput: M-FALCON throughput scaling, on top of the 285x FLOPs GR model, in large batch settings where    m   𝑚   m  italic_m    (total number of ranking candidates) ranges from 1024 to 16384, and      b  m   =  1024        subscript  𝑏  𝑚   1024    b_{m}=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = 1024   .  
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ Generated  on Mon May  6 02:05:23 2024 by   L a T e   XML   
+  
+ 
+ 
+ 
+
+--- MATCH at 190045 ---
+encoder design and utilizing M-FALCON, HSTU-based Generative Recommenders  outperform  DLRMs in terms of throughput on a large-scale production setup by up to 2.99x, despite GRs being  285x more complex in terms of FLOPs . 
+ 
+  
+   Figure 12 :   End-to-end inference throughtput: DLRMs vs GRs (w/ M-FALCON) in large-scale industrial settings. Note that this figure is the same as   Figure   6  , and is reproduced here to facilitate reading.  
+ 
+  
+   Figure 13 :   End-to-end inference throughtput: M-FALCON throughput scaling, on top of the 285x FLOPs GR model, in large batch settings where    m   𝑚   m  italic_m    (total number of ranking candidates) ranges from 1024 to 16384, and      b  m   =  1024        subscript  𝑏  𝑚   1024    b_{m}=1024  italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = 1024   .  
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ Generated  on Mon May  6 02:05:23 2024 by   L a T e   XML   
+  
+ 
+ 
+ 
+

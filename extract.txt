@@ -1,0 +1,1193 @@
+B.1.1 Academic Research (Traditional Sequential Recommender Settings)
+B.1.2 Industrial Applications as part of Deep Learning Recommendation Models (DLRMs).
+
+
+B.2 Formulations: Ranking and Retrieval as Sequential Transduction Tasks in Generative Recommenders (GRs)
+
+
+C Evaluation: Synthetic Data
+D Evaluation: Traditional Sequential Recommender Settings
+E Evaluation: Traditional DLRM Baselines
+
+F Stochastic Length
+
+F.1 Subsequence Selection
+F.2 Impact of Stochastic Length on Sequence Sparsity
+F.3 Comparisons Against Sequence Length Extrapolation Techniques
+
+
+G Sparse Grouped GEMMs and Fused Relative Attention Bias
+
+H Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON)
+
+H.1 Evaluation of Inference Throughput: Generative Recommenders (GRs) w/ M-FALCON vs DLRMs
+
+
+
+
+
+
+
+Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations
+
+
+Jiaqi Zhai
+
+  
+Lucy Liao
+
+  
+Xing Liu
+
+  
+Yueming Wang
+
+  
+Rui Li
+
+  
+Xuan Cao
+
+  
+Leon Gao
+
+  
+Zhaojie Gong
+
+  
+Fangda Gu
+
+  
+Michael He
+
+  
+Yinghai Lu
+
+  
+Yu Shi
+
+
+
+Abstract
+Large-scale recommendation systems are characterized by their reliance on high cardinality, heterogeneous features and the need to handle tens of billions of user actions on a daily basis. Despite being trained on huge volume of data with thousands of features,
+most Deep Learning Recommendation Models (DLRMs) in industry fail to scale with compute.
+Inspired by success achieved by Transformers in language and vision domains, we revisit fundamental design choices in recommendation systems. We reformulate recommendation problems as sequential transduction tasks
+within a generative modeling framework (“Generative Recommenders”), and propose a new architecture, HSTU, designed for
+high cardinality, non-stationary streaming recommendation data.
+HSTU outperforms baselines over synthetic and public datasets by up to 65.8% in NDCG, and is 5.3x to 15.2x faster than FlashAttention2-based Transformers on 8192 length sequences.
+HSTU-based Generative Recommenders, with
+1.5 trillion parameters, improve metrics in online A/B tests by 12.4% and have been deployed on multiple surfaces of a large internet platform with billions of users. More importantly,
+the model quality of Generative Recommenders empirically scales as a power-law of training compute across three orders of magnitude,
+up to GPT-3/LLaMa-2 scale,
+which reduces carbon footprint needed for future model developments, and further paves the way for the first foundation models in recommendations.
+
+Generative Recommenders, Generative Recommendations, Sequential Recommendations, Generative Modeling, Actions Speak Louder Than Words, HSTU, Hierarchical Sequential Transduction Units, Recommendation Systems, Recommendations, Machine Learning, ICML
+
+
+
+
+
+
+1 Introduction
+
+Figure 1: Total compute used to train deep learning models over the years. DLRM results are from (Mudigere et al., 2022); GRs are deployed models from this work. DLRMs/GRs are continuously trained in a streaming setting; we report compute used per year.
+
+
+Recommendation systems, quintessential in the realm of online content platforms and e-commerce, play a pivotal role in personalizing billions of user experiences on a daily basis. State-of-the-art approaches in recommendations have been based on Deep Learning Recommendation Models (DLRMs) (Mudigere et al., 2022) for about a decade (Covington et al., 2016; Cheng et al., 2016; Zhou et al., 2018; Tang et al., 2020; Wang et al., 2021; Xia et al., 2023).
+DLRMs are characterized by their usage of heterogeneous features, such as numerical features – counters and ratios, embeddings, and categorical features such as creator ids, user ids, etc. Due to new content and products being added every minute, the feature space
+is of extreme high cardinality, often in the range of billions (Eksombatchai et al., 2018). To leverage tens of thousands of such features, DLRMs employ various neural networks to combine features, transform intermediate representations, and compose the final outputs.
+
+
+Despite utilizing extensive human-engineered feature sets and training on vast amounts of data, most DLRMs in industry scale poorly with compute (Zhao et al., 2023). This limitation is noteworthy and remains unanswered.
+
+
+Inspired by the success achieved by Transformers in language and vision, we revisit fundamental design choices in modern recommendation systems. We observe that
+alternative formulations at billion-user scale need to overcome three challenges. First, features in recommendation systems lack explicit structures. While sequential formulations have been explored in small-scale settings (detailed discussions in Appendix B),
+heterogeneous features, including high cardinality ids, cross features, counters, ratios, etc. play critical roles in industry-scale DLRMs (Mudigere et al., 2022). Second, recommendation systems use billion-scale vocabularies that change continuously. A billion-scale dynamic vocabulary, in contrast to 100K-scale static ones in language (Brown et al., 2020), creates training challenges and necessitates high inference cost given the need to consider tens of thousands of candidates in a target-aware fashion (Zhou et al., 2018; Wang et al., 2020). Finally, computational cost represents the main bottleneck in enabling large-scale sequential models. GPT-3 was trained on a total of 300B tokens over a period of 1-2 months with thousands of GPUs (Brown et al., 2020). This scale appears daunting, until we contrast it with the scale of user actions. The largest internet platforms serve billions of daily active users, who engage with billions of posts, images, and videos per day. User sequences could be of length up to 105superscript10510^{5}10 start_POSTSUPERSCRIPT 5 end_POSTSUPERSCRIPT (Chang et al., 2023). Consequentially, recommendation systems need to handle a few orders of magnitude more tokens per day than what language models process over 1-2 months.
+
+
+In this work, we treat user actions as a new modality in generative modeling. Our key insights are, a) core ranking and retrieval tasks in industrial-scale recommenders can be cast as generative modeling problems given an appropriate new feature space; b) this paradigm enables us to systematically leverage redundancies in features, training, and inference to improve efficiency. Due to our new formulation, we deployed models that are three orders of magnitude more computationally complex than prior state-of-the-art, while improving topline metrics by 12.4%, as shown in Figure 1.
+
+
+Our contributions are as follows. We first propose Generative Recommenders (GRs) in Section 2, a new paradigm replacing DLRMs. We sequentialize and unify the heterogeneous feature space in DLRMs, with the new approach approximating the full DLRM feature space as sequence length tends to infinity. This enables us to reformulate the main recommendation problems, ranking and retrieval, as pure sequential transduction tasks in GRs. Importantly, this further enables model training to be done in a sequential, generative fashion, which permits us to train on orders of magnitude more data with the same amount of compute.
+
+
+We next address computational cost challenges throughout training and inference. We propose a new sequential transduction architecture, Hierarchical Sequential Transduction Units (HSTU). HSTU modifies attention mechanism for large, non-stationary vocabulary, and exploits characteristics of recommendation datasets to achieve 5.3x to 15.2x speedup vs FlashAttention2-based Transformers on 8192 length sequences. Further, through a new algorithm, M-FALCON, that fully amortizes computational costs via micro-batching (Section 3.4), we can serve 285x more complex GR models while achieving 1.50x-2.99x speedups, all with the same inference budget used by traditional DLRMs.
+
+
+We finally validate the proposed techniques over synthetic datasets, public datasets, and deployments on multiple surfaces of a large internet platform with billions of daily active users in Section 4. To the best of our knowledge, our work represents the first result that shows pure sequential transduction-based architectures, like HSTU, in generative settings (GRs) to significantly outperform DLRMs in large-scale
+industrial settings. Remarkably, not only did we overcome known scaling bottlenecks
+in traditional DLRMs, we further succeeded in showing that scaling law (Kaplan et al., 2020) applies to recommendations, representing the potential ChatGPT moment for recommendation systems.
+
+
+
+
+2 Recommendation as Sequential Transduction Tasks: From DLRMs to GRs
+
+
+2.1 Unifying heterogeneous feature spaces in DLRMs
+
+Figure 2: Comparison of features and training procedures: DLRMs vs GRs.
+E,F,G,H𝐸𝐹𝐺𝐻E,F,G,Hitalic_E , italic_F , italic_G , italic_H denote categorical features. ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT represents the i𝑖iitalic_i-th item in the merged main time series. Ψk⁢(tj)subscriptΨ𝑘subscript𝑡𝑗\Psi_{k}(t_{j})roman_Ψ start_POSTSUBSCRIPT italic_k end_POSTSUBSCRIPT ( italic_t start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT ) denotes training example k𝑘kitalic_k emitted at time tjsubscript𝑡𝑗t_{j}italic_t start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT. Full notations can be found in Appendix A.
+
+
+Modern DLRM models are usually trained with a vast number of categorical (‘sparse’) and numerical (‘dense’) features.
+In GRs, we consolidate and encode these features into a single unified time series, as depicted in Figure 2.
+
+
+Categorical (‘sparse’) features. Examples of such features
+include items that user liked, creators in a category (e.g., Outdoors)
+that user is following, user languages, communities that user joined, cities from which requests were initiated, etc. We sequentialize these features as follows. We first select the longest time series, typically by merging the features that represent items user engaged with, as the main time series. The remaining features are generally time series that slowly change over time, such as demographics or followed creators.
+We compress these time series by keeping the earliest entry per consecutive segment and then merge the results into the main time series. Given these time series change very slowly, this approach does not significantly increase the overall sequence length.
+
+
+Numerical (‘dense’) features. Examples of such features include weighted and decayed counters, ratios, etc. For instance, one feature could represent user’s past click through rate (CTR) on items matching a given topic. Compared to categorical features, these features change much more frequently, potentially with every single (user, item) interaction. It is therefore infeasible to fully sequentialize such features from computational and storage perspectives. However,
+an important observation is that
+the categorical features (e.g., item topics, locations) over which we perform these aggregations are already sequentialized and encoded in GRs.
+Hence, we can remove numerical features in GRs given a sufficiently expressive sequential transduction architecture coupled with a target-aware formulation (Zhou et al., 2018) can meaningfully capture numerical features
+as we increase the overall sequence length and compute in GRs.
+
+
+
+
+2.2 Reformulating ranking and retrieval as sequential transduction tasks
+
+Given a list of n𝑛nitalic_n tokens x0,x1,…,xn−1subscript𝑥0subscript𝑥1…subscript𝑥𝑛1x_{0},x_{1},\ldots,x_{n-1}italic_x start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_x start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_x start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT (xi∈𝕏subscript𝑥𝑖𝕏x_{i}\in\mathbb{X}italic_x start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ∈ blackboard_X) ordered chronologically, the time when those tokens are observed t0,t1,…,tn−1subscript𝑡0subscript𝑡1…subscript𝑡𝑛1t_{0},t_{1},\ldots,t_{n-1}italic_t start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_t start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_t start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT, a sequential transduction task maps this input sequence to the output tokens y0,y1,…,yn−1subscript𝑦0subscript𝑦1…subscript𝑦𝑛1y_{0},y_{1},\ldots,y_{n-1}italic_y start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_y start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_y start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT (yi∈𝕏∪{∅}subscript𝑦𝑖𝕏y_{i}\in\mathbb{X}\cup\{\varnothing\}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ∈ blackboard_X ∪ { ∅ }), where yi=∅subscript𝑦𝑖y_{i}=\varnothingitalic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT = ∅ indicates that yisubscript𝑦𝑖y_{i}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT is undefined.
+
+
+We use Φi∈𝕏csubscriptΦ𝑖subscript𝕏𝑐\Phi_{i}\in\mathbb{X}_{c}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ∈ blackboard_X start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT (𝕏c⊆𝕏subscript𝕏𝑐𝕏\mathbb{X}_{c}\subseteq\mathbb{X}blackboard_X start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT ⊆ blackboard_X) to denote a content (e.g., images or videos) that the system provides to the user. Given new content are constantly created, 𝕏csubscript𝕏𝑐\mathbb{X}_{c}blackboard_X start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT and 𝕏𝕏\mathbb{X}blackboard_X are non-stationary. The user can respond to ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT with some action aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT (e.g., like, skip, video completion+share) ai∈𝕏subscript𝑎𝑖𝕏a_{i}\in\mathbb{X}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ∈ blackboard_X. We denote the total number of contents that a user has interacted with by ncsubscript𝑛𝑐n_{c}italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT.
+
+
+The standard ranking and retrieval tasks, in causal autoregressive settings, can then be defined as sequential transduction tasks (Table 1).
+We make the following observations:
+
+
+
+
+
+Task
+Specification (Inputs / Outputs)
+
+
+
+
+Ranking
+
+xisubscript𝑥𝑖x_{i}italic_x start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+
+Φ0,a0,Φ1,a1,…,Φnc−1,anc−1subscriptΦ0subscript𝑎0subscriptΦ1subscript𝑎1…subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT
+
+
+
+yisubscript𝑦𝑖y_{i}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+
+a0,∅,a1,∅,…,anc−1,∅subscript𝑎0subscript𝑎1…subscript𝑎subscript𝑛𝑐1a_{0},\varnothing,a_{1},\varnothing,\ldots,a_{n_{c}-1},\varnothingitalic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , ∅ , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , ∅ , … , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , ∅
+
+
+Retrieval
+
+xisubscript𝑥𝑖x_{i}italic_x start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+
+(Φ0,a0),(Φ1,a1),…,(Φnc−1,anc−1)subscriptΦ0subscript𝑎0subscriptΦ1subscript𝑎1…subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1(\Phi_{0},a_{0}),(\Phi_{1},a_{1}),\ldots,(\Phi_{n_{c}-1},a_{n_{c}-1})( roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT ) , ( roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT ) , … , ( roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT )
+
+
+yisubscript𝑦𝑖y_{i}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+Φ1′,Φ2′,…,Φnc−1′,∅superscriptsubscriptΦ1′superscriptsubscriptΦ2′…superscriptsubscriptΦsubscript𝑛𝑐1′\Phi_{1}^{\prime},\Phi_{2}^{\prime},\ldots,\Phi_{n_{c}-1}^{\prime},\varnothingroman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT , roman_Φ start_POSTSUBSCRIPT 2 end_POSTSUBSCRIPT start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT , ∅
+
+
+
+(Φi′=ΦisuperscriptsubscriptΦ𝑖′subscriptΦ𝑖\Phi_{i}^{\prime}=\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT = roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT if aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT is positive, otherwise ∅\varnothing∅)
+
+
+
+
+Table 1: Ranking and retrieval as sequential transduction tasks. Other categorical features are omitted for simplicity. We compare GRs with traditional sequential recommenders in Section B.2.
+
+
+Retrieval. In recommendation system’s retrieval stage, we learn a distribution p⁢(Φi+1|ui)𝑝conditionalsubscriptΦ𝑖1subscript𝑢𝑖p(\Phi_{i+1}|u_{i})italic_p ( roman_Φ start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT | italic_u start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ) over Φi+1∈𝕏csubscriptΦ𝑖1subscript𝕏𝑐\Phi_{i+1}\in\mathbb{X}_{c}roman_Φ start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT ∈ blackboard_X start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT, where uisubscript𝑢𝑖u_{i}italic_u start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT is the user’s representation at token i𝑖iitalic_i. A typical objective is to select arg⁢maxΦ∈𝕏c⁡p⁢(Φ|ui)subscriptargmaxΦsubscript𝕏𝑐𝑝conditionalΦsubscript𝑢𝑖\operatorname*{arg\,max}_{\Phi\in\mathbb{X}_{c}}p(\Phi|u_{i})start_OPERATOR roman_arg roman_max end_OPERATOR start_POSTSUBSCRIPT roman_Φ ∈ blackboard_X start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT end_POSTSUBSCRIPT italic_p ( roman_Φ | italic_u start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ) to maximize some reward. This differs from a standard autoregressive setup in two ways. First, the supervision for xisubscript𝑥𝑖x_{i}italic_x start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT, yisubscript𝑦𝑖y_{i}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT, is not necessarily Φi+1subscriptΦ𝑖1\Phi_{i+1}roman_Φ start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT, as users could respond negatively to Φi+1subscriptΦ𝑖1\Phi_{i+1}roman_Φ start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT. Second, yisubscript𝑦𝑖y_{i}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT is undefined when xi+1subscript𝑥𝑖1x_{i+1}italic_x start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT represents a non-engagement related categorical feature, such as demographics.
+
+
+Ranking. Ranking tasks in GRs pose unique challenges as industrial recommendation systems often require a “target-aware” formulation. In such settings, “interaction” of target, Φi+1subscriptΦ𝑖1\Phi_{i+1}roman_Φ start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT, and historical features
+needs to occur as early as possible, which is infeasible with a standard autoregressive setup where “interaction” happens late (e.g., via softmax after encoder output). We address this by interleaving items and actions in Table 1, which enables the ranking task to be formulated as p⁢(ai+1|Φ0,a0,Φ1,a1,…,Φi+1)𝑝conditionalsubscript𝑎𝑖1subscriptΦ0subscript𝑎0subscriptΦ1subscript𝑎1…subscriptΦ𝑖1p(a_{i+1}|\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{i+1})italic_p ( italic_a start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT | roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT ) (before categorical features). We apply a small neural network to transform outputs at Φi+1subscriptΦ𝑖1\Phi_{i+1}roman_Φ start_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT into multi-task predictions in practice. Importantly, this enables us to apply target-aware cross-attention to all ncsubscript𝑛𝑐n_{c}italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT engagements in one pass.
+
+
+
+
+2.3 Generative training
+
+Industrial recommenders are commonly trained in a streaming setup, where each example is processed sequentially as they become available. In this setup, the total computational requirement for self-attention based sequential transduction architectures, such as Transformers (Vaswani et al., 2017), scales as ∑ini⁢(ni2⁢d+ni⁢df⁢f⁢d)subscript𝑖subscript𝑛𝑖superscriptsubscript𝑛𝑖2𝑑subscript𝑛𝑖subscript𝑑𝑓𝑓𝑑\sum_{i}n_{i}(n_{i}^{2}d+n_{i}d_{ff}d)∑ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ( italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d + italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT italic_d start_POSTSUBSCRIPT italic_f italic_f end_POSTSUBSCRIPT italic_d ), where nisubscript𝑛𝑖n_{i}italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT is the number of tokens of user i𝑖iitalic_i, and d𝑑ditalic_d is the embedding dimension.
+The first part in the parentheses comes from self-attention, with assumed O⁢(n2)𝑂superscript𝑛2O(n^{2})italic_O ( italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT ) scaling factor due to most subquadratic algorithms involving quality tradeoffs and underperforming quadratic algorithms in wall-clock time (Dao et al., 2022). The second part comes from pointwise MLP layers, with hidden layers of size O⁢(df⁢f)=O⁢(d)𝑂subscript𝑑𝑓𝑓𝑂𝑑O(d_{ff})=O(d)italic_O ( italic_d start_POSTSUBSCRIPT italic_f italic_f end_POSTSUBSCRIPT ) = italic_O ( italic_d ). Taking N=maxi⁡ni𝑁subscript𝑖subscript𝑛𝑖N=\max_{i}n_{i}italic_N = roman_max start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT, the overall time complexity reduces to O⁢(N3⁢d+N2⁢d2)𝑂superscript𝑁3𝑑superscript𝑁2superscript𝑑2O(N^{3}d+N^{2}d^{2})italic_O ( italic_N start_POSTSUPERSCRIPT 3 end_POSTSUPERSCRIPT italic_d + italic_N start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT ), which is cost prohibitive for recommendation settings.
+
+
+To tackle the challenge of training sequential transduction models over long sequences in a scalable manner, we move from traditional impression-level training to generative training, reducing the computational complexity by an O⁢(N)𝑂𝑁O(N)italic_O ( italic_N ) factor, as shown at the top of Figure 2. By doing so, encoder costs are amortized across multiple targets. More specifically, when we sample the i𝑖iitalic_i-th user at rate su⁢(ni)subscript𝑠𝑢subscript𝑛𝑖s_{u}(n_{i})italic_s start_POSTSUBSCRIPT italic_u end_POSTSUBSCRIPT ( italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ), the total training cost now scales as
+∑isu⁢(ni)⁢ni⁢(ni2⁢d+ni⁢d2)subscript𝑖subscript𝑠𝑢subscript𝑛𝑖subscript𝑛𝑖superscriptsubscript𝑛𝑖2𝑑subscript𝑛𝑖superscript𝑑2\sum_{i}s_{u}(n_{i})n_{i}(n_{i}^{2}d+n_{i}d^{2})∑ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT italic_s start_POSTSUBSCRIPT italic_u end_POSTSUBSCRIPT ( italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ) italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ( italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d + italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT italic_d start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT ), which is reduced to O⁢(N2⁢d+N⁢d2)𝑂superscript𝑁2𝑑𝑁superscript𝑑2O(N^{2}d+Nd^{2})italic_O ( italic_N start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d + italic_N italic_d start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT ) by setting su⁢(ni)subscript𝑠𝑢subscript𝑛𝑖s_{u}(n_{i})italic_s start_POSTSUBSCRIPT italic_u end_POSTSUBSCRIPT ( italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ) to 1/ni1subscript𝑛𝑖1/n_{i}1 / italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT. One way to implement this sampling in industrial-scale systems is to emit training examples at the end of a user’s request or session, resulting in su^⁢(ni)∝1/niproportional-to^subscript𝑠𝑢subscript𝑛𝑖1subscript𝑛𝑖\hat{s_{u}}(n_{i})\propto 1/n_{i}over^ start_ARG italic_s start_POSTSUBSCRIPT italic_u end_POSTSUBSCRIPT end_ARG ( italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ) ∝ 1 / italic_n start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT.
+
+
+
+
+
+3 A High Performance Self-Attention Encoder for Generative Recommendations
+
+To scale up GRs for industrial-scale recommendation systems with large, non-stationary vocabularies, we next introduce a new
+encoder design, Hierarchical Sequential Transduction Unit (HSTU).
+HSTU consists of a stack of identical layers connected
+by residual connections (He et al., 2015).
+Each layer contains three sub-layers: Pointwise Projection (Equation 1), Spatial Aggregation (Equation 2), and Pointwise Transformation (Equation 3):
+
+
+
+U⁢(X),V⁢(X),Q⁢(X),K⁢(X)=Split⁢(ϕ1⁢(f1⁢(X)))𝑈𝑋𝑉𝑋𝑄𝑋𝐾𝑋Splitsubscriptitalic-ϕ1subscript𝑓1𝑋\small U(X),V(X),Q(X),K(X)=\text{Split}(\phi_{1}(f_{1}(X)))italic_U ( italic_X ) , italic_V ( italic_X ) , italic_Q ( italic_X ) , italic_K ( italic_X ) = Split ( italic_ϕ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT ( italic_f start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT ( italic_X ) ) )
+
+(1)
+
+
+
+
+
+A⁢(X)⁢V⁢(X)=ϕ2⁢(Q⁢(X)⁢K⁢(X)T+rabp,t)⁢V⁢(X)𝐴𝑋𝑉𝑋subscriptitalic-ϕ2𝑄𝑋𝐾superscript𝑋𝑇superscriptrab𝑝𝑡𝑉𝑋\small A(X)V(X)=\phi_{2}\left(Q(X)K(X)^{T}+\text{rab}^{p,t}\right)V(X)italic_A ( italic_X ) italic_V ( italic_X ) = italic_ϕ start_POSTSUBSCRIPT 2 end_POSTSUBSCRIPT ( italic_Q ( italic_X ) italic_K ( italic_X ) start_POSTSUPERSCRIPT italic_T end_POSTSUPERSCRIPT + rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT ) italic_V ( italic_X )
+
+(2)
+
+
+
+
+
+Y⁢(X)=f2⁢(Norm⁢(A⁢(X)⁢V⁢(X))⊙U⁢(X))𝑌𝑋subscript𝑓2direct-productNorm𝐴𝑋𝑉𝑋𝑈𝑋\small Y(X)=f_{2}\left(\text{Norm}\left(A(X)V(X)\right)\odot U(X)\right)italic_Y ( italic_X ) = italic_f start_POSTSUBSCRIPT 2 end_POSTSUBSCRIPT ( Norm ( italic_A ( italic_X ) italic_V ( italic_X ) ) ⊙ italic_U ( italic_X ) )
+
+(3)
+
+
+
+
+where fi⁢(X)subscript𝑓𝑖𝑋f_{i}(X)italic_f start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ( italic_X ) denotes an MLP; we use one linear layer, fi⁢(X)=Wi⁢(X)+bisubscript𝑓𝑖𝑋subscript𝑊𝑖𝑋subscript𝑏𝑖f_{i}(X)=W_{i}(X)+b_{i}italic_f start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ( italic_X ) = italic_W start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ( italic_X ) + italic_b start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT for f1subscript𝑓1f_{1}italic_f start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT and f2subscript𝑓2f_{2}italic_f start_POSTSUBSCRIPT 2 end_POSTSUBSCRIPT to reduce compute complexity and further batches computations for queries Q⁢(X)𝑄𝑋Q(X)italic_Q ( italic_X ), keys K⁢(X)𝐾𝑋K(X)italic_K ( italic_X ), values V⁢(X)𝑉𝑋V(X)italic_V ( italic_X ), and gating weights U⁢(X)𝑈𝑋U(X)italic_U ( italic_X ) with a fused kernel; ϕ1subscriptitalic-ϕ1\phi_{1}italic_ϕ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT and ϕ2subscriptitalic-ϕ2\phi_{2}italic_ϕ start_POSTSUBSCRIPT 2 end_POSTSUBSCRIPT denote nonlinearity, for both of which we use SiLU (Elfwing et al., 2017); Norm is layer norm; and rabp,tsuperscriptrab𝑝𝑡\text{rab}^{p,t}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT denotes relative attention bias (Raffel et al., 2020) that incorporates positional (p𝑝pitalic_p) and temporal (t𝑡titalic_t) information.
+Full notations used can be found in Table 9.
+
+
+Figure 3: Comparison of key model components: DLRMs vs GRs. The complete DLRM setup (Mudigere et al., 2022) is shown on the left side and a simplified HSTU is shown on the right.
+
+
+HSTU encoder design allows for the replacement of heterogeneous
+modules in DLRMs with a single modular block. We observe that there are, effectively, three main stages in
+DLRMs: Feature Extraction, Feature Interactions, and
+Transformations of Representations. Feature Extractions retrieves the pooled embedding representations of categorical features. Their most advanced versions can be generalized as pairwise attention and target-aware pooling (Zhou et al., 2018), which is captured with HSTU layers.
+
+
+Feature Interaction is the most critical part of DLRMs. Common approaches used include factorization machines and their neural network variants
+ (Rendle, 2010; Guo et al., 2017; Xiao et al., 2017), higher order feature interactions (Wang et al., 2021), etc. HSTU replaces feature interactions by enabling attention pooled features to directly “interact” with other features via Norm⁢(A⁢(X)⁢V⁢(X))⊙U⁢(X)direct-productNorm𝐴𝑋𝑉𝑋𝑈𝑋\text{Norm}\left(A(X)V(X)\right)\odot U(X)Norm ( italic_A ( italic_X ) italic_V ( italic_X ) ) ⊙ italic_U ( italic_X ). This design is motivated by the difficulty of approximating dot products with learned MLPs (Rendle et al., 2020; Zhai et al., 2023a). Given SiLU is applied to U⁢(X)𝑈𝑋U(X)italic_U ( italic_X ), Norm⁢(A⁢(X)⁢V⁢(X))⊙U⁢(X)direct-productNorm𝐴𝑋𝑉𝑋𝑈𝑋\text{Norm}\left(A(X)V(X)\right)\odot U(X)Norm ( italic_A ( italic_X ) italic_V ( italic_X ) ) ⊙ italic_U ( italic_X ) can also be interpreted as a variant of SwiGLU (Shazeer, 2020).
+
+
+Transformations of Representations is commonly done with Mixture of Experts (MoEs) and routing to handle diverse, heterogeneous populations. A key idea is to perform conditional computations by specializing sub-networks for different users (Ma et al., 2018; Tang et al., 2020). Element-wise dot products in HSTU can virtually perform gating operations used in MoEs up to a normalization factor.
+
+
+
+3.1 Pointwise aggregated attention
+
+HSTU adopts a new pointwise aggregated (normalized) attention mechanism (in contrast, softmax attention computes normalization factor over the entire sequence). This is motivated by two factors. First, the number of prior data points related to target serves as a strong feature indicating the intensity of user preferences, which is hard to capture after softmax normalization. This is critical as we need to predict both the intensity of engagements, e.g., time spent on a given item, and the relative ordering of the items, e.g., predicting an ordering to maximize AUC. Second, while softmax activation is robust to noise by construction, it is less suited for non-stationary vocabularies in streaming settings.
+
+
+
+The proposed pointwise aggregated attention mechanism is depicted in Equation 2.
+Importantly, layer norm is needed after pointwise pooling to stabilize training.
+One way to understand this design is through synthetic data following a Dirichlet Process that generates streaming data over a nonstationary vocabulary (details in Appendix C). In this setting, we can observe gaps as large as 44.7% between softmax and pointwise attention setups
+as shown in Table 2.
+
+
+
+
+
+Architecture
+HR@10
+HR@50
+
+
+
+
+Transformers
+.0442
+.2025
+
+
+
+HSTU (-rabp,tsuperscriptrab𝑝𝑡\text{rab}^{p,t}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT, Softmax)
+
+.0617
+.2496
+
+--
+in Equation 3.
+This simplified design
+reduces the activation memory usage to
+2⁢d+2⁢d+4⁢h⁢dq⁢k+4⁢h⁢dv+2⁢h⁢dv=14⁢d2𝑑2𝑑4ℎsubscript𝑑𝑞𝑘4ℎsubscript𝑑𝑣2ℎsubscript𝑑𝑣14𝑑2d+2d+4hd_{qk}+4hd_{v}+2hd_{v}=14d2 italic_d + 2 italic_d + 4 italic_h italic_d start_POSTSUBSCRIPT italic_q italic_k end_POSTSUBSCRIPT + 4 italic_h italic_d start_POSTSUBSCRIPT italic_v end_POSTSUBSCRIPT + 2 italic_h italic_d start_POSTSUBSCRIPT italic_v end_POSTSUBSCRIPT = 14 italic_d per layer in bfloat16.
+
+
+For comparison, Transformers use a feedforward layer and dropout after attention (intermediate state of 3⁢h⁢dv3ℎsubscript𝑑𝑣3hd_{v}3 italic_h italic_d start_POSTSUBSCRIPT italic_v end_POSTSUBSCRIPT), followed by a pointwise feedforward block consisting of layer norm, linear, activation, linear, and dropout, with intermediate states of 2⁢d+4⁢df⁢f+2⁢d+1⁢d=4⁢d+4⁢df⁢f2𝑑4subscript𝑑𝑓𝑓2𝑑1𝑑4𝑑4subscript𝑑𝑓𝑓2d+4d_{ff}+2d+1d=4d+4d_{ff}2 italic_d + 4 italic_d start_POSTSUBSCRIPT italic_f italic_f end_POSTSUBSCRIPT + 2 italic_d + 1 italic_d = 4 italic_d + 4 italic_d start_POSTSUBSCRIPT italic_f italic_f end_POSTSUBSCRIPT. Here, we make standard assumptions that h⁢dv≥dℎsubscript𝑑𝑣𝑑hd_{v}\geq ditalic_h italic_d start_POSTSUBSCRIPT italic_v end_POSTSUBSCRIPT ≥ italic_d and that df⁢f=4⁢dsubscript𝑑𝑓𝑓4𝑑d_{ff}=4ditalic_d start_POSTSUBSCRIPT italic_f italic_f end_POSTSUBSCRIPT = 4 italic_d (Vaswani et al., 2017; Brown et al., 2020). Thus, after accounting for input and input layer norm (4⁢d4𝑑4d4 italic_d) and qkv projections, the total activation states is 33⁢d33𝑑33d33 italic_d. HSTU’s design hence enables scaling to &gt;2absent2&gt;2&gt; 2x deeper layers.
+
+
+Additionally, large scale atomic ids used to represent vocabularies also require significant memory usage. With a 10b vocabulary, 512d embeddings, and Adam optimizer, storing embeddings and optimizer states in fp32 already requires 60TB memory. To alleviate memory pressure, we employ rowwise AdamW optimizers (Gupta et al., 2014; Khudia et al., 2021) and place optimizer states on DRAM, which reduces HBM usage per float from 12 bytes to 2 bytes.
+
+
+
+
+3.4 Scaling up inference via cost-amortization
+
+The last challenge we address is the large number of candidates recommendation systems need to process at serving time. We focus on ranking as for retrieval, encoder cost is fully amortizable, and efficient algorithms exist for both MIPS leveraging quantization, hashing, or partitioning (Jegou et al., 2011; Shrivastava &amp; Li, 2014; Li et al., 2002; Zhai et al., 2011) and non-MIPS cases via beam search or hierarchical retrieval (Zhuo et al., 2020; Zhai et al., 2023a).
+
+
+For ranking, we have up to tens of thousands of candidates (Covington et al., 2016; Wang et al., 2020).
+We propose an algorithm M-FALCON (Microbatched-Fast Attention Leveraging Cacheable OperatioNs) to perform inference for m𝑚mitalic_m candidates with an input sequence size of n𝑛nitalic_n.
+
+
+Within a forward pass, M-FALCON handles bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT candidates in parallel by modifying attention masks and rabp,tsuperscriptrab𝑝𝑡\text{rab}^{p,t}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT biases such that the attention operations performed for bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT candidates are exactly the same. This reduces the cost of applying cross-attention from O⁢(bm⁢n2⁢d)𝑂subscript𝑏𝑚superscript𝑛2𝑑O(b_{m}n^{2}d)italic_O ( italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) to O⁢((n+bm)2⁢d)=O⁢(n2⁢d)𝑂superscript𝑛subscript𝑏𝑚2𝑑𝑂superscript𝑛2𝑑O((n+b_{m})^{2}d)=O(n^{2}d)italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) = italic_O ( italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) when bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT can be considered a small constant relative to n𝑛nitalic_n. We optionally divide the overall m𝑚mitalic_m candidates into ⌈m/bm⌉𝑚subscript𝑏𝑚\lceil m/b_{m}\rceil⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉ microbatches of size bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT to leverage encoder-level KV caching (Pope et al., 2022) either across forward passes to reduce cost, or across requests to minimize tail latency (More detailed discussions in Appendix H).
+
+
+Overall, M-FALCON enables model complexity to linearly scale up with the number of candidates in traditional DLRMs’s ranking stages; we succeeded in applying a 285x
+more complex target-aware cross attention model at 1.5x-3x throughput with a constant inference budget for a typical ranking
+configuration discussed in Section 4.3.
+
+
+
+
+
+4 Experiments
+
+
+4.1 Validating Inductive Hypotheses of HSTU Encoder
+
+Table 4: Evaluations of methods on public datasets in multi-pass, full-shuffle settings.
+
+
+
+
+Method
+HR@10
+HR@50
+HR@200
+NDCG@10
+NDCG@200
+
+
+
+
+ML-1M
+SASRec (2023)
+.2853
+.5474
+.7528
+.1603
+.2498
+
+
+HSTU
+.3097 (+8.6%)
+.5754 (+5.1%)
+.7716 (+2.5%)
+.1720 (+7.3%)
+.2606 (+4.3%)
+
+
+HSTU-large
+.3294 (+15.5%)
+.5935 (+8.4%)
+.7839 (+4.1%)
+.1893 (+18.1%)
+.2771 (+10.9%)
+
+
+ML-20M
+SASRec (2023)
+.2906
+.5499
+.7655
+.1621
+.2521
+
+
+HSTU
+.3252 (+11.9%)
+.5885 (+7.0%)
+.7943 (+3.8%)
+.1878 (+15.9%)
+.2774 (+10.0%)
+
+
+HSTU-large
+.3567 (+22.8%)
+.6149 (+11.8%)
+.8076 (+5.5%)
+.2106 (+30.0%)
+.2971 (+17.9%)
+
+
+Books
+SASRec (2023)
+.0292
+.0729
+.1400
+.0156
+.0350
+
+
+HSTU
+.0404 (+38.4%)
+.0943 (+29.5%)
+.1710 (+22.1%)
+.0219 (+40.6%)
+.0450 (+28.6%)
+
+
+HSTU-large
+.0469 (+60.6%)
+.1066 (+46.2%)
+.1876 (+33.9%)
+.0257 (+65.8%)
+.0508 (+45.1%)
+
+
+
+
+
+
+4.1.1 Traditional Sequential Settings
+
+We first evaluate the performance of HSTU on two popular recommender datasets, MovieLens and Amazon Reviews. We follow sequential recommendation settings in literature, including full shuffle and multi-epoch training. For baseline, we use SASRec, a state-of-the-art Transformer implementation (Kang &amp; McAuley, 2018) 111Results for other baselines are reported in Appendix D.. We report Hit Rate@K and NDCG@K over the entire corpus, consistent with recent work (Dallmann et al., 2021; Zhai et al., 2023a).
+
+
+Results are presented in Table 4. “SASRec (2023)” denotes the best SASRec recipe reported in (Zhai et al., 2023a). The rows labeled
+“HSTU” use identical configurations as SASRec (same number of layers, heads, etc.). “HSTU-large” represents larger HSTU encoders (4x number of layers and 2x number of heads). Results show that a) HSTU, with its design optimized for recommendations, significantly outperforms the baseline when using the same configuration, and b) HSTU further improves performance when scaled up.
+
+
+It is important to note that the evaluation methodology used here differs significantly from industrial-scale settings, as full-shuffle and multi-epoch training are generally not practical in streaming settings used in industry (Liu et al., 2022).
+
+
+
+
+4.1.2 Industrial-scale Streaming Settings
+
+We next compare the performance of HSTU, ablated HSTUs, and transformers using
+industrial-scale datasets in a streaming setting. Throughout the rest of this section, we report Normalized Entropy (NE) (He et al., 2014) for ranking. We train the models over 100B examples (DLRM equivalent), with 64-256 H100s used per job. Given ranking is done in a multi-task setting, we report the main engagement event (“E-Task”) and the main consumption event (“C-Task”).
+In our context, we consider a 0.001 reduction in NE significant as it generally leads to .5% topline metric improvements for billions of users. For retrieval, given the setup is similar to language modeling, we report log perplexity. We fix encoder parameters in a smaller-scale setting (l=3𝑙3l=3italic_l = 3, n=2048𝑛2048n=2048italic_n = 2048, d=512𝑑512d=512italic_d = 512 for ranking and l=6𝑙6l=6italic_l = 6, n=512𝑛512n=512italic_n = 512, d=256𝑑256d=256italic_d = 256 for retrieval), and grid-search other hyperparameters due to resource limits.
+
+
+Table 5: Evaluation of HSTU, ablated HSTU, and Transformers on industrial-scale datasets in one-pass streaming settings.
+
+
+
+Architecture
+Retrieval
+Ranking (NE)
+
+
+log pplx.
+E-Task
+C-Task
+
+
+
+
+Transformers
+4.069
+NaN
+NaN
+
+
+
+HSTU (-rabp,tsuperscriptrab𝑝𝑡\text{rab}^{p,t}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT, Softmax)
+
+4.024
+.5067
+.7931
+
+
+
+HSTU (-rabp,tsuperscriptrab𝑝𝑡\text{rab}^{p,t}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT)
+
+4.021
+.4980
+.7860
+
+
+Transformer++
+4.015
+.4945
+.7822
+
+
+HSTU (original rab)
+4.029
+.4941
+.7817
+
+
+HSTU
+3.978
+.4937
+.7805
+
+
+
+
+
+We show results in Table 5. First, HSTU significantly outperforms Transformers, especially in ranking, likely due to pointwise attention and improved relative attention biases.
+Second, the gaps between the ablated HSTUs and HSTU confirm the effectiveness of our designs. Optimal learning rates are about 10x lower for Softmax-based HSTU and Transformer vs the rest due to training stability. Even with lower learning rates and pre-norm residual
+connections (Xiong et al., 2020), we encountered frequent loss explosions with standard Transformers in ranking. Finally, HSTU outperforms a popular Transformer variant used in LLMs, Transformer++ (Touvron et al., 2023a), which uses RoPE (Su et al., 2023), SwiGLU, etc. Overall, in this small-scale setting,
+HSTU shows better quality at 1.5x-2x faster wall-clock time and 50% less HBM usage.
+
+
+
+
+
+4.2 Encoder Efficiency
+
+Stochastic Length. Figure 4 and Figure 5 (a) show the impact of stochastic length (SL) on model metrics. At α=1.6𝛼1.6\alpha=1.6italic_α = 1.6, a sequence of length 4096409640964096 is turned into a sequence of length 776776776776 the majority of the time, or removing more than 80% of the tokens. Even after sparsity ratio increases to 64%-84%, the NEs we obtained for main tasks did not degrade by more than 0.002 (0.2%).
+This evidence supports that SL, for suitable α𝛼\alphaitalic_αs, does not negatively impact model quality and allows for high sparsity to reduce training cost.
+We further verify in Section F.3 that SL significantly outperforms existing length extrapolation techniques.
+--
++12.4%
++4.4%
+
+
+
+
+
+As discussed in Section 2, GRs build upon raw categorical engagement features,
+while DLRMs are typically trained with a significantly larger number of features, the majority of which
+are handcrafted from raw signals. If we give the same set of features used in GRs to DLRMs (“DLRM (abl. features)”), the performance of DLRMs is significantly degraded, which suggests GRs can meaningfully capture those features via their architecture and unified feature space.
+
+
+
+We further validate the GR formulation in Section 2.2
+by comparing it with a traditional sequential recommender setup that only considers items user interacted with (Kang &amp; McAuley, 2018) (“GR (interactions only)”). The results are significantly worse, with its ranking variant underperforming GRs by 2.6% in NE in the main consumption task.
+
+
+Considering the popularity of content-based methods (including LMs), we also include a GR baseline with only content features (“GR (content-based)”). The substantial gap in performance of content-based baselines and DLRMs/GRs underscores the significance of high cardinality user actions.
+
+
+Figure 6: Comparison of inference throughput, in the most challenging ranking setup. Full results can be found in Section H.1.
+
+
+We finally compare the efficiency of GRs with our production DLRMs in Figure 6.
+Despite the GR model being 285x more computationally complex, we
+achieved 1.50x/2.99x higher
+QPS when scoring 1024/16384 candidates, due to HSTU and the novel M-FALCON algorithm in Section 3.4.
+
+
+
+4.3.1 Scaling Law for Recommendation Systems
+
+
+
+
+
+
+
+
+Figure 7: Scalability: DLRMs vs GRs in large-scale industrial settings across retrieval (top, middle) and ranking (bottom). +0.005 in HR and -0.001 in NE represent significant improvements.
+
+
+It is commonly known that in large-scale industrial settings, DLRMs saturate in quality at certain compute and params regimes (Zhao et al., 2023).
+We compare the scalability of GRs and DLRMs to better understand this phenomenon. 
+
+
+Since feature interaction layers are crucial for DLRM’s performance (Mudigere et al., 2022), we experimented with Transformers (Vaswani et al., 2017), DHEN (Zhang et al., 2022), and a variant of DCN (Wang et al., 2021) augmented with residual connections (He et al., 2015) used in our production settings to scale up the DLRM baseline in the ranking setting. For the retrieval baseline, given our baseline used a residual setup, we scaled up hidden layer sizes, embedding dimensions, and number of layers. For HSTU-based Generative Recommenders (GRs), we scaled up the model by adjusting the hyperparameters for HSTU, including the number of residual layers, sequence length, embedding dimensions, number of attention heads, etc. We additionally adjust the number of negatives for retrieval.
+
+
+Results are shown in Figure 7.
+In the low compute regime, DLRMs might outperform GRs due to handcrafted features, corroborating the importance of feature engineering in traditional DLRMs.
+However, GRs demonstrate substantially better scalability with respect to FLOPs, whereas DLRM performance plateaus, consistent with findings in prior work. We also observe better scalability w.r.t. both embedding parameters and non-embedding parameters, with GRs leading to 1.5 trillion parameter models, whereas DLRMs performance saturate at about 200 billion parameters.
+
+
+Finally, all of our main metrics, including Hit Rate@100 and Hit Rate@500 for retrieval, and NE for ranking, empirically scale as a power law of compute used given appropriate hyperparameters. We observe this phenomenon across three orders of magnitude, up till the largest models we were able to test (8,192 sequence length, 1,024 embedding dimension, 24 layers of HSTU), at which point the total amount of compute we used (normalized over 365 days as we use a standard streaming training setting) is close to the total training compute used by GPT-3 (Brown et al., 2020) and LLaMa-2 (Touvron et al., 2023b), as shown in Figure 1. Within a reasonable range, the exact model hyperparameters play less important roles compared to the total amount of training compute applied. In contrast to language modeling (Kaplan et al., 2020), sequence length play a significantly more important role in GRs, and it’s important to scale up sequence length and other parameters in tandem. This is perhaps the most important advantage of our proposed method, as we’ve shown for the first time that scaling law from LLMs may also apply to large-scale recommendation systems.
+
+
+
+
+
+
+
+5 Related Work
+
+Prior work on sequential recommenders reduces user interactions to a single homogeneous sequence over items (Hidasi et al., 2016; Kang &amp; McAuley, 2018).
+Industrial-scale applications of sequential approaches are primarily pairwise attention (Zhou et al., 2018) or sequential encoders as part of DLRMs (Chen et al., 2019; Xia et al., 2023). Multi-stage attention has been explored in lieu of self-attention
+to improve efficiency (Chang et al., 2023). Generative approaches that represent ids as a token series have been explored in retrieval (Zhuo et al., 2020). We give a more extensive discussion of prior work in Section B.1.
+
+
+Efficient attention has been a major research focus area due to self-attention’s O⁢(n2)𝑂superscript𝑛2O(n^{2})italic_O ( italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT ) scaling factor, with major work like factorized attentions (Child et al., 2019), low-rank approximations (Katharopoulos et al., 2020), etc. Recently, alternative formulations for sequential transduction settings have been explored (Gu et al., 2022; Hua et al., 2022). HSTU’s elementwise gating design, in particular, is inspired by FLASH (Hua et al., 2022). Recent hardware-aware formulations have been shown to significantly reduce memory usage (Rabe &amp; Staats, 2021; Korthikanti et al., 2022; Zhai et al., 2023b) and give significantly better wallclock time results (Dao et al., 2022). Length extrapolation enables models trained on shorter sequences to generalize, though most work focuses on finetuning or improving bias mechanisms (Press et al., 2022). Our work instead introduces stochasticity in the length dimension, inspired by work on stochasticity in the depth dimension (Huang et al., 2016).
+
+
+Interests in large language models (LLMs) have motivated work to treat various recommendation tasks as in-context learning (Sileo et al., 2022), instruction tuning (Bao et al., 2023), or transfer learning (Li et al., 2023) on top of pretrained LLMs.
+World knowledge embedded in LLMs can be transferred to downstream tasks (Cui et al., 2022) and improve recommendations in zero-shot or few-shot cases. Textual representations of user behavior sequences have also demonstrated good scaling behaviors on medium-scale datasets (Shin et al., 2023).
+Most studies of LLMs for recommendation
+have been centered around
+low-data regimes; in large-scale settings, they have yet to outperform collaborative filtering on MovieLens (Hou et al., 2024).
+
+
+
+
+6 Conclusions
+
+We have proposed Generative Recommenders (GRs), a new paradigm that formulates ranking and retrieval as sequential transduction tasks, allowing them to be trained in a generative manner.
+This is made possible by the novel HSTU encoder design, which is 5.3x-15.2x faster than
+state-of-the-art Transformers on 8192 length sequences, and through the use of
+new training and inference algorithms such as M-FALCON.
+With GRs, we deployed
+models that are 285x more complex while using less inference compute. GRs and HSTU have led to 12.4% metric improvements in production
+and have shown superior scaling performance compared to traditional
+DLRMs.
+Our results corroborate that user actions represent an underexplored modality in generative modeling
+– to echo our title, “Actions speak louder than words”.
+
+
+The dramatic simplification of features in our work
+paves the way for the first
+foundation models for recommendations, search, and ads by enabling a unified feature space to be used across domains. The fully sequential setup of GRs also enables recommendation to be formulated in an end-to-end, generative setting. Both of these enable recommendation systems to better assist users holistically.
+
+
+Impact Statements
+
+We believe that our work has broad positive implications. Reducing reliance of recommendation, search, and ads systems on the large number of heterogeneous features can make these systems much more privacy friendly while improving user experiences. Enabling recommendation systems to attribute users’ long term outcomes to short-term decisions via fully sequential formulations could reduce the prevalence of content that do not serve users’ long term goals (including clickbaits and fake news) across the web, and better align incentives of platforms with user values. Finally, applications of foundation models and scaling law can help reduce carbon footprints incurred with model research and developments needed for recommendations, search, and related use cases.
+
+
+
+
+
+
+Acknowledgements
+
+This work represents the joint efforts of hundreds of people, and would not be possible without work from the following contributors (alphabetical order): Adnan Akhundov, Bugra Akyildiz, Shabab Ayub, Alex Bao, Renqin Cai, Jennifer Cao, Guoqiang Jerry Chen, Lei Chen, Sean Chen, Xianjie Chen, Huihui Cheng, Weiwei Chu, Ted Cui, Shiyan Deng, Nimit Desai, Fei Ding, Francois Fagan, Lu Fang, Liang Guo, Liz Guo, Jeevan Gyawali, Yuchen Hao, Daisy Shi He, Samuel Hsia, Jie Hua, Yanzun Huang, Hongyi Jia, Rui Jian, Jian Jin, Rahul Kindi, Changkyu Kim, Yejin Lee, Fu Li, Hong Li, Shen Li, Wei Li, Zhijing Li, Xueting Liao, Emma Lin, Hao Lin, Jingzhou Liu, Xingyu Liu, Kai Londenberg, Liang Luo, Linjian Ma, Matt Ma, Yun Mao, Bert Maher, Matthew Murphy, Satish Nadathur, Min Ni, Jongsoo Park, Jing Qian, Lijing Qin, Alex Singh, Timothy Shi, Dennis van der Staay, Xiao Sun, Colin Taylor, Shin-Yeh Tsai, Rohan Varma, Omkar Vichare, Alyssa Wang, Pengchao Wang, Shengzhi Wang, Wenting Wang, Xiaolong Wang, Zhiyong Wang, Wei Wei, Bin Wen, Carole-Jean Wu, Eric Xu, Bi Xue, Zheng Yan, Chao Yang, Junjie Yang, Zimeng Yang, Chunxing Yin, Daniel Yin, Yiling You, Keke Zhai, Yanli Zhao, Zhuoran Zhao, Hui Zhang, Jingjing Zhang, Lu Zhang, Lujia Zhang, Na Zhang, Rui Zhang, Xiong Zhang, Ying Zhang, Zhiyun Zhang, Charles Zheng, Erheng Zhong, Xin Zhuang. We would like to thank Shikha Kapoor, Rex Cheung, Lana Dam, Ram Ramanathan, Nipun Mathur, Bo Feng, Yanhong Wu, Zhaohui Guo, Hongjie Bai, Wen-Yun Yang, Zellux Wang, Arun Singh, Bruce Deng, Yisong Song, Haotian Wu, Meihong Wang for product support, and Joseph Laria, Akshay Hegde, Abha Jain, Raj Ganapathy for assistance with program management. Finally, we would like to thank Ajit Mathews, Shilin Ding, Hong Yan, Lars Backstrom for their leadership support, and insightful discussions with Andrew Tulloch, Liang Xiong, Kaushik Veeraraghavan, and Gaofeng Zhao.
+
+
+
+
+
+References
+
+
+Bao et al. (2023)
+
+Bao, K., Zhang, J., Zhang, Y., Wang, W., Feng, F., and He, X.
+
+
+Tallrec: An effective and efficient tuning framework to align large language model with recommendation.
+
+
+In Proceedings of the 17th ACM Conference on Recommender Systems, RecSys ’23. ACM, September 2023.
+
+
+doi: 10.1145/3604915.3608857.
+
+
+URL http://dx.doi.org/10.1145/3604915.3608857.
+
+
+
+
+Brown et al. (2020)
+
+Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G., Askell, A., Agarwal, S., Herbert-Voss, A., Krueger, G., Henighan, T., Child, R., Ramesh, A., Ziegler, D. M., Wu, J., Winter, C., Hesse, C., Chen, M., Sigler, E., Litwin, M., Gray, S., Chess, B., Clark, J., Berner, C., McCandlish, S., Radford, A., Sutskever, I., and Amodei, D.
+
+
+Language models are few-shot learners.
+
+
+2020.
+
+
+
+
+Chang et al. (2023)
+
+Chang, J., Zhang, C., Fu, Z., Zang, X., Guan, L., Lu, J., Hui, Y., Leng, D., Niu, Y., Song, Y., and Gai, K.
+
+
+Twin: Two-stage interest network for lifelong user behavior modeling in ctr prediction at kuaishou, 2023.
+
+
+
+
+Chen et al. (2019)
+
+Chen, Q., Zhao, H., Li, W., Huang, P., and Ou, W.
+
+
+Behavior sequence transformer for e-commerce recommendation in alibaba.
+
+
+In Proceedings of the 1st International Workshop on Deep Learning Practice for High-Dimensional Sparse Data, DLP-KDD ’19, New York, NY, USA, 2019. Association for Computing Machinery.
+
+
+ISBN 9781450367837.
+
+
+doi: 10.1145/3326937.3341261.
+
+
+URL https://doi.org/10.1145/3326937.3341261.
+
+
+
+
+Chen et al. (2020)
+
+Chen, T., Kornblith, S., Norouzi, M., and Hinton, G.
+
+
+A simple framework for contrastive learning of visual representations.
+
+
+In Proceedings of the 37th International Conference on Machine Learning, ICML’20, 2020.
+
+
+
+
+Cheng et al. (2016)
+
+Cheng, H.-T., Koc, L., Harmsen, J., Shaked, T., Chandra, T., Aradhye, H., Anderson, G., Corrado, G., Chai, W., Ispir, M., Anil, R., Haque, Z., Hong, L., Jain, V., Liu, X., and Shah, H.
+
+
+Wide &amp; deep learning for recommender systems.
+
+
+In Proceedings of the 1st Workshop on Deep Learning for Recommender Systems, DLRS 2016, pp.  7–10, 2016.
+
+
+ISBN 9781450347952.
+
+
+
+
+Child et al. (2019)
+
+Child, R., Gray, S., Radford, A., and Sutskever, I.
+
+
+Generating long sequences with sparse transformers.
+
+
+CoRR, abs/1904.10509, 2019.
+
+
+URL http://arxiv.org/abs/1904.10509.
+
+
+
+
+Covington et al. (2016)
+
+Covington, P., Adams, J., and Sargin, E.
+
+
+Deep neural networks for youtube recommendations.
+
+
+In Proceedings of the 10th ACM Conference on Recommender Systems, RecSys ’16, pp.  191–198, 2016.
+
+
+ISBN 9781450340359.
+
+
+
+
+Cui et al. (2022)
+
+Cui, Z., Ma, J., Zhou, C., Zhou, J., and Yang, H.
+
+
+M6-rec: Generative pretrained language models are open-ended recommender systems, 2022.
+
+
+
+
+Dallmann et al. (2021)
+
+Dallmann, A., Zoller, D., and Hotho, A.
+
+
+A case study on sampling strategies for evaluating neural sequential item recommendation models.
+
+
+In Proceedings of the 15th ACM Conference on Recommender Systems, RecSys ’21, pp.  505–514, 2021.
+
+
+ISBN 9781450384582.
+
+
+
+
+Dao (2023)
+
+Dao, T.
+
+
+Flashattention-2: Faster attention with better parallelism and work partitioning, 2023.
+
+
+
+
+Dao et al. (2022)
+
+Dao, T., Fu, D. Y., Ermon, S., Rudra, A., and Ré, C.
+
+
+FlashAttention: Fast and memory-efficient exact attention with IO-awareness.
+--
+The operation that splits a tensor into chunks. ϕ1(f1(X)))∈ℝN×(2⁢h⁢dq⁢k+2⁢h⁢dv)\phi_{1}(f_{1}(X)))\in\mathbb{R}^{N\times(2hd_{qk}+2hd_{v})}italic_ϕ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT ( italic_f start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT ( italic_X ) ) ) ∈ blackboard_R start_POSTSUPERSCRIPT italic_N × ( 2 italic_h italic_d start_POSTSUBSCRIPT italic_q italic_k end_POSTSUBSCRIPT + 2 italic_h italic_d start_POSTSUBSCRIPT italic_v end_POSTSUBSCRIPT ) end_POSTSUPERSCRIPT in Equation 1; we obtain U⁢(X)𝑈𝑋U(X)italic_U ( italic_X ), V⁢(X)𝑉𝑋V(X)italic_V ( italic_X ) (both of shape h×N×dvℎ𝑁subscript𝑑𝑣h\times N\times d_{v}italic_h × italic_N × italic_d start_POSTSUBSCRIPT italic_v end_POSTSUBSCRIPT), Q⁢(X)𝑄𝑋Q(X)italic_Q ( italic_X ), K⁢(X)𝐾𝑋K(X)italic_K ( italic_X ) (both of shape h×N×dq⁢kℎ𝑁subscript𝑑𝑞𝑘h\times N\times d_{qk}italic_h × italic_N × italic_d start_POSTSUBSCRIPT italic_q italic_k end_POSTSUBSCRIPT) by splitting the larger tensor (and permuting dimensions) with U⁢(X),V⁢(X),Q⁢(X),K⁢(X)=Split⁢(ϕ1⁢(f1⁢(X)))𝑈𝑋𝑉𝑋𝑄𝑋𝐾𝑋Splitsubscriptitalic-ϕ1subscript𝑓1𝑋U(X),V(X),Q(X),K(X)=\text{Split}(\phi_{1}(f_{1}(X)))italic_U ( italic_X ) , italic_V ( italic_X ) , italic_Q ( italic_X ) , italic_K ( italic_X ) = Split ( italic_ϕ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT ( italic_f start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT ( italic_X ) ) ).
+
+
+rabp,tsuperscriptrab𝑝𝑡\text{rab}^{p,t}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT
+relative attention bias that incorporates both positional (Raffel et al., 2020) and temporal information (based on the time when the tokens are observed, t0,…,tn−1subscript𝑡0…subscript𝑡𝑛1t_{0},\ldots,t_{n-1}italic_t start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , italic_t start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT; one possible implementation is to apply some bucketization function to (tj−ti)subscript𝑡𝑗subscript𝑡𝑖(t_{j}-t_{i})( italic_t start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT - italic_t start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT ) for (i,j)𝑖𝑗(i,j)( italic_i , italic_j )). In practice, we share rabp,tsuperscriptrab𝑝𝑡\text{rab}^{p,t}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT across different attention heads within a layer, hence rabp,t∈ℝ1×N×Nsuperscriptrab𝑝𝑡superscriptℝ1𝑁𝑁\text{rab}^{p,t}\in\mathbb{R}^{1\times N\times N}rab start_POSTSUPERSCRIPT italic_p , italic_t end_POSTSUPERSCRIPT ∈ blackboard_R start_POSTSUPERSCRIPT 1 × italic_N × italic_N end_POSTSUPERSCRIPT.
+
+
+α𝛼\alphaitalic_α
+Parameter controlling sparsity in the Stochastic Length algorithm used in HSTU (Section 3.2).
+
+
+R𝑅Ritalic_R
+Register size on GPUs, in the context of the HSTU algorithm discussed in Section 3.2.
+
+
+m𝑚mitalic_m
+Number of candidates considered in a recommendation system’s ranking stage.
+
+
+bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT
+Microbatch size, in the M-FALCON algorithm discussed in Section 3.4.
+
+
+
+Table 9: Table of Notations (continued)
+
+
+
+
+Appendix B Generative Recommenders: Background and Formulations
+
+Many readers are likely more familiar with classical Deep Learning Recommendation Models (DLRMs) (Mudigere et al., 2022) given its popularity from YouTube DNN days (Covington et al., 2016) and its widespread usage in every single large online content and e-commerce platform (Cheng et al., 2016; Zhou et al., 2018; Wang et al., 2021; Chang et al., 2023; Xia et al., 2023; Zhai et al., 2023a). DLRMs operate on top of heterogeneous feature spaces using various neural networks including feature interaction modules (Guo et al., 2017; Xiao et al., 2017; Wang et al., 2021), sequential pooling or target-aware pairwise attention modules (Hidasi et al., 2016; Zhou et al., 2018; Chang et al., 2023) and advanced multi-expert multi-task modules (Ma et al., 2018; Tang et al., 2020). We hence provided an overview of Generative Recommenders (GRs) by contrasting them with classical DLRMs explicitly in Section 2 and Section 3. In this section, we give the readers an alternative perspective starting from the classical sequential recommender literature.
+
+
+
+B.1 Background: Sequential Recommendations in Academia and Industry
+
+
+B.1.1 Academic Research (Traditional Sequential Recommender Settings)
+
+Recurrent neural networks (RNNs) were first applied to recommendation scenarios in GRU4Rec (Hidasi et al., 2016). Hidasi et al. (2016) considered Gated Recurrent Units (GRUs) and applied them over two datasets, RecSys Challenge 2015 222http://2015.recsyschallenge.com/ and VIDEO (a proprietary dataset). In both cases, only positive events (clicked e-commerce items or videos where users spent at least a certain amount of time watching) were kept as part of the input sequence. We further observe that in a classical industrial-scale two-stage recommendation system setup consisting of retrieval and ranking stages (Covington et al., 2016), the task that Hidasi et al. (2016) solved primarily maps to the retrieval task.
+
+
+Transformers, sequential transduction architectures, and their variants. Advances in sequential transduction architectures in later years, in particular Transformers (Vaswani et al., 2017), have motivated similar advancements in recommendation systems. SASRec (Kang &amp; McAuley, 2018) first applied Transformers in an autoregressive setting. They considered the presence of a review or rating as positive feedback, thereby converting classical datasets like Amazon Reviews 333https://jmcauley.ucsd.edu/data/amazon/ and MovieLens 444https://grouplens.org/datasets/movielens/1m/, https://grouplens.org/datasets/movielens/20m/ to sequences of positive items, similar to GRU4Rec. A binary cross entropy loss was employed, where positive target is defined as the next “positive” item (recall this is in essence just presence of a review or rating), and negative target is randomly sampled from the item corpus 𝕏=𝕏c𝕏subscript𝕏𝑐\mathbb{X}=\mathbb{X}_{c}blackboard_X = blackboard_X start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT.
+
+
+Most subsequent research were built upon similar settings as GRU4Rec (Hidasi et al., 2016) and SASRec (Kang &amp; McAuley, 2018) discussed above, such as BERT4Rec (Sun et al., 2019) applying bidirectional encoder setting from BERT (Devlin et al., 2019), S3Rec (Zhou et al., 2020) introducing an explicit pre-training stage, and so on.
+
+
+
+
+B.1.2 Industrial Applications as part of Deep Learning Recommendation Models (DLRMs).
+
+Sequential approaches, including sequential encoders and pairwise attention modules, have been widely applied in industrial settings due to their ability to enhance user representations as part of DLRMs. DLRMs commonly use relatively small sequence lengths, such as 20 in BST (Chen et al., 2019), 1,000 in DIN (Zhou et al., 2018), and 100 in TransAct (Xia et al., 2023). We observe that these are 1-3 orders of magnitude smaller compared with 8,192 in this work (Section 4.3).
+
+
+Despite using short sequence lengths, most DLRMs can successfully capture long-term user preferences. This can be attributed to two key aspects. First, precomputed user profiles/embeddings (Xia et al., 2023) or external vector stores (Chang et al., 2023) are commonly used in modern DLRMs, both of which effectively extend lookback windows. Second, a significant number of contextual-, user-, and item-side features were generally employed (Zhou et al., 2018; Chen et al., 2019; Chang et al., 2023; Xia et al., 2023) and various heterogeneous networks, such as FMs (Xiao et al., 2017; Guo et al., 2017), DCNs (Wang et al., 2021), MoEs, etc. are used to transform representations and combine outputs.
+
+
+In contrast to sequential settings discussed in Section B.1.1, all major industrial work defines loss over (user/request, candidate item) pairs. In the ranking setting, a multi-task binary cross-entropy loss is commonly used. In the retrieval setting, two tower setting (Covington et al., 2016) remains the dominant approach. Recent work has investigated representing the next item to recommend as a probability distribution over a sequence of (sub-)tokens, such as OTM (Zhuo et al., 2020), and DR (Gao et al., 2021) (note that in other recent work, the same setting is sometimes denoted as “generative retrieval”). They commonly utilize beam search to decode the item from sub-tokens. Advanced learned similarity functions, such as mixture-of-logits (Zhai et al., 2023a), have also been proposed and deployed as an alternative to two-tower setting and beam search given proliferation of modern accelerators such as GPUs, custom ASICs, and TPUs.
+
+
+From a problem formulation perspective, we consider all work discussed above part of DLRMs (Mudigere et al., 2022) given the model architectures, features used, and losses used differ significantly from academic sequential recommender research discussed in Section B.1.1. It’s also worth remarking that there have been no successful applications of fully sequential ranking settings in industry, especially not at billion daily active users (DAU) scale, prior to this work.
+
+
+
+
+
+B.2 Formulations: Ranking and Retrieval as Sequential Transduction Tasks in Generative Recommenders (GRs)
+
+We next discuss three limitations in the traditional sequential recommender settings and DLRM settings, and how Generative Recommenders (GRs) address them from a problem formulation perspective.
+
+
+Ignorance of features other than user-interacted items. Past sequential formulations only consider contents (items) users explicitly interacted with (Hidasi et al., 2016; Kang &amp; McAuley, 2018; Sun et al., 2019; Zhou et al., 2020), while industry-scale recommendation systems prior to GRs are trained over a vast number of features to enhance the representation of users and contents (Covington et al., 2016; Cheng et al., 2016; Zhou et al., 2018; Chen et al., 2019; Chang et al., 2023; Xia et al., 2023; Zhai et al., 2023a). GR addresses this limitation by a) compressing other categorical features and merging them with the main time series, and b) capturing numerical features through cross-attention interaction utilizing a target-aware formulation as discussed in Section 2.1 and Figure 2. We validate this by showing that the traditional “interaction-only” formulation that ignores such features degrades model quality significantly; experiment results can be found in the rows labeled “GR (interactions only)” in Table 7 and Table 6, where we show utilizing only interaction history led to a 1.3% decrease in hit rate@100 for retrieval and a 2.6% NE decrease in ranking (recall a 0.1% change in NE is significant, as discussed in Sections 4.1.2 and 4.3.1).
+
+
+User representations are computed in a target-independent setting. A second issue is most traditional sequential recommenders, including GRU4Rec (Hidasi et al., 2016), SASRec (Kang &amp; McAuley, 2018), BERT4Rec (Sun et al., 2019), S3Rec (Zhou et al., 2020), etc. are formulated in a target-independent fashion where for a target item ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT, Φ0,Φ1,…,Φi−1subscriptΦ0subscriptΦ1…subscriptΦ𝑖1\Phi_{0},\Phi_{1},\ldots,\Phi_{i-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_i - 1 end_POSTSUBSCRIPT are used as encoder input to compute user representations, which is then used to
+provide predictions. In contrast, most major DLRM approaches used in industrial settings formulated the sequential modules used in a target-aware fashion, with the ability to incorporate “target” (ranking candidate) information into the user representations. These include DIN (Zhou et al., 2018) (Alibaba), BST (Chen et al., 2019) (Alibaba), TWIN (Chang et al., 2023) (Kwai), and TransAct (Xia et al., 2023) (Pinterest).
+
+
+Generative Recommenders (GRs) combines the best of both worlds by interleaving the content and action sequences (Section 2.2) to enable applying target-aware attention in causal, autoregressive settings. We categorize and contrast prior work and this work in Table 10 555Most large-scale industrial recommenders need to be trained in a streaming/single-pass setting due to vast amount of logged data..
+
+
+
+
+
+
+Input for target item i𝑖iitalic_i
+Expected output for target item i𝑖iitalic_i
+Architecture
+Training Procedure
+
+
+GRs
+Φ0,a0,Φ1,a1,…,ΦisubscriptΦ0subscript𝑎0subscriptΦ1subscript𝑎1…subscriptΦ𝑖\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{i}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT
+aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT (target-aware)
+Self-attention (HSTU)
+Causal autoregressive (streaming/single-pass)
+
+
+GRU4Rec
+Φ0,Φ1,…,Φi−1subscriptΦ0subscriptΦ1…subscriptΦ𝑖1\Phi_{0},\Phi_{1},\ldots,\Phi_{i-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_i - 1 end_POSTSUBSCRIPT
+ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT
+RNNs (GRUs)
+Causal autoregressive (multi-pass)
+
+
+SASRec
+Self-attention (Transformers)
+
+
+BERT4Rec
+Φ0,Φ1,…,Φi−1subscriptΦ0subscriptΦ1…subscriptΦ𝑖1\Phi_{0},\Phi_{1},\ldots,\Phi_{i-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_i - 1 end_POSTSUBSCRIPT (at inference time)
+ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT
+Self-attention (Transformers)
+Sequential multi-pass 666BERT4Rec leverages multi-pass training with a mixture of Cloze and pointwise (last item) supervision losses; S3Rec utilizes multi-pass training with pre-training and finetuning as two separate stages.
+
+
+S3Rec
+
+
+DIN
+Φ0,Φ1,…,ΦisubscriptΦ0subscriptΦ1…subscriptΦ𝑖\Phi_{0},\Phi_{1},\ldots,\Phi_{i}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT
+aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT (target aware, implicitly as part of DLRMs)
+Pairwise attention
+Pointwise (generally streaming/single pass)
+
+
+BST
+Self-attention (Transformers)
+
+
+TWIN
+Two-stage pairwise attention
+
+
+TransAct
+(Φ0,a0),…,(Φi−1,ai−1),ΦisubscriptΦ0subscript𝑎0…subscriptΦ𝑖1subscript𝑎𝑖1subscriptΦ𝑖(\Phi_{0},a_{0}),\ldots,(\Phi_{i-1},a_{i-1}),\Phi_{i}( roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT ) , … , ( roman_Φ start_POSTSUBSCRIPT italic_i - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_i - 1 end_POSTSUBSCRIPT ) , roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT
+Self-attention (Transformers)
+
+
+
+Table 10: Comparison of prior work on sequential recommenders and GRs, in the ranking setting, with DLRMs included for completeness.
+
+
+Discriminative formulations restrict applicability of prior sequential recommender work to pointwise settings. Finally, traditional sequential recommenders are discriminative by design. Existing sequential recommender literature, including seminal work such as GRU4Rec and SASRec, model p⁢(Φi|Φ0,a0,…,Φi−1,ai−1)𝑝conditionalsubscriptΦ𝑖subscriptΦ0subscript𝑎0…subscriptΦ𝑖1subscript𝑎𝑖1p(\Phi_{i}|\Phi_{0},a_{0},\ldots,\Phi_{i-1},a_{i-1})italic_p ( roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT | roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_i - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_i - 1 end_POSTSUBSCRIPT ), or the conditional distribution of the next item to recommend given users’ current states. On the other hand, we observe that there are two probabilistic processes in standard recommendation systems, namely the process of the recommendation system suggesting a content ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT (e.g., some photo or video) to the user, and the process of the user reacting to the suggested content ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT via some action aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT (which can be a combination of like, video completion, skip, etc.).
+
+
+A generative approach needs to model the joint distribution over the sequence of suggested contents and user actions, or p⁢(Φ0,a0,Φ1,a1,…,Φnc−1,anc−1)𝑝subscriptΦ0subscript𝑎0subscriptΦ1subscript𝑎1…subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1p(\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1})italic_p ( roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT ), as discussed in Section 2.2. Our proposal of Generative Recommenders enables modeling of such distributions, as shown in Table 11 (Figure 8). Note that the next action token (aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT) prediction task is exactly the GR ranking setting discussed in Table 1, whereas the next content (ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT) prediction task is similar to the retrieval setting adapted to the interleaved setting, with the target changed in order to learn the input data distribution.
+
+
+
+
+
+Task
+Specification (Inputs / Outputs / Length)
+
+
+
+
+Next action token (aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT) prediction
+
+xisubscript𝑥𝑖x_{i}italic_x start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+
+<math alttext="\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{n_{c}-2},a_{n_{c}-2},\Phi_{n_{c}-1}%
+,a_{n_{c}-1}" class="ltx_Math" display="inline" id="A2.T11.3.3.3.3.m1.9">Φ0,a0,Φ1,a1,…,Φnc−2,anc−2,Φnc−1,anc−1subscriptΦ0subscript𝑎0subscriptΦ1subscript𝑎1…subscriptΦsubscript𝑛𝑐2subscript𝑎subscript𝑛𝑐2subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{n_{c}-2},a_{n_{c}-2},\Phi_{n_{c}-1}%
+,a_{n_{c}-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 2 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 2 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT
+
+
+
+yisubscript𝑦𝑖y_{i}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+
+a0,∅,a1,∅,…,anc−2,∅,anc−1,∅subscript𝑎0subscript𝑎1…subscript𝑎subscript𝑛𝑐2subscript𝑎subscript𝑛𝑐1a_{0},\varnothing,a_{1},\varnothing,\ldots,a_{n_{c}-2},\varnothing,a_{n_{c}-1},\varnothingitalic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , ∅ , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , ∅ , … , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 2 end_POSTSUBSCRIPT , ∅ , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , ∅
+
+
+n𝑛nitalic_n
+2⁢nc2subscript𝑛𝑐2n_{c}2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT
+
+
+Next content token (ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT) prediction
+
+xisubscript𝑥𝑖x_{i}italic_x start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+
+<math alttext="\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{n_{c}-2},a_{n_{c}-2},\Phi_{n_{c}-1}%
+,a_{n_{c}-1}" class="ltx_Math" display="inline" id="A2.T11.10.10.10.3.m1.9">Φ0,a0,Φ1,a1,…,Φnc−2,anc−2,Φnc−1,anc−1subscriptΦ0subscript𝑎0subscriptΦ1subscript𝑎1…subscriptΦsubscript𝑛𝑐2subscript𝑎subscript𝑛𝑐2subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1\Phi_{0},a_{0},\Phi_{1},a_{1},\ldots,\Phi_{n_{c}-2},a_{n_{c}-2},\Phi_{n_{c}-1}%
+,a_{n_{c}-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 2 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 2 end_POSTSUBSCRIPT , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT
+
+
+yisubscript𝑦𝑖y_{i}italic_y start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs
+<math alttext="\varnothing,\Phi_{1},\varnothing,\Phi_{2},\ldots,\varnothing,\Phi_{n_{c}-1},%
+\varnothing,\varnothing" class="ltx_Math" display="inline" id="A2.T11.12.12.12.2.m1.9">∅,Φ1,∅,Φ2,…,∅,Φnc−1,∅,∅subscriptΦ1subscriptΦ2…subscriptΦsubscript𝑛𝑐1\varnothing,\Phi_{1},\varnothing,\Phi_{2},\ldots,\varnothing,\Phi_{n_{c}-1},%
+\varnothing,\varnothing∅ , roman_Φ start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , ∅ , roman_Φ start_POSTSUBSCRIPT 2 end_POSTSUBSCRIPT , … , ∅ , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , ∅ , ∅
+
+
+n𝑛nitalic_n
+2⁢nc2subscript𝑛𝑐2n_{c}2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT
+
+
+
+Table 11: Generative modeling over p⁢(Φ0,a0,…,Φnc−1,anc−1)𝑝subscriptΦ0subscript𝑎0…subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1p(\Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1})italic_p ( roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT ). An illustration is provided in Figure 8.
+
+
+
+
+
+
+Figure 8: Comparison of traditional sequential recommenders (left) and Generative Recommenders (right). We illustrate sequential recommenders in causal autoregressive settings and GRs without contextual features to facilitate comparison. On the left hand side, the action types aisubscript𝑎𝑖a_{i}italic_a start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs are either ignored or combined with item information ΦisubscriptΦ𝑖\Phi_{i}roman_Φ start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPTs using MLPs, before going into self-attention blocks.
+
+
+Importantly, this formulation not only enables proper modeling of data distribution but further enables sampling sequences of items to recommend to the user directly via e.g., beam search. We hypothesize that this will lead to a superior approach compared with traditional listwise settings (e.g., DPP (Gillenwater et al., 2014) and RL (Zhao et al., 2018)), and we leave the full formulation and evaluation of such systems (briefly discussed in Section 6) as a future work.
+
+
+
+
+
+Appendix C Evaluation: Synthetic Data
+
+As previously discussed in Section 3.1, standard softmax attention, due to its normalization factor, makes it challenging to capture intensity of user preferences which is important for user representation learning. This aspect is important in recommendation scenarios as the system may need to predict the intensity of engagements (e.g., number of future positive actions on a particular topic) in addition to the relative ordering of items.
+
+
+To understand this behavior, we construct synthetic data following a Dirichlet Process that generates streaming data over a dynamic set of vocabulary. Dirichlet Process captures the behavior that ‘rich gets richer‘ in user engagement histories. We set up the synthetic experiment as follows:
+--
+
+Table 16: Comparisons of Stochastic Length (SL) vs existing Length Extrapolation methods.
+
+
+
+
+
+Appendix G Sparse Grouped GEMMs and Fused Relative Attention Bias
+
+We provide additional information about the efficient HSTU attention kernel
+that was introduced in Section 3.2.
+Our approach builds upon Memory-efficient Attention (Rabe &amp; Staats, 2021) and FlashAttention (Dao et al., 2022), and is a memory-efficient self-attention mechanism that divides the input into blocks and avoids materializing the large h×N×Nℎ𝑁𝑁h\times N\times Nitalic_h × italic_N × italic_N intermediate attention tensors for the backward pass. By exploiting the sparsity of input sequences,
+we can reformulate the attention computation as a group of back-to-back GEMMs
+with different shapes. We implement efficient GPU kernels to accelerate this computation. The construction of the relative attention bias is also a bottleneck due to memory accesses.
+To address this issue, we have fused the relative bias construction and the grouped GEMMs into a single GPU kernel and managed to accumulate gradients using GPU’s fast shared memory in the backward pass. Although our algorithm requires recomputing attention and relative bias in the backward pass, it is significantly faster and uses less memory than the standard approach used in Transformers.
+
+
+
+
+
+Appendix H Microbatched-Fast Attention Leveraging Cacheable OperatioNs (M-FALCON)
+
+In this section, we provide a detailed description of the M-FALCON algorithm discussed in Section 3.4. We give pseudocode for M-FALCON in Algorithm 1. M-FALCON introduces three key ideas.
+
+
+
+
+
+(a) GR’s ranking model training (with n=2⁢nc𝑛2subscript𝑛𝑐n=2n_{c}italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT tokens), in causal autoregressive settings.
+
+
+(b) GR’s ranking model inference utilizing the M-FALCON algorithm.
+Figure 11: Illustration of the M-FALCON algorithm. Top: model training in GR’s target-aware formulation. Bottom: model inference with m𝑚mitalic_m candidates Φ0′,…,Φm−1′subscriptsuperscriptΦ′0…subscriptsuperscriptΦ′𝑚1\Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT, divided into ⌈m/bm⌉𝑚subscript𝑏𝑚\lceil m/b_{m}\rceil⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉ microbatches, where we show model inference for the first microbatch Φ0′,…,Φbm−1′subscriptsuperscriptΦ′0…subscriptsuperscriptΦ′subscript𝑏𝑚1\Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT (with 2⁢nc+bm2subscript𝑛𝑐subscript𝑏𝑚2n_{c}+b_{m}2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT total tokens after Φ0,a0,…,Φnc−1,anc−1subscriptΦ0subscript𝑎0…subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1\Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT are taken into account) above the dotted line. Note that the self-attention algorithm is modified such that Φi′subscriptsuperscriptΦ′𝑖\Phi^{\prime}_{i}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT cannot attend to Φj′subscriptsuperscriptΦ′𝑗\Phi^{\prime}_{j}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT when i≠j𝑖𝑗i\neq jitalic_i ≠ italic_j – this is highlighted with “×\times×” in the figure.
+
+
+Batched inference can be applied to causal autoregressive settings. The ranking task in GR is formulated in a target aware fashion as discussed Section 2.2. Common wisdom suggests that in a target-aware setting, we need to perform inference for one item at a time, with a cost of O⁢(m⁢n2⁢d)𝑂𝑚superscript𝑛2𝑑O(mn^{2}d)italic_O ( italic_m italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) for m𝑚mitalic_m candidates and a sequence length of n𝑛nitalic_n. Here we show that this is not the optimal solution; even with vanilla Transformers, we can modify the attention mask used in self-attention to batch such operations (“batched inference”) and reduce cost to O⁢((n+m)2⁢d)=O⁢(n2⁢d)𝑂superscript𝑛𝑚2𝑑𝑂superscript𝑛2𝑑O((n+m)^{2}d)=O(n^{2}d)italic_O ( ( italic_n + italic_m ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) = italic_O ( italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ).
+
+
+An illustration is provided in Figure 11. Here, both Figure 11 (a) and (b) involve an attention mask matrix for causal autoregressive settings. The key difference is that Figure 11 (a) uses a standard lower triangular matrix of size 2⁢nc2subscript𝑛𝑐2n_{c}2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT for causal training, whereas Figure 11 (b) modifies a lower triangular matrix of size 2⁢nc+bm2subscript𝑛𝑐subscript𝑏𝑚2n_{c}+b_{m}2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT by setting entries for (i,j)𝑖𝑗(i,j)( italic_i , italic_j )s where i,j≥2⁢nc,i≠jformulae-sequence𝑖𝑗2subscript𝑛𝑐𝑖𝑗i,j\geq 2n_{c},i\neq jitalic_i , italic_j ≥ 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT , italic_i ≠ italic_j to False or −∞-\infty- ∞ to prevent target positions Φ0′,…,Φbm−1′subscriptsuperscriptΦ′0…subscriptsuperscriptΦ′subscript𝑏𝑚1\Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{b_{m}-1}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT from attending to each other. It is easy to see that by doing so, the output of the self-attention block for Φi′subscriptsuperscriptΦ′𝑖\Phi^{\prime}_{i}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT, ai′subscriptsuperscript𝑎′𝑖a^{\prime}_{i}italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT, only depends on Φ0,a0,…,Φnc−1,anc−1subscriptΦ0subscript𝑎0…subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1\Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1}roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT, but not on Φj′subscriptsuperscriptΦ′𝑗\Phi^{\prime}_{j}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_j end_POSTSUBSCRIPT (i≠j𝑖𝑗i\neq jitalic_i ≠ italic_j). In other words, by making a forward pass over (2⁢nc+bm)2subscript𝑛𝑐subscript𝑏𝑚(2n_{c}+b_{m})( 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) tokens using the modified attention mask, we can now obtain the same results for the last bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT tokens as if we’ve made bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT separate forward passes over (2⁢nc+1)2subscript𝑛𝑐1(2n_{c}+1)( 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT + 1 ) tokens, with Φi′subscriptsuperscriptΦ′𝑖\Phi^{\prime}_{i}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT placed at the 2⁢nc2subscript𝑛𝑐2n_{c}2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT-th (0-based) position during the i𝑖iitalic_i-th forward pass utilizing a standard causal attention mask.
+
+
+Microbatching scales batched inference to large candidate sets. Ranking stage may need to deal with a large number of ranking candidates, up to tens of thousands (Wang et al., 2020). We can divide the overall m𝑚mitalic_m candidates into ⌈m/bm⌉𝑚subscript𝑏𝑚\lceil m/b_{m}\rceil⌈ italic_m / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ⌉ microbatches of size bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT such that O⁢(bm)=O⁢(n)𝑂subscript𝑏𝑚𝑂𝑛O(b_{m})=O(n)italic_O ( italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) = italic_O ( italic_n ), which retains the O⁢((n+m)2⁢d)=O⁢(n2⁢d)𝑂superscript𝑛𝑚2𝑑𝑂superscript𝑛2𝑑O((n+m)^{2}d)=O(n^{2}d)italic_O ( ( italic_n + italic_m ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) = italic_O ( italic_n start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) running time previously discussed for most practical recommender settings, up to tens of thousands of candidates.
+
+
+Encoder-level caching enables compute sharing within and across requests. Finally, KV caching (Pope et al., 2022) can be applied both within and across requests. For instance, for the HSTU model presented in this work (Section 3), K⁢(X)𝐾𝑋K(X)italic_K ( italic_X ) and V⁢(X)𝑉𝑋V(X)italic_V ( italic_X ) are fully cachable across microbatches within and/or across requests. For a cached forward pass, we only need to compute U⁢(X)𝑈𝑋U(X)italic_U ( italic_X ), Q⁢(X)𝑄𝑋Q(X)italic_Q ( italic_X ), K⁢(X)𝐾𝑋K(X)italic_K ( italic_X ), and V⁢(X)𝑉𝑋V(X)italic_V ( italic_X ) for the last bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT tokens, while reusing cached K⁢(X)𝐾𝑋K(X)italic_K ( italic_X ) and V⁢(X)𝑉𝑋V(X)italic_V ( italic_X ) for the sequentialized user history containing n𝑛nitalic_n tokens. f2⁢(Norm⁢(A⁢(X)⁢V⁢(X))⊙U⁢(X))subscript𝑓2direct-productNorm𝐴𝑋𝑉𝑋𝑈𝑋f_{2}(\text{Norm}{(A(X)V(X))}\odot U(X))italic_f start_POSTSUBSCRIPT 2 end_POSTSUBSCRIPT ( Norm ( italic_A ( italic_X ) italic_V ( italic_X ) ) ⊙ italic_U ( italic_X ) ) similarly only needs to be recomputed for the bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT candidates. This reduces the cached forward pass’s computational complexity to O⁢(bm⁢d2+bm⁢n⁢d)𝑂subscript𝑏𝑚superscript𝑑2subscript𝑏𝑚𝑛𝑑O(b_{m}d^{2}+b_{m}nd)italic_O ( italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_d start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_n italic_d ), which significantly improves upon O⁢((n+bm)⁢d2+(n+bm)2⁢d)𝑂𝑛subscript𝑏𝑚superscript𝑑2superscript𝑛subscript𝑏𝑚2𝑑O((n+b_{m})d^{2}+(n+b_{m})^{2}d)italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) italic_d start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT + ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT italic_d ) by a factor of 2-4 even when bm=nsubscript𝑏𝑚𝑛b_{m}=nitalic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_n.
+
+
+Algorithm 1  M-FALCON Algorithm.
+
+
+1:  Input: Merged token series x0,x1,…,xn−1subscript𝑥0subscript𝑥1…subscript𝑥𝑛1x_{0},x_{1},\ldots,x_{n-1}italic_x start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_x start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_x start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT (can be e.g., (Φ0,a0,…,Φnc−1,anc−1)subscriptΦ0subscript𝑎0…subscriptΦsubscript𝑛𝑐1subscript𝑎subscript𝑛𝑐1(\Phi_{0},a_{0},\ldots,\Phi_{n_{c}-1},a_{n_{c}-1})( roman_Φ start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT , italic_a start_POSTSUBSCRIPT italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT ) where n=2⁢nc𝑛2subscript𝑛𝑐n=2n_{c}italic_n = 2 italic_n start_POSTSUBSCRIPT italic_c end_POSTSUBSCRIPT); m𝑚mitalic_m ranking candidates Φ0′,…,Φm−1′subscriptsuperscriptΦ′0…subscriptsuperscriptΦ′𝑚1\Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{m-1}roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT; a b𝑏bitalic_b-layer hℎhitalic_h-heads self-attention model trained in causal autoregressive settings (e.g., HSTU or Transformers) f⁢(X,c⁢a⁢c⁢h⁢e⁢S⁢t⁢a⁢t⁢e⁢s,a⁢t⁢t⁢n⁢M⁢a⁢s⁢k)→(X′,u⁢p⁢d⁢a⁢t⁢e⁢d⁢C⁢a⁢c⁢h⁢e⁢S⁢t⁢a⁢t⁢e⁢s)→𝑓𝑋𝑐𝑎𝑐ℎ𝑒𝑆𝑡𝑎𝑡𝑒𝑠𝑎𝑡𝑡𝑛𝑀𝑎𝑠𝑘superscript𝑋′𝑢𝑝𝑑𝑎𝑡𝑒𝑑𝐶𝑎𝑐ℎ𝑒𝑆𝑡𝑎𝑡𝑒𝑠f(X,cacheStates,attnMask)\rightarrow(X^{\prime},updatedCacheStates)italic_f ( italic_X , italic_c italic_a italic_c italic_h italic_e italic_S italic_t italic_a italic_t italic_e italic_s , italic_a italic_t italic_t italic_n italic_M italic_a italic_s italic_k ) → ( italic_X start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT , italic_u italic_p italic_d italic_a italic_t italic_e italic_d italic_C italic_a italic_c italic_h italic_e italic_S italic_t italic_a italic_t italic_e italic_s ) where X,X′∈ℝN×d𝑋superscript𝑋′superscriptℝ𝑁𝑑X,X^{\prime}\in\mathbb{R}^{N\times d}italic_X , italic_X start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT ∈ blackboard_R start_POSTSUPERSCRIPT italic_N × italic_d end_POSTSUPERSCRIPT, a⁢t⁢t⁢n⁢M⁢a⁢s⁢k∈ℝN×N𝑎𝑡𝑡𝑛𝑀𝑎𝑠𝑘superscriptℝ𝑁𝑁attnMask\in\mathbb{R}^{N\times N}italic_a italic_t italic_t italic_n italic_M italic_a italic_s italic_k ∈ blackboard_R start_POSTSUPERSCRIPT italic_N × italic_N end_POSTSUPERSCRIPT, and <math alttext="cachedStates,updatedCacheStates\in\mathbb{R}^{b\times h\times N\times d_{qk}}%
+\times\mathbb{R}^{b\times h\times N\times d_{qk}}" class="ltx_Math" display="inline" id="alg1.l1.m11.2">c⁢a⁢c⁢h⁢e⁢d⁢S⁢t⁢a⁢t⁢e⁢s,u⁢p⁢d⁢a⁢t⁢e⁢d⁢C⁢a⁢c⁢h⁢e⁢S⁢t⁢a⁢t⁢e⁢s∈ℝb×h×N×dq⁢k×ℝb×h×N×dq⁢k𝑐𝑎𝑐ℎ𝑒𝑑𝑆𝑡𝑎𝑡𝑒𝑠𝑢𝑝𝑑𝑎𝑡𝑒𝑑𝐶𝑎𝑐ℎ𝑒𝑆𝑡𝑎𝑡𝑒𝑠superscriptℝ𝑏ℎ𝑁subscript𝑑𝑞𝑘superscriptℝ𝑏ℎ𝑁subscript𝑑𝑞𝑘cachedStates,updatedCacheStates\in\mathbb{R}^{b\times h\times N\times d_{qk}}%
+\times\mathbb{R}^{b\times h\times N\times d_{qk}}italic_c italic_a italic_c italic_h italic_e italic_d italic_S italic_t italic_a italic_t italic_e italic_s , italic_u italic_p italic_d italic_a italic_t italic_e italic_d italic_C italic_a italic_c italic_h italic_e italic_S italic_t italic_a italic_t italic_e italic_s ∈ blackboard_R start_POSTSUPERSCRIPT italic_b × italic_h × italic_N × italic_d start_POSTSUBSCRIPT italic_q italic_k end_POSTSUBSCRIPT end_POSTSUPERSCRIPT × blackboard_R start_POSTSUPERSCRIPT italic_b × italic_h × italic_N × italic_d start_POSTSUBSCRIPT italic_q italic_k end_POSTSUBSCRIPT end_POSTSUPERSCRIPT (due to caching K⁢(X)𝐾𝑋K(X)italic_K ( italic_X )s and V⁢(X)𝑉𝑋V(X)italic_V ( italic_X )s across b𝑏bitalic_b layers); microbatch size bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT, where we assume m𝑚mitalic_m is a multiple of bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT for simplicity.
+
+
+
+2:  Output:  Predictions for all m𝑚mitalic_m ranking candidates, (a0′,…,am−1′)subscriptsuperscript𝑎′0…subscriptsuperscript𝑎′𝑚1(a^{\prime}_{0},\ldots,a^{\prime}_{m-1})( italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_m - 1 end_POSTSUBSCRIPT ).
+
+
+
+3:  numMicrobatches=(m+bm−1)//bmnumMicrobatches=(m+b_{m}-1)//b_{m}italic_n italic_u italic_m italic_M italic_i italic_c italic_r italic_o italic_b italic_a italic_t italic_c italic_h italic_e italic_s = ( italic_m + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 ) / / italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT
+
+
+4:  a⁢t⁢t⁢n⁢M⁢a⁢s⁢k=Ln+bm𝑎𝑡𝑡𝑛𝑀𝑎𝑠𝑘subscript𝐿𝑛subscript𝑏𝑚attnMask=L_{n+b_{m}}italic_a italic_t italic_t italic_n italic_M italic_a italic_s italic_k = italic_L start_POSTSUBSCRIPT italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT end_POSTSUBSCRIPT {Ln+bmsubscript𝐿𝑛subscript𝑏𝑚L_{n+b_{m}}italic_L start_POSTSUBSCRIPT italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT end_POSTSUBSCRIPT represents a lower triangular matrix. Lower triangular entries are 0s, the rest are −∞-\infty- ∞.}
+
+
+
+5:  a⁢t⁢t⁢n⁢M⁢a⁢s⁢k⁢[i,j]=−∞𝑎𝑡𝑡𝑛𝑀𝑎𝑠𝑘𝑖𝑗attnMask[i,j]=-\inftyitalic_a italic_t italic_t italic_n italic_M italic_a italic_s italic_k [ italic_i , italic_j ] = - ∞ for i,j≥n,i≠jformulae-sequence𝑖𝑗𝑛𝑖𝑗i,j\geq n,i\neq jitalic_i , italic_j ≥ italic_n , italic_i ≠ italic_j {This prevents the last bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT entries from attending to each other.}
+
+
+
+6:  <math alttext="(a^{\prime}_{0},a^{\prime}_{1},\ldots,a^{\prime}_{b_{m}-1}),kvCache\leftarrow f%
+(embLayer((x_{0},x_{1},\ldots,x_{n-1},\Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{%
+b_{m}-1})),\varnothing,attnMask)" class="ltx_Math" display="inline" id="alg1.l6.m1.8">(a0′,a1′,…,abm−1′),k⁢v⁢C⁢a⁢c⁢h⁢e←f⁢(e⁢m⁢b⁢L⁢a⁢y⁢e⁢r⁢((x0,x1,…,xn−1,Φ0′,…,Φbm−1′)),∅,a⁢t⁢t⁢n⁢M⁢a⁢s⁢k)←subscriptsuperscript𝑎′0subscriptsuperscript𝑎′1…subscriptsuperscript𝑎′subscript𝑏𝑚1𝑘𝑣𝐶𝑎𝑐ℎ𝑒𝑓𝑒𝑚𝑏𝐿𝑎𝑦𝑒𝑟subscript𝑥0subscript𝑥1…subscript𝑥𝑛1subscriptsuperscriptΦ′0…subscriptsuperscriptΦ′subscript𝑏𝑚1𝑎𝑡𝑡𝑛𝑀𝑎𝑠𝑘(a^{\prime}_{0},a^{\prime}_{1},\ldots,a^{\prime}_{b_{m}-1}),kvCache\leftarrow f%
+(embLayer((x_{0},x_{1},\ldots,x_{n-1},\Phi^{\prime}_{0},\ldots,\Phi^{\prime}_{%
+b_{m}-1})),\varnothing,attnMask)( italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT ) , italic_k italic_v italic_C italic_a italic_c italic_h italic_e ← italic_f ( italic_e italic_m italic_b italic_L italic_a italic_y italic_e italic_r ( ( italic_x start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_x start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_x start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT ) ) , ∅ , italic_a italic_t italic_t italic_n italic_M italic_a italic_s italic_k )
+
+
+7:  p⁢r⁢e⁢d⁢i⁢c⁢t⁢i⁢o⁢n⁢s=(a0′,a1′,…,abm−1′)𝑝𝑟𝑒𝑑𝑖𝑐𝑡𝑖𝑜𝑛𝑠subscriptsuperscript𝑎′0subscriptsuperscript𝑎′1…subscriptsuperscript𝑎′subscript𝑏𝑚1predictions=(a^{\prime}_{0},a^{\prime}_{1},\ldots,a^{\prime}_{b_{m}-1})italic_p italic_r italic_e italic_d italic_i italic_c italic_t italic_i italic_o italic_n italic_s = ( italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT - 1 end_POSTSUBSCRIPT )
+
+
+8:  i=1𝑖1i=1italic_i = 1
+
+
+9:  while i&lt;n⁢u⁢m⁢M⁢i⁢c⁢r⁢o⁢b⁢a⁢t⁢c⁢h⁢e⁢s𝑖𝑛𝑢𝑚𝑀𝑖𝑐𝑟𝑜𝑏𝑎𝑡𝑐ℎ𝑒𝑠i&lt;numMicrobatchesitalic_i &lt; italic_n italic_u italic_m italic_M italic_i italic_c italic_r italic_o italic_b italic_a italic_t italic_c italic_h italic_e italic_s do
+
+
+10:     <math alttext="(a^{\prime}_{b_{m}i},a^{\prime}_{b_{m}i+1},a^{\prime}_{b_{m}(i+1)-1}),\_%
+\leftarrow f(embLayer((x_{0},x_{1},\ldots,x_{n-1},\Phi^{\prime}_{b_{m}i},%
+\ldots,\Phi^{\prime}_{b_{m}(i+1)-1})),kvCache,attnMask)" class="ltx_Math" display="inline" id="alg1.l10.m1.9">(abm⁢i′,abm⁢i+1′,abm⁢(i+1)−1′),_←f⁢(e⁢m⁢b⁢L⁢a⁢y⁢e⁢r⁢((x0,x1,…,xn−1,Φbm⁢i′,…,Φbm⁢(i+1)−1′)),k⁢v⁢C⁢a⁢c⁢h⁢e,a⁢t⁢t⁢n⁢M⁢a⁢s⁢k)←subscriptsuperscript𝑎′subscript𝑏𝑚𝑖subscriptsuperscript𝑎′subscript𝑏𝑚𝑖1subscriptsuperscript𝑎′subscript𝑏𝑚𝑖11_𝑓𝑒𝑚𝑏𝐿𝑎𝑦𝑒𝑟subscript𝑥0subscript𝑥1…subscript𝑥𝑛1subscriptsuperscriptΦ′subscript𝑏𝑚𝑖…subscriptsuperscriptΦ′subscript𝑏𝑚𝑖11𝑘𝑣𝐶𝑎𝑐ℎ𝑒𝑎𝑡𝑡𝑛𝑀𝑎𝑠𝑘(a^{\prime}_{b_{m}i},a^{\prime}_{b_{m}i+1},a^{\prime}_{b_{m}(i+1)-1}),\_%
+\leftarrow f(embLayer((x_{0},x_{1},\ldots,x_{n-1},\Phi^{\prime}_{b_{m}i},%
+\ldots,\Phi^{\prime}_{b_{m}(i+1)-1})),kvCache,attnMask)( italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ( italic_i + 1 ) - 1 end_POSTSUBSCRIPT ) , _ ← italic_f ( italic_e italic_m italic_b italic_L italic_a italic_y italic_e italic_r ( ( italic_x start_POSTSUBSCRIPT 0 end_POSTSUBSCRIPT , italic_x start_POSTSUBSCRIPT 1 end_POSTSUBSCRIPT , … , italic_x start_POSTSUBSCRIPT italic_n - 1 end_POSTSUBSCRIPT , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT , … , roman_Φ start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ( italic_i + 1 ) - 1 end_POSTSUBSCRIPT ) ) , italic_k italic_v italic_C italic_a italic_c italic_h italic_e , italic_a italic_t italic_t italic_n italic_M italic_a italic_s italic_k )
+
+
+11:     <math alttext="predictions\leftarrow predictions+(a^{\prime}_{b_{m}i},a^{\prime}_{b_{m}i+1},%
+\ldots,a^{\prime}_{b_{m}(i+1)-1})" class="ltx_Math" display="inline" id="alg1.l11.m1.5">p⁢r⁢e⁢d⁢i⁢c⁢t⁢i⁢o⁢n⁢s←p⁢r⁢e⁢d⁢i⁢c⁢t⁢i⁢o⁢n⁢s+(abm⁢i′,abm⁢i+1′,…,abm⁢(i+1)−1′)←𝑝𝑟𝑒𝑑𝑖𝑐𝑡𝑖𝑜𝑛𝑠𝑝𝑟𝑒𝑑𝑖𝑐𝑡𝑖𝑜𝑛𝑠subscriptsuperscript𝑎′subscript𝑏𝑚𝑖subscriptsuperscript𝑎′subscript𝑏𝑚𝑖1…subscriptsuperscript𝑎′subscript𝑏𝑚𝑖11predictions\leftarrow predictions+(a^{\prime}_{b_{m}i},a^{\prime}_{b_{m}i+1},%
+\ldots,a^{\prime}_{b_{m}(i+1)-1})italic_p italic_r italic_e italic_d italic_i italic_c italic_t italic_i italic_o italic_n italic_s ← italic_p italic_r italic_e italic_d italic_i italic_c italic_t italic_i italic_o italic_n italic_s + ( italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_i end_POSTSUBSCRIPT , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT italic_i + 1 end_POSTSUBSCRIPT , … , italic_a start_POSTSUPERSCRIPT ′ end_POSTSUPERSCRIPT start_POSTSUBSCRIPT italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ( italic_i + 1 ) - 1 end_POSTSUBSCRIPT )
+
+
+12:     i←i+1←𝑖𝑖1i\leftarrow i+1italic_i ← italic_i + 1
+
+
+13:  end while
+
+
+14:  return p⁢r⁢e⁢d⁢i⁢c⁢t⁢i⁢o⁢n⁢s𝑝𝑟𝑒𝑑𝑖𝑐𝑡𝑖𝑜𝑛𝑠predictionsitalic_p italic_r italic_e italic_d italic_i italic_c italic_t italic_i italic_o italic_n italic_s
+
+
+
+
+Algorithm 1 is illustrated in Figure 11 to help with understanding. We remark that M-FALCON is not only applicable to HSTUs and GRs, but also broadly applicable as an inference optimization algorithm for other target-aware causal autoregressive settings based on self-attention architectures.
+
+
+
+H.1 Evaluation of Inference Throughput: Generative Recommenders (GRs) w/ M-FALCON vs DLRMs
+
+As discussed in Section 3.4, M-FALCON handles bmsubscript𝑏𝑚b_{m}italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT candidates in parallel to amortize computation costs across all m𝑚mitalic_m candidates at inference time. To understand our design, we compare the throughput (i.e., the number of candidates scored per second, QPS) of GRs and DLRMs based on the same hardware setups.
+
+
+As shown in Figure 12 and Figure 13, GRs’ throughput scales in a sublinear way based on the number of ranking-stage candidates (m𝑚mitalic_m), up to a certain region – m=2048𝑚2048m=2048italic_m = 2048 in our case study – due to batched inference enabling cost amortization. This confirms the criticality of batched inference in causal autoregressive settings.
+Due to attention complexity scaling as O⁢((n+bm)2)𝑂superscript𝑛subscript𝑏𝑚2O((n+b_{m})^{2})italic_O ( ( italic_n + italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT ) start_POSTSUPERSCRIPT 2 end_POSTSUPERSCRIPT ), leveraging multiple microbatches by itself improves throughput. Caching further eliminates redundant linear and attention computations on top of microbatching. The two combined resulted in up to 1.99x additional speedups relative to the bm=m=1024subscript𝑏𝑚𝑚1024b_{m}=m=1024italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = italic_m = 1024 baseline using a single microbatch, as shown in Figure 13. Overall, with the efficient HSTU encoder design and utilizing M-FALCON, HSTU-based Generative Recommenders outperform DLRMs in terms of throughput on a large-scale production setup by up to 2.99x, despite GRs being 285x more complex in terms of FLOPs.
+
+
+Figure 12: End-to-end inference throughtput: DLRMs vs GRs (w/ M-FALCON) in large-scale industrial settings. Note that this figure is the same as Figure 6, and is reproduced here to facilitate reading.
+
+
+Figure 13: End-to-end inference throughtput: M-FALCON throughput scaling, on top of the 285x FLOPs GR model, in large batch settings where m𝑚mitalic_m (total number of ranking candidates) ranges from 1024 to 16384, and bm=1024subscript𝑏𝑚1024b_{m}=1024italic_b start_POSTSUBSCRIPT italic_m end_POSTSUBSCRIPT = 1024.
+
+
+
+
+
+
+
+Generated  on Mon May  6 02:05:23 2024 by LaTeXML
+
+
+
+
