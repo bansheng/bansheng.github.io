@@ -9,3 +9,6 @@ public/
 themes/
 hugo
 *.pdf
+*.txt
+*.html
+*.tar.gz

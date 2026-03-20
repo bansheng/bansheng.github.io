@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "hugo server -D",
     "build": "hugo --minify",
-    "publish": "git add . && git commit -m \"docs: update blog content\" && git push origin source"
+    "publish": "rm -f extract.txt extract2.txt mfalcon_contexts.txt paper.html paper.pdf hugo hugo_latest.tar.gz && git add . && git commit -m \"docs: update blog content\" && git push origin source"
   },
   "repository": {
     "type": "git",
