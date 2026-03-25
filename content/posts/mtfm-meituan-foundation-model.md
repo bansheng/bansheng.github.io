@@ -71,35 +71,35 @@ TocOpen: true
 
 将原始特征经过 Embedding 层映射后，通过对应的 MLP 投影到一个统一的维度 $d_{model}$：
 
-$$ \mathbf{h}_{ij} = 	ext{MLP}_i(	ext{Emb}(h_{ij})) $$
+$$ \mathbf{h}_{ij} = \text{MLP}_i(\text{Emb}(h_{ij})) $$
 
 随后，MTFM 将所有历史序列中的 Item Token 按照时间戳（Chronological order）进行排序，形成一个统一的 Embedding 矩阵：
-$$ \mathbf{H} \in \mathbb{R}^{L_H 	imes d_{model}} $$
+$$ \mathbf{H} \in \mathbb{R}^{L_H \times d_{model}} $$
 其中 $L_H$ 是所有历史序列中 Item 的总数。
 
 同理，用户的实时序列特征也被转化为 R-token 矩阵：
-$$ \mathbf{R} \in \mathbb{R}^{L_R 	imes d_{model}} $$
+$$ \mathbf{R} \in \mathbb{R}^{L_R \times d_{model}} $$
 
 #### 2.1.2 T-token 的生成
 
 对于当前曝光的候选目标，MTFM 将用户画像特征（User Profile, $U^s$）、场景特定的交叉特征（Cross Features, $C_i^s$）以及目标物品特征（Item Features, $I_i^s$）进行拼接，并通过该场景特定的 MLP 进行降维投影：
 
-$$ \mathbf{t}_i^s = 	ext{MLP}_s(	ext{Emb}(U^s) \| 	ext{Emb}(C_i^s) \| 	ext{Emb}(I_i^s)) $$
+$$ \mathbf{t}_i^s = \text{MLP}_s(\text{Emb}(U^s) \| \text{Emb}(C_i^s) \| \text{Emb}(I_i^s)) $$
 
 这里 $\|$ 表示列拼接（Column concatenation）。所有场景下的曝光行为最终被转化为 T-token 矩阵：
-$$ \mathbf{T} \in \mathbb{R}^{L_T 	imes d_{model}} $$
+$$ \mathbf{T} \in \mathbb{R}^{L_T \times d_{model}} $$
 其中 $L_T$ 是所有场景下曝光样本的总数。
 
 #### 2.1.3 统一序列表示
 
 最终，所有的 H-token、R-token 和 T-token 会在行方向（Row concatenation）上进行拼接，形成输入到 Transformer 骨干网络的初始 Embedding 矩阵：
 
-$$ \mathbf{X}^{(0)} = (\mathbf{H}; \mathbf{R}; \mathbf{T}) \in \mathbb{R}^{N 	imes d_{model}} $$
+$$ \mathbf{X}^{(0)} = (\mathbf{H}; \mathbf{R}; \mathbf{T}) \in \mathbb{R}^{N \times d_{model}} $$
 
 这里的 $N = L_H + L_R + L_T$，即序列的总长度。对于不同的用户，这个 $N$ 是可变的（Variable-length）。
 
 **【深度思考：异构 Token 化的绝妙之处】**
-这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 $d_{model}$ 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 $	ext{MLP}_s$ 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。
+这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 $d_{model}$ 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 $\text{MLP}_s$ 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。
 
 ---
 
@@ -183,7 +183,7 @@ graph TD
 全注意力层的数学表达如下：
 
 1. **线性映射与分组切分**：
-   $$ \mathbf{U}^{(l)}, \{\mathbf{Q}^{(l,h)}\}_{h=1}^{H}, \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)} \}_{g=1}^G = 	ext{Split}(\phi_1(f_1^{(l)}(\widetilde{\mathbf{X}}^{(l)}))) $$
+   $$ \mathbf{U}^{(l)}, \{\mathbf{Q}^{(l,h)}\}_{h=1}^{H}, \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)} \}_{g=1}^G = \text{Split}(\phi_1(f_1^{(l)}(\widetilde{\mathbf{X}}^{(l)}))) $$
    其中 $H$ 是 Query 的头数，$G$ 是 KV 的头数，$r = H/G$。
 
 2. **注意力计算与动态掩码（Dynamic Masking）**：
@@ -191,7 +191,7 @@ graph TD
    $$ \mathbf{A}^{(l)} = \mathbf{A}^{(l,1)} \| \cdots \| \mathbf{A}^{(l,H)} $$
 
 3. **门控层归一化与残差连接**：
-   $$ \mathbf{X}^{(l+1)} = f_2^{(l)}(	ext{GLN}(\mathbf{A}^{(l)}) \odot \mathbf{U}^{(l)}) + \mathbf{X}^{(l)} $$
+   $$ \mathbf{X}^{(l+1)} = f_2^{(l)}(\text{GLN}(\mathbf{A}^{(l)}) \odot \mathbf{U}^{(l)}) + \mathbf{X}^{(l)} $$
 
 #### 4.1.1 防止信息泄露的动态掩码 $\mathbf{M}$
 在 User-level 聚合中，由于实时序列 $R$ 和当前曝光目标 $T$ 在时间上可能存在重叠，如果不加以限制，模型在预测时就会“看到未来”的数据，导致严重的信息泄露（Information Leakage）。
@@ -215,23 +215,23 @@ $$ \widetilde{\mathbf{X}}^{(l)}_T = \widetilde{\mathbf{X}}^{(l)}[L_H+L_R:] $$
 $$ \mathbf{M}_T = \mathbf{M}[L_H+L_R:] $$
 
 接下来，只用 T-token 去生成 Query $\mathbf{Q}_T$，而 Key $\mathbf{K}$ 和 Value $\mathbf{V}$ 依然由全局序列生成：
-$$ \mathbf{U}^{(l)}_T, \{\mathbf{Q}^{(l,h)}_T\}_{h=1}^H = 	ext{Split}(\phi_1(f_{uq}^{(l)}(\widetilde{\mathbf{X}}_T^{(l)}))) $$
-$$ \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)}\}_{g=1}^G = 	ext{Split}(\phi_1(f_{kv}^{(l)}(\widetilde{\mathbf{X}}^{(l)}))) $$
+$$ \mathbf{U}^{(l)}_T, \{\mathbf{Q}^{(l,h)}_T\}_{h=1}^H = \text{Split}(\phi_1(f_{uq}^{(l)}(\widetilde{\mathbf{X}}_T^{(l)}))) $$
+$$ \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)}\}_{g=1}^G = \text{Split}(\phi_1(f_{kv}^{(l)}(\widetilde{\mathbf{X}}^{(l)}))) $$
 
 注意力计算只在 T-token 作为 Query 时发生：
 $$ \mathbf{A}^{(l,h)}_T = \phi_2(\mathbf{Q}_T^{(l,h)} \mathbf{K}^{(l,g)T} \odot \mathbf{M}_T) \mathbf{V}^{(l,g)} $$
-$$ \mathbf{X}^{(l+1)}_T = f_2^{(l)}(	ext{GLN}(\mathbf{A}_T^{(l)}) \odot \mathbf{U}_T^{(l)}) + \mathbf{X}_T^{(l)} $$
+$$ \mathbf{X}^{(l+1)}_T = f_2^{(l)}(\text{GLN}(\mathbf{A}_T^{(l)}) \odot \mathbf{U}_T^{(l)}) + \mathbf{X}_T^{(l)} $$
 
 最后，将更新后的 T-token 与未更新的 H/R-token 重新拼接，输出给下一层：
 $$ \mathbf{X}^{(l+1)} = (\mathbf{X}^{(l)}[:L_H+L_R]; \mathbf{X}^{(l+1)}_T) $$
 
 **【复杂度革命性降低】**
 在标准的 Transformer 中，一层的复杂度是 $O(N^2)$。
-在 Target Attention 中，因为 Query 的数量从 $N$ 骤降到了 $L_T$（通常 $L_T \ll N$），注意力矩阵的大小从 $N 	imes N$ 缩小到了 $L_T 	imes N$。
+在 Target Attention 中，因为 Query 的数量从 $N$ 骤降到了 $L_T$（通常 $L_T \ll N$），注意力矩阵的大小从 $N \times N$ 缩小到了 $L_T \times N$。
 因此，单个 Target Attention Layer 的复杂度降为 $O(N \cdot L_T)$。
 
 结合 1 层 Full Attention 和 $K$ 层 Target Attention，一个 Block 的平均复杂度被大幅压缩至：
-$$ O\left(rac{K \cdot N \cdot L_T + N^2}{K+1}ight) $$
+$$ O\left(\frac{K \cdot N \cdot L_T + N^2}{K+1}\right) $$
 
 由于 $L_T$ 远远小于 $N$，这一设计让 MTFM 的训练吞吐量（Throughput）直接 **翻倍（2x Speedup）**，且实验证明模型精度没有任何损失！
 
@@ -447,7 +447,7 @@ class MTFM_Block(nn.Module):
         return x
 ```
 
-通过这段伪代码可以非常清晰地看到，`q_target` 的维度是 `[Batch_size, L_T, d_model]`，而 `k_full` 的维度是 `[Batch_size, N, d_model]`。矩阵乘法 $Q \cdot K^T$ 的计算量直接从 $O(N 	imes N)$ 暴跌到了 $O(L_T 	imes N)$。在工业界推荐系统中，$L_H$ 和 $L_R$（历史行为）通常长达上千甚至数千，而 $L_T$（单次请求的曝光候选）可能只有几十到一两百。这种不对称性正是 Target Attention 能够实现“算力魔法”的物理基础。
+通过这段伪代码可以非常清晰地看到，`q_target` 的维度是 `[Batch_size, L_T, d_model]`，而 `k_full` 的维度是 `[Batch_size, N, d_model]`。矩阵乘法 $Q \cdot K^T$ 的计算量直接从 $O(N \times N)$ 暴跌到了 $O(L_T \times N)$。在工业界推荐系统中，$L_H$ 和 $L_R$（历史行为）通常长达上千甚至数千，而 $L_T$（单次请求的曝光候选）可能只有几十到一两百。这种不对称性正是 Target Attention 能够实现“算力魔法”的物理基础。
 
 ### 8.2 动态掩码 (Dynamic Masking) 的拓扑结构解析
 
