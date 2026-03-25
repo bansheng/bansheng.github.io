@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>大模型 on Bansheng's Blog</title><link>https://dingyadong.top/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/</link><description>Recent content in 大模型 on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 25 Mar 2026 20:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/index.xml" rel="self" type="application/rss+xml"/><item><title>美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？</title><link>https://dingyadong.top/posts/mtfm-meituan-foundation-model/</link><pubDate>Wed, 25 Mar 2026 20:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/mtfm-meituan-foundation-model/</guid><description>&lt;h2 id="1-导言推荐系统的大模型时代与多场景之痛"&gt;1. 导言：推荐系统的“大模型”时代与多场景之痛&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>论文精读 on Bansheng's Blog</title><link>https://dingyadong.top/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/</link><description>Recent content in 论文精读 on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 25 Mar 2026 20:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/index.xml" rel="self" type="application/rss+xml"/><item><title>美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？</title><link>https://dingyadong.top/posts/mtfm-meituan-foundation-model/</link><pubDate>Wed, 25 Mar 2026 20:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/mtfm-meituan-foundation-model/</guid><description>&lt;h2 id="1-导言推荐系统的大模型时代与多场景之痛"&gt;1. 导言：推荐系统的“大模型”时代与多场景之痛&lt;/h2&gt;
 &lt;p&gt;在过去几年里，大语言模型（Large Language Models, LLMs）的飞速发展，彻底重塑了人工智能的版图。从单模态的文本生成到多模态的图文视频理解，基座模型（Foundation Models, FMs）以其统一的架构和惊人的“涌现能力”（Emergent Abilities），证明了 Scaling Laws（缩放定律）的伟大力量。而在推荐系统（Recommender Systems, RecSys）领域，工业界也逐渐开始验证 Scaling Laws，尝试通过增加模型参数量和训练数据量来打破业务指标的天花板。&lt;/p&gt;
 &lt;p&gt;然而，传统的推荐系统往往被局限在“单一场景”（Single-scenario）的孤岛中。例如，在外卖平台中，“美食推荐”、“商家推荐”、“神抢手（券包推荐）”等场景各自拥有独立的模型和特征体系。这种孤岛模式严重限制了推荐模型吸收全局数据的能力，使得 Scaling Laws 的潜力难以被完全释放。受到多模态大模型的启发，美团的技术团队提出：&lt;strong&gt;推荐大模型的下一个突破口，在于跨越场景的异构性，建立一个统一的、无需严格对齐的底层基础模型。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;这便是本文要深度剖析的主角——发表于 2025 年的重磅工业级论文 &lt;strong&gt;《MTFM: A Scalable and Alignment-free Foundation Model for Industrial Recommendation in Meituan》&lt;/strong&gt;。&lt;/p&gt;
@@ -18,18 +18,4 @@
 &lt;li&gt;&lt;strong&gt;在数据端&lt;/strong&gt;：将多个场景的数据强行拼接到一起，使用一个固定的特征模板（Fixed Template）。如果某个场景缺少某些特征（例如商家推荐场景没有菜品口味标签），就用 Padding（如零值或默认值）来填充；如果某些异构特征无法对齐，干脆直接丢弃。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;在模型端&lt;/strong&gt;：通过 MoE（Mixture of Experts）或星型拓扑结构，将模型参数解耦为“领域无关”（Domain-invariant）的共享参数和“领域特定”（Domain-specific）的独有参数。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点：&lt;/p&gt;</description></item><item><title>2026年大模型Scaling Laws：从规模竞赛到效率革命</title><link>https://dingyadong.top/posts/02-scaling-laws-2026/</link><pubDate>Sun, 15 Mar 2026 22:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/02-scaling-laws-2026/</guid><description>&lt;h2 id="引言"&gt;引言&lt;/h2&gt;
-&lt;p&gt;2026年，大模型领域的Scaling Laws正经历一场深刻的范式转变。从OpenAI提出Scaling Laws至今，业界对&amp;quot;更大即更好&amp;quot;的信仰正在被重新审视。&lt;/p&gt;
-&lt;h2 id="传统scaling-laws的瓶颈"&gt;传统Scaling Laws的瓶颈&lt;/h2&gt;
-&lt;p&gt;过去几年的实践表明，单纯增加模型参数和训练数据带来的性能提升正在边际递减。GPT-4到GPT-5的跃进远不如GPT-3到GPT-4那般惊艳，这暗示着传统预训练Scaling Laws可能已触及天花板。&lt;/p&gt;
-&lt;h2 id="2026年的新趋势"&gt;2026年的新趋势&lt;/h2&gt;
-&lt;h3 id="1-推理时计算的崛起"&gt;1. 推理时计算的崛起&lt;/h3&gt;
-&lt;p&gt;OpenAI的o系列模型和DeepSeek-R1证明了一个关键洞察：&lt;strong&gt;推理时的计算投入可以弥补模型规模的不足&lt;/strong&gt;。这种&amp;quot;Test-time Scaling&amp;quot;正在成为新的研究热点。&lt;/p&gt;
-&lt;h3 id="2-数据质量重于数量"&gt;2. 数据质量重于数量&lt;/h3&gt;
-&lt;p&gt;高质量合成数据和精选语料正在取代无差别的数据堆砌。Small but mighty的小模型（如Phi系列）展示了数据策展的力量。&lt;/p&gt;
-&lt;h3 id="3-多模态统一scaling"&gt;3. 多模态统一Scaling&lt;/h3&gt;
-&lt;p&gt;文本、图像、视频、音频的统一表征学习正在打破模态壁垒，开启跨模态Scaling的新维度。&lt;/p&gt;
-&lt;h2 id="展望"&gt;展望&lt;/h2&gt;
-&lt;p&gt;Scaling Laws并未失效，而是进化了。未来的竞争焦点将从&amp;quot;谁的参数更多&amp;quot;转向&amp;quot;谁的效率更高&amp;quot;——包括训练效率、推理效率，以及最关键的智能产出效率。&lt;/p&gt;
-&lt;hr&gt;
-&lt;p&gt;&lt;em&gt;写于2026年3月&lt;/em&gt;&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点：&lt;/p&gt;</description></item></channel></rss>
