@@ -9,6 +9,12 @@ theme = 'PaperMod'
     showCodeCopyButtons = true
 
     [[params.socialIcons]]
+        name = "email"
+        url = "mailto:dyadongcs@gmail.com"
+    [[params.socialIcons]]
+        name = "linkedin"
+        url = "https://www.linkedin.com/in/%E4%BA%9A%E4%B8%9C-%E4%B8%81-3b2986182/"
+    [[params.socialIcons]]
         name = "github"
         url = "https://github.com/bansheng"
     
@@ -33,3 +39,25 @@ theme = 'PaperMod'
 [taxonomies]
     tag = "tags"
     category = "categories"
+
+[menu]
+  [[menu.main]]
+    identifier = "archives"
+    name = "归档"
+    url = "/archives/"
+    weight = 10
+  [[menu.main]]
+    identifier = "tags"
+    name = "标签"
+    url = "/tags/"
+    weight = 20
+  [[menu.main]]
+    identifier = "contact"
+    name = "联系我"
+    url = "/contact/"
+    weight = 30
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

@@ -339,3 +339,100 @@ a {
     .post-content h2 { font-size: 1.5em; }
     .post-content h3 { font-size: 1.3em; }
 }
+
+/* =======================================================
+   联系方式页面卡片设计 (Contact Page)
+======================================================= */
+.contact-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+}
+
+.contact-card {
+    background: var(--entry);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    border-color: transparent;
+}
+
+.contact-card:hover::before {
+    transform: scaleX(1);
+}
+
+.contact-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 20px;
+    color: var(--primary);
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-card:hover .contact-icon {
+    color: var(--accent);
+    transform: scale(1.1);
+}
+
+.contact-title {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+}
+
+.contact-card:hover .contact-title {
+    color: var(--accent);
+}
+
+.contact-desc {
+    font-size: 0.95em;
+    color: var(--secondary);
+    line-height: 1.5;
+}
+
+/* 社交媒体品牌色悬停 (可选增强) */
+.contact-card.github:hover::before { background: #333; }
+.contact-card.github:hover .contact-icon, .contact-card.github:hover .contact-title { color: #333; }
+:root[data-theme="dark"] .contact-card.github:hover::before { background: #fff; }
+:root[data-theme="dark"] .contact-card.github:hover .contact-icon, :root[data-theme="dark"] .contact-card.github:hover .contact-title { color: #fff; }
+
+.contact-card.email:hover::before { background: #ea4335; }
+.contact-card.email:hover .contact-icon, .contact-card.email:hover .contact-title { color: #ea4335; }
+
+.contact-card.linkedin:hover::before { background: #0a66c2; }
+.contact-card.linkedin:hover .contact-icon, .contact-card.linkedin:hover .contact-title { color: #0a66c2; }
+
+.contact-card.twitter:hover::before { background: #1da1f2; }
+.contact-card.twitter:hover .contact-icon, .contact-card.twitter:hover .contact-title { color: #1da1f2; }
+
