@@ -8,7 +8,7 @@ public/
 .deploy_git/
 themes/
 hugo
-*.pdf
-*.txt
-*.html
-*.tar.gz
+/*.pdf
+/*.txt
+/*.html
+/*.tar.gz
