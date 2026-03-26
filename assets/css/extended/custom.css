@@ -220,20 +220,29 @@ a {
 
 /* 代码块增强 */
 .post-content pre {
-    background-color: #0f172a !important; /* 更深的蓝黑色，显得高级 */
+    background-color: #1e293b !important; /* 稍微浅一点的深蓝色，提高对比度 */
     border-radius: 12px;
     padding: 20px;
     margin: 32px 0;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-x: auto;
 }
 
 .post-content pre code {
     font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace;
-    font-size: 0.9em;
-    line-height: 1.6;
-    color: #e2e8f0 !important;
+    font-size: 0.95em;
+    line-height: 1.7;
+    /* 移除 color !important，允许语法高亮生效 */
+}
+
+/* 数学公式块样式 */
+.math-block {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    padding: 10px 0;
 }
 
 /* 引用块美化 */
