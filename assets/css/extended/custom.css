@@ -218,42 +218,50 @@ a {
     border: 1px solid var(--border); /* 增加一点点边框显得更精致 */
 }
 
-/* 代码块增强 - 适配明亮与黑暗模式 */
-:root {
-    --code-bg: #f8fafc;
-    --code-block-bg: #1e293b;
-    --code-text: #e2e8f0;
-}
-
-:root[data-theme="dark"] {
-    --code-bg: #0f172a;
-    --code-block-bg: #0f172a;
-    --code-text: #f1f5f9;
-}
-
-/* 强制覆盖 PaperMod 的默认样式，确保代码块背景与文字对比度 */
+/* 代码块增强 - 极致背景对比度修复 */
 .post-content pre,
+.post-content .highlight,
 .post-content .highlight pre,
-.post-content .highlight {
-    background-color: var(--code-block-bg) !important;
+.post-content .highlight div,
+.post-content .highlight table,
+.post-content .highlight td,
+.post-content .highlight tr {
+    background-color: #282a36 !important; /* 强制使用统一的深色背景 */
+    color: #f8f8f2 !important;        /* 默认文字颜色 (Dracula) */
     border-radius: 12px !important;
-    padding: 20px !important;
-    margin: 32px 0 !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-    position: relative !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    overflow-x: auto !important;
+    border: none !important;
 }
+
+/* 语法高亮元素修复 - 确保它们不会因为全局 color !important 而失效 */
+.post-content .highlight span {
+    background-color: transparent !important;
+}
+
+/* 针对不同语法元素的颜色微调 (Dracula 风格) */
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #ff79c6 !important; } /* keywords */
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc { color: #f1fa8c !important; } /* strings */
+.highlight .nf, .highlight .fm { color: #50fa7b !important; } /* functions */
+.highlight .c, .highlight .c1, .highlight .cm { color: #6272a4 !important; } /* comments */
+.highlight .mi, .highlight .mf, .highlight .mh, .highlight .mo { color: #bd93f9 !important; } /* numbers */
 
 .post-content pre code,
 .post-content .highlight code {
     font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace !important;
     font-size: 0.95em !important;
     line-height: 1.7 !important;
-    color: var(--code-text) !important; /* 强制设为浅色，因为 Chroma 在深色背景下需要浅色文字 */
-    background: transparent !important;
-    border: none !important;
     padding: 0 !important;
+}
+
+/* 确保行内代码依然保持原有风格 */
+.post-content code:not(pre code) {
+    background-color: var(--code-bg);
+    color: #e83e8c;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace;
+    font-size: 0.85em;
+    word-break: break-word;
+    border: 1px solid var(--border);
 }
 
 /* 数学公式块样式增强 */
