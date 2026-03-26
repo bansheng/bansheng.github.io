@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Recommendation System on Bansheng's Blog</title><link>https://dingyadong.top/tags/recommendation-system/</link><description>Recent content in Recommendation System on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Tue, 24 Mar 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/recommendation-system/index.xml" rel="self" type="application/rss+xml"/><item><title>GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力</title><link>https://dingyadong.top/posts/gpsd-paper-review/</link><pubDate>Tue, 24 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/gpsd-paper-review/</guid><description>&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Recommendation System on Bansheng's Blog</title><link>https://dingyadong.top/tags/recommendation-system/</link><description>Recent content in Recommendation System on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Tue, 24 Mar 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/recommendation-system/index.xml" rel="self" type="application/rss+xml"/><item><title>GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力</title><link>https://dingyadong.top/posts/009_gpsd_paper_review/</link><pubDate>Tue, 24 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/009_gpsd_paper_review/</guid><description>&lt;blockquote&gt;
 &lt;p&gt;本文是关于最新论文《Scaling Transformers for Discriminative Recommendation via Generative Pretraining》（&lt;a href="https://arxiv.org/pdf/2506.03699"&gt;arXiv:2506.03699&lt;/a&gt;）的阅读笔记。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在大语言模型（LLM）领域，增加参数量和数据量通常能带来性能的对数线性增长，即 &lt;strong&gt;Scaling Law&lt;/strong&gt;。然而在推荐系统领域，特别是用于排序（Ranking）的&lt;strong&gt;判别式模型&lt;/strong&gt;（如 CTR/CVR 预测），这一规律却迟迟没有出现。&lt;/p&gt;
@@ -22,7 +22,7 @@
 &lt;li&gt;&lt;strong&gt;在判别式微调阶段，固定住这些稀疏参数不更新&lt;/strong&gt;。&lt;/li&gt;
 &lt;li&gt;仅更新稠密的 Transformer 层或 MLP Head。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;这种策略完美避开了特征稀疏导致的过拟合陷阱，让模型能够专注于学习高阶的特征交叉。&lt;/p&gt;</description></item><item><title>M-FALCON：HSTU 中解决“一对多”推荐推理的终极武器</title><link>https://dingyadong.top/posts/08-mfalcon-hstu-inference/</link><pubDate>Fri, 20 Mar 2026 12:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/08-mfalcon-hstu-inference/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;这种策略完美避开了特征稀疏导致的过拟合陷阱，让模型能够专注于学习高阶的特征交叉。&lt;/p&gt;</description></item><item><title>M-FALCON：HSTU 中解决“一对多”推荐推理的终极武器</title><link>https://dingyadong.top/posts/008_mfalcon_hstu_inference/</link><pubDate>Fri, 20 Mar 2026 12:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/008_mfalcon_hstu_inference/</guid><description>&lt;blockquote&gt;
 &lt;p&gt;在 Meta AI 提出的 HSTU（万亿参数推荐大模型）论文中，除了惊艳的生成式训练范式，还有一个非常硬核的推理加速技术：&lt;strong&gt;M-FALCON&lt;/strong&gt;。本文将为你深入浅出地拆解它的原理，以及它和我们常说的 KV-Cache 有什么异同。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id="1-推荐系统排序阶段的灾难性痛点"&gt;1. 推荐系统排序阶段的“灾难性”痛点&lt;/h2&gt;
@@ -40,7 +40,7 @@
 M-FALCON 借用了大语言模型（LLM）中成熟的 &lt;strong&gt;KV-Cache&lt;/strong&gt; 思想：首先把长度为 $n$ 的用户历史的 KV 矩阵计算出来并缓存（Cache）住。这样后续计算候选物品时，就不需要再重复计算历史序列的特征了。&lt;/p&gt;
 &lt;h3 id="22-微批处理与特殊的-attention-mask"&gt;2.2 微批处理与特殊的 Attention Mask&lt;/h3&gt;
 &lt;p&gt;这是 M-FALCON 最巧妙的地方。如果只用 KV-Cache，逐个计算候选商品依然很慢（内存访存带宽瓶颈，即 Memory-bound）。
-M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微批次（Microbatch）&lt;/strong&gt;，把它们拼接在用户历史的后面一起送入模型。&lt;/p&gt;</description></item><item><title>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</title><link>https://dingyadong.top/posts/07-hstu-paper-review/</link><pubDate>Fri, 20 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/07-hstu-paper-review/</guid><description>&lt;blockquote&gt;
+M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微批次（Microbatch）&lt;/strong&gt;，把它们拼接在用户历史的后面一起送入模型。&lt;/p&gt;</description></item><item><title>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</title><link>https://dingyadong.top/posts/007_hstu_paper_review/</link><pubDate>Fri, 20 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/007_hstu_paper_review/</guid><description>&lt;blockquote&gt;
 &lt;p&gt;本文是关于 Meta AI 重磅论文《Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations》（&lt;a href="https://arxiv.org/pdf/2402.17152"&gt;arXiv:2402.17152&lt;/a&gt;）的阅读笔记，重点探讨 HSTU 架构如何改进传统的自注意力机制。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在自然语言处理（NLP）领域，基于 Transformer 的大模型通过 Scaling Law（缩放定律）展现了令人惊叹的涌现能力。然而在推荐系统领域，传统的深度学习推荐模型（DLRMs）极度依赖人工交叉特征，难以随着计算资源的增加实现模型效果的对数线性增长。&lt;/p&gt;
@@ -54,7 +54,7 @@ M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微
 &lt;h2 id="2-hstu-相对于-self-attention-的核心改进"&gt;2. HSTU 相对于 Self-Attention 的核心改进&lt;/h2&gt;
 &lt;p&gt;HSTU 对传统的自注意力架构进行了大刀阔斧的重构，专门针对推荐数据的非平稳、极度稀疏特性进行了优化。&lt;/p&gt;
 &lt;h3 id="21-彻底抛弃笨重的-mlp-层"&gt;2.1 彻底抛弃笨重的 MLP 层&lt;/h3&gt;
-&lt;p&gt;HSTU 最大的架构创新在于&lt;strong&gt;完全移除了传统的 MLP 层&lt;/strong&gt;。它将多头注意力与前馈网络融合，替换为单层线性投影与门控网络。HSTU 巧妙地将计算分为两步：空间聚合（Spatial Aggregation）与点式变换（Pointwise Transformation）。&lt;/p&gt;</description></item><item><title>FuXi-Linear：释放线性注意力在超长序列推荐中的潜力</title><link>https://dingyadong.top/posts/06-fuxi-linear-paper-review/</link><pubDate>Thu, 19 Mar 2026 21:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/06-fuxi-linear-paper-review/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;HSTU 最大的架构创新在于&lt;strong&gt;完全移除了传统的 MLP 层&lt;/strong&gt;。它将多头注意力与前馈网络融合，替换为单层线性投影与门控网络。HSTU 巧妙地将计算分为两步：空间聚合（Spatial Aggregation）与点式变换（Pointwise Transformation）。&lt;/p&gt;</description></item><item><title>FuXi-Linear：释放线性注意力在超长序列推荐中的潜力</title><link>https://dingyadong.top/posts/006_fuxi_linear_paper_review/</link><pubDate>Thu, 19 Mar 2026 21:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/006_fuxi_linear_paper_review/</guid><description>&lt;blockquote&gt;
 &lt;p&gt;本文是关于最新论文《FuXi-Linear: Unleashing the Power of Linear Attention in Long-term Time-aware Sequential Recommendation》（&lt;a href="http://arxiv.org/abs/2602.23671v1"&gt;arXiv:2602.23671&lt;/a&gt;）的阅读笔记。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在现代推荐系统中，基于 Transformer 的序列推荐模型已经成为主流。然而，传统的 Softmax 注意力机制具有二次复杂度 $\mathcal{O}(n^2)$，这导致在处理用户的超长行为序列（例如超过 $10^4$ 次交互）时，会面临严重的显存占用和推理吞吐量瓶颈。&lt;/p&gt;
@@ -75,7 +75,7 @@ M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微
 &lt;li&gt;在推理时可以像 RNN 一样，复杂度降为 $\mathcal{O}(1)$。&lt;/li&gt;
 &lt;/ul&gt;
 $$ Retention(Q,K,V,D) = (QK^T \odot D)V $$&lt;p&gt;
-&lt;em&gt;(其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数)&lt;/em&gt;&lt;/p&gt;</description></item><item><title>TokenMixer-Large: 突破工业级推荐系统的大模型扩展瓶颈</title><link>https://dingyadong.top/posts/05-tokenmixer-large-paper-review/</link><pubDate>Wed, 18 Mar 2026 10:15:00 +0800</pubDate><guid>https://dingyadong.top/posts/05-tokenmixer-large-paper-review/</guid><description>&lt;h1 id="来源元数据-metadata"&gt;来源元数据 (Metadata)&lt;/h1&gt;
+&lt;em&gt;(其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数)&lt;/em&gt;&lt;/p&gt;</description></item><item><title>TokenMixer-Large: 突破工业级推荐系统的大模型扩展瓶颈</title><link>https://dingyadong.top/posts/005_tokenmixer_large_paper_review/</link><pubDate>Wed, 18 Mar 2026 10:15:00 +0800</pubDate><guid>https://dingyadong.top/posts/005_tokenmixer_large_paper_review/</guid><description>&lt;h1 id="来源元数据-metadata"&gt;来源元数据 (Metadata)&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;原文标题&lt;/strong&gt;: TokenMixer-Large: Scaling Up Large Ranking Models in Industrial Recommenders&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;原文链接&lt;/strong&gt;: &lt;a href="https://arxiv.org/pdf/2602.06563"&gt;https://arxiv.org/pdf/2602.06563&lt;/a&gt;&lt;/li&gt;
