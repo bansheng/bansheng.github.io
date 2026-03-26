@@ -1,27 +1,27 @@
-<!-- Mermaid.js for Flowchart Rendering -->
+{{- if .IsPage }}
+{{- if eq .Type "posts" }}
+
+<!-- Mermaid.js - 仅在文章页且包含 mermaid 代码块时加载 -->
+{{ if findRE "<pre class=\"mermaid\"|class=\"language-mermaid\"" .Content }}
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
-  
+
   function initMermaid() {
     try {
-      // 动态检测当前主题模式并初始化 mermaid
-      const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark' || 
+      const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark' ||
                          (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      
-      mermaid.initialize({ 
-        startOnLoad: false, 
+
+      mermaid.initialize({
+        startOnLoad: false,
         theme: isDarkMode ? 'dark' : 'neutral',
         securityLevel: 'loose',
         logLevel: 'error',
         fontFamily: '"PingFang SC", "Lantinghei SC", "Microsoft YaHei", sans-serif'
       });
-      
-      // 显式运行 mermaid 渲染，增加重试机制和错误日志
+
       const renderWithRetry = (retryCount = 0) => {
         mermaid.run({
           querySelector: '.mermaid'
-        }).then(() => {
-          console.log('[Mermaid] Charts rendered successfully');
         }).catch(err => {
           console.error(`[Mermaid] Rendering failed (Retry ${retryCount}):`, err);
           if (retryCount < 2) {
@@ -31,20 +31,17 @@
       };
 
       renderWithRetry();
-
     } catch (e) {
       console.error('[Mermaid] Initialization error:', e);
     }
   }
 
-  // 确保在 DOM 加载完成后运行
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initMermaid);
   } else {
     initMermaid();
   }
 
-  // 监听主题切换，重新渲染
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
@@ -54,8 +51,10 @@
   });
   observer.observe(document.documentElement, { attributes: true });
 </script>
+{{ end }}
 
-<!-- MathJax Support for Math Formulas -->
+<!-- MathJax - 仅在文章页且包含数学公式时加载 -->
+{{ if findRE "\\$\\$|\\\\\\[|\\\\\\(|math-block|math-inline" .Content }}
 <script>
   window.MathJax = {
     tex: {
@@ -71,14 +70,42 @@
 <script type="text/javascript" id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
+{{ end }}
 
-<!-- Highlight.js Support -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hl-light">
+<!-- Highlight.js - 仅在文章页且包含代码块时加载 -->
+{{ if findRE "<pre" .Content }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)" id="hl-light">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)" id="hl-dark">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', (event) => {
-    document.querySelectorAll('pre code').forEach((block) => {
-      hljs.highlightElement(block);
+  (function() {
+    function updateHljsTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const lightSheet = document.getElementById('hl-light');
+      const darkSheet = document.getElementById('hl-dark');
+      if (lightSheet) lightSheet.media = isDark ? 'not all' : 'all';
+      if (darkSheet) darkSheet.media = isDark ? 'all' : 'not all';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('pre code').forEach(function(block) {
+        hljs.highlightElement(block);
+      });
+      updateHljsTheme();
     });
-  });
+
+    // 监听主题切换
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          updateHljsTheme();
+        }
+      });
+    });
+    observer.observe(document.documentElement, { attributes: true });
+  })();
 </script>
+{{ end }}
+
+{{- end }}
+{{- end }}

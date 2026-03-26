@@ -7,6 +7,20 @@ theme = 'PaperMod'
     disableSpecial1stPost = true
     defaultTheme = "light"
     showCodeCopyButtons = true
+    description = "Bansheng 的个人技术博客，分享 AI/ML 研究、深度学习推理优化和软件工程实践"
+    author = "Bansheng"
+    images = []
+
+    [params.profileMode]
+        enabled = false
+
+    # Open Graph / Twitter Card
+    [params.cover]
+        linkFullImages = true
+
+    [params.homeInfoParams]
+        Title = "Bansheng's Blog"
+        Content = "AI/ML 研究与工程实践"
 
     [[params.socialIcons]]
         name = "email"
