@@ -218,31 +218,58 @@ a {
     border: 1px solid var(--border); /* 增加一点点边框显得更精致 */
 }
 
-/* 代码块增强 */
-.post-content pre {
-    background-color: #1e293b !important; /* 稍微浅一点的深蓝色，提高对比度 */
-    border-radius: 12px;
-    padding: 20px;
-    margin: 32px 0;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    overflow-x: auto;
+/* 代码块增强 - 适配明亮与黑暗模式 */
+:root {
+    --code-bg: #f8fafc;
+    --code-block-bg: #1e293b;
+    --code-text: #e2e8f0;
 }
 
-.post-content pre code {
-    font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace;
-    font-size: 0.95em;
-    line-height: 1.7;
-    /* 移除 color !important，允许语法高亮生效 */
+:root[data-theme="dark"] {
+    --code-bg: #0f172a;
+    --code-block-bg: #0f172a;
+    --code-text: #f1f5f9;
 }
 
-/* 数学公式块样式 */
+/* 强制覆盖 PaperMod 的默认样式，确保代码块背景与文字对比度 */
+.post-content pre,
+.post-content .highlight pre,
+.post-content .highlight {
+    background-color: var(--code-block-bg) !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    margin: 32px 0 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    position: relative !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    overflow-x: auto !important;
+}
+
+.post-content pre code,
+.post-content .highlight code {
+    font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace !important;
+    font-size: 0.95em !important;
+    line-height: 1.7 !important;
+    color: var(--code-text) !important; /* 强制设为浅色，因为 Chroma 在深色背景下需要浅色文字 */
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* 数学公式块样式增强 */
 .math-block {
     overflow-x: auto;
     overflow-y: hidden;
     max-width: 100%;
-    padding: 10px 0;
+    padding: 20px 0;
+    margin: 1.5em 0;
+    background: transparent;
+    font-size: 1.1em;
+}
+
+.math-inline {
+    display: inline;
+    padding: 0 2px;
 }
 
 /* 引用块美化 */
