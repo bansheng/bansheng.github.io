@@ -74,7 +74,7 @@ M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微
 &lt;li&gt;在训练时可以高效并行；&lt;/li&gt;
 &lt;li&gt;在推理时可以像 RNN 一样，复杂度降为 $\mathcal{O}(1)$。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;$$ Retention(Q,K,V,D) = (QK^T \odot D)V $$
+$$ Retention(Q,K,V,D) = (QK^T \odot D)V $$&lt;p&gt;
 &lt;em&gt;(其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数)&lt;/em&gt;&lt;/p&gt;</description></item><item><title>TokenMixer-Large: 突破工业级推荐系统的大模型扩展瓶颈</title><link>https://dingyadong.top/posts/05-tokenmixer-large-paper-review/</link><pubDate>Wed, 18 Mar 2026 10:15:00 +0800</pubDate><guid>https://dingyadong.top/posts/05-tokenmixer-large-paper-review/</guid><description>&lt;h1 id="来源元数据-metadata"&gt;来源元数据 (Metadata)&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;原文标题&lt;/strong&gt;: TokenMixer-Large: Scaling Up Large Ranking Models in Industrial Recommenders&lt;/li&gt;

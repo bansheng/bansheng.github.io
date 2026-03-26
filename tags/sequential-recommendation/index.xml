@@ -18,5 +18,5 @@
 &lt;li&gt;在训练时可以高效并行；&lt;/li&gt;
 &lt;li&gt;在推理时可以像 RNN 一样，复杂度降为 $\mathcal{O}(1)$。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;$$ Retention(Q,K,V,D) = (QK^T \odot D)V $$
+$$ Retention(Q,K,V,D) = (QK^T \odot D)V $$&lt;p&gt;
 &lt;em&gt;(其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数)&lt;/em&gt;&lt;/p&gt;</description></item></channel></rss>

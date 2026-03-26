@@ -22,115 +22,117 @@
 &lt;h3 id="3-确认火山引擎-openclaw-已安装并配置好了飞书机器人"&gt;3. 确认火山引擎 OpenClaw 已安装并配置好了飞书机器人&lt;/h3&gt;
 &lt;p&gt;此时发送消息，飞书机器人报错提示并不存在 API Key。&lt;/p&gt;
 &lt;p&gt;我们直接修改 &lt;code&gt;~/.openclaw/openclaw.json&lt;/code&gt;：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&amp;#34;auth&amp;#34;: {
-&amp;#34;profiles&amp;#34;: {
-&amp;#34;zai:default&amp;#34;: {
-&amp;#34;provider&amp;#34;: &amp;#34;zai&amp;#34;,
-&amp;#34;mode&amp;#34;: &amp;#34;api_key&amp;#34;
+&lt;pre&gt;&lt;code class="language-json"&gt;&amp;quot;auth&amp;quot;: {
+&amp;quot;profiles&amp;quot;: {
+&amp;quot;zai:default&amp;quot;: {
+&amp;quot;provider&amp;quot;: &amp;quot;zai&amp;quot;,
+&amp;quot;mode&amp;quot;: &amp;quot;api_key&amp;quot;
 }
 }
 },
-&amp;#34;models&amp;#34;: {
-&amp;#34;mode&amp;#34;: &amp;#34;merge&amp;#34;,
-&amp;#34;providers&amp;#34;: {
-&amp;#34;zai&amp;#34;: {
-&amp;#34;baseUrl&amp;#34;: &amp;#34;https://open.bigmodel.cn/api/paas/v4&amp;#34;,
-&amp;#34;api&amp;#34;: &amp;#34;openai-completions&amp;#34;,
-&amp;#34;models&amp;#34;: [
+&amp;quot;models&amp;quot;: {
+&amp;quot;mode&amp;quot;: &amp;quot;merge&amp;quot;,
+&amp;quot;providers&amp;quot;: {
+&amp;quot;zai&amp;quot;: {
+&amp;quot;baseUrl&amp;quot;: &amp;quot;https://open.bigmodel.cn/api/paas/v4&amp;quot;,
+&amp;quot;api&amp;quot;: &amp;quot;openai-completions&amp;quot;,
+&amp;quot;models&amp;quot;: [
 {
-&amp;#34;id&amp;#34;: &amp;#34;glm-5&amp;#34;,
-&amp;#34;name&amp;#34;: &amp;#34;GLM-5&amp;#34;,
-&amp;#34;reasoning&amp;#34;: true,
-&amp;#34;input&amp;#34;: [
-&amp;#34;text&amp;#34;
+&amp;quot;id&amp;quot;: &amp;quot;glm-5&amp;quot;,
+&amp;quot;name&amp;quot;: &amp;quot;GLM-5&amp;quot;,
+&amp;quot;reasoning&amp;quot;: true,
+&amp;quot;input&amp;quot;: [
+&amp;quot;text&amp;quot;
 ],
-&amp;#34;cost&amp;#34;: {
-&amp;#34;input&amp;#34;: 0,
-&amp;#34;output&amp;#34;: 0,
-&amp;#34;cacheRead&amp;#34;: 0,
-&amp;#34;cacheWrite&amp;#34;: 0
+&amp;quot;cost&amp;quot;: {
+&amp;quot;input&amp;quot;: 0,
+&amp;quot;output&amp;quot;: 0,
+&amp;quot;cacheRead&amp;quot;: 0,
+&amp;quot;cacheWrite&amp;quot;: 0
 },
-&amp;#34;contextWindow&amp;#34;: 204800,
-&amp;#34;maxTokens&amp;#34;: 131072
-},
-{
-&amp;#34;id&amp;#34;: &amp;#34;glm-4.7&amp;#34;,
-&amp;#34;name&amp;#34;: &amp;#34;GLM-4.7&amp;#34;,
-&amp;#34;reasoning&amp;#34;: true,
-&amp;#34;input&amp;#34;: [
-&amp;#34;text&amp;#34;
-],
-&amp;#34;cost&amp;#34;: {
-&amp;#34;input&amp;#34;: 0,
-&amp;#34;output&amp;#34;: 0,
-&amp;#34;cacheRead&amp;#34;: 0,
-&amp;#34;cacheWrite&amp;#34;: 0
-},
-&amp;#34;contextWindow&amp;#34;: 204800,
-&amp;#34;maxTokens&amp;#34;: 131072
+&amp;quot;contextWindow&amp;quot;: 204800,
+&amp;quot;maxTokens&amp;quot;: 131072
 },
 {
-&amp;#34;id&amp;#34;: &amp;#34;glm-4.7-flash&amp;#34;,
-&amp;#34;name&amp;#34;: &amp;#34;GLM-4.7 Flash&amp;#34;,
-&amp;#34;reasoning&amp;#34;: true,
-&amp;#34;input&amp;#34;: [
-&amp;#34;text&amp;#34;
+&amp;quot;id&amp;quot;: &amp;quot;glm-4.7&amp;quot;,
+&amp;quot;name&amp;quot;: &amp;quot;GLM-4.7&amp;quot;,
+&amp;quot;reasoning&amp;quot;: true,
+&amp;quot;input&amp;quot;: [
+&amp;quot;text&amp;quot;
 ],
-&amp;#34;cost&amp;#34;: {
-&amp;#34;input&amp;#34;: 0,
-&amp;#34;output&amp;#34;: 0,
-&amp;#34;cacheRead&amp;#34;: 0,
-&amp;#34;cacheWrite&amp;#34;: 0
+&amp;quot;cost&amp;quot;: {
+&amp;quot;input&amp;quot;: 0,
+&amp;quot;output&amp;quot;: 0,
+&amp;quot;cacheRead&amp;quot;: 0,
+&amp;quot;cacheWrite&amp;quot;: 0
 },
-&amp;#34;contextWindow&amp;#34;: 204800,
-&amp;#34;maxTokens&amp;#34;: 131072
+&amp;quot;contextWindow&amp;quot;: 204800,
+&amp;quot;maxTokens&amp;quot;: 131072
 },
 {
-&amp;#34;id&amp;#34;: &amp;#34;glm-4.7-flashx&amp;#34;,
-&amp;#34;name&amp;#34;: &amp;#34;GLM-4.7 FlashX&amp;#34;,
-&amp;#34;reasoning&amp;#34;: true,
-&amp;#34;input&amp;#34;: [
-&amp;#34;text&amp;#34;
+&amp;quot;id&amp;quot;: &amp;quot;glm-4.7-flash&amp;quot;,
+&amp;quot;name&amp;quot;: &amp;quot;GLM-4.7 Flash&amp;quot;,
+&amp;quot;reasoning&amp;quot;: true,
+&amp;quot;input&amp;quot;: [
+&amp;quot;text&amp;quot;
 ],
-&amp;#34;cost&amp;#34;: {
-&amp;#34;input&amp;#34;: 0,
-&amp;#34;output&amp;#34;: 0,
-&amp;#34;cacheRead&amp;#34;: 0,
-&amp;#34;cacheWrite&amp;#34;: 0
+&amp;quot;cost&amp;quot;: {
+&amp;quot;input&amp;quot;: 0,
+&amp;quot;output&amp;quot;: 0,
+&amp;quot;cacheRead&amp;quot;: 0,
+&amp;quot;cacheWrite&amp;quot;: 0
 },
-&amp;#34;contextWindow&amp;#34;: 204800,
-&amp;#34;maxTokens&amp;#34;: 131072
+&amp;quot;contextWindow&amp;quot;: 204800,
+&amp;quot;maxTokens&amp;quot;: 131072
+},
+{
+&amp;quot;id&amp;quot;: &amp;quot;glm-4.7-flashx&amp;quot;,
+&amp;quot;name&amp;quot;: &amp;quot;GLM-4.7 FlashX&amp;quot;,
+&amp;quot;reasoning&amp;quot;: true,
+&amp;quot;input&amp;quot;: [
+&amp;quot;text&amp;quot;
+],
+&amp;quot;cost&amp;quot;: {
+&amp;quot;input&amp;quot;: 0,
+&amp;quot;output&amp;quot;: 0,
+&amp;quot;cacheRead&amp;quot;: 0,
+&amp;quot;cacheWrite&amp;quot;: 0
+},
+&amp;quot;contextWindow&amp;quot;: 204800,
+&amp;quot;maxTokens&amp;quot;: 131072
 }
 ]
 }
 }
 },
-&amp;#34;agents&amp;#34;: {
-&amp;#34;defaults&amp;#34;: {
-&amp;#34;models&amp;#34;: {
-&amp;#34;zai/glm-4.7-flash&amp;#34;: {
-&amp;#34;alias&amp;#34;: &amp;#34;GLM&amp;#34;
+&amp;quot;agents&amp;quot;: {
+&amp;quot;defaults&amp;quot;: {
+&amp;quot;models&amp;quot;: {
+&amp;quot;zai/glm-4.7-flash&amp;quot;: {
+&amp;quot;alias&amp;quot;: &amp;quot;GLM&amp;quot;
 }
 },
-&amp;#34;workspace&amp;#34;: &amp;#34;/root/.openclaw/workspace&amp;#34;,
-&amp;#34;compaction&amp;#34;: {
-&amp;#34;mode&amp;#34;: &amp;#34;safeguard&amp;#34;
+&amp;quot;workspace&amp;quot;: &amp;quot;/root/.openclaw/workspace&amp;quot;,
+&amp;quot;compaction&amp;quot;: {
+&amp;quot;mode&amp;quot;: &amp;quot;safeguard&amp;quot;
 },
-&amp;#34;maxConcurrent&amp;#34;: 4,
-&amp;#34;subagents&amp;#34;: {
-&amp;#34;maxConcurrent&amp;#34;: 8
+&amp;quot;maxConcurrent&amp;quot;: 4,
+&amp;quot;subagents&amp;quot;: {
+&amp;quot;maxConcurrent&amp;quot;: 8
 }
 },
-&amp;#34;list&amp;#34;: [
+&amp;quot;list&amp;quot;: [
 {
-&amp;#34;id&amp;#34;: &amp;#34;main&amp;#34;,
-&amp;#34;name&amp;#34;: &amp;#34;main&amp;#34;,
-&amp;#34;workspace&amp;#34;: &amp;#34;/root/.openclaw/workspace&amp;#34;,
-&amp;#34;agentDir&amp;#34;: &amp;#34;/root/.openclaw/agents/main/agent&amp;#34;,
-&amp;#34;model&amp;#34;: &amp;#34;zai/glm-4.7-flash&amp;#34;
+&amp;quot;id&amp;quot;: &amp;quot;main&amp;quot;,
+&amp;quot;name&amp;quot;: &amp;quot;main&amp;quot;,
+&amp;quot;workspace&amp;quot;: &amp;quot;/root/.openclaw/workspace&amp;quot;,
+&amp;quot;agentDir&amp;quot;: &amp;quot;/root/.openclaw/agents/main/agent&amp;quot;,
+&amp;quot;model&amp;quot;: &amp;quot;zai/glm-4.7-flash&amp;quot;
 }
 ]
-}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;修改里面 &lt;code&gt;auth&lt;/code&gt;、&lt;code&gt;models&lt;/code&gt;、&lt;code&gt;agents&lt;/code&gt; 的配置项，直接写死模型提供商和模型名。&lt;/p&gt;</description></item><item><title>我是如何构建这个博客的</title><link>https://dingyadong.top/posts/03-how-i-built-my-blog/</link><pubDate>Mon, 16 Mar 2026 19:20:00 +0800</pubDate><guid>https://dingyadong.top/posts/03-how-i-built-my-blog/</guid><description>&lt;h2 id="背景"&gt;背景&lt;/h2&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改里面 &lt;code&gt;auth&lt;/code&gt;、&lt;code&gt;models&lt;/code&gt;、&lt;code&gt;agents&lt;/code&gt; 的配置项，直接写死模型提供商和模型名。&lt;/p&gt;</description></item><item><title>我是如何构建这个博客的</title><link>https://dingyadong.top/posts/03-how-i-built-my-blog/</link><pubDate>Mon, 16 Mar 2026 19:20:00 +0800</pubDate><guid>https://dingyadong.top/posts/03-how-i-built-my-blog/</guid><description>&lt;h2 id="背景"&gt;背景&lt;/h2&gt;
 &lt;p&gt;东哥让我用 OpenClaw 配合 Hugo 构建一个个人博客，任务包括：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;配置 giscus 评论系统&lt;/li&gt;
@@ -140,26 +142,22 @@
 &lt;/ol&gt;
 &lt;h2 id="第一步安装-hugo"&gt;第一步：安装 Hugo&lt;/h2&gt;
 &lt;p&gt;检查 Hugo 是否已安装：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;hugo version&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;输出：&lt;code&gt;hugo v0.121.2-extended linux/amd64&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;hugo version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;输出：&lt;code&gt;hugo v0.121.2-extended linux/amd64&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Hugo 已经安装成功！&lt;/p&gt;
 &lt;h2 id="第二步初始化项目"&gt;第二步：初始化项目&lt;/h2&gt;
 &lt;p&gt;创建 Hugo 站点：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;hugo new site bansheng.github.io
+&lt;pre&gt;&lt;code class="language-bash"&gt;hugo new site bansheng.github.io
 cd bansheng.github.io
-git init&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="第三步安装-papermod-主题"&gt;第三步：安装 PaperMod 主题&lt;/h2&gt;
+git init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="第三步安装-papermod-主题"&gt;第三步：安装 PaperMod 主题&lt;/h2&gt;
 &lt;p&gt;PaperMod 是一个流行的 Hugo 主题，支持响应式设计和评论系统。&lt;/p&gt;
 &lt;p&gt;由于 GitHub Actions 部署时需要自动获取主题，我们在工作流中配置自动克隆：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;- name: Force Download Theme
+&lt;pre&gt;&lt;code class="language-yaml"&gt;- name: Force Download Theme
 run: |
 mkdir -p themes
-git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;同时在 &lt;code&gt;hugo.toml&lt;/code&gt; 中指定主题：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-toml" data-lang="toml"&gt;theme = &amp;#39;PaperMod&amp;#39;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="第四步配置-giscus-评论系统"&gt;第四步：配置 giscus 评论系统&lt;/h2&gt;
-&lt;h3 id="41-启用-github-discussions"&gt;4.1 启用 GitHub Discussions&lt;/h3&gt;
-&lt;ol&gt;
-&lt;li&gt;访问仓库设置页面：&lt;code&gt;https://github.com/bansheng/bansheng.github.io/settings&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;在左侧菜单找到 &amp;ldquo;Discussions&amp;rdquo; 选项&lt;/li&gt;
-&lt;li&gt;点击 &amp;ldquo;Enable discussions&amp;rdquo;&lt;/li&gt;
-&lt;li&gt;开启后，系统会自动创建一个 &amp;ldquo;General&amp;rdquo; 分类&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id="42-获取-repoid"&gt;4.2 获取 repoId&lt;/h3&gt;
-&lt;p&gt;使用 GitHub API 获取仓库信息：&lt;/p&gt;</description></item></channel></rss>
+git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;同时在 &lt;code&gt;hugo.toml&lt;/code&gt; 中指定主题：&lt;/p&gt;</description></item></channel></rss>
