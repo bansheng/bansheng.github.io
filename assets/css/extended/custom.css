@@ -219,30 +219,49 @@ a {
 }
 
 /* 代码块增强 - 极致背景对比度修复 */
-.post-content pre,
 .post-content .highlight,
 .post-content .highlight pre,
-.post-content .highlight div,
 .post-content .highlight table,
 .post-content .highlight td,
-.post-content .highlight tr {
+.post-content .highlight tr,
+.post-content .highlight div,
+.post-content pre,
+.post-content code {
     background-color: #282a36 !important; /* 强制使用统一的深色背景 */
     color: #f8f8f2 !important;        /* 默认文字颜色 (Dracula) */
-    border-radius: 12px !important;
-    border: none !important;
 }
 
-/* 语法高亮元素修复 - 确保它们不会因为全局 color !important 而失效 */
-.post-content .highlight span {
+/* 强制背景与圆角 */
+.post-content .highlight {
+    background-color: #282a36 !important;
+    border-radius: 12px !important;
+    padding: 0 !important;
+    margin: 32px 0 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+.post-content .highlight pre {
+    padding: 20px !important;
+    margin: 0 !important;
     background-color: transparent !important;
 }
 
-/* 针对不同语法元素的颜色微调 (Dracula 风格) */
-.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #ff79c6 !important; } /* keywords */
+/* 语法高亮元素修复 - 确保它们在深色背景下清晰可见 */
+.highlight span,
+.post-content .highlight span {
+    background-color: transparent !important;
+    text-shadow: none !important;
+}
+
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #ff79c6 !important; font-weight: bold; } /* keywords */
 .highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc { color: #f1fa8c !important; } /* strings */
-.highlight .nf, .highlight .fm { color: #50fa7b !important; } /* functions */
-.highlight .c, .highlight .c1, .highlight .cm { color: #6272a4 !important; } /* comments */
+.highlight .nf, .highlight .fm, .highlight .nc { color: #50fa7b !important; } /* functions/classes */
+.highlight .c, .highlight .c1, .highlight .cm { color: #6272a4 !important; font-style: italic; } /* comments */
 .highlight .mi, .highlight .mf, .highlight .mh, .highlight .mo { color: #bd93f9 !important; } /* numbers */
+.highlight .o, .highlight .ow { color: #ff79c6 !important; } /* operators */
+.highlight .nb, .highlight .bp { color: #8be9fd !important; } /* builtins */
+.highlight .n, .highlight .nn, .highlight .nx { color: #f8f8f2 !important; } /* identifiers */
+.highlight .p { color: #f8f8f2 !important; } /* punctuation */
 
 .post-content pre code,
 .post-content .highlight code {
@@ -250,6 +269,18 @@ a {
     font-size: 0.95em !important;
     line-height: 1.7 !important;
     padding: 0 !important;
+    background: transparent !important;
+    color: #f8f8f2 !important;
+}
+
+/* 确保行内代码依然保持原有风格，只有不在 pre/highlight 里的才生效 */
+.post-content :not(pre) > code:not(.math-inline) {
+    background-color: #f1f5f9;
+    color: #e83e8c;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border: 1px solid #e2e8f0;
 }
 
 /* 确保行内代码依然保持原有风格 */
@@ -269,15 +300,24 @@ a {
     overflow-x: auto;
     overflow-y: hidden;
     max-width: 100%;
-    padding: 20px 0;
-    margin: 1.5em 0;
+    padding: 24px 0;
+    margin: 24px 0;
     background: transparent;
-    font-size: 1.1em;
+    text-align: center;
+    font-size: 1.15em;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .math-inline {
     display: inline;
-    padding: 0 2px;
+    padding: 0 4px;
+    font-size: 1.05em;
+}
+
+/* 适配深色模式公式边框 */
+:root[data-theme="dark"] .math-block {
+    border-color: rgba(255,255,255,0.1);
 }
 
 /* 引用块美化 */
