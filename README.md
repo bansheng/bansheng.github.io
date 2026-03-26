@@ -160,6 +160,46 @@ If there is sufficient interest, [create a proposal]. Do not submit a pull reque
 
 For a complete guide to contributing to Hugo, see the [Contribution Guide](CONTRIBUTING.md).
 
+## 文件命名规范 (File Naming Convention)
+
+为了保持项目结构的整洁和可维护性，所有存放在 `content/posts/` 目录下的文章文件必须遵循以下命名规范：
+
+### 格式要求
+`序号_描述性名称.扩展名`
+
+- **序号**：使用 3 位数字填充（例如：`001_`）。
+- **描述性名称**：应使用英文小写字母，并以下划线 `_` 分隔单词（snake_case）。
+- **扩展名**：必须与实际文件格式匹配（如 `.md`, `.docx`, `.pdf`）。
+
+### 示例
+- `001_my_first_post.md`
+- `002_mfalcon_hstu_inference.md`
+
+### 工具与脚本
+项目提供了以下脚本以辅助执行命名规范：
+
+1.  **新建文章**：使用脚本自动生成符合规范的文件。
+    ```bash
+    python3 scripts/new_post.py "Your Post Name"
+    ```
+2.  **验证命名**：检查当前所有文件是否符合规范。
+    ```bash
+    python3 scripts/validate_naming.py
+    ```
+
+---
+
+## 流程图支持 (Flowchart Support)
+
+项目集成了 Mermaid.js 以支持流程图渲染。
+
+### 错误监控与自动重试
+- **监控**：渲染失败时，浏览器控制台会输出详细的错误日志 `[Mermaid] Rendering failed`。
+- **自动重试**：脚本包含自动重试机制（最多重试 2 次），以应对网络延迟或脚本加载顺序导致的渲染失败。
+- **主题适配**：流程图会自动根据系统的深浅色模式动态切换主题颜色。
+
+---
+
 ## Dependencies
 
 Hugo stands on the shoulders of great open source libraries. Run `hugo env --logLevel info` to display a list of dependencies.
