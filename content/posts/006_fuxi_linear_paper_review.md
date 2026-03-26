@@ -49,7 +49,7 @@ $$ f(x-y) \approx g(x,y) = \mathbf{k}^T(x)\mathbf{k}(y) $$
 
 ## 3. 架构流程图
 
-```mermaid
+{{< mermaid >}}
 graph TD
     A[用户历史交互序列 + 时间戳] --> B[Embedding 层]
     B --> C[FuXi-Linear Block]
@@ -64,7 +64,7 @@ graph TD
     
     E --> F[MFFN 多阶段前馈网络]
     F --> G[下一个 Item 预测]
-```
+{{< /mermaid >}}
 
 ## 4. 实验结论与收益
 

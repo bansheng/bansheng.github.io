@@ -1,6 +1,6 @@
 # Hugo Markdown & Mermaid Rendering Rules
 
-- **Mermaid Flowcharts**: DO NOT use Hugo shortcodes (like `{{< mermaid >}}`) for Mermaid graphs. ALWAYS use standard Markdown code blocks with the `mermaid` language identifier (i.e., ` ```mermaid `). This ensures the flowcharts can be correctly previewed in standard Markdown editors (like Obsidian/Notion) and correctly rendered by the Hugo site via the custom render hook at `layouts/_default/_markup/render-codeblock-mermaid.html`.
+- **Mermaid Flowcharts**: DO use Hugo shortcodes (like `{{< mermaid >}}`) for Mermaid graphs. Do not use standard Markdown code blocks with the `mermaid` language identifier (i.e., ` ```mermaid `). This ensures the flowcharts can be correctly previewed in standard Markdown editors (like Obsidian/Notion) and correctly rendered by the Hugo site via the custom render hook at `layouts/_default/_markup/render-codeblock-mermaid.html`.
 
 # Workspace Cleanup Rules
 - **Temporary Files**: After downloading or extracting temporary files (like PDFs, HTML papers, txt extracts, or tar.gz files) during research or content generation, ALWAYS delete them to keep the workspace clean.
