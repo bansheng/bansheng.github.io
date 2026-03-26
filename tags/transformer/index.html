@@ -1,4 +1,4 @@
-<!doctype html><html lang=en dir=auto data-theme=light><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Transformer | Bansheng's Blog</title><meta name=keywords content><meta name=description content="Bansheng 的个人技术博客，分享 AI/ML 研究、深度学习推理优化和软件工程实践"><meta name=author content="Bansheng"><link rel=canonical href=https://dingyadong.top/tags/transformer/><link crossorigin=anonymous href=/assets/css/stylesheet.a7fa3e27990d33c4ccd48da8bd917650e989641088edbee7a2db88397de35e63.css integrity="sha256-p/o+J5kNM8TM1I2ovZF2UOmJZBCI7b7notuIOX3jXmM=" rel="preload stylesheet" as=style><link rel=icon href=https://dingyadong.top/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://dingyadong.top/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://dingyadong.top/favicon-32x32.png><link rel=apple-touch-icon href=https://dingyadong.top/apple-touch-icon.png><link rel=mask-icon href=https://dingyadong.top/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=https://dingyadong.top/tags/transformer/index.xml title=rss><link rel=alternate hreflang=en href=https://dingyadong.top/tags/transformer/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"&&(document.querySelector("html").dataset.theme="dark")</script><meta property="og:url" content="https://dingyadong.top/tags/transformer/"><meta property="og:site_name" content="Bansheng's Blog"><meta property="og:title" content="Transformer"><meta property="og:description" content="Bansheng 的个人技术博客，分享 AI/ML 研究、深度学习推理优化和软件工程实践"><meta property="og:locale" content="zh_cn"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="Transformer"><meta name=twitter:description content="Bansheng 的个人技术博客，分享 AI/ML 研究、深度学习推理优化和软件工程实践"></head><body class=list id=top><header class=header><nav class=nav><div class=logo><a href=https://dingyadong.top/ accesskey=h title="Bansheng's Blog (Alt + H)">Bansheng's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<!doctype html><html lang=en dir=auto data-theme=light><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Transformer | Bansheng's Blog</title><meta name=keywords content><meta name=description content><meta name=author content><link rel=canonical href=https://dingyadong.top/tags/transformer/><link crossorigin=anonymous href=/assets/css/stylesheet.11725bc4a35d5297cd1054b20f02c35cad5669d65cdae2fff89f5e3a75923d10.css integrity="sha256-EXJbxKNdUpfNEFSyDwLDXK1WadZc2uL/+J9eOnWSPRA=" rel="preload stylesheet" as=style><link rel=icon href=https://dingyadong.top/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://dingyadong.top/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://dingyadong.top/favicon-32x32.png><link rel=apple-touch-icon href=https://dingyadong.top/apple-touch-icon.png><link rel=mask-icon href=https://dingyadong.top/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=https://dingyadong.top/tags/transformer/index.xml title=rss><link rel=alternate hreflang=en href=https://dingyadong.top/tags/transformer/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"&&(document.querySelector("html").dataset.theme="dark")</script><meta property="og:url" content="https://dingyadong.top/tags/transformer/"><meta property="og:site_name" content="Bansheng's Blog"><meta property="og:title" content="Transformer"><meta property="og:locale" content="zh_cn"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="Transformer"></head><body class=list id=top><header class=header><nav class=nav><div class=logo><a href=https://dingyadong.top/ accesskey=h title="Bansheng's Blog (Alt + H)">Bansheng's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
 <svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
 <svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://dingyadong.top/archives/ title=归档><span>归档</span></a></li><li><a href=https://dingyadong.top/tags/ title=标签><span>标签</span></a></li><li><a href=https://dingyadong.top/contact/ title=联系我><span>联系我</span></a></li></ul></nav></header><main class=main><header class=page-header><h1>Transformer</h1></header><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？</h2></header><div class=entry-content><p>1. 导言：推荐系统的“大模型”时代与多场景之痛 在过去几年里，大语言模型（Large Language Models, LLMs）的飞速发展，彻底重塑了人工智能的版图。从单模态的文本生成到多模态的图文视频理解，基座模型（Foundation Models, FMs）以其统一的架构和惊人的“涌现能力”（Emergent Abilities），证明了 Scaling Laws（缩放定律）的伟大力量。而在推荐系统（Recommender Systems, RecSys）领域，工业界也逐渐开始验证 Scaling Laws，尝试通过增加模型参数量和训练数据量来打破业务指标的天花板。
 然而，传统的推荐系统往往被局限在“单一场景”（Single-scenario）的孤岛中。例如，在外卖平台中，“美食推荐”、“商家推荐”、“神抢手（券包推荐）”等场景各自拥有独立的模型和特征体系。这种孤岛模式严重限制了推荐模型吸收全局数据的能力，使得 Scaling Laws 的潜力难以被完全释放。受到多模态大模型的启发，美团的技术团队提出：推荐大模型的下一个突破口，在于跨越场景的异构性，建立一个统一的、无需严格对齐的底层基础模型。
@@ -17,14 +17,68 @@ Meta 团队最近提出的 GPSD (Generative Pretraining for Scalable Discriminat
 2.1 阶段一：生成式预训练 (Generative Pretraining) 作者发现，自回归的生成式任务（预测用户下一个交互物品）对过拟合更有韧性。因为生成式训练通过 Sampled Softmax 引入了广泛的随机负采样，能让庞大的 Embedding 表（稀疏参数）得到更稳健的更新。
 2.2 阶段二：桥接与冻结 (Sparse Freeze Strategy) 这是 GPSD 最关键的创新点。在将模型迁移到判别式任务（如 CTR 预测）时，采取 “冻结稀疏参数（Sparse Freeze）” 的策略：
 继承预训练好的 Embedding 参数。 在判别式微调阶段，固定住这些稀疏参数不更新。 仅更新稠密的 Transformer 层或 MLP Head。 这种策略完美避开了特征稀疏导致的过拟合陷阱，让模型能够专注于学习高阶的特征交叉。
-...</p></div><footer class=entry-footer><span title='2026-03-24 10:00:00 +0800 +0800'>March 24, 2026</span>&nbsp;·&nbsp;<span>Bansheng</span></footer><a class=entry-link aria-label="post link to GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力" href=https://dingyadong.top/posts/009_gpsd_paper_review/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</h2></header><div class=entry-content><p>本文是关于 Meta AI 重磅论文《Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations》（arXiv:2402.17152）的阅读笔记，重点探讨 HSTU 架构如何改进传统的自注意力机制。
+...</p></div><footer class=entry-footer><span title='2026-03-24 10:00:00 +0800 +0800'>March 24, 2026</span></footer><a class=entry-link aria-label="post link to GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力" href=https://dingyadong.top/posts/009_gpsd_paper_review/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</h2></header><div class=entry-content><p>本文是关于 Meta AI 重磅论文《Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations》（arXiv:2402.17152）的阅读笔记，重点探讨 HSTU 架构如何改进传统的自注意力机制。
 在自然语言处理（NLP）领域，基于 Transformer 的大模型通过 Scaling Law（缩放定律）展现了令人惊叹的涌现能力。然而在推荐系统领域，传统的深度学习推荐模型（DLRMs）极度依赖人工交叉特征，难以随着计算资源的增加实现模型效果的对数线性增长。
 为了解决这一痛点，Meta AI 提出了**生成式推荐（Generative Recommenders, GRs）**的新范式，并专门为推荐场景设计了 HSTU（Hierarchical Sequential Transduction Unit） 架构。HSTU 成功将千亿级异构特征统一为序列化表达，在训练效率和效果上大幅超越了标准 Transformer，并在工业界验证了万亿参数推荐大模型的 Scaling Law。
 1. 传统 Transformer 在推荐系统中的“水土不服” 标准 Transformer 架构在处理工业级推荐系统（十亿级动态词表、高达 $10^5$ 的用户交互序列）时，暴露出极端的计算与推理瓶颈：
 计算冗余：标准 Transformer 包含多头注意力（MHA）和厚重的点式前馈网络（MLP）。在推荐场景下，极度稀疏的特征并不需要如此厚重的 MLP 来进行特征变换，这会导致巨大的计算浪费。 时间复杂度爆炸：在流式逐样本（Impression-level）训练中，标准 Transformer 的时间复杂度高达 $\mathcal{O}(N^3 d + N^2 d^2)$，根本无法满足在线推理的严苛延迟要求。 2. HSTU 相对于 Self-Attention 的核心改进 HSTU 对传统的自注意力架构进行了大刀阔斧的重构，专门针对推荐数据的非平稳、极度稀疏特性进行了优化。
 2.1 彻底抛弃笨重的 MLP 层 HSTU 最大的架构创新在于完全移除了传统的 MLP 层。它将多头注意力与前馈网络融合，替换为单层线性投影与门控网络。HSTU 巧妙地将计算分为两步：空间聚合（Spatial Aggregation）与点式变换（Pointwise Transformation）。
-...</p></div><footer class=entry-footer><span title='2026-03-20 10:00:00 +0800 +0800'>March 20, 2026</span>&nbsp;·&nbsp;<span>Bansheng</span></footer><a class=entry-link aria-label="post link to 万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention" href=https://dingyadong.top/posts/007_hstu_paper_review/></a></article></main><footer class=footer><span>&copy; 2026 <a href=https://dingyadong.top/>Bansheng's Blog</a></span> ·
+...</p></div><footer class=entry-footer><span title='2026-03-20 10:00:00 +0800 +0800'>March 20, 2026</span></footer><a class=entry-link aria-label="post link to 万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention" href=https://dingyadong.top/posts/007_hstu_paper_review/></a></article></main><footer class=footer><span>&copy; 2026 <a href=https://dingyadong.top/>Bansheng's Blog</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
 <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
-</a><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script></body></html>
+</a><script type=module>
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+  
+  function initMermaid() {
+    try {
+      
+      const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark' || 
+                         (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      
+      mermaid.initialize({ 
+        startOnLoad: false, 
+        theme: isDarkMode ? 'dark' : 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error',
+        fontFamily: '"PingFang SC", "Lantinghei SC", "Microsoft YaHei", sans-serif'
+      });
+      
+      
+      const renderWithRetry = (retryCount = 0) => {
+        mermaid.run({
+          querySelector: '.mermaid'
+        }).then(() => {
+          console.log('[Mermaid] Charts rendered successfully');
+        }).catch(err => {
+          console.error(`[Mermaid] Rendering failed (Retry ${retryCount}):`, err);
+          if (retryCount < 2) {
+            setTimeout(() => renderWithRetry(retryCount + 1), 500);
+          }
+        });
+      };
+
+      renderWithRetry();
+
+    } catch (e) {
+      console.error('[Mermaid] Initialization error:', e);
+    }
+  }
+
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+
+  
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+        initMermaid();
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+</script><script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["\\[","\\]"]],processEscapes:!0},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}}</script><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css id=hl-light><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>document.addEventListener("DOMContentLoaded",e=>{document.querySelectorAll("pre code").forEach(e=>{hljs.highlightElement(e)})})</script><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script></body></html>

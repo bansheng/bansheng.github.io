@@ -18,7 +18,7 @@
 在数据端：将多个场景的数据强行拼接到一起，使用一个固定的特征模板（Fixed Template）。如果某个场景缺少某些特征（例如商家推荐场景没有菜品口味标签），就用 Padding（如零值或默认值）来填充；如果某些异构特征无法对齐，干脆直接丢弃。
 在模型端：通过 MoE（Mixture of Experts）或星型拓扑结构，将模型参数解耦为“领域无关”（Domain-invariant）的共享参数和“领域特定”（Domain-specific）的独有参数。
 
-然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点："><meta name=author content="AI Researcher"><link rel=canonical href=https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/><link crossorigin=anonymous href=/assets/css/stylesheet.a7fa3e27990d33c4ccd48da8bd917650e989641088edbee7a2db88397de35e63.css integrity="sha256-p/o+J5kNM8TM1I2ovZF2UOmJZBCI7b7notuIOX3jXmM=" rel="preload stylesheet" as=style><link rel=icon href=https://dingyadong.top/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://dingyadong.top/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://dingyadong.top/favicon-32x32.png><link rel=apple-touch-icon href=https://dingyadong.top/apple-touch-icon.png><link rel=mask-icon href=https://dingyadong.top/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"&&(document.querySelector("html").dataset.theme="dark")</script><meta property="og:url" content="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/"><meta property="og:site_name" content="Bansheng's Blog"><meta property="og:title" content="美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？"><meta property="og:description" content="1. 导言：推荐系统的“大模型”时代与多场景之痛 在过去几年里，大语言模型（Large Language Models, LLMs）的飞速发展，彻底重塑了人工智能的版图。从单模态的文本生成到多模态的图文视频理解，基座模型（Foundation Models, FMs）以其统一的架构和惊人的“涌现能力”（Emergent Abilities），证明了 Scaling Laws（缩放定律）的伟大力量。而在推荐系统（Recommender Systems, RecSys）领域，工业界也逐渐开始验证 Scaling Laws，尝试通过增加模型参数量和训练数据量来打破业务指标的天花板。
+然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点："><meta name=author content="AI Researcher"><link rel=canonical href=https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/><link crossorigin=anonymous href=/assets/css/stylesheet.11725bc4a35d5297cd1054b20f02c35cad5669d65cdae2fff89f5e3a75923d10.css integrity="sha256-EXJbxKNdUpfNEFSyDwLDXK1WadZc2uL/+J9eOnWSPRA=" rel="preload stylesheet" as=style><link rel=icon href=https://dingyadong.top/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://dingyadong.top/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://dingyadong.top/favicon-32x32.png><link rel=apple-touch-icon href=https://dingyadong.top/apple-touch-icon.png><link rel=mask-icon href=https://dingyadong.top/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"&&(document.querySelector("html").dataset.theme="dark")</script><meta property="og:url" content="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/"><meta property="og:site_name" content="Bansheng's Blog"><meta property="og:title" content="美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？"><meta property="og:description" content="1. 导言：推荐系统的“大模型”时代与多场景之痛 在过去几年里，大语言模型（Large Language Models, LLMs）的飞速发展，彻底重塑了人工智能的版图。从单模态的文本生成到多模态的图文视频理解，基座模型（Foundation Models, FMs）以其统一的架构和惊人的“涌现能力”（Emergent Abilities），证明了 Scaling Laws（缩放定律）的伟大力量。而在推荐系统（Recommender Systems, RecSys）领域，工业界也逐渐开始验证 Scaling Laws，尝试通过增加模型参数量和训练数据量来打破业务指标的天花板。
 然而，传统的推荐系统往往被局限在“单一场景”（Single-scenario）的孤岛中。例如，在外卖平台中，“美食推荐”、“商家推荐”、“神抢手（券包推荐）”等场景各自拥有独立的模型和特征体系。这种孤岛模式严重限制了推荐模型吸收全局数据的能力，使得 Scaling Laws 的潜力难以被完全释放。受到多模态大模型的启发，美团的技术团队提出：推荐大模型的下一个突破口，在于跨越场景的异构性，建立一个统一的、无需严格对齐的底层基础模型。
 这便是本文要深度剖析的主角——发表于 2025 年的重磅工业级论文 《MTFM: A Scalable and Alignment-free Foundation Model for Industrial Recommendation in Meituan》。
 这篇论文不仅仅是一个模型结构的创新，它更是一整套从数据组织、网络架构到系统算子级优化的“全栈式”工业级解决方案。为了让你彻底读懂这篇论文，本文将以超过两万字的篇幅，从最基础的背景出发，一层一层地剥开 MTFM 的技术内核，带你领略美团在推荐大模型领域的顶级工程与算法实践。
@@ -218,4 +218,58 @@ class MTFM_Block(nn.Module):
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
 <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
-</a><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+</a><script type=module>
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+  
+  function initMermaid() {
+    try {
+      
+      const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark' || 
+                         (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      
+      mermaid.initialize({ 
+        startOnLoad: false, 
+        theme: isDarkMode ? 'dark' : 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error',
+        fontFamily: '"PingFang SC", "Lantinghei SC", "Microsoft YaHei", sans-serif'
+      });
+      
+      
+      const renderWithRetry = (retryCount = 0) => {
+        mermaid.run({
+          querySelector: '.mermaid'
+        }).then(() => {
+          console.log('[Mermaid] Charts rendered successfully');
+        }).catch(err => {
+          console.error(`[Mermaid] Rendering failed (Retry ${retryCount}):`, err);
+          if (retryCount < 2) {
+            setTimeout(() => renderWithRetry(retryCount + 1), 500);
+          }
+        });
+      };
+
+      renderWithRetry();
+
+    } catch (e) {
+      console.error('[Mermaid] Initialization error:', e);
+    }
+  }
+
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+
+  
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+        initMermaid();
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+</script><script>window.MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["\\[","\\]"]],processEscapes:!0},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}}</script><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css id=hl-light><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>document.addEventListener("DOMContentLoaded",e=>{document.querySelectorAll("pre code").forEach(e=>{hljs.highlightElement(e)})})</script><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
