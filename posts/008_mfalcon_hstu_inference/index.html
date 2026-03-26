@@ -32,33 +32,25 @@ M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的微批次（Micro
 对于 $m$ 个候选，这就需要跑 $m$ 次，整体计算复杂度高达 $\mathcal{O}(m \cdot n^2)$。当 $m$ 达到成千上万，且 $n$ 也很长时，在线推理的延迟是不可接受的。</p><h2 id=2-m-falcon-是如何破局的>2. M-FALCON 是如何破局的？<a hidden class=anchor aria-hidden=true href=#2-m-falcon-是如何破局的>#</a></h2><p>M-FALCON 全称是 <em>Microbatched Fast Attention Leveraging Cacheable OperatioNs</em>。为了打破上述瓶颈，它采用了两个核心策略：<strong>KV-Cache 共享</strong>与<strong>特殊掩码的微批处理 (Microbatching)</strong>。</p><h3 id=21-用户历史的-kv-cache-预计算>2.1 用户历史的 KV-Cache 预计算<a hidden class=anchor aria-hidden=true href=#21-用户历史的-kv-cache-预计算>#</a></h3><p>既然这 $m$ 个候选视频都要和<strong>同一段</strong>用户历史进行交互，那么用户历史在 Transformer 中计算出的 Query, Key, Value 其实是完全一致的。
 M-FALCON 借用了大语言模型（LLM）中成熟的 <strong>KV-Cache</strong> 思想：首先把长度为 $n$ 的用户历史的 KV 矩阵计算出来并缓存（Cache）住。这样后续计算候选物品时，就不需要再重复计算历史序列的特征了。</p><h3 id=22-微批处理与特殊的-attention-mask>2.2 微批处理与特殊的 Attention Mask<a hidden class=anchor aria-hidden=true href=#22-微批处理与特殊的-attention-mask>#</a></h3><p>这是 M-FALCON 最巧妙的地方。如果只用 KV-Cache，逐个计算候选商品依然很慢（内存访存带宽瓶颈，即 Memory-bound）。
 M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的<strong>微批次（Microbatch）</strong>，把它们拼接在用户历史的后面一起送入模型。</p><p>但这里有一个关键问题：<strong>同批次内的候选商品，彼此之间不能产生注意力交互</strong>（也就是候选 A 不能“看到”候选 B），否则就会发生信息泄露（Crosstalk）。
-为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）：</p><ol><li>所有的候选商品都可以“看到”（Attend to）前面的用户历史。</li><li>候选商品对自己是可见的（对角线为 1）。</li><li><strong>候选商品之间互相不可见</strong>。</li></ol><p>通过这种方式，一次前向传播就能并行给 $b_m$ 个候选商品打分，将复杂度从 $\mathcal{O}(m \cdot n^2)$ 骤降到 $\mathcal{O}(\lceil m/b_m \rceil \cdot (n+b_m)^2)$。在实际部署中，通常可以带来 2~4 倍的延迟降低！</p><h2 id=3-m-falcon-原理流程图>3. M-FALCON 原理流程图<a hidden class=anchor aria-hidden=true href=#3-m-falcon-原理流程图>#</a></h2><p>下面这张图直观地展示了 M-FALCON 的工作流：</p><pre><code class=language-mermaid>graph TD
-    %% Define Styles
-    classDef user fill:#f3f4f6,stroke:#3b82f6,stroke-width:2px;
-    classDef cache fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
-    classDef mask fill:#fef3c7,stroke:#d97706,stroke-width:2px;
-    classDef output fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
-
-    UserHistory[&quot;用户历史序列 (长度 n)&quot;]:::user
-    
-    UserHistory --&gt;|1. 仅计算一次| KVCache[&quot;预计算并缓存 KV-Cache&quot;]:::cache
-    
-    subgraph Microbatch_Processing [&quot;2. 微批处理 (Microbatching)&quot;]
-        Candidates[&quot;剩余待排序候选商品 (总数 m)&quot;]
-        Candidates --&gt;|切分为批次| Batch[&quot;当前微批次 (大小 bm)&quot;]
-        
-        Batch --&gt; Masking[&quot;3. 构造特殊 Attention Mask&lt;br/&gt;(候选商品可见历史，但互不可见)&quot;]:::mask
-        KVCache --&gt; Masking
-        
-        Masking --&gt;|并行前向传播| Forward[&quot;HSTU Block 计算&quot;]
-    end
-    
-    Forward --&gt; Scores[&quot;输出该批次 bm 个商品的排序分值&quot;]:::output
-    
-    Scores --&gt; Check{&quot;是否还有剩余候选?&quot;}
-    Check -- &quot;是 (处理下一批次)&quot; --&gt; Batch
-    Check -- &quot;否&quot; --&gt; Done[&quot;返回最终排序列表&quot;]
-</code></pre><h2 id=4-与其他大模型推理技术的对比>4. 与其他大模型推理技术的对比<a hidden class=anchor aria-hidden=true href=#4-与其他大模型推理技术的对比>#</a></h2><p>M-FALCON 的出现，是 LLM 推理技术向推荐系统迁移的成功典范。我们可以把它和目前当红的几个技术做个对比：</p><ol><li><strong>与 KV-Cache 的关系</strong>：M-FALCON 本质上是 KV-Cache 技术在“一对多（One-to-Many）”特殊场景下的深度变种。标准的 KV-Cache 是在<strong>时间维度</strong>（预测下一个 Token）上复用；而 M-FALCON 是在<strong>候选维度</strong>（给多个 Target 打分）上实现了跨样本的复用。</li><li><strong>与 PagedAttention (vLLM) 的关系</strong>：两者解决的问题不同。PagedAttention 解决的是多用户并发请求时，如何通过操作系统的“分页内存”机制来减少显存碎片，提高并发吞吐量。而 M-FALCON 解决的是<strong>单用户单次请求中</strong>，如何通过掩码技巧在一次计算内并行评估大量无关候选的问题。</li></ol><p>总结来说，如果没有 M-FALCON，拥有万亿参数的 HSTU 在严苛的工业级延迟要求下根本无法上线。它完美地在“生成式序列建模”与“高效在线排序”之间架起了一座桥梁。</p></div><footer class=post-footer><ul class=post-tags><li><a href=https://dingyadong.top/tags/recommendation-system/>Recommendation System</a></li><li><a href=https://dingyadong.top/tags/hstu/>HSTU</a></li><li><a href=https://dingyadong.top/tags/kv-cache/>KV-Cache</a></li><li><a href=https://dingyadong.top/tags/inference/>Inference</a></li><li><a href=https://dingyadong.top/tags/m-falcon/>M-FALCON</a></li></ul></footer><div class=giscus-wrapper><script src=https://giscus.app/client.js data-repo=bansheng/bansheng.github.io data-repo-id="MDEwOlJlcG9zaXRvcnkyMzQwMjExOTE=" data-category=General data-category-id=DIC_kwDODfLhR84C4l9B data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-theme=preferred_color_scheme data-lang=zh-CN data-loading=lazy crossorigin=anonymous async></script></div></article></main><footer class=footer><span>&copy; 2026 <a href=https://dingyadong.top/>Bansheng's Blog</a></span> ·
+为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）：</p><ol><li>所有的候选商品都可以“看到”（Attend to）前面的用户历史。</li><li>候选商品对自己是可见的（对角线为 1）。</li><li><strong>候选商品之间互相不可见</strong>。</li></ol><p>通过这种方式，一次前向传播就能并行给 $b_m$ 个候选商品打分，将复杂度从 $\mathcal{O}(m \cdot n^2)$ 骤降到 $\mathcal{O}(\lceil m/b_m \rceil \cdot (n+b_m)^2)$。在实际部署中，通常可以带来 2~4 倍的延迟降低！</p><h2 id=3-m-falcon-原理流程图>3. M-FALCON 原理流程图<a hidden class=anchor aria-hidden=true href=#3-m-falcon-原理流程图>#</a></h2><p>下面这张图直观地展示了 M-FALCON 的工作流：</p><div class=mermaid style="background:0 0">graph TD
+%% Define Styles
+classDef user fill:#f3f4f6,stroke:#3b82f6,stroke-width:2px;
+classDef cache fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
+classDef mask fill:#fef3c7,stroke:#d97706,stroke-width:2px;
+classDef output fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
+UserHistory["用户历史序列 (长度 n)"]:::user
+UserHistory -->|1. 仅计算一次| KVCache["预计算并缓存 KV-Cache"]:::cache
+subgraph Microbatch_Processing ["2. 微批处理 (Microbatching)"]
+Candidates["剩余待排序候选商品 (总数 m)"]
+Candidates -->|切分为批次| Batch["当前微批次 (大小 bm)"]
+Batch --> Masking["3. 构造特殊 Attention Mask<br>(候选商品可见历史，但互不可见)"]:::mask
+KVCache --> Masking
+Masking -->|并行前向传播| Forward["HSTU Block 计算"]
+end
+Forward --> Scores["输出该批次 bm 个商品的排序分值"]:::output
+Scores --> Check{"是否还有剩余候选?"}
+Check -- "是 (处理下一批次)" --> Batch
+Check -- "否" --> Done["返回最终排序列表"]</div><h2 id=4-与其他大模型推理技术的对比>4. 与其他大模型推理技术的对比<a hidden class=anchor aria-hidden=true href=#4-与其他大模型推理技术的对比>#</a></h2><p>M-FALCON 的出现，是 LLM 推理技术向推荐系统迁移的成功典范。我们可以把它和目前当红的几个技术做个对比：</p><ol><li><strong>与 KV-Cache 的关系</strong>：M-FALCON 本质上是 KV-Cache 技术在“一对多（One-to-Many）”特殊场景下的深度变种。标准的 KV-Cache 是在<strong>时间维度</strong>（预测下一个 Token）上复用；而 M-FALCON 是在<strong>候选维度</strong>（给多个 Target 打分）上实现了跨样本的复用。</li><li><strong>与 PagedAttention (vLLM) 的关系</strong>：两者解决的问题不同。PagedAttention 解决的是多用户并发请求时，如何通过操作系统的“分页内存”机制来减少显存碎片，提高并发吞吐量。而 M-FALCON 解决的是<strong>单用户单次请求中</strong>，如何通过掩码技巧在一次计算内并行评估大量无关候选的问题。</li></ol><p>总结来说，如果没有 M-FALCON，拥有万亿参数的 HSTU 在严苛的工业级延迟要求下根本无法上线。它完美地在“生成式序列建模”与“高效在线排序”之间架起了一座桥梁。</p></div><footer class=post-footer><ul class=post-tags><li><a href=https://dingyadong.top/tags/recommendation-system/>Recommendation System</a></li><li><a href=https://dingyadong.top/tags/hstu/>HSTU</a></li><li><a href=https://dingyadong.top/tags/kv-cache/>KV-Cache</a></li><li><a href=https://dingyadong.top/tags/inference/>Inference</a></li><li><a href=https://dingyadong.top/tags/m-falcon/>M-FALCON</a></li></ul></footer><div class=giscus-wrapper><script src=https://giscus.app/client.js data-repo=bansheng/bansheng.github.io data-repo-id="MDEwOlJlcG9zaXRvcnkyMzQwMjExOTE=" data-category=General data-category-id=DIC_kwDODfLhR84C4l9B data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-theme=preferred_color_scheme data-lang=zh-CN data-loading=lazy crossorigin=anonymous async></script></div></article></main><footer class=footer><span>&copy; 2026 <a href=https://dingyadong.top/>Bansheng's Blog</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
 <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
