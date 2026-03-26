@@ -69,37 +69,37 @@ TocOpen: true
 
 将原始特征经过 Embedding 层映射后，通过对应的 MLP 投影到一个统一的维度 \(d_{model}\)：
 
-{{< math >}}
+$$
 \mathbf{h}_{ij} = \text{MLP}_i(\text{Emb}(h_{ij}))
-{{< /math >}}
+$$
 
 随后，MTFM 将所有历史序列中的 Item Token 按照时间戳（Chronological order）进行排序，形成一个统一的 Embedding 矩阵：
 
-{{< math >}}
+$$
 \mathbf{H} \in \mathbb{R}^{L_H \times d_{model}}
-{{< /math >}}
+$$
 
 其中 \(L_H\) 是所有历史序列中 Item 的总数。
 
 同理，用户的实时序列特征也被转化为 R-token 矩阵：
 
-{{< math >}}
+$$
 \mathbf{R} \in \mathbb{R}^{L_R \times d_{model}}
-{{< /math >}}
+$$
 
 #### 2.1.2 T-token 的生成
 
 对于当前曝光的候选目标，MTFM 将用户画像特征（User Profile, \(U^s\)）、场景特定的交叉特征（Cross Features, \(C_i^s\)）以及目标物品特征（Item Features, \(I_i^s\)）进行拼接，并通过该场景特定的 MLP 进行降维投影：
 
-{{< math >}}
+$$
 \mathbf{t}_i^s = \text{MLP}_s(\text{Emb}(U^s) \| \text{Emb}(C_i^s) \| \text{Emb}(I_i^s))
-{{< /math >}}
+$$
 
 这里 \(\|\) 表示列拼接（Column concatenation）。所有场景下的曝光行为最终被转化为 T-token 矩阵：
 
-{{< math >}}
+$$
 \mathbf{T} \in \mathbb{R}^{L_T \times d_{model}}
-{{< /math >}}
+$$
 
 其中 \(L_T\) 是所有场景下曝光样本的总数。
 
@@ -107,9 +107,9 @@ TocOpen: true
 
 最终，所有的 H-token、R-token 和 T-token 会在行方向（Row concatenation）上进行拼接，形成输入到 Transformer 骨干网络的初始 Embedding 矩阵：
 
-{{< math >}}
+$$
 \mathbf{X}^{(0)} = (\mathbf{H}; \mathbf{R}; \mathbf{T}) \in \mathbb{R}^{N \times d_{model}}
-{{< /math >}}
+$$
 
 这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不同的用户，这个 \(N\) 是可变的（Variable-length）。
 
@@ -134,15 +134,15 @@ TocOpen: true
 具体来说，每个用户 \(u\) 对应一条包含海量信息的训练样本 \(\mathbb{D}_u = (X_u, Y_u)\)。
 输入特征集 \(X\) 可以表示为：
 
-{{< math >}}
+$$
 X = [ \{H_i\}_{i=1}^{N_H}, \{R_i\}_{i=1}^{N_R}, \{U^s\}_{s=1}^{N_S}, \{\{C_i^s, I_i^s\}_{i=1}^{N_E^s}\}_{s=1}^{N_S} ]
-{{< /math >}}
+$$
 
 标签集 \(Y\) 表示为：
 
-{{< math >}}
+$$
 Y = \{\{Y_i^s\}_{i=1}^{N_E^s}\}_{s=1}^{N_S}
-{{< /math >}}
+$$
 
 参数解释：
 - \(N_S\)：业务场景的总数。
@@ -203,23 +203,23 @@ graph TD
 全注意力层的数学表达如下：
 
 1. **线性映射与分组切分**：
-{{< math >}}
+$$
 \mathbf{U}^{(l)}, \{\mathbf{Q}^{(l,h)}\}_{h=1}^{H}, \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)} \}_{g=1}^G = \text{Split}(\phi_1(f_1^{(l)}(\widetilde{\mathbf{X}}^{(l)})))
-{{< /math >}}
+$$
    其中 \(H\) 是 Query 的头数，\(G\) 是 KV 的头数，\(r = H/G\)。
 
 2. **注意力计算与动态掩码（Dynamic Masking）**：
-{{< math >}}
+$$
 \mathbf{A}^{(l,h)} = \phi_2(\mathbf{Q}^{(l,h)} \mathbf{K}^{(l,g)T} \odot \mathbf{M}) \mathbf{V}^{(l,g)}
-{{< /math >}}
-{{< math >}}
+$$
+$$
 \mathbf{A}^{(l)} = \mathbf{A}^{(l,1)} \| \cdots \| \mathbf{A}^{(l,H)}
-{{< /math >}}
+$$
 
 3. **门控层归一化与残差连接**：
-{{< math >}}
+$$
 \mathbf{X}^{(l+1)} = f_2^{(l)}(\text{GLN}(\mathbf{A}^{(l)}) \odot \mathbf{U}^{(l)}) + \mathbf{X}^{(l)}
-{{< /math >}}
+$$
 
 #### 4.1.1 防止信息泄露的动态掩码 \(\mathbf{M}\)
 在 User-level 聚合中，由于实时序列 \(R\) 和当前曝光目标 \(T\) 在时间上可能存在重叠，如果不加以限制，模型在预测时就会“看到未来”的数据，导致严重的信息泄露（Information Leakage）。
@@ -241,39 +241,39 @@ graph TD
 
 首先，从归一化的特征矩阵和掩码矩阵中，单独切分出 T-token 对应的部分：
 
-{{< math >}}
+$$
 \widetilde{\mathbf{X}}^{(l)}_T = \widetilde{\mathbf{X}}^{(l)}[L_H+L_R:]
-{{< /math >}}
+$$
 
-{{< math >}}
+$$
 \mathbf{M}_T = \mathbf{M}[L_H+L_R:]
-{{< /math >}}
+$$
 
 接下来，只用 T-token 去生成 Query \(\mathbf{Q}_T\)，而 Key \(\mathbf{K}\) 和 Value \(\mathbf{V}\) 依然由全局序列生成：
 
-{{< math >}}
+$$
 \mathbf{U}^{(l)}_T, \{\mathbf{Q}^{(l,h)}_T\}_{h=1}^H = \text{Split}(\phi_1(f_{uq}^{(l)}(\widetilde{\mathbf{X}}_T^{(l)})))
-{{< /math >}}
+$$
 
-{{< math >}}
+$$
 \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)}\}_{g=1}^G = \text{Split}(\phi_1(f_{kv}^{(l)}(\widetilde{\mathbf{X}}^{(l)})))
-{{< /math >}}
+$$
 
 注意力计算只在 T-token 作为 Query 时发生：
 
-{{< math >}}
+$$
 \mathbf{A}^{(l,h)}_T = \phi_2(\mathbf{Q}_T^{(l,h)} \mathbf{K}^{(l,g)T} \odot \mathbf{M}_T) \mathbf{V}^{(l,g)}
-{{< /math >}}
+$$
 
-{{< math >}}
+$$
 \mathbf{X}^{(l+1)}_T = f_2^{(l)}(\text{GLN}(\mathbf{A}_T^{(l)}) \odot \mathbf{U}_T^{(l)}) + \mathbf{X}_T^{(l)}
-{{< /math >}}
+$$
 
 最后，将更新后的 T-token 与未更新的 H/R-token 重新拼接，输出给下一层：
 
-{{< math >}}
+$$
 \mathbf{X}^{(l+1)} = (\mathbf{X}^{(l)}[:L_H+L_R]; \mathbf{X}^{(l+1)}_T)
-{{< /math >}}
+$$
 
 **【复杂度革命性降低】**
 在标准的 Transformer 中，一层的复杂度是 \(O(N^2)\)。
@@ -282,9 +282,9 @@ graph TD
 
 结合 1 层 Full Attention 和 \(K\) 层 Target Attention，一个 Block 的平均复杂度被大幅压缩至：
 
-{{< math >}}
+$$
 O\left(\frac{K \cdot N \cdot L_T + N^2}{K+1}\right)
-{{< /math >}}
+$$
 
 由于 \(L_T\) 远远小于 \(N\)，这一设计让 MTFM 的训练吞吐量（Throughput）直接 **翻倍（2x Speedup）**，且实验证明模型精度没有任何损失！
 
@@ -510,7 +510,7 @@ class MTFM_Block(nn.Module):
 其可见性矩阵 \(\mathbf{M}\)（1 表示可见，0 表示掩码屏蔽）如下所示：
 
 | Query \ Key | H1 | H2 | H3 | R1 | R2 | T1 | T2 |
-|-------------|----|----|----|----|----|----|----|
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | **H1**      | 1  | 1  | 1  | 0  | 0  | 0  | 0  |
 | **H2**      | 1  | 1  | 1  | 0  | 0  | 0  | 0  |
 | **H3**      | 1  | 1  | 1  | 0  | 0  | 0  | 0  |

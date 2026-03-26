@@ -227,17 +227,17 @@ a {
 .post-content .highlight div,
 .post-content pre,
 .post-content code {
-    background-color: #282a36 !important; /* 强制使用统一的深色背景 */
-    color: #f8f8f2 !important;        /* 默认文字颜色 (Dracula) */
+    background-color: #f8f9fa !important; /* 强制使用统一的浅色背景 */
+    color: #333333 !important;        /* 默认文字颜色 */
 }
 
 /* 强制背景与圆角 */
 .post-content .highlight {
-    background-color: #282a36 !important;
+    background-color: #f8f9fa !important;
     border-radius: 12px !important;
     padding: 0 !important;
     margin: 32px 0 !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
 }
 
 .post-content .highlight pre {
@@ -246,31 +246,32 @@ a {
     background-color: transparent !important;
 }
 
-/* 语法高亮元素修复 - 确保它们在深色背景下清晰可见 */
+/* 语法高亮元素修复 - 确保它们在浅色背景下清晰可见 */
 .highlight span,
 .post-content .highlight span {
     background-color: transparent !important;
     text-shadow: none !important;
 }
 
-.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #ff79c6 !important; font-weight: bold; } /* keywords */
-.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc { color: #f1fa8c !important; } /* strings */
-.highlight .nf, .highlight .fm, .highlight .nc { color: #50fa7b !important; } /* functions/classes */
-.highlight .c, .highlight .c1, .highlight .cm { color: #6272a4 !important; font-style: italic; } /* comments */
-.highlight .mi, .highlight .mf, .highlight .mh, .highlight .mo { color: #bd93f9 !important; } /* numbers */
-.highlight .o, .highlight .ow { color: #ff79c6 !important; } /* operators */
-.highlight .nb, .highlight .bp { color: #8be9fd !important; } /* builtins */
-.highlight .n, .highlight .nn, .highlight .nx { color: #f8f8f2 !important; } /* identifiers */
-.highlight .p { color: #f8f8f2 !important; } /* punctuation */
+/* 如果使用 highlight.js，下面这些针对 Chroma 的高亮可能不起作用，但保留以防万一 */
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #0000ff !important; font-weight: bold; } /* keywords */
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc { color: #a31515 !important; } /* strings */
+.highlight .nf, .highlight .fm, .highlight .nc { color: #795e26 !important; } /* functions/classes */
+.highlight .c, .highlight .c1, .highlight .cm { color: #008000 !important; font-style: italic; } /* comments */
+.highlight .mi, .highlight .mf, .highlight .mh, .highlight .mo { color: #098658 !important; } /* numbers */
+.highlight .o, .highlight .ow { color: #000000 !important; } /* operators */
+.highlight .nb, .highlight .bp { color: #0000ff !important; } /* builtins */
+.highlight .n, .highlight .nn, .highlight .nx { color: #333333 !important; } /* identifiers */
+.highlight .p { color: #333333 !important; } /* punctuation */
 
 .post-content pre code,
 .post-content .highlight code {
     font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace !important;
-    font-size: 0.95em !important;
-    line-height: 1.7 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
     padding: 0 !important;
     background: transparent !important;
-    color: #f8f8f2 !important;
+    color: #333333 !important;
 }
 
 /* 确保行内代码依然保持原有风格，只有不在 pre/highlight 里的才生效 */
@@ -339,29 +340,26 @@ a {
 .post-content table {
     width: 100%;
     margin: 40px 0;
-    border-collapse: separate;
+    border-collapse: collapse; /* 改为 collapse 确保边框完整 */
     border-spacing: 0;
-    border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-    border: 1px solid var(--border);
 }
 
 .post-content table th, .post-content table td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
+    padding: 12px 16px; /* 适当的内边距 */
+    border: 1px solid var(--border); /* 完整的边框样式 */
     background-color: var(--entry);
 }
 
 .post-content table th {
-    background-color: var(--code-bg);
+    background-color: #f8f9fa; /* 区分明显的表头背景 */
     color: var(--primary);
-    font-weight: 600;
+    font-weight: bold;
 }
 
-.post-content table tr:last-child td {
-    border-bottom: none;
+:root[data-theme="dark"] .post-content table th {
+    background-color: #1e293b;
 }
 
 .post-content table tbody tr:hover td {

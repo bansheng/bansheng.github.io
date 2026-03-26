@@ -62,8 +62,14 @@ theme = 'PaperMod'
     [markup.goldmark.renderer]
       unsafe = true
   [markup.highlight]
-    codeFences = true
+    codeFences = false
     guessSyntax = true
     lineNos = false
-    style = "dracula"
-    noClasses = true
+    style = "github"
+    noClasses = false
+
+  [markup.goldmark.extensions.passthrough]
+    enable = true
+    [markup.goldmark.extensions.passthrough.delimiters]
+      block = [['\[', '\]'], ['$$', '$$']]
+      inline = [['\(', '\)'], ['$', '$']]
