@@ -1,4 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Tech on Bansheng's Blog</title><link>https://dingyadong.top/categories/tech/</link><description>Recent content in Tech on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Tue, 24 Mar 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/categories/tech/index.xml" rel="self" type="application/rss+xml"/><item><title>GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力</title><link>https://dingyadong.top/posts/009_gpsd_paper_review/</link><pubDate>Tue, 24 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/009_gpsd_paper_review/</guid><description>&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Tech on Bansheng's Blog</title><link>https://dingyadong.top/categories/tech/</link><description>Recent content in Tech on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 01 Apr 2026 12:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/categories/tech/index.xml" rel="self" type="application/rss+xml"/><item><title>SORT：面向工业级推荐系统的系统优化排序 Transformer</title><link>https://dingyadong.top/posts/011_sort_paper_review/</link><pubDate>Wed, 01 Apr 2026 12:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/011_sort_paper_review/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;本文是关于 AliExpress 团队论文《SORT: A Systematically Optimized Ranking Transformer for Industrial-scale Recommenders》（&lt;a href="https://arxiv.org/abs/2603.03988"&gt;arXiv:2603.03988&lt;/a&gt;）的深度精读笔记。本文将从问题定义、架构设计、系统优化到实验分析，全方位剖析 SORT 如何将 Transformer 成功落地到工业级推荐排序场景。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="1-引言transformer-进军推荐排序的最后一公里"&gt;1. 引言：Transformer 进军推荐排序的&amp;quot;最后一公里&amp;quot;&lt;/h2&gt;
+&lt;p&gt;Transformer 架构凭借其卓越的可扩展性（Scalability），在大语言模型（LLM）领域取得了令人瞩目的成就。从 GPT 到 LLaMA，从 BERT 到 T5，统一的 Transformer 架构不断刷新各项基准。这种成功的核心在于一个简洁而强大的范式：&lt;strong&gt;通过增加模型参数和训练数据，性能可以持续提升（Scaling Law）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;然而在推荐系统的排序（Ranking）阶段，主流模型仍然是 DIN、DIEN、DeepFM、DCN 等&lt;strong&gt;专用架构（Task-specific Architectures）&lt;/strong&gt;。这些模型虽然在各自的场景中表现优异，但存在一个根本性问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;架构碎片化&lt;/strong&gt;：不同的特征交互方式需要不同的模型设计，难以统一&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可扩展性差&lt;/strong&gt;：增加参数量往往不能带来持续的性能提升，甚至可能导致过拟合&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工程维护成本高&lt;/strong&gt;：每种模型都需要独立的优化和维护&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;一个自然的问题是：&lt;strong&gt;能否像 LLM 一样，用统一的 Transformer 架构来构建推荐排序模型？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;近年来，已有一些先驱性的工作开始探索这个方向：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HSTU&lt;/strong&gt;（Meta, 2024）：提出了层级化序列转导单元，验证了推荐系统中的 Scaling Law&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OneTrans&lt;/strong&gt;（2024）：尝试将 Transformer 应用于排序场景&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GPSD&lt;/strong&gt;（Meta, 2025）：通过生成式预训练解决判别式推荐模型的过拟合问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但这些工作要么聚焦于召回/检索阶段，要么在工业级排序场景中的落地效果有限。&lt;strong&gt;SORT（Systematically Optimized Ranking Transformer）&lt;/strong&gt; 正是在这一背景下提出的——它系统性地解决了 Transformer 在工业级排序模型中面临的一系列挑战，并在 AliExpress 的真实业务场景中取得了显著收益。&lt;/p&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph 传统范式 ["传统推荐排序范式"]
+A1["DIN&lt;br/&gt;目标注意力"]
+A2["DIEN&lt;br/&gt;兴趣演化"]
+A3["DeepFM&lt;br/&gt;特征交叉"]
+A4["DCN&lt;br/&gt;交叉网络"]
+end
+subgraph 过渡探索 ["Transformer 初步探索"]
+B1["HSTU&lt;br/&gt;Meta 2024&lt;br/&gt;召回/检索"]
+B2["OneTrans&lt;br/&gt;2024&lt;br/&gt;排序尝试"]
+B3["GPSD&lt;br/&gt;Meta 2025&lt;br/&gt;预训练框架"]
+end
+subgraph SORT范式 ["SORT: 统一排序 Transformer"]
+C1["统一架构&lt;br/&gt;请求中心组织"]
+C2["系统优化&lt;br/&gt;稀疏注意力+MoE"]
+C3["工业落地&lt;br/&gt;训练+推理优化"]
+end
+传统范式 --&gt;|"架构碎片化&lt;br/&gt;可扩展性差"| 过渡探索
+过渡探索 --&gt;|"系统性优化"| SORT范式
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;图 1：推荐排序模型的演进路径。&lt;/strong&gt; 从传统的专用架构（DIN、DeepFM 等），经过 Transformer 的初步探索（HSTU、OneTrans、GPSD），到 SORT 实现统一的工业级排序 Transformer。传统范式面临架构碎片化和可扩展性差的问题——每种特征交互方式都需要定制化的模型设计（如 DIN 的目标注意力、DeepFM 的二阶交叉、DCN 的显式交叉网络），导致工程维护成本高且难以通过简单增加参数来提升性能。过渡阶段的探索工作（HSTU 聚焦召回、GPSD 专注预训练框架、OneTrans 初步尝试排序）虽然各有突破，但尚未形成完整的工业级排序解决方案。SORT 通过系统性优化，首次在工业级排序场景中成功落地统一的 Transformer 架构，标志着推荐排序从&amp;quot;专用模型&amp;quot;向&amp;quot;统一基础模型&amp;quot;的范式转变。&lt;/p&gt;</description></item><item><title>GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力</title><link>https://dingyadong.top/posts/009_gpsd_paper_review/</link><pubDate>Tue, 24 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/009_gpsd_paper_review/</guid><description>&lt;blockquote&gt;
 &lt;p&gt;本文是关于最新论文《Scaling Transformers for Discriminative Recommendation via Generative Pretraining》（&lt;a href="https://arxiv.org/pdf/2506.03699"&gt;arXiv:2506.03699&lt;/a&gt;）的阅读笔记。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在大语言模型（LLM）领域，增加参数量和数据量通常能带来性能的对数线性增长，即 &lt;strong&gt;Scaling Law&lt;/strong&gt;。然而在推荐系统领域，特别是用于排序（Ranking）的&lt;strong&gt;判别式模型&lt;/strong&gt;（如 CTR/CVR 预测），这一规律却迟迟没有出现。&lt;/p&gt;
