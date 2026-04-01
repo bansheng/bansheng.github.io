@@ -33,10 +33,10 @@ hugoblox:
     show_social: true
 
   copyright:
-    notice: "© {year} Bansheng"
+    notice: "© {year} Yadong Ding"
 
   seo:
-    description: "Bansheng 的技术博客 - AI/ML 论文精读、推荐系统、深度学习"
+    description: "Yadong 的技术博客 - 搜广推论文精读、电商推荐系统、LLM 落地"
 
   content:
     math:
