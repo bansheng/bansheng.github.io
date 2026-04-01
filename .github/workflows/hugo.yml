@@ -28,12 +28,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Install dependencies
+      - name: Install TailwindCSS
         run: |
-          npm install --ignore-scripts
-          npm install -D tailwindcss @tailwindcss/cli @tailwindcss/typography
+          npm install --save-dev tailwindcss @tailwindcss/cli @tailwindcss/typography
+          echo "Tailwind version:"
+          npx tailwindcss --help | head -1 || true
 
       - name: Hugo Modules
         run: hugo mod get
