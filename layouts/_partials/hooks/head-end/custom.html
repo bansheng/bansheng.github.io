@@ -1,0 +1,14 @@
+<!-- Emoji Favicon (override HugoBlox default) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+
+<!-- Custom CSS -->
+{{ $custom := resources.Get "css/custom.css" }}
+{{ if $custom }}
+  {{ if hugo.IsDevelopment }}
+    <link rel="stylesheet" href="{{ $custom.RelPermalink }}">
+  {{ else }}
+    {{ with $custom | minify | fingerprint }}
+      <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+    {{ end }}
+  {{ end }}
+{{ end }}

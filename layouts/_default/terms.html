@@ -1,153 +1,121 @@
-{{- define "main" }}
+{{ define "main" }}
 
-{{- if .Title }}
-<header class="page-header">
-    <h1>{{ .Title }}</h1>
-    {{- if .Description }}
-    <div class="post-description">
-        {{ .Description }}
-    </div>
-    {{- end }}
-</header>
-{{- end }}
+<div data-pagefind-ignore>
 
-{{- if eq .Type "tags" }}
-    {{- $tagsData := slice }}
+<div class="max-w-4xl mx-auto px-4">
+  <h1 class="text-4xl font-bold text-center my-8 dark:text-white">{{ .Title }}</h1>
+  {{ .Content }}
+
+  <!-- Word Cloud Container -->
+  <div id="tag-cloud" style="width:100%; height:500px; margin:2rem 0;"></div>
+
+  <!-- Fallback tag list (hidden when JS works) -->
+  <noscript>
+  <div class="flex flex-row gap-3 flex-wrap justify-center my-8">
+    {{- $type := .Type }}
     {{- range $key, $value := .Data.Terms.Alphabetical }}
-        {{- $name := .Name }}
-        {{- $count := .Count }}
-        {{- with site.GetPage (printf "/%s/%s" $.Type $name) }}
-            {{- $tagsData = $tagsData | append (dict "text" .Name "size" $count "url" .Permalink) }}
-        {{- end }}
+      {{- $name := .Name }}
+      {{- $count := .Count }}
+      {{- with site.GetPage (printf "/%s/%s" $type $name) }}
+        <a href="{{ .RelPermalink }}" class="tag-pill">{{ .Title }} ({{ $count }})</a>
+      {{- end }}
     {{- end }}
+  </div>
+  </noscript>
+</div>
 
-    <div class="tags-cloud-container">
-        <div id="word-cloud" data-tags="{{ $tagsData | jsonify }}"></div>
-        <div class="tag-tooltip" id="tag-tooltip"></div>
-    </div>
+<!-- D3 + d3-cloud -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/jasondavies/d3-cloud/build/d3.layout.cloud.js"></script>
+<script>
+(function() {
+  var words = [
+    {{- $type := .Type }}
+    {{- range $key, $value := .Data.Terms.Alphabetical }}
+      {{- $name := .Name }}
+      {{- $count := .Count }}
+      {{- with site.GetPage (printf "/%s/%s" $type $name) }}
+        { text: {{ .Title | jsonify }}, size: {{ $count }}, url: {{ .RelPermalink | jsonify }} },
+      {{- end }}
+    {{- end }}
+  ];
 
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jasondavies/d3-cloud/build/d3.layout.cloud.js"></script>
+  var container = document.getElementById('tag-cloud');
+  var width = container.offsetWidth;
+  var height = 500;
 
-    <script>
-        (function() {
-            const container = document.getElementById('word-cloud');
-            const tooltip = document.getElementById('tag-tooltip');
-            
-            if (!container || !container.dataset.tags) return;
-            
-            const tags = JSON.parse(container.dataset.tags);
-            if (tags.length === 0) return;
+  // Scale: map count to font size
+  var maxCount = d3.max(words, function(d) { return d.size; }) || 1;
+  var fontScale = d3.scaleLinear()
+    .domain([1, maxCount])
+    .range([18, 64]);
 
-            function drawCloud() {
-                const width = container.offsetWidth;
-                const height = container.offsetHeight || 400;
+  // Color palette
+  var colors = ['#6366f1','#8b5cf6','#a855f7','#3b82f6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#14b8a6'];
 
-                // 清除旧内容
-                d3.select("#word-cloud").selectAll("*").remove();
+  var layout = d3.layout.cloud()
+    .size([width, height])
+    .words(words.map(function(d) {
+      return { text: d.text, size: fontScale(d.size), url: d.url, count: d.size };
+    }))
+    .padding(8)
+    .rotate(function() { return (~~(Math.random() * 3) - 1) * 15; })
+    .font("'PingFang SC', 'Microsoft YaHei', Arial, sans-serif")
+    .fontSize(function(d) { return d.size; })
+    .on("end", draw);
 
-                const maxSize = d3.max(tags, d => d.size);
-                const minSize = d3.min(tags, d => d.size);
-                
-                // 字体大小映射：最小 16px，最大 60px
-                const fontSizeScale = d3.scaleLinear()
-                    .domain([minSize, maxSize])
-                    .range([16, 60]);
+  layout.start();
 
-                const layout = d3.layout.cloud()
-                    .size([width, height])
-                    .words(tags.map(d => ({ ...d })))
-                    .padding(5)
-                    .rotate(() => (~~(Math.random() * 2) * 90)) // 随机 0 或 90 度
-                    .font("PingFang SC, Lantinghei SC, Microsoft YaHei, sans-serif")
-                    .fontSize(d => fontSizeScale(d.size))
-                    .on("end", draw);
+  function draw(words) {
+    var svg = d3.select("#tag-cloud").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
-                layout.start();
+    var tooltip = d3.select("body").append("div")
+      .style("position", "absolute")
+      .style("background", "rgba(0,0,0,0.8)")
+      .style("color", "#fff")
+      .style("padding", "4px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "13px")
+      .style("pointer-events", "none")
+      .style("opacity", 0)
+      .style("z-index", 1000);
 
-                function draw(words) {
-                    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-                    const colorScale = isDarkMode 
-                        ? d3.scaleOrdinal(d3.schemePastel1) 
-                        : d3.scaleOrdinal(d3.schemeCategory10);
+    svg.selectAll("text")
+      .data(words)
+      .enter().append("text")
+      .style("font-size", function(d) { return d.size + "px"; })
+      .style("font-family", "'PingFang SC', 'Microsoft YaHei', Arial, sans-serif")
+      .style("font-weight", function(d) { return d.size > 40 ? "800" : "600"; })
+      .style("fill", function(d, i) { return colors[i % colors.length]; })
+      .style("cursor", "pointer")
+      .style("transition", "opacity 0.2s ease")
+      .attr("text-anchor", "middle")
+      .attr("transform", function(d) {
+        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+      })
+      .text(function(d) { return d.text; })
+      .on("click", function(event, d) {
+        window.location.href = d.url;
+      })
+      .on("mouseover", function(event, d) {
+        d3.select(this).style("opacity", 0.7);
+        tooltip.style("opacity", 1)
+          .html(d.text + " (" + d.count + " 篇)")
+          .style("left", (event.pageX + 12) + "px")
+          .style("top", (event.pageY - 30) + "px");
+      })
+      .on("mouseout", function() {
+        d3.select(this).style("opacity", 1);
+        tooltip.style("opacity", 0);
+      });
+  }
+})();
+</script>
 
-                    const svg = d3.select("#word-cloud").append("svg")
-                        .attr("width", layout.size()[0])
-                        .attr("height", layout.size()[1])
-                        .append("g")
-                        .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")");
+</div>
 
-                    const text = svg.selectAll("text")
-                        .data(words)
-                        .enter().append("text")
-                        .style("font-size", d => d.size + "px")
-                        .style("font-family", "PingFang SC, Lantinghei SC, Microsoft YaHei, sans-serif")
-                        .style("font-weight", "bold")
-                        .style("fill", (d, i) => colorScale(i))
-                        .attr("text-anchor", "middle")
-                        .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
-                        .text(d => d.text)
-                        .style("cursor", "pointer")
-                        .on("mouseover", function(event, d) {
-                            d3.select(this).transition().duration(200).style("opacity", 0.7).attr("font-size", (d.size * 1.1) + "px");
-                            tooltip.style("opacity", 1)
-                                .html(`${d.text}: ${d.size} 篇文章`)
-                                .style("left", (event.pageX - (container.getBoundingClientRect().left + window.scrollX) + 10) + "px")
-                                .style("top", (event.pageY - (container.getBoundingClientRect().top + window.scrollY) - 30) + "px");
-                        })
-                        .on("mousemove", function(event) {
-                            tooltip.style("left", (event.pageX - (container.getBoundingClientRect().left + window.scrollX) + 10) + "px")
-                                .style("top", (event.pageY - (container.getBoundingClientRect().top + window.scrollY) - 30) + "px");
-                        })
-                        .on("mouseout", function(event, d) {
-                            d3.select(this).transition().duration(200).style("opacity", 1).attr("font-size", d.size + "px");
-                            tooltip.style("opacity", 0);
-                        })
-                        .on("click", function(event, d) {
-                            window.location.href = d.url;
-                        });
-                }
-            }
-
-            // 初始绘制
-            drawCloud();
-
-            // 窗口缩放时重绘
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(drawCloud, 300);
-            });
-
-            // 主题切换时重绘
-            const themeBtn = document.getElementById('theme-toggle');
-            if (themeBtn) {
-                themeBtn.addEventListener('click', () => {
-                    setTimeout(drawCloud, 500); // 等待主题变量更新
-                });
-            }
-        })();
-    </script>
-{{- else }}
-    <ul class="terms-tags">
-        {{- $type := .Type }}
-        {{- range $key, $value := .Data.Terms.Alphabetical }}
-        {{- $name := .Name }}
-        {{- $count := .Count }}
-        {{- with site.GetPage (printf "/%s/%s" $type $name) }}
-        <li>
-            <a href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup>{{ $count }}</sup></strong></sup> </a>
-        </li>
-        {{- end }}
-        {{- end }}
-    </ul>
-{{- end }}
-
-<style>
-.header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--primary);
-}
-</style>
-{{- end }}{{/* end main */ -}}
+{{- end -}}

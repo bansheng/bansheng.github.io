@@ -1,0 +1,62 @@
+{{ $item := .item }}
+{{ $link := $item.RelPermalink }}
+{{ $target := "" }}
+{{ if $item.Params.external_link }}
+  {{ $link = $item.Params.external_link }}
+  {{ $target = "target=\"_blank\" rel=\"noopener\"" }}
+{{ end }}
+
+{{ $resource := partial "functions/get_featured_image.html" $item }}
+{{ $anchor := "Center" }}
+{{ if and $item.Params.image (reflect.IsMap $item.Params.image) }}
+  {{ $anchor = $item.Params.image.focal_point | default "Center" }}
+{{ end }}
+
+{{/* Pick a gradient theme index based on date */}}
+{{ $themeIdx := mod $item.Date.Day 6 }}
+
+<div class="blog-card group" role="article">
+    <a href="{{ $link }}" {{ $target | safeHTMLAttr }} class="blog-card-cover">
+      {{ with $resource }}
+        {{/* Real featured image */}}
+        {{ $canProcess := and (reflect.IsImageResourceProcessable .) (ne .MediaType.SubType "gif") }}
+        {{ if not $canProcess }}
+          <img src="{{ .RelPermalink }}" loading="lazy" decoding="async"
+               class="blog-card-cover-img" alt="{{ $item.Title | plainify }}">
+        {{ else }}
+          {{ $img := .Fill (printf "600x340 %s" $anchor) }}
+          <img src="{{ $img.RelPermalink }}" width="{{ $img.Width }}" height="{{ $img.Height }}"
+               loading="lazy" decoding="async"
+               class="blog-card-cover-img" alt="{{ $item.Title | plainify }}">
+        {{ end }}
+      {{ else }}
+        {{/* CSS-only cover with title */}}
+        <div class="blog-card-hero blog-card-hero--{{ $themeIdx }}">
+          <div class="blog-card-hero-text">
+            {{ $item.Title | truncate 40 }}
+          </div>
+        </div>
+      {{ end }}
+      {{ with $item.Params.categories }}
+        <span class="blog-card-cover-badge">{{ index . 0 }}</span>
+      {{ end }}
+    </a>
+
+    <div class="blog-card-content">
+      <div class="blog-card-meta">
+        <time datetime="{{ $item.Date.Format "2006-01-02" }}">
+          {{ $item.Date | time.Format "2006-01-02" }}
+        </time>
+      </div>
+      <h3 class="blog-card-title">
+        <a href="{{ $link }}" {{ $target | safeHTMLAttr }}>{{ $item.Title }}</a>
+      </h3>
+      {{ if $item.Params.tags }}
+      <div class="blog-card-tags">
+        {{ range first 3 ($item.GetTerms "tags") }}
+          <a href="{{ .RelPermalink }}" class="blog-card-tag">{{ .Page.LinkTitle }}</a>
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+</div>

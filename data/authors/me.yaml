@@ -1,0 +1,34 @@
+schema: hugoblox/author/v1
+slug: me
+is_owner: true
+
+name:
+  display: "👋 Hey, I'm Yadong"
+  given: Yadong
+  family: Ding
+
+status:
+  icon: "🔬"
+
+role: 电商算法工程师 @ 字节跳动
+
+bio: |
+  字节推荐广告算法工程师，专注电商推荐系统。电商广告模型 → 电商推荐模型，兴趣方向：模型结构 Scale Up、序列建模、首点归因、GMV 回归建模。
+
+  日常分享搜广推论文 & LLM 笔记，以及自己做的一些小工具和尝试过程。
+
+  🔥 欢迎加入 TT 电商推荐团队，期待共建业界领先的推荐系统，完成 LLM 的清晰落地！**[内推通道 →](https://job.toutiao.com/s/GWw8Gl4tyLk)**
+
+links:
+  - icon: at-symbol
+    url: mailto:dyadongcs@gmail.com
+    label: Email
+  - icon: brands/github
+    url: https://github.com/bansheng
+    label: GitHub
+  - icon: brands/linkedin
+    url: https://www.linkedin.com/in/yadong-ding-3b2986182/
+    label: LinkedIn
+  - icon: brands/google-scholar
+    url: https://scholar.google.com/citations?hl=zh-CN&user=Kmx28jUAAAAJ
+    label: Google Scholar

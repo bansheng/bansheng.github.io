@@ -24,6 +24,12 @@
   },
   "homepage": "https://github.com/bansheng/bansheng.github.io#readme",
   "devDependencies": {
-    "hugo-extended": "^0.158.0"
+    "@mermaid-js/mermaid-cli": "^11.12.0",
+    "@tailwindcss/cli": "^4.2.2",
+    "@tailwindcss/typography": "^0.5.19",
+    "hugo-extended": "^0.158.0",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^4.2.2"
   }
 }

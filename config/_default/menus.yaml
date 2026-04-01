@@ -1,0 +1,13 @@
+main:
+  - name: 首页
+    url: /
+    weight: 10
+  - name: 博客
+    url: blog/
+    weight: 20
+  - name: 标签
+    url: tags/
+    weight: 30
+  - name: 联系我
+    url: contact/
+    weight: 40
