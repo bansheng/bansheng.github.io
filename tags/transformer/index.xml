@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Transformer on Bansheng's Blog</title><link>https://dingyadong.top/tags/transformer/</link><description>Recent content in Transformer on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 01 Apr 2026 12:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/transformer/index.xml" rel="self" type="application/rss+xml"/><item><title>SORT：面向工业级推荐系统的系统优化排序 Transformer</title><link>https://dingyadong.top/posts/011_sort_paper_review/</link><pubDate>Wed, 01 Apr 2026 12:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/011_sort_paper_review/</guid><description>&lt;blockquote&gt;
-&lt;p&gt;本文是关于 AliExpress 团队论文《SORT: A Systematically Optimized Ranking Transformer for Industrial-scale Recommenders》（&lt;a href="https://arxiv.org/abs/2603.03988"&gt;arXiv:2603.03988&lt;/a&gt;）的深度精读笔记。本文将从问题定义、架构设计、系统优化到实验分析，全方位剖析 SORT 如何将 Transformer 成功落地到工业级推荐排序场景。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Transformer | Yadong's Blog</title><link>https://dingyadong.top/tags/transformer/</link><atom:link href="https://dingyadong.top/tags/transformer/index.xml" rel="self" type="application/rss+xml"/><description>Transformer</description><generator>HugoBlox Kit (https://hugoblox.com)</generator><language>zh-cn</language><lastBuildDate>Wed, 01 Apr 2026 12:00:00 +0800</lastBuildDate><image><url>https://dingyadong.top/media/icon.svg</url><title>Transformer</title><link>https://dingyadong.top/tags/transformer/</link></image><item><title>SORT：面向工业级推荐系统的系统优化排序 Transformer</title><link>https://dingyadong.top/posts/011_sort_paper_review/</link><pubDate>Wed, 01 Apr 2026 12:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/011_sort_paper_review/</guid><description>
+&lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
+&lt;p&gt;本文是关于 AliExpress 团队论文《SORT: A Systematically Optimized Ranking Transformer for Industrial-scale Recommenders》（
+）的深度精读笔记。本文将从问题定义、架构设计、系统优化到实验分析，全方位剖析 SORT 如何将 Transformer 成功落地到工业级推荐排序场景。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h2 id="1-引言transformer-进军推荐排序的最后一公里"&gt;1. 引言：Transformer 进军推荐排序的&amp;quot;最后一公里&amp;quot;&lt;/h2&gt;
@@ -18,6 +20,7 @@
 &lt;li&gt;&lt;strong&gt;GPSD&lt;/strong&gt;（Meta, 2025）：通过生成式预训练解决判别式推荐模型的过拟合问题&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;但这些工作要么聚焦于召回/检索阶段，要么在工业级排序场景中的落地效果有限。&lt;strong&gt;SORT（Systematically Optimized Ranking Transformer）&lt;/strong&gt; 正是在这一背景下提出的——它系统性地解决了 Transformer 在工业级排序模型中面临的一系列挑战，并在 AliExpress 的真实业务场景中取得了显著收益。&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
 subgraph 传统范式 ["传统推荐排序范式"]
@@ -39,7 +42,1029 @@ end
 传统范式 --&gt;|"架构碎片化&lt;br/&gt;可扩展性差"| 过渡探索
 过渡探索 --&gt;|"系统性优化"| SORT范式
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;图 1：推荐排序模型的演进路径。&lt;/strong&gt; 从传统的专用架构（DIN、DeepFM 等），经过 Transformer 的初步探索（HSTU、OneTrans、GPSD），到 SORT 实现统一的工业级排序 Transformer。传统范式面临架构碎片化和可扩展性差的问题——每种特征交互方式都需要定制化的模型设计（如 DIN 的目标注意力、DeepFM 的二阶交叉、DCN 的显式交叉网络），导致工程维护成本高且难以通过简单增加参数来提升性能。过渡阶段的探索工作（HSTU 聚焦召回、GPSD 专注预训练框架、OneTrans 初步尝试排序）虽然各有突破，但尚未形成完整的工业级排序解决方案。SORT 通过系统性优化，首次在工业级排序场景中成功落地统一的 Transformer 架构，标志着推荐排序从&amp;quot;专用模型&amp;quot;向&amp;quot;统一基础模型&amp;quot;的范式转变。&lt;/p&gt;</description></item><item><title>美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？</title><link>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</link><pubDate>Wed, 25 Mar 2026 20:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</guid><description>&lt;h2 id="1-导言推荐系统的大模型时代与多场景之痛"&gt;1. 导言：推荐系统的“大模型”时代与多场景之痛&lt;/h2&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;图 1：推荐排序模型的演进路径。&lt;/strong&gt; 从传统的专用架构（DIN、DeepFM 等），经过 Transformer 的初步探索（HSTU、OneTrans、GPSD），到 SORT 实现统一的工业级排序 Transformer。传统范式面临架构碎片化和可扩展性差的问题——每种特征交互方式都需要定制化的模型设计（如 DIN 的目标注意力、DeepFM 的二阶交叉、DCN 的显式交叉网络），导致工程维护成本高且难以通过简单增加参数来提升性能。过渡阶段的探索工作（HSTU 聚焦召回、GPSD 专注预训练框架、OneTrans 初步尝试排序）虽然各有突破，但尚未形成完整的工业级排序解决方案。SORT 通过系统性优化，首次在工业级排序场景中成功落地统一的 Transformer 架构，标志着推荐排序从&amp;quot;专用模型&amp;quot;向&amp;quot;统一基础模型&amp;quot;的范式转变。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="2-核心问题高特征稀疏性-vs-低标签密度"&gt;2. 核心问题：高特征稀疏性 vs 低标签密度&lt;/h2&gt;
+&lt;p&gt;在深入 SORT 的技术细节之前，我们需要理解一个根本性问题：&lt;strong&gt;为什么 Transformer 在推荐排序中不能像在 NLP 中那样直接 Scale Up？&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="21-语言模型-vs-推荐模型的关键差异"&gt;2.1 语言模型 vs 推荐模型的关键差异&lt;/h3&gt;
+&lt;p&gt;论文清晰地指出了两个领域之间的核心矛盾：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;维度&lt;/th&gt;
+&lt;th&gt;语言模型 (LLM)&lt;/th&gt;
+&lt;th&gt;推荐排序模型&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;词表规模&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;BPE 子词分词，词表约 32K-128K&lt;/td&gt;
+&lt;td&gt;十亿级物品 ID 词表&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;特征稀疏性&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;低（子词复用率高）&lt;/td&gt;
+&lt;td&gt;极高（长尾物品大量存在）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;标签密度&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;高（每个位置都有来自完整词表的监督信号）&lt;/td&gt;
+&lt;td&gt;极低（仅目标物品有二值标签 0/1）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;训练信号&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;丰富（next-token prediction 提供密集梯度）&lt;/td&gt;
+&lt;td&gt;稀疏（只有点击/未点击的二值反馈）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;过拟合风险&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;相对较低&lt;/td&gt;
+&lt;td&gt;极高&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;用一句话概括这个矛盾&lt;/strong&gt;：推荐排序模型需要用&lt;strong&gt;极度稀疏的二值标签&lt;/strong&gt;来正则化&lt;strong&gt;海量的参数空间&lt;/strong&gt;（特别是十亿级的 Embedding 表），这导致了严重的过拟合问题。&lt;/p&gt;
+&lt;h3 id="22-具体表现"&gt;2.2 具体表现&lt;/h3&gt;
+&lt;p&gt;这个矛盾在实践中有以下具体表现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Embedding 表过拟合&lt;/strong&gt;：十亿级物品 ID 的 Embedding 参数极其庞大，但大量长尾物品只有极少的训练样本，导致对应的 Embedding 向量无法被充分学习&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型容量与数据量不匹配&lt;/strong&gt;：增加 Transformer 层数和参数量时，模型的泛化差距（Generalization Gap）迅速扩大&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;训练不稳定&lt;/strong&gt;：大规模稀疏特征的梯度更新存在高方差，容易导致训练发散&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="23-sort-的系统性应对策略"&gt;2.3 SORT 的系统性应对策略&lt;/h3&gt;
+&lt;p&gt;面对上述挑战，SORT 并没有采取单一的解决方案，而是提出了一套&lt;strong&gt;系统性的互补优化&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+Problem["核心矛盾&lt;br/&gt;高特征稀疏性&lt;br/&gt;× 低标签密度"] --&gt; Solutions
+subgraph Solutions ["SORT 六大解决方案"]
+direction TB
+S1["请求中心样本 → 效率↑"]
+S2["特殊 Token → 训练稳定"]
+S3["稀疏注意力+裁剪 → O(n)"]
+S4["DeepSeek MoE → 容量↑"]
+S5["预训练+冻结 → 过拟合↓"]
+S6["QKNorm+门控 → 大规模"]
+end
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;图 2：SORT 针对核心矛盾的系统性解决方案。&lt;/strong&gt; 面对高特征稀疏性和低标签密度的根本矛盾，SORT 提出了六个互补的优化方向，每个方向解决一个具体维度的问题：请求中心样本组织从数据层面减少冗余计算，提升训练效率；特殊 Token（BOS/SEP）从注意力分布层面稳定训练过程，防止注意力权重的异常分配；稀疏注意力和查询裁剪从计算复杂度层面将二次复杂度降至线性，并引入有益的时间衰减归纳偏置；DeepSeek MoE FFN 从模型容量层面在不增加激活计算量的前提下大幅扩展参数空间；生成式预训练加嵌入冻结策略从优化目标层面根本性地解决稀疏参数的过拟合问题；QKNorm 和门控注意力从数值稳定性层面保障大规模训练的收敛。这六个优化并非孤立存在，而是形成了一个有机整体——它们分别作用于数据、注意力、复杂度、容量、正则化和稳定性六个维度，共同构成了 SORT 的技术护城河。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="3-sort-架构详解"&gt;3. SORT 架构详解&lt;/h2&gt;
+&lt;h3 id="31-请求中心的样本组织request-centric-sample-organization"&gt;3.1 请求中心的样本组织（Request-Centric Sample Organization）&lt;/h3&gt;
+&lt;h4 id="传统方法的问题"&gt;传统方法的问题&lt;/h4&gt;
+&lt;p&gt;在传统的排序模型训练中，对于用户的一次请求（Request），系统会返回 $N$ 个候选物品，然后为每个候选物品生成一个独立的训练样本。这意味着：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;同一个用户的历史行为序列被重复编码 $N$ 次&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;同一个用户画像（User Profile）被重复处理 $N$ 次&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;计算资源严重浪费&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="sort-的解决方案"&gt;SORT 的解决方案&lt;/h4&gt;
+&lt;p&gt;SORT 将样本组织方式从&amp;quot;物品中心&amp;quot;改为**&amp;ldquo;请求中心&amp;rdquo;**：&lt;/p&gt;
+$$S = \langle H, U, C \rangle$$&lt;p&gt;其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$H$ = 用户历史行为序列（User History）&lt;/li&gt;
+&lt;li&gt;$U$ = 用户画像（User Profile）&lt;/li&gt;
+&lt;li&gt;$C$ = 候选物品集合（Candidate Set，包含该请求中的所有候选物品）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种组织方式的核心优势：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;一次前向传播处理所有候选物品&lt;/strong&gt;：用户序列和画像只需编码一次&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算成本按候选数量摊销&lt;/strong&gt;：N 个候选物品共享上下文计算&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;天然支持候选间信息交互&lt;/strong&gt;：候选物品之间可以通过注意力机制进行比较&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph Traditional ["传统：物品中心"]
+direction TB
+R1["请求 N 个候选"] --&gt; S["N 条样本&lt;br/&gt;每条 = History+Profile+Item"]
+S --&gt; F["N 次前向传播&lt;br/&gt;⚠️ History 重复编码 N 次"]
+end
+subgraph SORT_Method ["SORT：请求中心"]
+direction TB
+R2["请求 N 个候选"] --&gt; US["1 条样本&lt;br/&gt;S = ⟨H, U, C₁...Cₙ⟩"]
+US --&gt; FF["1 次前向传播&lt;br/&gt;✅ History 仅编码 1 次"]
+end
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;图 3：传统物品中心 vs SORT 请求中心的样本组织对比。&lt;/strong&gt; 传统方法对每个候选物品生成独立样本，用户历史和画像被冗余编码 N 次，计算浪费严重。SORT 将一次请求中的所有候选物品打包为统一样本，通过单次前向传播同时处理所有候选，用户上下文仅编码一次。这不仅大幅降低了计算成本，还使候选物品之间能够通过注意力机制进行信息交互，为后续的排序决策提供了更丰富的比较信号。在实际工业场景中，一次请求通常包含数十到数百个候选物品，因此这种改进带来的效率提升非常显著。&lt;/p&gt;
+&lt;h3 id="32-分词模块tokenization"&gt;3.2 分词模块（Tokenization）&lt;/h3&gt;
+&lt;p&gt;SORT 的分词模块将异构的推荐特征统一映射为 Token 序列，具体设计如下：&lt;/p&gt;
+&lt;h4 id="token-类型"&gt;Token 类型&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Token 类型&lt;/th&gt;
+&lt;th&gt;来源&lt;/th&gt;
+&lt;th&gt;数量&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;BOS Token&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;特殊标记&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;序列起始标记，充当&amp;quot;注意力汇聚点&amp;quot;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;History Token&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;用户历史行为&lt;/td&gt;
+&lt;td&gt;$L_h$&lt;/td&gt;
+&lt;td&gt;每个历史交互物品生成一个 Token&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Profile Token&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;用户画像&lt;/td&gt;
+&lt;td&gt;$L_u$&lt;/td&gt;
+&lt;td&gt;用户画像特征映射为多个 Token&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SEP Token&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;特殊标记&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;分隔用户上下文和候选物品&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Candidate Token&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;候选物品&lt;/td&gt;
+&lt;td&gt;$N_c$&lt;/td&gt;
+&lt;td&gt;每个候选物品生成一个 Token&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id="bos-token-的关键作用注意力汇聚attention-sink"&gt;BOS Token 的关键作用——注意力汇聚（Attention Sink）&lt;/h4&gt;
+&lt;p&gt;在 Transformer 中，一个广泛观察到的现象是：&lt;strong&gt;模型倾向于将大量注意力分数分配给序列的第一个 Token&lt;/strong&gt;，即便该 Token 本身没有实际语义。这种现象被称为 &lt;strong&gt;&amp;ldquo;注意力汇聚（Attention Sink）&amp;rdquo;&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;SORT 显式引入 BOS Token 来承担这一角色：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;吸收冗余注意力分数&lt;/strong&gt;：防止无关 Token 之间产生不合理的高注意力权重&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稳定注意力分布&lt;/strong&gt;：使模型能更准确地分配注意力给真正重要的 Token&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实验验证&lt;/strong&gt;：引入特殊 Token（BOS + SEP）带来了 &lt;strong&gt;+0.33pt CTR-AUC&lt;/strong&gt; 的提升&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="token-生成过程"&gt;Token 生成过程&lt;/h4&gt;
+&lt;p&gt;每个 Token 的生成方式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;类别特征&lt;/strong&gt;：通过 Embedding 查表获取向量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数值特征&lt;/strong&gt;：通过线性变换映射为向量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多特征融合&lt;/strong&gt;：同一 Token 的多个特征向量通过&lt;strong&gt;求和（Sum Pooling）&lt;/strong&gt; 融合为最终的 Token 表示&lt;/li&gt;
+&lt;/ol&gt;
+$$\text{Token}_i = \sum_{f \in \text{Features}_i} \text{Embed}(f)$$&lt;h3 id="33-多头注意力mha优化"&gt;3.3 多头注意力（MHA）优化&lt;/h3&gt;
+&lt;p&gt;SORT 在标准多头注意力的基础上进行了三项关键优化：&lt;/p&gt;
+&lt;h4 id="331-rope-相对位置编码rotary-position-embedding"&gt;3.3.1 RoPE 相对位置编码（Rotary Position Embedding）&lt;/h4&gt;
+&lt;p&gt;传统的绝对位置编码（如正弦编码或可学习编码）在处理变长序列时存在局限性。SORT 采用 &lt;strong&gt;RoPE&lt;/strong&gt; 作为位置编码方案：&lt;/p&gt;
+$$\text{RoPE}(x, \text{pos}) = x \cdot \cos(\text{pos} \cdot \theta) + \text{rotate}(x) \cdot \sin(\text{pos} \cdot \theta)$$&lt;p&gt;&lt;strong&gt;对候选物品的特殊处理&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;所有候选物品使用&lt;strong&gt;相同的位置 ID&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;通过&lt;strong&gt;对角掩码（Diagonal Mask）&lt;/strong&gt; 确保候选物品之间的独立性&lt;/li&gt;
+&lt;li&gt;这意味着每个候选物品&amp;quot;站在同一个位置&amp;quot;观察用户历史，保证了排序的公平性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="332-qknorm训练稳定性的保障"&gt;3.3.2 QKNorm——训练稳定性的保障&lt;/h4&gt;
+&lt;p&gt;在大规模训练中，Query 和 Key 向量的内积可能产生极大的数值，导致 Softmax 的梯度消失。SORT 引入 &lt;strong&gt;QKNorm&lt;/strong&gt;：&lt;/p&gt;
+$$\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{\text{Norm}(Q) \cdot \text{Norm}(K)^T}{\sqrt{d_k}}\right) V$$&lt;p&gt;对 Query 和 Key 在投影后分别进行 LayerNorm，确保注意力分数的数值范围稳定。&lt;/p&gt;
+&lt;h4 id="333-门控注意力gated-attention"&gt;3.3.3 门控注意力（Gated Attention）&lt;/h4&gt;
+&lt;p&gt;在标准缩放点积注意力的基础上，SORT 添加了一个&lt;strong&gt;门控机制&lt;/strong&gt;：&lt;/p&gt;
+$$\text{GatedAttn}(Q, K, V) = \sigma(G) \odot \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V$$&lt;p&gt;其中 $\sigma(G)$ 是一个可学习的门控向量，用于控制每个注意力头的信息流。这种门控机制允许模型：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;自适应地调节不同注意力头的贡献&lt;/li&gt;
+&lt;li&gt;在训练早期抑制不稳定的注意力模式&lt;/li&gt;
+&lt;li&gt;提供更细粒度的信息流控制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="34-稀疏注意力机制sparse-attention"&gt;3.4 稀疏注意力机制（Sparse Attention）&lt;/h3&gt;
+&lt;h4 id="动机"&gt;动机&lt;/h4&gt;
+&lt;p&gt;标准因果注意力的复杂度为 $\mathcal{O}(L^2)$，对于长用户行为序列（L 可达数千）来说，计算和内存成本都不可接受。&lt;/p&gt;
+&lt;h4 id="设计"&gt;设计&lt;/h4&gt;
+&lt;p&gt;SORT 采用**分区稀疏注意力（Partitioned Sparse Attention）**策略：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;历史行为序列&lt;/strong&gt;：采用&lt;strong&gt;局部注意力窗口（Local Attention Window）&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每个 Token 只关注其前方窗口大小 $w$ 内的 Token&lt;/li&gt;
+&lt;li&gt;时间复杂度从 $\mathcal{O}(L^2)$ 降至 $\mathcal{O}(L \cdot w)$，即&lt;strong&gt;线性复杂度&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;最优窗口大小为 &lt;strong&gt;256&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;候选物品&lt;/strong&gt;：保留&lt;strong&gt;标准因果注意力&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;候选物品需要关注完整的用户上下文&lt;/li&gt;
+&lt;li&gt;候选物品数量相对较少，不会成为瓶颈&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="关键发现"&gt;关键发现&lt;/h4&gt;
+&lt;p&gt;论文中一个令人意外的发现是：&lt;strong&gt;局部注意力窗口 256 的效果甚至超过了标准因果注意力（即完整的全局注意力）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这一现象的直觉解释是：推荐场景中用户的近期行为比远期行为对当前兴趣更为重要，局部注意力天然契合了这种时间局部性。更深入的分析见第 7.1 节的讨论。&lt;/p&gt;
+&lt;h3 id="35-查询裁剪query-pruning"&gt;3.5 查询裁剪（Query Pruning）&lt;/h3&gt;
+&lt;h4 id="核心思想"&gt;核心思想&lt;/h4&gt;
+&lt;p&gt;查询裁剪是 SORT 中一个非常巧妙的设计。其核心思想是：&lt;strong&gt;在 Transformer 的深层，距离候选物品较远的历史 Token 的 Query 向量对最终预测的贡献越来越小，可以安全地裁剪掉。&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id="实现方式"&gt;实现方式&lt;/h4&gt;
+&lt;p&gt;SORT 采用&lt;strong&gt;逐层递进式裁剪&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在浅层（靠近输入）：保留所有 Token 的 Query&lt;/li&gt;
+&lt;li&gt;在深层（靠近输出）：逐步裁剪距离候选物品远的 Query Token&lt;/li&gt;
+&lt;li&gt;在最终层：仅保留 &lt;strong&gt;≤128 个非候选 Token&lt;/strong&gt; 的 Query&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;重要区别&lt;/strong&gt;：被裁剪的是 &lt;strong&gt;Query&lt;/strong&gt;，而非 Key 和 Value。这意味着：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;被裁剪的 Token 仍然作为 Key 和 Value 参与注意力计算&lt;/li&gt;
+&lt;li&gt;其他 Token（特别是候选物品）仍然可以&amp;quot;看到&amp;quot;被裁剪 Token 的信息&lt;/li&gt;
+&lt;li&gt;但被裁剪的 Token 本身不再主动&amp;quot;查询&amp;quot;其他 Token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="效果"&gt;效果&lt;/h4&gt;
+&lt;p&gt;查询裁剪带来了双重收益：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;计算成本减半&lt;/strong&gt;：几乎将 FLOPs 降低了 50%&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;性能反而提升&lt;/strong&gt;：带来了 &lt;strong&gt;+0.26pt CTR-AUC&lt;/strong&gt; 的增益&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;性能提升的原因在于查询裁剪隐式地引入了&lt;strong&gt;时间衰减归纳偏置（Temporal Decay Inductive Bias）&lt;/strong&gt;——在推荐系统中，这是一个非常合理的先验：用户的近期行为比远期行为对当前兴趣的预测更为重要。&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph Input ["输入 Token 序列"]
+direction LR
+H["H₁, H₂, ..., Hₙ&lt;br/&gt;(History)"]
+C["C₁, C₂, ..., Cₘ&lt;br/&gt;(Candidates)"]
+end
+subgraph Layers ["渐进式 Query 裁剪"]
+direction TB
+L1["浅层 1-4&lt;br/&gt;全量 Q/K/V + 局部窗口 w=256"]
+L2["中间层 5-8&lt;br/&gt;裁剪远距 History Q, 保留 K/V"]
+L3["深层 9-12&lt;br/&gt;≤128 History Q + 全量 Candidate"]
+L1 --&gt; L2 --&gt; L3
+end
+subgraph Output ["输出"]
+O["Candidate 隐层 → FFN&lt;br/&gt;→ CTR/CVR 预测"]
+end
+Input --&gt; Layers --&gt; Output
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;图 4：SORT 的稀疏注意力与查询裁剪机制。&lt;/strong&gt; 在浅层，所有 Token 保留完整的 Query/Key/Value 进行局部注意力计算（窗口大小 256）；随着层数加深，距离候选物品较远的历史 Token 的 Query 被逐步裁剪，但其 Key 和 Value 仍然保留，确保候选物品可以访问完整的历史信息；在最深层，仅保留不超过 128 个历史 Token 的 Query 和所有候选 Token，最终通过候选 Token 的隐层输出进行 CTR/CVR 预测。这种设计将计算成本降低约 50%，同时通过引入时间衰减归纳偏置反而提升了模型性能。&lt;/p&gt;
+&lt;h3 id="36-deepseek-moe-ffn"&gt;3.6 DeepSeek MoE FFN&lt;/h3&gt;
+&lt;h4 id="为什么需要-moe"&gt;为什么需要 MoE？&lt;/h4&gt;
+&lt;p&gt;标准 Transformer 的 FFN 层采用稠密计算，所有参数对每个 Token 都会被激活。在推荐排序模型中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不同类型的用户行为（浏览、点击、收藏、购买）可能需要不同的特征变换&lt;/li&gt;
+&lt;li&gt;不同类别的物品可能需要不同的处理方式&lt;/li&gt;
+&lt;li&gt;稠密 FFN 难以同时满足这些多样化的需求&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;MoE（Mixture of Experts）&lt;/strong&gt; 通过引入多个&amp;quot;专家&amp;quot;网络并动态路由，可以在不成比例增加计算量的前提下大幅扩大模型容量。&lt;/p&gt;
+&lt;h4 id="sort-的-moe-选择deepseek-moe"&gt;SORT 的 MoE 选择：DeepSeek MoE&lt;/h4&gt;
+&lt;p&gt;SORT 比较了两种 MoE 方案：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;维度&lt;/th&gt;
+&lt;th&gt;Switch MoE&lt;/th&gt;
+&lt;th&gt;DeepSeek MoE&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;路由方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Top-K 路由&lt;/td&gt;
+&lt;td&gt;细粒度路由&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;负载均衡&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;需要调整辅助损失超参&lt;/td&gt;
+&lt;td&gt;无需辅助负载均衡损失&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;性能&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;基线&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;略优于 Switch MoE&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;工程复杂度&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;需要仔细调参&lt;/td&gt;
+&lt;td&gt;开箱即用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;最终 SORT 选择了 DeepSeek MoE，关键超参数：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;稀疏率&lt;/strong&gt;：$1/8$（每个 Token 激活 $1/8$ 的专家参数）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;性能收益&lt;/strong&gt;：+0.19pt CTR-AUC&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心优势&lt;/strong&gt;：无需额外的辅助损失函数调参，工程实现更简洁&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="moe-稀疏率的影响"&gt;MoE 稀疏率的影响&lt;/h4&gt;
+&lt;p&gt;论文通过消融实验探索了不同稀疏率的效果：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;稀疏率&lt;/th&gt;
+&lt;th&gt;含义&lt;/th&gt;
+&lt;th&gt;性能趋势&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1/1（无 MoE）&lt;/td&gt;
+&lt;td&gt;全稠密 FFN&lt;/td&gt;
+&lt;td&gt;基线&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1/2&lt;/td&gt;
+&lt;td&gt;激活一半专家&lt;/td&gt;
+&lt;td&gt;有一定提升&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1/4&lt;/td&gt;
+&lt;td&gt;激活 1/4 专家&lt;/td&gt;
+&lt;td&gt;继续提升&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;1/8&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;激活 1/8 专家&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;最优&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1/16&lt;/td&gt;
+&lt;td&gt;激活 1/16 专家&lt;/td&gt;
+&lt;td&gt;开始下降&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;最优稀疏率为 $1/8$，这意味着 SORT 能够以 $1/8$ 的激活计算量获得与完整稠密模型相当甚至更优的效果。过低的稀疏率（如 1/16）可能由于每个专家接收到的训练信号不足而导致性能退化。&lt;/p&gt;
+&lt;h3 id="37-生成式预训练与嵌入冻结generative-pretraining--embedding-freeze"&gt;3.7 生成式预训练与嵌入冻结（Generative Pretraining + Embedding Freeze）&lt;/h3&gt;
+&lt;h4 id="这是解决过拟合的关键"&gt;这是解决过拟合的关键&lt;/h4&gt;
+&lt;p&gt;前面提到，推荐排序模型的核心矛盾在于用稀疏的二值标签训练庞大的 Embedding 表。SORT 借鉴了 GPSD 框架的思路，但有自己独特的处理方式。&lt;/p&gt;
+&lt;h4 id="两阶段策略"&gt;两阶段策略&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;阶段一：生成式预训练（Generative Pretraining）&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在用户行为序列上进行 &lt;strong&gt;next-item prediction&lt;/strong&gt; 任务&lt;/li&gt;
+&lt;li&gt;使用 &lt;strong&gt;Sampled Softmax&lt;/strong&gt; 作为损失函数&lt;/li&gt;
+&lt;li&gt;预训练的目标是学习高质量的&lt;strong&gt;物品 Embedding 表&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;关键设计：&lt;strong&gt;不使用用户 ID 特征&lt;/strong&gt;，仅通过历史行为序列和画像来表征用户&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;阶段二：判别式训练（Discriminative Training）+ 嵌入冻结&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将预训练好的物品 Embedding 表迁移到排序模型&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冻结 Embedding 表&lt;/strong&gt;，不在排序训练中更新&lt;/li&gt;
+&lt;li&gt;仅训练 Transformer 的稠密参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="冻结策略的关键性"&gt;冻结策略的关键性&lt;/h4&gt;
+&lt;p&gt;论文通过消融实验揭示了一个极其重要的发现：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;策略&lt;/th&gt;
+&lt;th&gt;CTR-AUC 变化&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;无预训练（基线）&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;仅转移预训练 Embedding&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;-0.13pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;反而下降！&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;转移 + &lt;strong&gt;冻结&lt;/strong&gt; Embedding&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+2.81pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;显著提升&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;为什么&amp;quot;仅转移不冻结&amp;quot;反而有害？&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;预训练的 Embedding 在判别式训练中会被大量负样本的梯度&amp;quot;冲刷&amp;quot;&lt;/li&gt;
+&lt;li&gt;失去了预训练阶段通过密集生成式信号学到的高质量表示&lt;/li&gt;
+&lt;li&gt;相当于预训练的效果被&amp;quot;遗忘&amp;quot;了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;为什么&amp;quot;冻结&amp;quot;如此有效？&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;保护了预训练 Embedding 的质量不被稀疏标签破坏&lt;/li&gt;
+&lt;li&gt;大幅减少了可训练参数量（Embedding 表通常占总参数量的 90%+）&lt;/li&gt;
+&lt;li&gt;使模型能进行&lt;strong&gt;多轮次训练（Multi-epoch）&lt;/strong&gt; 而不过拟合&lt;/li&gt;
+&lt;li&gt;将优化重心聚焦于稠密的 Transformer 参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph Stage1 ["阶段一：生成式预训练"]
+direction TB
+A["行为序列"] --&gt; B["Transformer Decoder"] --&gt; C["Next-Item Prediction"]
+C --&gt;|"密集信号"| D["预训练 Embedding"]
+end
+D --&gt;|"复制 + 冻结 ❄️"| G
+subgraph Stage2 ["阶段二：判别式排序"]
+direction TB
+F["请求样本 ⟨H,U,C⟩"] --&gt; G["Token化 🔒"]
+G --&gt; H["SORT Transformer 🔥"] --&gt; I["FFN → CTR/CVR"]
+end
+I --&gt; R["转移+冻结: +2.81pt ✅"]
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;图 5：SORT 的生成式预训练与嵌入冻结策略。&lt;/strong&gt; 第一阶段通过 next-item prediction 任务预训练物品 Embedding 表，利用 Sampled Softmax 提供的密集训练信号充分学习每个物品的表示。第二阶段将预训练好的 Embedding 表迁移到排序模型中并&lt;strong&gt;冻结&lt;/strong&gt;，只训练 Transformer 的稠密参数。消融实验表明，仅转移不冻结反而导致性能下降 0.13pt（预训练效果被稀疏标签&amp;quot;冲刷&amp;quot;），而转移加冻结策略带来了高达 2.81pt 的 CTR-AUC 提升。冻结策略的成功本质上是将&amp;quot;稀疏特征学习&amp;quot;和&amp;quot;稠密特征交叉&amp;quot;解耦为两个独立的优化目标，各自用最合适的任务和训练方式来学习。&lt;/p&gt;
+&lt;h3 id="38-排序头与损失函数"&gt;3.8 排序头与损失函数&lt;/h3&gt;
+&lt;p&gt;SORT 的最终预测通过以下方式完成：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;提取候选 Token 的隐层输出&lt;/strong&gt;：取 Transformer 最后一层中每个候选 Token 对应的隐状态向量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;排序头 FFN&lt;/strong&gt;：一个两层的前馈网络
+&lt;ul&gt;
+&lt;li&gt;隐藏层 + ReLU 激活&lt;/li&gt;
+&lt;li&gt;输出层 + Sigmoid 激活&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多目标预测&lt;/strong&gt;：同时预估多个目标
+&lt;ul&gt;
+&lt;li&gt;点击率（CTR）&lt;/li&gt;
+&lt;li&gt;加购率（Add-to-Cart Rate）&lt;/li&gt;
+&lt;li&gt;购买率（CVR）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;损失函数&lt;/strong&gt;：加权二值交叉熵（Weighted Binary Cross-Entropy）&lt;/li&gt;
+&lt;/ol&gt;
+$$\mathcal{L} = \sum_{t \in \{\text{click, cart, purchase}\}} w_t \cdot \text{BCE}(\hat{y}_t, y_t)$$&lt;hr&gt;
+&lt;h2 id="4-系统优化从算法到工程的全链路"&gt;4. 系统优化：从算法到工程的全链路&lt;/h2&gt;
+&lt;p&gt;一个好的模型设计如果不能在工程上高效实现，就无法在工业场景中落地。SORT 在训练和推理两端都进行了深度优化。&lt;/p&gt;
+&lt;h3 id="41-训练系统优化"&gt;4.1 训练系统优化&lt;/h3&gt;
+&lt;h4 id="mfu-从-13-到-22-的飞跃"&gt;MFU 从 13% 到 22% 的飞跃&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;MFU（Model FLOPs Utilization）&lt;/strong&gt; 衡量的是模型训练时对硬件计算能力的实际利用率。SORT 将 MFU 从 13% 提升到 &lt;strong&gt;22%&lt;/strong&gt;，主要通过以下手段：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;（1）稀疏模块优化：多进程组通信（MPGC）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;推荐模型的 Embedding 表分布在多个 GPU 上，每次前向传播都需要大量的跨 GPU 通信。SORT 开发了 &lt;strong&gt;MPGC（Multi-Process Group Communication）&lt;/strong&gt; 机制：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;动态调度多个特征 Embedding 的跨进程组通信&lt;/li&gt;
+&lt;li&gt;将通信与计算&lt;strong&gt;流水线化&lt;/strong&gt;，隐藏通信延迟&lt;/li&gt;
+&lt;li&gt;不同特征组的通信可以并行执行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;（2）稠密模块优化：高效稀疏注意力算子&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SORT 开发了通用的稀疏注意力 GPU 算子：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;采用&lt;strong&gt;分块计算（Tiled Computation）&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;掩码预加载与验证&lt;/strong&gt;：跳过完全被掩码的块，避免无效计算&lt;/li&gt;
+&lt;li&gt;结合&lt;strong&gt;混合精度训练（BF16）&lt;/strong&gt; 和&lt;strong&gt;梯度累积&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;优化内存访问模式，提升 GPU 利用率&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="训练优化效果汇总"&gt;训练优化效果汇总&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;优化手段&lt;/th&gt;
+&lt;th&gt;提升&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;MPGC 通信优化&lt;/td&gt;
+&lt;td&gt;通信延迟隐藏&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;稀疏注意力算子&lt;/td&gt;
+&lt;td&gt;注意力计算效率↑&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;混合精度训练&lt;/td&gt;
+&lt;td&gt;内存占用↓，计算速度↑&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;梯度累积&lt;/td&gt;
+&lt;td&gt;大 batch size 支持&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;综合 MFU&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;13% → 22%（+69%）&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="42-推理系统优化"&gt;4.2 推理系统优化&lt;/h3&gt;
+&lt;h4 id="从动态图到静态图"&gt;从动态图到静态图&lt;/h4&gt;
+&lt;p&gt;SORT 使用 &lt;strong&gt;torch.export&lt;/strong&gt; 和 &lt;strong&gt;AOTInductor&lt;/strong&gt; 将 PyTorch 的动态计算图转换为静态图，获得编译器级别的优化。&lt;/p&gt;
+&lt;h4 id="核心推理优化"&gt;核心推理优化&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;（1）稀疏掩码注意力核（Sparse Masked Attention Kernel）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;针对 SORT 的稀疏注意力模式，开发了高性能的 GPU 推理核：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;吞吐量提升 &lt;strong&gt;+16.7%&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;延迟降低 &lt;strong&gt;-24.4%&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;（2）算子融合（Operator Fusion）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;合并自注意力中的多个线性层计算：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将 Q/K/V 的投影融合为单次矩阵乘法&lt;/li&gt;
+&lt;li&gt;吞吐量提升 &lt;strong&gt;+10.9%&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;延迟降低 &lt;strong&gt;-6.3%&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;（3）通用优化&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;半精度推理（FP16/BF16）&lt;/strong&gt;：在不损失精度的前提下加速计算&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;KV Cache&lt;/strong&gt;：缓存历史 Token 的 Key 和 Value，避免重复计算&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多上下文多流执行（Multi-Context Multi-Stream）&lt;/strong&gt;：充分利用 GPU 的并行能力&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="推理优化效果汇总"&gt;推理优化效果汇总&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;优化手段&lt;/th&gt;
+&lt;th&gt;吞吐量提升&lt;/th&gt;
+&lt;th&gt;延迟降低&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;稀疏注意力核&lt;/td&gt;
+&lt;td&gt;+16.7%&lt;/td&gt;
+&lt;td&gt;-24.4%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;算子融合&lt;/td&gt;
+&lt;td&gt;+10.9%&lt;/td&gt;
+&lt;td&gt;-6.3%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;通用优化&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;综合效果&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+29.4%&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;-29.3%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="5-实验分析"&gt;5. 实验分析&lt;/h2&gt;
+&lt;h3 id="51-离线实验"&gt;5.1 离线实验&lt;/h3&gt;
+&lt;h4 id="基准模型对比"&gt;基准模型对比&lt;/h4&gt;
+&lt;p&gt;SORT 与多个基准模型在相同数据集上进行了公平对比：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;模型&lt;/th&gt;
+&lt;th&gt;规模&lt;/th&gt;
+&lt;th&gt;FLOPs&lt;/th&gt;
+&lt;th&gt;CTR-AUC 差异（vs Std Trans）&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Standard Transformer&lt;/td&gt;
+&lt;td&gt;Base&lt;/td&gt;
+&lt;td&gt;43G&lt;/td&gt;
+&lt;td&gt;基线&lt;/td&gt;
+&lt;td&gt;标准因果 Transformer&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HSTU&lt;/td&gt;
+&lt;td&gt;Base&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;-0.18pt&lt;/td&gt;
+&lt;td&gt;Meta 的层级化序列转导&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;OneTrans&lt;/td&gt;
+&lt;td&gt;Base&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;+0.20pt&lt;/td&gt;
+&lt;td&gt;Transformer 排序方案&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SORT（Base）&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Base&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;24G&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.41pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;FLOPs 仅为标准的 56%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Standard Transformer&lt;/td&gt;
+&lt;td&gt;Large&lt;/td&gt;
+&lt;td&gt;322G&lt;/td&gt;
+&lt;td&gt;基线&lt;/td&gt;
+&lt;td&gt;大规模标准 Transformer&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SORT（Large 144M）&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Large&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;188G&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.51pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;FLOPs 仅为标准的 58%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;关键发现&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 Base 规模下，SORT 以&lt;strong&gt;仅 56% 的 FLOPs（24G vs 43G）&lt;/strong&gt; 超越标准 Transformer &lt;strong&gt;0.41pt&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;相比 HSTU 和 OneTrans，SORT 分别领先 &lt;strong&gt;0.59pt&lt;/strong&gt;（0.41-(-0.18)）和 &lt;strong&gt;0.21pt&lt;/strong&gt;（0.41-0.20）&lt;/li&gt;
+&lt;li&gt;扩展到 Large 规模（144M 参数）后，SORT 以 58% 的 FLOPs（188G vs 322G）领先标准 Transformer &lt;strong&gt;0.51pt&lt;/strong&gt;，验证了可扩展性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="各组件贡献消融实验"&gt;各组件贡献（消融实验）&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;技术组件&lt;/th&gt;
+&lt;th&gt;CTR-AUC 增益&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;特殊 Token（BOS + SEP）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.33pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;注意力汇聚，稳定注意力分布&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;查询裁剪（Query Pruning）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.26pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;计算减半，引入时间衰减偏置&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;门控注意力（Attention Gate）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.21pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;自适应调节注意力头贡献&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DeepSeek MoE&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.19pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;扩大容量，不增计算&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;QKNorm&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.12pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;稳定大规模训练&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;局部注意力（Local Attention）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+0.10pt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;线性复杂度 + 隐式正则化&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;所有技术叠加&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;&amp;gt; 各项之和&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;协同效应显著&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;值得注意的是，各项技术叠加后产生了显著的&lt;strong&gt;协同效应&lt;/strong&gt;——综合提升大于各项单独贡献之和。这说明这些优化并非孤立存在，而是在不同维度上互相增强：例如，局部注意力减少了注意力范围中的噪声，使得特殊 Token 的汇聚效果更加聚焦；查询裁剪与 MoE 的组合则在保持低计算量的同时维持了高模型容量。&lt;/p&gt;
+&lt;h4 id="可扩展性分析"&gt;可扩展性分析&lt;/h4&gt;
+&lt;p&gt;SORT 在三个维度上验证了可扩展性：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;扩展维度&lt;/th&gt;
+&lt;th&gt;方式&lt;/th&gt;
+&lt;th&gt;效果&lt;/th&gt;
+&lt;th&gt;有效性排序&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;数据扩展&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;增加训练轮次（Multi-epoch）&lt;/td&gt;
+&lt;td&gt;最显著提升&lt;/td&gt;
+&lt;td&gt;🥇 最有效&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;序列长度&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;256 → 4096&lt;/td&gt;
+&lt;td&gt;持续提升&lt;/td&gt;
+&lt;td&gt;🥈 次有效&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;模型规模&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;增加参数量&lt;/td&gt;
+&lt;td&gt;稳定提升&lt;/td&gt;
+&lt;td&gt;🥉 第三&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;数据扩展最为有效&lt;/strong&gt;这一发现值得注意——得益于冻结 Embedding 策略，SORT 可以进行多轮次训练而不过拟合，这在传统排序模型中是难以实现的。&lt;/p&gt;
+&lt;h4 id="特征工程兼容性"&gt;特征工程兼容性&lt;/h4&gt;
+&lt;p&gt;SORT 并非要取代特征工程，而是与其互补：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;特征集&lt;/th&gt;
+&lt;th&gt;CTR-AUC 增益&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;基础特征（ID + 属性）&lt;/td&gt;
+&lt;td&gt;基线&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;+ 多模态特征&lt;/td&gt;
+&lt;td&gt;+0.36%&lt;/td&gt;
+&lt;td&gt;图像、文本等&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;+ 用户-物品交叉特征&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+1.03%&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;最显著提升&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;全特征集&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;CTR +1.27%, CVR +1.74%&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;综合提升&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;用户-物品交叉特征带来了最显著的提升，说明 Transformer 的注意力机制虽然擅长自动学习特征交互，但&lt;strong&gt;精心设计的交叉特征仍然能提供额外的先验知识&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="52-在线-ab-测试"&gt;5.2 在线 A/B 测试&lt;/h3&gt;
+&lt;p&gt;SORT 在 AliExpress 的三个核心场景进行了为期一个月的在线 A/B 测试：&lt;/p&gt;
+&lt;h4 id="总体业务指标"&gt;总体业务指标&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;指标&lt;/th&gt;
+&lt;th&gt;平均提升&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;订单数&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+6.35%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;买家数&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+5.97%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;GMV（成交总额）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+5.47%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;推理延迟&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;-44.67%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;推理吞吐量&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+121.33%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id="分场景详细结果"&gt;分场景详细结果&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;场景&lt;/th&gt;
+&lt;th&gt;订单数&lt;/th&gt;
+&lt;th&gt;买家数&lt;/th&gt;
+&lt;th&gt;GMV&lt;/th&gt;
+&lt;th&gt;延迟&lt;/th&gt;
+&lt;th&gt;吞吐量&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;首页（Homepage）&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;+4.13%&lt;/td&gt;
+&lt;td&gt;+4.26%&lt;/td&gt;
+&lt;td&gt;+6.60%&lt;/td&gt;
+&lt;td&gt;-58%&lt;/td&gt;
+&lt;td&gt;+36%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;购物车（Cart）&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;+3.50%&lt;/td&gt;
+&lt;td&gt;+3.75%&lt;/td&gt;
+&lt;td&gt;+3.69%&lt;/td&gt;
+&lt;td&gt;-37%&lt;/td&gt;
+&lt;td&gt;+169%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;支付后（Post-Pay）&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+11.43%&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+9.91%&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+6.12%&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;-39%&lt;/td&gt;
+&lt;td&gt;+159%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;关键观察&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;支付后场景订单提升最显著&lt;/strong&gt;（+11.43%）：可能因为该场景的用户购买意向已经明确，SORT 的精准排序能力带来更大的边际收益&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;首页场景延迟优化最佳&lt;/strong&gt;（-58%）：首页是流量最大的入口，延迟优化带来的用户体验提升尤为关键&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统效率全面提升&lt;/strong&gt;：平均延迟下降 44.67%、吞吐量提升 121.33%，不仅是模型效果更好，而且更快更省资源&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="6-方法论对比sort-vs-同期方案"&gt;6. 方法论对比：SORT vs 同期方案&lt;/h2&gt;
+&lt;h3 id="61-多维度对比表"&gt;6.1 多维度对比表&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;对比维度&lt;/th&gt;
+&lt;th&gt;SORT&lt;/th&gt;
+&lt;th&gt;HSTU (Meta)&lt;/th&gt;
+&lt;th&gt;OneTrans&lt;/th&gt;
+&lt;th&gt;标准 Transformer&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;目标场景&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;排序（Ranking）&lt;/td&gt;
+&lt;td&gt;召回 + 排序&lt;/td&gt;
+&lt;td&gt;排序&lt;/td&gt;
+&lt;td&gt;通用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;样本组织&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;请求中心&lt;/td&gt;
+&lt;td&gt;序列化&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;独立样本&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;注意力机制&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;局部稀疏 + 查询裁剪&lt;/td&gt;
+&lt;td&gt;门控注意力（无 MLP）&lt;/td&gt;
+&lt;td&gt;标准因果&lt;/td&gt;
+&lt;td&gt;标准因果&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;位置编码&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;RoPE + 对角掩码&lt;/td&gt;
+&lt;td&gt;相对偏差&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;绝对/相对&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;FFN 设计&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;DeepSeek MoE（1/8 稀疏）&lt;/td&gt;
+&lt;td&gt;无独立 FFN&lt;/td&gt;
+&lt;td&gt;标准 FFN&lt;/td&gt;
+&lt;td&gt;标准 FFN&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;预训练策略&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;生成式预训练 + 嵌入冻结&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;训练稳定性&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;QKNorm + 门控&lt;/td&gt;
+&lt;td&gt;门控&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;无特殊处理&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;序列长度&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;256-4K（局部注意力）&lt;/td&gt;
+&lt;td&gt;超长序列&lt;/td&gt;
+&lt;td&gt;中等&lt;/td&gt;
+&lt;td&gt;受限于 O(L²)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;工业验证&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;AliExpress 全场景&lt;/td&gt;
+&lt;td&gt;Meta 内部&lt;/td&gt;
+&lt;td&gt;有限&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="62-sort-的优势"&gt;6.2 SORT 的优势&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;系统性优化&lt;/strong&gt;：不是单点突破，而是从分词、注意力、FFN、预训练到系统工程的全链路优化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工程友好&lt;/strong&gt;：DeepSeek MoE 无需调辅助损失、查询裁剪实现简单、推理优化降低部署成本&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;效率突出&lt;/strong&gt;：以 58% 的 FLOPs 超越标准 Transformer，推理延迟降低 44.67%&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可扩展性强&lt;/strong&gt;：在数据、模型、序列长度三个维度上均展现持续提升&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特征兼容&lt;/strong&gt;：不排斥传统特征工程，与交叉特征、多模态特征互补&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;业务收益显著&lt;/strong&gt;：在线 A/B 测试订单 +6.35%，GMV +5.47%&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="63-sort-的潜在不足"&gt;6.3 SORT 的潜在不足&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;两阶段训练流程&lt;/strong&gt;：生成式预训练 + 判别式训练增加了训练管线的复杂度&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;预训练依赖&lt;/strong&gt;：如果物品分布频繁变化，预训练 Embedding 的时效性可能成为问题&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冻结策略的刚性&lt;/strong&gt;：完全冻结 Embedding 可能无法适应动态变化的物品语义&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MoE 的工程挑战&lt;/strong&gt;：稀疏 MoE 在分布式训练和推理中的负载均衡仍需关注&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;场景泛化性&lt;/strong&gt;：目前仅在电商场景验证，在视频、社交等推荐场景的效果有待检验&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冷启动问题&lt;/strong&gt;：新物品没有预训练 Embedding，冷启动场景的处理方式论文未详细讨论&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="64-hstu-的优势与不足"&gt;6.4 HSTU 的优势与不足&lt;/h3&gt;
+&lt;p&gt;作为 SORT 最重要的对比方法，HSTU 值得单独分析：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;HSTU 的优势&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;架构极简&lt;/strong&gt;：完全移除 MLP 层，将注意力与前馈融合为单一操作，减少了超参数调优空间&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;超长序列支持&lt;/strong&gt;：针对推荐场景的极长用户行为序列（$10^5$ 量级）进行了专门优化，在长序列场景下有天然优势&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;万亿参数验证&lt;/strong&gt;：首次在推荐系统中验证了 Scaling Law 的存在，为后续工作（包括 SORT）奠定了理论基础&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;HSTU 的不足&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;排序场景适配不足&lt;/strong&gt;：HSTU 最初为召回/检索设计，在排序场景中直接应用效果不如 SORT（-0.59pt CTR-AUC）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型容量受限&lt;/strong&gt;：移除 MLP 后，模型的非线性变换能力下降，难以通过 MoE 等方式灵活扩展容量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺乏预训练策略&lt;/strong&gt;：没有针对稀疏特征过拟合提出系统性的预训练和冻结方案，限制了在高特征稀疏场景下的表现&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="65-hstu-vs-sort-的设计哲学对比"&gt;6.5 HSTU vs SORT 的设计哲学对比&lt;/h3&gt;
+&lt;p&gt;HSTU 和 SORT 是目前工业级 Transformer 推荐模型的两个代表性工作，它们的设计哲学有明显差异：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;设计哲学&lt;/th&gt;
+&lt;th&gt;HSTU&lt;/th&gt;
+&lt;th&gt;SORT&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;核心理念&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;极简主义——去掉 MLP，融合注意力与前馈&lt;/td&gt;
+&lt;td&gt;系统优化——保留标准组件但逐一优化&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;MLP 处理&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;完全移除，用门控融合替代&lt;/td&gt;
+&lt;td&gt;保留并升级为 MoE&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;复杂度控制&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;通过简化架构降低 FLOPs&lt;/td&gt;
+&lt;td&gt;通过稀疏注意力 + 查询裁剪&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;过拟合应对&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;主要通过架构简化&lt;/td&gt;
+&lt;td&gt;生成式预训练 + 嵌入冻结&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;落地路径&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;需要深度定制&lt;/td&gt;
+&lt;td&gt;更接近标准 Transformer，迁移成本低&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="7-深入讨论"&gt;7. 深入讨论&lt;/h2&gt;
+&lt;h3 id="71-为什么局部注意力比全局注意力更好"&gt;7.1 为什么局部注意力比全局注意力更好？&lt;/h3&gt;
+&lt;p&gt;这是论文中最反直觉的发现之一——按直觉，&amp;ldquo;看到更多信息&amp;quot;应该总是更好的，但实验结果表明窗口大小 256 的局部注意力甚至超越了完整的全局因果注意力。我们从多个角度深入分析这一现象：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;推荐场景的时间局部性&lt;/strong&gt;：与自然语言不同，推荐场景中的用户行为序列具有强烈的时间衰减特性。用户一周前浏览的商品类别可能与当前兴趣完全无关。全局注意力会将有限的注意力容量&amp;quot;浪费&amp;quot;在这些过时的信息上，而局部注意力强制模型聚焦于最相关的近期行为&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐式正则化与过拟合缓解&lt;/strong&gt;：在高特征稀疏性的推荐场景中，全局注意力提供了更大的参数自由度，但这反而加剧了过拟合风险。局部注意力通过限制感受野，引入了一种结构化的正则化约束——它减少了模型可以&amp;quot;记忆&amp;quot;的训练样本模式，迫使模型学习更泛化的特征&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;梯度质量与优化效率&lt;/strong&gt;：全局注意力中，远距离 Token 对的梯度信号通常较弱且噪声较大（因为远距离行为的相关性本身就低）。这些低质量梯度会干扰有效的参数更新。局部注意力过滤掉了这些噪声梯度源，使每次参数更新都更加精准&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;与查询裁剪的层级协同&lt;/strong&gt;：局部注意力在&amp;quot;水平方向&amp;quot;限制了每层的感受野，查询裁剪在&amp;quot;垂直方向&amp;rdquo;（跨层）逐步收缩活跃的 Token 数量。两者共同构成了一个&amp;quot;由近到远、由多到少&amp;quot;的层级化信息访问模式，这与推荐系统中&amp;quot;近期行为重要性递减&amp;quot;的直觉完美契合&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算效率的连锁效应&lt;/strong&gt;：局部注意力将复杂度降至线性后，省下的计算资源可以用于增加模型层数或训练更多轮次，间接提升了模型性能&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="72-冻结-embedding-的理论解释"&gt;7.2 冻结 Embedding 的理论解释&lt;/h3&gt;
+&lt;p&gt;冻结策略的成功可以从&lt;strong&gt;优化景观（Optimization Landscape）&lt;/strong&gt; 的角度理解：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;参数空间解耦&lt;/strong&gt;：将&amp;quot;学习物品表示&amp;quot;和&amp;quot;学习排序决策&amp;quot;解耦为两个独立的优化问题&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;降维效果&lt;/strong&gt;：冻结 Embedding 后，可训练参数量大幅减少（通常减少 90%+），优化景观变得更加平滑&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;正则化效果&lt;/strong&gt;：冻结相当于一种极强的正则化——强制模型在预训练给定的特征空间中学习排序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="73-moe-在推荐排序中的前景"&gt;7.3 MoE 在推荐排序中的前景&lt;/h3&gt;
+&lt;p&gt;SORT 首次在工业级排序模型中成功应用了 MoE，这为推荐系统的模型设计打开了新的方向：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;容量扩展&lt;/strong&gt;：MoE 允许在固定计算预算下大幅扩展模型参数量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;专业化分工&lt;/strong&gt;：不同专家可以自然地学习处理不同类型的用户行为或物品类别&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;与推荐场景的天然契合&lt;/strong&gt;：推荐数据的异构性（多种行为类型、多种物品类别）天然适合专家路由机制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="8-总结与展望"&gt;8. 总结与展望&lt;/h2&gt;
+&lt;h3 id="81-核心贡献总结"&gt;8.1 核心贡献总结&lt;/h3&gt;
+&lt;p&gt;SORT 的核心贡献可以归纳为以下几点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;问题诊断&lt;/strong&gt;：系统性地识别了 Transformer 应用于工业级排序的核心矛盾——高特征稀疏性与低标签密度&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;架构创新&lt;/strong&gt;：提出了一套互补的优化方案（请求中心组织、稀疏注意力、查询裁剪、MoE FFN、生成式预训练+冻结），形成有机整体&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统工程&lt;/strong&gt;：从训练端（MFU 13%→22%）到推理端（延迟 -44.67%，吞吐量 +121.33%）的全链路优化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;业务验证&lt;/strong&gt;：在 AliExpress 多场景 A/B 测试中取得订单 +6.35%、GMV +5.47% 的显著收益&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="82-对行业的启示"&gt;8.2 对行业的启示&lt;/h3&gt;
+&lt;p&gt;SORT 的成功给推荐系统领域带来了几个重要启示：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;统一架构是可行的&lt;/strong&gt;：不需要为每个特征交互方式设计专用模块，Transformer 的注意力机制可以自动学习&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;预训练是关键&lt;/strong&gt;：生成式预训练 + 冻结策略为解决推荐模型的过拟合提供了一条可行路径&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统优化与算法创新同等重要&lt;/strong&gt;：好的算法如果不能高效部署，就无法产生业务价值&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特征工程仍有价值&lt;/strong&gt;：Transformer 并非完全取代特征工程，而是与之互补&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="83-未来展望"&gt;8.3 未来展望&lt;/h3&gt;
+&lt;p&gt;基于 SORT 的工作，推荐排序 Transformer 的未来发展方向可能包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;统一召回与排序&lt;/strong&gt;：用同一个 Transformer 模型同时处理召回和排序，进一步简化系统架构&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;在线学习与预训练的融合&lt;/strong&gt;：探索如何在不断变化的数据流中持续更新预训练 Embedding&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更高效的 MoE 方案&lt;/strong&gt;：探索更细粒度的专家路由策略，进一步提升模型容量与计算效率的比值&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨场景迁移&lt;/strong&gt;：将 SORT 的框架迁移到视频推荐、社交推荐等其他场景&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多模态融合&lt;/strong&gt;：更深层次地融合文本、图像、视频等多模态物品特征&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="参考文献"&gt;参考文献&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;SORT: A Systematically Optimized Ranking Transformer for Industrial-scale Recommenders.
+&lt;/li&gt;
+&lt;li&gt;Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations (HSTU).
+&lt;/li&gt;
+&lt;li&gt;Scaling Transformers for Discriminative Recommendation via Generative Pretraining (GPSD).
+&lt;/li&gt;
+&lt;li&gt;DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model.
+&lt;/li&gt;
+&lt;li&gt;RoFormer: Enhanced Transformer with Rotary Position Embedding (RoPE).
+&lt;/li&gt;
+&lt;/ol&gt;</description></item><item><title>美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？</title><link>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</link><pubDate>Wed, 25 Mar 2026 20:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</guid><description>&lt;h2 id="1-导言推荐系统的大模型时代与多场景之痛"&gt;1. 导言：推荐系统的“大模型”时代与多场景之痛&lt;/h2&gt;
 &lt;p&gt;在过去几年里，大语言模型（Large Language Models, LLMs）的飞速发展，彻底重塑了人工智能的版图。从单模态的文本生成到多模态的图文视频理解，基座模型（Foundation Models, FMs）以其统一的架构和惊人的“涌现能力”（Emergent Abilities），证明了 Scaling Laws（缩放定律）的伟大力量。而在推荐系统（Recommender Systems, RecSys）领域，工业界也逐渐开始验证 Scaling Laws，尝试通过增加模型参数量和训练数据量来打破业务指标的天花板。&lt;/p&gt;
 &lt;p&gt;然而，传统的推荐系统往往被局限在“单一场景”（Single-scenario）的孤岛中。例如，在外卖平台中，“美食推荐”、“商家推荐”、“神抢手（券包推荐）”等场景各自拥有独立的模型和特征体系。这种孤岛模式严重限制了推荐模型吸收全局数据的能力，使得 Scaling Laws 的潜力难以被完全释放。受到多模态大模型的启发，美团的技术团队提出：&lt;strong&gt;推荐大模型的下一个突破口，在于跨越场景的异构性，建立一个统一的、无需严格对齐的底层基础模型。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;这便是本文要深度剖析的主角——发表于 2025 年的重磅工业级论文 &lt;strong&gt;《MTFM: A Scalable and Alignment-free Foundation Model for Industrial Recommendation in Meituan》&lt;/strong&gt;。&lt;/p&gt;
@@ -59,32 +1084,797 @@ end
 &lt;li&gt;&lt;strong&gt;在数据端&lt;/strong&gt;：将多个场景的数据强行拼接到一起，使用一个固定的特征模板（Fixed Template）。如果某个场景缺少某些特征（例如商家推荐场景没有菜品口味标签），就用 Padding（如零值或默认值）来填充；如果某些异构特征无法对齐，干脆直接丢弃。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;在模型端&lt;/strong&gt;：通过 MoE（Mixture of Experts）或星型拓扑结构，将模型参数解耦为“领域无关”（Domain-invariant）的共享参数和“领域特定”（Domain-specific）的独有参数。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点：&lt;/p&gt;</description></item><item><title>GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力</title><link>https://dingyadong.top/posts/009_gpsd_paper_review/</link><pubDate>Tue, 24 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/009_gpsd_paper_review/</guid><description>&lt;blockquote&gt;
-&lt;p&gt;本文是关于最新论文《Scaling Transformers for Discriminative Recommendation via Generative Pretraining》（&lt;a href="https://arxiv.org/pdf/2506.03699"&gt;arXiv:2506.03699&lt;/a&gt;）的阅读笔记。&lt;/p&gt;
+&lt;p&gt;然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;延展性的僵局（Rigidity in Extensibility）&lt;/strong&gt;：在美团这样的超级平台上，不同场景的特征模式（Feature Schemas）差异极大。强迫成百上千的异构特征去适配一个固定的模板，不仅容易出错，而且会导致严重的信息丢失。大量的 Padding 操作不仅浪费了存储，还引入了噪音。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;架构缺乏可扩展性（Lack of Architectural Scalability）&lt;/strong&gt;：无论是 STAR 还是各类复杂的 MoE 结构，本质上仍然是基于专家启发式规则（Expert Heuristics）手工打造的“定制化”网络。这种高度定制化的网络结构，很难像纯粹的 Transformer 那样，享受到简单堆叠层数带来的 Scaling Laws 红利。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高昂的计算成本（Prohibitive Computational Costs）&lt;/strong&gt;：在传统范式下，训练成本随着数据量的增加呈线性甚至超线性增长。将海量的多场景数据简单粗暴地融合在一起训练，会导致算力开销呈指数级爆炸，在经济上完全不可行。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;面对这些痛点，MTFM 给出的答案是：&lt;strong&gt;抛弃对齐（Alignment-free），万物皆 Token（Heterogeneous Tokenization），并引入混合目标注意力机制（Hybrid Target Attention）和极致的系统级优化。&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="2-核心思想与方法论摒弃对齐拥抱异构"&gt;2. 核心思想与方法论：摒弃“对齐”，拥抱“异构”&lt;/h2&gt;
+&lt;p&gt;在自然语言处理领域，无论是英文、中文还是代码，都可以通过 Tokenizer（如 BPE、TikToken）统一转化为 Token 序列。MTFM 敏锐地捕捉到了这一点，将其引入到推荐系统中，提出了 &lt;strong&gt;异构 Token 化（Heterogeneous Tokenization）&lt;/strong&gt; 的概念。&lt;/p&gt;
+&lt;h3 id="21-从特征模板到异构-token-序列"&gt;2.1 从特征模板到异构 Token 序列&lt;/h3&gt;
+&lt;p&gt;在传统的深度学习推荐模型（DLRM）中，输入通常是一个超大的稀疏向量或稠密 Embedding 的拼接：
+&lt;code&gt;[User_Emb, Item_Emb, Context_Emb, Cross_Emb, ...]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这种结构要求每一条样本都必须具有相同的维度和特征组合。而在 MTFM 中，输入不再是一个固定长度的向量，而是一个 &lt;strong&gt;变长的异构 Token 序列（Variable-length Sequence of Heterogeneous Tokens）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;具体来说，MTFM 将推荐系统中的所有特征抽象为三类核心 Token：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;H-token (Historical tokens)&lt;/strong&gt;：代表用户的长期历史交互行为序列。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;R-token (Real-time tokens)&lt;/strong&gt;：代表用户近期的、实时的跨场景交互行为序列。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;T-token (Target tokens)&lt;/strong&gt;：代表当前正在被请求或曝光的目标候选项（Candidate Items）及其对应的上下文和交叉特征。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="211-h-token-与-r-token-的生成"&gt;2.1.1 H-token 与 R-token 的生成&lt;/h4&gt;
+&lt;p&gt;以用户的历史行为序列 \(\{H_i\}\) 为例。序列中的每一个交互商品（Item） \(h_{ij}\) 都对应一个 H-token。由于不同历史序列中包含的特征维度可能不同，MTFM 为不同的历史序列分配了不同的 MLP（多层感知机）作为专属的 Tokenizer。&lt;/p&gt;
+&lt;p&gt;将原始特征经过 Embedding 层映射后，通过对应的 MLP 投影到一个统一的维度 \(d_{model}\)：&lt;/p&gt;
+$$
+\mathbf{h}_{ij} = \text{MLP}_i(\text{Emb}(h_{ij}))
+$$&lt;p&gt;随后，MTFM 将所有历史序列中的 Item Token 按照时间戳（Chronological order）进行排序，形成一个统一的 Embedding 矩阵：&lt;/p&gt;
+$$
+\mathbf{H} \in \mathbb{R}^{L_H \times d_{model}}
+$$&lt;p&gt;其中 \(L_H\) 是所有历史序列中 Item 的总数。&lt;/p&gt;
+&lt;p&gt;同理，用户的实时序列特征也被转化为 R-token 矩阵：&lt;/p&gt;
+$$
+\mathbf{R} \in \mathbb{R}^{L_R \times d_{model}}
+$$&lt;h4 id="212-t-token-的生成"&gt;2.1.2 T-token 的生成&lt;/h4&gt;
+&lt;p&gt;对于当前曝光的候选目标，MTFM 将用户画像特征（User Profile, \(U^s\)）、场景特定的交叉特征（Cross Features, \(C_i^s\)）以及目标物品特征（Item Features, \(I_i^s\)）进行拼接，并通过该场景特定的 MLP 进行降维投影：&lt;/p&gt;
+$$
+\mathbf{t}_i^s = \text{MLP}_s(\text{Emb}(U^s) \| \text{Emb}(C_i^s) \| \text{Emb}(I_i^s))
+$$&lt;p&gt;这里 \(\|\) 表示列拼接（Column concatenation）。所有场景下的曝光行为最终被转化为 T-token 矩阵：&lt;/p&gt;
+$$
+\mathbf{T} \in \mathbb{R}^{L_T \times d_{model}}
+$$&lt;p&gt;其中 \(L_T\) 是所有场景下曝光样本的总数。&lt;/p&gt;
+&lt;h4 id="213-统一序列表示"&gt;2.1.3 统一序列表示&lt;/h4&gt;
+&lt;p&gt;最终，所有的 H-token、R-token 和 T-token 会在行方向（Row concatenation）上进行拼接，形成输入到 Transformer 骨干网络的初始 Embedding 矩阵：&lt;/p&gt;
+$$
+\mathbf{X}^{(0)} = (\mathbf{H}; \mathbf{R}; \mathbf{T}) \in \mathbb{R}^{N \times d_{model}}
+$$&lt;p&gt;这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不同的用户，这个 \(N\) 是可变的（Variable-length）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;【深度思考：异构 Token 化的绝妙之处】&lt;/strong&gt;
+这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 \(d_{model}\) 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 \(\text{MLP}_s\) 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="3-数据组织革命user-level-多场景样本聚合"&gt;3. 数据组织革命：User-level 多场景样本聚合&lt;/h2&gt;
+&lt;p&gt;理解了 Token 化之后，我们面临下一个严峻挑战：计算复杂度。
+如果按照传统的“曝光级别”（Impression-level）进行训练，即每一次曝光（一个 User 对应一个 Item）作为一条独立样本，那么对于同一个用户，他极其冗长的历史行为序列（H-token）和实时序列（R-token）会在成百上千条样本中被重复计算。&lt;/p&gt;
+&lt;p&gt;在标准的 Transformer 中，自注意力机制的时间复杂度是 \(O(N^2 \cdot d)\)。如果序列长度 \(N\) 达到几千，这种重复计算将带来毁灭性的算力浪费。&lt;/p&gt;
+&lt;h3 id="31-继承与超越从-mtgr-到多场景聚合"&gt;3.1 继承与超越：从 MTGR 到多场景聚合&lt;/h3&gt;
+&lt;p&gt;为了解决这个问题，MTFM 继承了美团此前在 MTGR（Multi-Task Generative Recommendation）论文中提出的 &lt;strong&gt;用户级（User-level）样本聚合&lt;/strong&gt; 技术，并将其突破性地扩展到了多场景（Multi-scenario）环境。&lt;/p&gt;
+&lt;p&gt;在离线训练阶段，MTFM 将某个特定时间窗口内，&lt;strong&gt;同一个用户在所有业务场景下的所有曝光行为&lt;/strong&gt;，全部聚合为一条“超级样本”。&lt;/p&gt;
+&lt;p&gt;具体来说，每个用户 \(u\) 对应一条包含海量信息的训练样本 \(\mathbb{D}_u = (X_u, Y_u)\)。
+输入特征集 \(X\) 可以表示为：&lt;/p&gt;
+$$
+X = [ \{H_i\}_{i=1}^{N_H}, \{R_i\}_{i=1}^{N_R}, \{U^s\}_{s=1}^{N_S}, \{\{C_i^s, I_i^s\}_{i=1}^{N_E^s}\}_{s=1}^{N_S} ]
+$$&lt;p&gt;标签集 \(Y\) 表示为：&lt;/p&gt;
+$$
+Y = \{\{Y_i^s\}_{i=1}^{N_E^s}\}_{s=1}^{N_S}
+$$&lt;p&gt;参数解释：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;\(N_S\)：业务场景的总数。&lt;/li&gt;
+&lt;li&gt;\(N_E^s\)：在场景 \(s\) 下的曝光总数。&lt;/li&gt;
+&lt;li&gt;\(H_i, R_i\)：跨场景共享的历史和实时序列。&lt;/li&gt;
+&lt;li&gt;\(U^s, C_i^s, I_i^s\)：场景 \(s\) 特有的用户画像、交叉特征和物品特征。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="32-共享与独立解耦特征处理管线"&gt;3.2 共享与独立：解耦特征处理管线&lt;/h3&gt;
+&lt;p&gt;由于不同场景的特征模式存在本质上的不兼容（例如外卖场景的标签和打车场景的标签完全不同），MTFM 在数据流水线（Data Pipeline）上做出了精妙的设计：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;场景独立聚合&lt;/strong&gt;：对于场景特定的特征（\(U, C, I\)），首先在各个场景内部按照 User-level 进行聚合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨场景拼接&lt;/strong&gt;：将聚合后的各场景特征按照列方向（Column-wise）拼接，形成一个统一的候选目标表征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;全局特征合并&lt;/strong&gt;：最后，将全场景共享的特征（用户的生命周期历史序列 \(H\) 和实时序列 \(R\)）与上述拼接结果在 User-level 进行合并。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph 场景1: 外卖
+U1[User特征] --&gt; Agg1[场景内User-level聚合]
+C1[交叉特征] --&gt; Agg1
+I1[Item特征] --&gt; Agg1
+end
+subgraph 场景2: 优选
+U2[User特征] --&gt; Agg2[场景内User-level聚合]
+C2[交叉特征] --&gt; Agg2
+I2[Item特征] --&gt; Agg2
+end
+Agg1 --&gt; Concat[多场景特征按列拼接形成 T-token 集合]
+Agg2 --&gt; Concat
+H[全平台长序列 H-token] --&gt; Merge[最终超级样本构建]
+R[全平台实时序列 R-token] --&gt; Merge
+Concat --&gt; Merge
+Merge --&gt; MTFM[输入 MTFM 模型]
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这种设计彻底避免了数据 Pipeline 中的重复计算和冗余存储。在推理阶段（Online Inference），由于各个场景是独立发起请求的，每个场景只需要部署 MTFM 中与自己相关的 &lt;strong&gt;子图（Subgraph）&lt;/strong&gt;。推理请求在 Request-level 进行聚合，子图会自动绕过其他场景专属的 MLP Tokenizer，从而实现极高的推理效率。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="4-网络架构深度剖析混合目标注意力机制-hta"&gt;4. 网络架构深度剖析：混合目标注意力机制 (HTA)&lt;/h2&gt;
+&lt;p&gt;如果说异构 Token 化和 User-level 聚合是 MTFM 的数据地基，那么 &lt;strong&gt;混合目标注意力机制（Hybrid Target Attention, HTA）&lt;/strong&gt; 则是其架构上的王冠。&lt;/p&gt;
+&lt;p&gt;将推荐系统转化为 Transformer 的序列建模任务后，面临的最大梦魇就是 \(O(N^2)\) 的复杂度。虽然 User-level 聚合消除了冗余计算，但把所有场景的曝光候选物品（T-token）和超长历史序列（H/R-token）拼在一起，序列长度 \(N\) 极容易突破数千甚至上万。&lt;/p&gt;
+&lt;p&gt;为了平衡模型的表达能力（Efficacy）和计算效率（Efficiency），MTFM 借鉴了 LLM 领域的稀疏注意力思想，提出了一种由 &lt;strong&gt;全注意力层（Full Attention Layer）&lt;/strong&gt; 和 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt; 交替堆叠的混合架构。&lt;/p&gt;
+&lt;h3 id="41-全注意力层-full-attention-layer-与动态掩码"&gt;4.1 全注意力层 (Full Attention Layer) 与动态掩码&lt;/h3&gt;
+&lt;p&gt;在模型由 \(B\) 个堆叠的 Block 组成，为了缓解二次复杂度瓶颈，每个 Block 会包含 1 个全注意力层，以及随后紧跟的 \(K\) 个目标注意力层。&lt;/p&gt;
+&lt;p&gt;在全注意力层中，模型计算所有 Token 之间的全局依赖关系。为了进一步降低显存和计算开销，MTFM 采用了 &lt;strong&gt;分组查询注意力（Grouped-Query Attention, GQA）&lt;/strong&gt;。GQA 相比于 Multi-Head Attention (MHA)，多个 Query 共享一组 Key 和 Value，在保持模型效果几乎不变的前提下，大幅减少了 KV Cache 的显存占用。&lt;/p&gt;
+&lt;p&gt;全注意力层的数学表达如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;线性映射与分组切分&lt;/strong&gt;：
+&lt;/p&gt;
+$$
+\mathbf{U}^{(l)}, \{\mathbf{Q}^{(l,h)}\}_{h=1}^{H}, \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)} \}_{g=1}^G = \text{Split}(\phi_1(f_1^{(l)}(\widetilde{\mathbf{X}}^{(l)})))
+$$&lt;p&gt;
+其中 \(H\) 是 Query 的头数，\(G\) 是 KV 的头数，\(r = H/G\)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;注意力计算与动态掩码（Dynamic Masking）&lt;/strong&gt;：
+&lt;/p&gt;
+$$
+\mathbf{A}^{(l,h)} = \phi_2(\mathbf{Q}^{(l,h)} \mathbf{K}^{(l,g)T} \odot \mathbf{M}) \mathbf{V}^{(l,g)}
+$$&lt;p&gt;
+&lt;/p&gt;
+$$
+\mathbf{A}^{(l)} = \mathbf{A}^{(l,1)} \| \cdots \| \mathbf{A}^{(l,H)}
+$$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;门控层归一化与残差连接&lt;/strong&gt;：
+&lt;/p&gt;
+$$
+\mathbf{X}^{(l+1)} = f_2^{(l)}(\text{GLN}(\mathbf{A}^{(l)}) \odot \mathbf{U}^{(l)}) + \mathbf{X}^{(l)}
+$$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="411-防止信息泄露的动态掩码"&gt;4.1.1 防止信息泄露的动态掩码 \(\mathbf{M}\)&lt;/h4&gt;
+&lt;p&gt;在 User-level 聚合中，由于实时序列 \(R\) 和当前曝光目标 \(T\) 在时间上可能存在重叠，如果不加以限制，模型在预测时就会“看到未来”的数据，导致严重的信息泄露（Information Leakage）。&lt;/p&gt;
+&lt;p&gt;为此，MTFM 根据时间戳构建了极其严格的动态掩码矩阵 \(\mathbf{M}\)：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;H-tokens 视野&lt;/strong&gt;：H-token 对所有后续 Token 可见，因为它们代表最基础的历史偏好。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;R-tokens 视野&lt;/strong&gt;：R-token 遵循严格的因果掩码（Causal Mask），只能被时间戳晚于自己的 Token 看到。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;T-tokens 视野&lt;/strong&gt;：T-token 之间互相不可见（因为在一次曝光请求中，各个候选 Item 应该是平行的），T-token 只能看到自己以及时间戳早于它的 H 和 R。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="42-目标注意力层-target-attention-layer极致降本的核心"&gt;4.2 目标注意力层 (Target Attention Layer)：极致降本的核心&lt;/h3&gt;
+&lt;p&gt;全注意力层虽然强大，但每一层都做 \(O(N^2)\) 的计算实在是太奢侈了。在推荐系统的预测任务中，我们真正关心的是 &lt;strong&gt;最终目标（T-tokens）&lt;/strong&gt; 的表达，历史序列（H/R-tokens）的作用主要是作为 Context 辅助 T-token 的表征。&lt;/p&gt;
+&lt;p&gt;因此，MTFM 在全注意力层之后，级联了 \(K\) 个 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在 Target Attention Layer 中，&lt;strong&gt;模型只更新 T-token 的 Embedding&lt;/strong&gt;，而 H-token 和 R-token 的 Embedding 直接通过 Shortcut（捷径）连接，原封不动地传递到下一层！&lt;/p&gt;
+&lt;p&gt;数学推导如下：&lt;/p&gt;
+&lt;p&gt;首先，从归一化的特征矩阵和掩码矩阵中，单独切分出 T-token 对应的部分：&lt;/p&gt;
+$$
+\widetilde{\mathbf{X}}^{(l)}_T = \widetilde{\mathbf{X}}^{(l)}[L_H+L_R:]
+$$$$
+\mathbf{M}_T = \mathbf{M}[L_H+L_R:]
+$$&lt;p&gt;接下来，只用 T-token 去生成 Query \(\mathbf{Q}_T\)，而 Key \(\mathbf{K}\) 和 Value \(\mathbf{V}\) 依然由全局序列生成：&lt;/p&gt;
+$$
+\mathbf{U}^{(l)}_T, \{\mathbf{Q}^{(l,h)}_T\}_{h=1}^H = \text{Split}(\phi_1(f_{uq}^{(l)}(\widetilde{\mathbf{X}}_T^{(l)})))
+$$$$
+\{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)}\}_{g=1}^G = \text{Split}(\phi_1(f_{kv}^{(l)}(\widetilde{\mathbf{X}}^{(l)})))
+$$&lt;p&gt;注意力计算只在 T-token 作为 Query 时发生：&lt;/p&gt;
+$$
+\mathbf{A}^{(l,h)}_T = \phi_2(\mathbf{Q}_T^{(l,h)} \mathbf{K}^{(l,g)T} \odot \mathbf{M}_T) \mathbf{V}^{(l,g)}
+$$$$
+\mathbf{X}^{(l+1)}_T = f_2^{(l)}(\text{GLN}(\mathbf{A}_T^{(l)}) \odot \mathbf{U}_T^{(l)}) + \mathbf{X}_T^{(l)}
+$$&lt;p&gt;最后，将更新后的 T-token 与未更新的 H/R-token 重新拼接，输出给下一层：&lt;/p&gt;
+$$
+\mathbf{X}^{(l+1)} = (\mathbf{X}^{(l)}[:L_H+L_R]; \mathbf{X}^{(l+1)}_T)
+$$&lt;p&gt;&lt;strong&gt;【复杂度革命性降低】&lt;/strong&gt;
+在标准的 Transformer 中，一层的复杂度是 \(O(N^2)\)。
+在 Target Attention 中，因为 Query 的数量从 \(N\) 骤降到了 \(L_T\)（通常 \(L_T \ll N\)），注意力矩阵的大小从 \(N \times N\) 缩小到了 \(L_T \times N\)。
+因此，单个 Target Attention Layer 的复杂度降为 \(O(N \cdot L_T)\)。&lt;/p&gt;
+&lt;p&gt;结合 1 层 Full Attention 和 \(K\) 层 Target Attention，一个 Block 的平均复杂度被大幅压缩至：&lt;/p&gt;
+$$
+O\left(\frac{K \cdot N \cdot L_T + N^2}{K+1}\right)
+$$&lt;p&gt;由于 \(L_T\) 远远小于 \(N\)，这一设计让 MTFM 的训练吞吐量（Throughput）直接 &lt;strong&gt;翻倍（2x Speedup）&lt;/strong&gt;，且实验证明模型精度没有任何损失！&lt;/p&gt;
+&lt;p&gt;最后，最后一层输出的 T-tokens 会被送入一个 MMoE（Multi-gate Mixture-of-Experts）模块，用于计算多场景下不同目标（如 CTR、CTCVR 等）的最终预估分。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="5-挑战工程极限系统级与算子级极致优化"&gt;5. 挑战工程极限：系统级与算子级极致优化&lt;/h2&gt;
+&lt;p&gt;学术界的论文往往止步于漂亮的公式，但工业界的落地必须面对冰冷的硬件指标。为了让 MTFM 在美团这种日均百亿请求级别的场景中真正跑起来，工程团队在系统底层进行了令人叹为观止的深度优化。&lt;/p&gt;
+&lt;h3 id="51-离线训练的外科手术"&gt;5.1 离线训练的“外科手术”&lt;/h3&gt;
+&lt;h4 id="511-斩断-cpu-gpu-的流水线阻塞-pipeline-stall"&gt;5.1.1 斩断 CPU-GPU 的流水线阻塞 (Pipeline Stall)&lt;/h4&gt;
+&lt;p&gt;在 LLM 训练中，所有的文本 Tokenization 都可以在 GPU 上飞速完成，整个训练过程高度端到端。
+而在推荐系统中，特征工程极为繁重，大量的稀疏特征查找、拼接、聚合必须在 CPU 上进行。这就导致了 GPU 上计算极快的模型，常常需要停下来“干等” CPU 传输数据。这种 Host（CPU）与 Device（GPU）之间频繁的数据同步和串行依赖，形成了严重的 Pipeline Stall。&lt;/p&gt;
+&lt;p&gt;美团团队使用 CUDA Profiler 对框架进行了地毯式排查。优化策略主要有两点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;消除同步点 (Eliminate Synchronization Points)&lt;/strong&gt;：通过精细的流水线编排，让 CPU 的特征处理与 GPU 的前向/反向传播时间互相掩盖（Overlap）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优化 Device-to-Device (D2D) 拷贝&lt;/strong&gt;：推荐模型中存在大量的张量索引赋值操作。原生的 PyTorch 会触发多次碎片的 D2D 显存拷贝。MTFM 将这些操作合并为单次原子操作（Single Atomic Operations）。
+这一套组合拳打下来，训练吞吐量硬生生提升了 &lt;strong&gt;20%&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="512-为动态掩码量身定制-flashattention-2"&gt;5.1.2 为动态掩码量身定制 FlashAttention-2&lt;/h4&gt;
+&lt;p&gt;FlashAttention-2 是 Transformer 时代的算力神兵，但它原生只针对标准的因果掩码（Causal Mask）进行了优化。面对 MTFM 中复杂的、针对 H/R/T token 各种定制的“动态非标准稀疏掩码”，FlashAttention-2 经常会因为内存访问不连续而导致效率暴跌。&lt;/p&gt;
+&lt;p&gt;为了解决这个问题，美团团队直接手撕底层 Kernel：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;连续对齐内存布局&lt;/strong&gt;：重新构造了掩码的内存布局，满足异步拷贝（Asynchronous Copy）的对齐要求。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;共享内存极限压榨&lt;/strong&gt;：在极其有限的 Shared Memory 中精细设计数据流。前向计算时缓存掩码块，反向传播时让掩码与中间梯度变量实现“分时复用”。
+通过将掩码加载延迟完全隐藏在计算流水线中，这一改动彻底释放了 GPU 算力。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="513-triton-算子融合-operator-fusion"&gt;5.1.3 Triton 算子融合 (Operator Fusion)&lt;/h4&gt;
+&lt;p&gt;原生的 PyTorch 在计算 GLN（Group Layer Normalization）和构建动态掩码时，采用的是 Gather-Compute-Scatter 的碎片化模式。这会导致频繁的 Kernel Launch 开销和低效的全局内存读写。
+MTFM 团队基于 OpenAI 的 Triton 框架，实现了 GLN 和动态掩码的&lt;strong&gt;算子融合&lt;/strong&gt;。通过向量化内存访问（Vectorized Memory Access）提升带宽利用率，并设计了分组并行计算模式，进一步消除了中间结果的反复读写。
+&lt;strong&gt;算子层面的优化，为 MTFM 带来了额外的 57% 吞吐量提升！&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="52-在线推理的极限压榨"&gt;5.2 在线推理的“极限压榨”&lt;/h3&gt;
+&lt;p&gt;训练阶段可以靠堆卡，但在线推理阶段每一毫秒的延迟都直接影响着用户体验和服务器成本。MTFM 的推理优化同样硬核：&lt;/p&gt;
+&lt;h4 id="521-安培架构-24-结构化稀疏-structured-sparsity"&gt;5.2.1 安培架构 2:4 结构化稀疏 (Structured Sparsity)&lt;/h4&gt;
+&lt;p&gt;MTFM 创新性地利用了 NVIDIA Ampere 架构 GPU 特有的 Sparse Tensor Cores。
+在 HSTU 组件的线性投影层（计算 U, V, Q, K 及 Output）中，团队实施了 &lt;strong&gt;2:4 结构化剪枝（2:4 Structured Pruning）&lt;/strong&gt;。
+这意味着在每 4 个连续的权重参数中，强制将 2 个较小的值置为 0。配合专属的硬件指令，这不仅将显存占用直接压缩了 50%，还利用 Sparse Tensor Cores 达到了双倍的理论峰值矩阵乘法吞吐量！
+结果是：模型精度不降，吞吐量提升 10%，单次推理延迟下降 0.2ms。&lt;/p&gt;
+&lt;h4 id="522-细粒度注意力剪枝-fine-grained-attention-pruning"&gt;5.2.2 细粒度注意力剪枝 (Fine-grained Attention Pruning)&lt;/h4&gt;
+&lt;p&gt;动态掩码本质上是一种不规则稀疏矩阵。MTFM 在推理时设计了底层的计算跳过机制（Computation Skipping）。
+它不仅能动态剔除因为 Padding 产生的无效计算，还能结合具体的业务先验知识（比如：强制屏蔽 User 特征对 Target 特征的无效注意力权重），在底层 Kernel 计算前就将这些分支剪除，进一步提升了 5% 的吞吐。&lt;/p&gt;
+&lt;h4 id="523-场景感知子图部署与-m-falcon"&gt;5.2.3 场景感知子图部署与 M-Falcon&lt;/h4&gt;
+&lt;p&gt;这是 MTFM 能在多场景落地的关键一环。
+虽然 MTFM 是一个包含所有场景知识的“巨无霸”大模型，但在实际部署到“外卖”或者“优选”的推理机器上时，系统会自动将完整的计算图拆解。&lt;strong&gt;剥离掉与当前场景无关的特征处理分支（Scenario-aware Deployment）&lt;/strong&gt;，消除冗余计算。
+同时，结合 BF16 半精度推理以及最新的 &lt;strong&gt;M-Falcon 智能微批处理（Micro-batching）算法&lt;/strong&gt;（通过 KV-Cache 共享进一步压榨 GPU 利用率），MTFM 将在线系统的并发能力推向了极致。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="6-实验验证震撼的业务收益"&gt;6. 实验验证：震撼的业务收益&lt;/h2&gt;
+&lt;p&gt;在纸面上吹得再天花乱坠，也不如真实的线上指标来得实在。MTFM 在美团的多个真实核心场景中进行了严苛的 Offline 和 Online 验证。&lt;/p&gt;
+&lt;h3 id="61-离线实验全面碾压-baseline"&gt;6.1 离线实验：全面碾压 Baseline&lt;/h3&gt;
+&lt;p&gt;在离线评估中，MTFM 与业界顶级的多场景模型（如 STAR、M3OE 等）以及强大的单场景序列模型（如 HSTU、MTGR）进行了对比。&lt;/p&gt;
+&lt;p&gt;结果显示，MTFM 在多个场景（如 SQS 神抢手、PHF 拼好饭、FDS 美食推荐等）的多个任务（CTR、CTCVR）上取得了压倒性的胜利：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CTR 任务&lt;/strong&gt;：平均 GAUC（Grouped Area Under the Curve）提升高达 &lt;strong&gt;0.36 pp&lt;/strong&gt;（百分点），在部分场景最高提升达 &lt;strong&gt;0.76 pp&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CTCVR 任务&lt;/strong&gt;：平均 GAUC 提升 &lt;strong&gt;0.29 pp&lt;/strong&gt;，峰值提升 &lt;strong&gt;0.53 pp&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在推荐系统领域，千分之几的 GAUC 提升往往就能带来百万级的收入增长。0.36 pp 的平均提升，是一个堪称“跨代”的巨大突破。这证明了：&lt;strong&gt;让模型看到更多场景的异构数据，通过统一的大模型进行隐式知识迁移，远比在单场景下死磕模型结构要有效得多。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="62-线上-ab-测试真金白银的业务增长"&gt;6.2 线上 A/B 测试：真金白银的业务增长&lt;/h3&gt;
+&lt;p&gt;在线上真实流量的 A/B 测试中，MTFM 部署到了美团的“神抢手（SQS）”和“拼好饭（PHF）”等高流量场景。
+实验结果令人振奋：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;神抢手（券包推荐）&lt;/strong&gt;：订单量（Orders）飙升 &lt;strong&gt;+2.98%&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;拼好饭（美食推荐）&lt;/strong&gt;：订单量提升 &lt;strong&gt;+1.45%&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种直接拉动核心交易指标的成果，充分证明了 MTFM 框架在工业界超大规模落地中的巨大商业价值。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="7-深度反思与未来展望推荐系统终局之战"&gt;7. 深度反思与未来展望：推荐系统终局之战&lt;/h2&gt;
+&lt;p&gt;当我们深入读完这篇长达近万字的顶级工业论文，我们不得不惊叹于美团算法与工程团队的魄力与技术底蕴。MTFM 不仅仅是一篇论文，它是推荐系统发展史上的一个重要缩影。&lt;/p&gt;
+&lt;h3 id="71-从领域定制走向通用智能"&gt;7.1 从“领域定制”走向“通用智能”&lt;/h3&gt;
+&lt;p&gt;过去十几年，推荐系统的发展史就是一部“特征交叉结构”的发明史。从 FM 到 DeepFM，从 DCN 到 xDeepFM，算法工程师们绞尽脑汁地设计各种网络来捕捉特征交互。在多场景领域，大家又在绞尽脑汁设计各种 MoE、MMoE、PLE 来隔离领域知识。&lt;/p&gt;
+&lt;p&gt;而 MTFM 告诉我们：&lt;strong&gt;大道至简&lt;/strong&gt;。
+不要再去手工设计复杂的塔结构了，不要再去强行对齐那些根本不属于同一个维度的特征了。把一切都变成 Token，扔进基于 Transformer 的基础模型中，让注意力机制（Attention）去自动学习特征之间的相关性。只要你的数据足够多、参数量足够大（Scaling Laws），基础模型的泛化能力会碾压一切手工设计的启发式规则。&lt;/p&gt;
+&lt;h3 id="72-算法与工程的终极交响曲"&gt;7.2 算法与工程的终极交响曲&lt;/h3&gt;
+&lt;p&gt;MTFM 的成功，一半归功于算法的洞察，一半归功于工程的极致压榨。
+如果没有 User-level 的样本聚合，如果没有 Hybrid Target Attention 对复杂度的降维打击，如果没有 Triton 算子融合和 FlashAttention-2 的魔改，MTFM 根本不可能在成本敏感的工业界存活下来。
+这给我们留下了深刻的启示：&lt;strong&gt;未来的推荐大模型工程师，必须是“全栈”的。&lt;/strong&gt; 你不仅要懂算法原理，还要懂 CUDA，懂 GPU 内存层级，懂 Triton 算子开发。算法的创新必须与底层硬件的特性深度绑定（Hardware-aware Co-design），才能爆发出真正的威力。&lt;/p&gt;
+&lt;h3 id="73-推荐系统的未来dlrm-的终结"&gt;7.3 推荐系统的未来：DLRM 的终结？&lt;/h3&gt;
+&lt;p&gt;随着 MTFM 这样基于纯 Transformer 骨干架构的基础模型在工业界大放异彩，我们不禁要问：传统的 DLRM 时代是否即将落幕？
+当特征表征、序列建模、跨场景知识迁移都可以被统一到一个“万物皆 Token”的基础大模型中时，推荐系统正在以肉眼可见的速度向 NLP 的大语言模型（LLM）靠拢。&lt;/p&gt;
+&lt;p&gt;或许在不久的将来，美团（甚至整个工业界）的推荐系统，将只剩下一个极其庞大的、不断 Scaling 的统一大模型。它吞噬着来自外卖、单车、优选、酒店等所有场景的数据，像一个无所不知的智慧大脑，为每一个用户提供最精准的个性化服务。&lt;/p&gt;
+&lt;p&gt;MTFM，无疑是通向这个终局目标的一座坚实桥梁。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(全文完)&lt;/em&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="8-附录与深度扩展从理论到代码的终极拆解"&gt;8. 附录与深度扩展：从理论到代码的终极拆解&lt;/h2&gt;
+&lt;p&gt;为了让对技术细节有极致追求的读者能够完全吃透 MTFM，我们在本节中增加更为底层的原理论证、伪代码实现以及与业界主流方案的硬核对比。这部分内容将深入到模型结构的神经末梢和 CUDA 算子的内存分配逻辑中。&lt;/p&gt;
+&lt;h3 id="81-伪代码实现hybrid-target-attention-hta"&gt;8.1 伪代码实现：Hybrid Target Attention (HTA)&lt;/h3&gt;
+&lt;p&gt;前文提到了全注意力层和目标注意力层的数学公式，这里我们将它们转化为更直观的 PyTorch 风格伪代码。这有助于理解 T-token 是如何在 Target Attention Layer 中被单独更新的，以及 Shortcut 的具体运作方式。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch.nn&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;nn&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch.nn.functional&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;F&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MTFM_Block&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_heads&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;d_model&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;num_target_layers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 1层 Full Attention Layer (这里用标准的多头注意力替代 GQA 做演示)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_attn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MultiHeadAttention&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_heads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_ffn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FeedForward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# K层 Target Attention Layers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_attns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;MultiHeadAttention&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_heads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_ffns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;FeedForward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm1s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm2s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;forward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;L_H&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;L_R&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s2"&gt; x: [Batch_size, N, d_model], N = L_H + L_R + L_T
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s2"&gt; mask: [Batch_size, N, N] 动态掩码矩阵
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s2"&gt; &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 1. Full Attention Layer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_norm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm1&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 全局计算 Q, K, V&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;attn_out&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_attn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;attn_out&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_norm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm2&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ffn_out&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_ffn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ffn_out&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 2. Target Attention Layers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 找到 T-token 的起始位置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;context_len&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;L_H&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;L_R&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 将 x 拆分为 Context (H, R) 和 Target (T)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;:,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 切分对应的 Mask&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# Target 只需要看自己和早于它的 Context，因此 mask 的维度是 [Batch_size, L_T, N]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;target_mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;:,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 对整个序列做 Norm 得到 Key 和 Value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm1s&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 只对 Target 做 Norm 得到 Query&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;q_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;:,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;k_full&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;v_full&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 注意力计算：Query 数量大幅减少，只有 L_T 个&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;attn_out_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_attns&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;q_target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;k_full&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;v_full&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;target_mask&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 更新 Target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;attn_out_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# FFN 更新 Target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target_norm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm2s&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="n"&gt;x_target&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ffn_out_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_ffns&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="n"&gt;x_target_norm&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ffn_out_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 将更新后的 Target 和未经修改的 Context 重新拼接，传给下一层！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 这是极其关键的一步，保证了 Context 表征的不变性与算力的极大节约&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cat&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;x_context&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x_target&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;dim&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;通过这段伪代码可以非常清晰地看到，&lt;code&gt;q_target&lt;/code&gt; 的维度是 &lt;code&gt;[Batch_size, L_T, d_model]&lt;/code&gt;，而 &lt;code&gt;k_full&lt;/code&gt; 的维度是 &lt;code&gt;[Batch_size, N, d_model]&lt;/code&gt;。矩阵乘法 \(Q \cdot K^T\) 的计算量直接从 \(O(N \times N)\) 暴跌到了 \(O(L_T \times N)\)。在工业界推荐系统中，\(L_H\) 和 \(L_R\)（历史行为）通常长达上千甚至数千，而 \(L_T\)（单次请求的曝光候选）可能只有几十到一两百。这种不对称性正是 Target Attention 能够实现“算力魔法”的物理基础。&lt;/p&gt;
+&lt;h3 id="82-动态掩码-dynamic-masking-的拓扑结构解析"&gt;8.2 动态掩码 (Dynamic Masking) 的拓扑结构解析&lt;/h3&gt;
+&lt;p&gt;在 MTFM 中，掩码的设计绝非简单的因果下三角（Lower Triangular Causal Mask）。为了防范极其隐蔽的数据穿越（Information Leakage），掩码矩阵 \(\mathbf{M}\) 的内部结构被精心雕琢。&lt;/p&gt;
+&lt;p&gt;假设我们有 3 个 H-token (\(H_1, H_2, H_3\))，2 个 R-token (\(R_1, R_2\))，以及 2 个 T-token (\(T_1, T_2\))。
+整个序列 \(X = [H_1, H_2, H_3, R_1, R_2, T_1, T_2]\)。&lt;/p&gt;
+&lt;p&gt;其可见性矩阵 \(\mathbf{M}\)（1 表示可见，0 表示掩码屏蔽）如下所示：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: left"&gt;Query \ Key&lt;/th&gt;
+&lt;th style="text-align: center"&gt;H1&lt;/th&gt;
+&lt;th style="text-align: center"&gt;H2&lt;/th&gt;
+&lt;th style="text-align: center"&gt;H3&lt;/th&gt;
+&lt;th style="text-align: center"&gt;R1&lt;/th&gt;
+&lt;th style="text-align: center"&gt;R2&lt;/th&gt;
+&lt;th style="text-align: center"&gt;T1&lt;/th&gt;
+&lt;th style="text-align: center"&gt;T2&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;H1&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;H2&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;H3&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;R1&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;R2&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;T1&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;T2&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;深度解析&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;左上角 3x3 矩阵 (H 对 H)&lt;/strong&gt;：全是 1。H-token 代表长期历史，它们彼此之间没有严格的因果遮蔽需求，采用双向可见（Bidirectional Visibility）以获得更丰富的表征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;中间 2x2 矩阵 (R 对 R)&lt;/strong&gt;：是一个下三角矩阵。R-token 是近期的实时序列，必须严格遵循时间先后顺序（Causal Mask），防止未来的行为影响对过去状态的推断。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;右下角 2x2 矩阵 (T 对 T)&lt;/strong&gt;：是对角线矩阵。T-token 代表当前的多个候选曝光目标，在同一次打分请求中，它们是相互独立且平行的，绝对不能互相看到对方的特征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;左下角 (T 对 H, R)&lt;/strong&gt;：全是 1。T-token 必须能够利用所有的历史和实时信息来辅助预测。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;右上角 (H, R 对 T)&lt;/strong&gt;：全是 0。这是为了防止标签泄露（Label Leakage）。如果历史状态能够看到当前的预测目标，模型就会发生作弊现象。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这种不规则的稀疏矩阵结构，正是导致标准 FlashAttention-2 性能下降的罪魁祸首，也是美团团队为什么必须手写 Triton Kernel 和魔改 FlashAttention 的根本原因。&lt;/p&gt;
+&lt;h3 id="83-工业界多场景推荐-msr-模型演进编年史"&gt;8.3 工业界多场景推荐 (MSR) 模型演进编年史&lt;/h3&gt;
+&lt;p&gt;为了更好地评估 MTFM 的历史地位，我们需要将其放置在整个多场景推荐模型的发展脉络中进行审视。&lt;/p&gt;
+&lt;h4 id="阶段一硬共享与完全独立-hard-sharing-vs-fully-independent"&gt;阶段一：硬共享与完全独立 (Hard Sharing vs. Fully Independent)&lt;/h4&gt;
+&lt;p&gt;早期，由于算力限制，多场景推荐要么采用一个极其庞大的单一模型（Hard Sharing），底层 Embedding 完全共享，顶层用一个 MLP 强行拟合所有场景；要么就是每个场景维护一个完全独立的模型（Fully Independent）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：Hard Sharing 会导致跷跷板效应（Seesaw Effect），即大场景主导梯度，小场景效果极差；独立模型则无法利用全局数据，导致冷启动场景无法收敛。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="阶段二星型拓扑与-moe-时代-star-m3oe"&gt;阶段二：星型拓扑与 MoE 时代 (STAR, M3OE)&lt;/h4&gt;
+&lt;p&gt;以阿里 STAR（2021）为代表的模型开启了参数解耦的时代。STAR 引入了一个共享的中心网络（Center Network）和每个场景特有的网络（Scenario-specific Networks），通过权重相乘或相加来融合。
+随后的 M3OE 将 Mixture-of-Experts 引入，设计了复杂的门控网络（Gating Networks）来决定当前样本应该分配给哪些专家（Experts）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：虽然缓解了跷跷板效应，但它们依然要求极度死板的特征对齐。如果场景 A 有 50 个特征，场景 B 有 80 个特征，工程师必须手工把它们对齐到相同的维度。这在特征维度动辄上万的工业界，简直是灾难。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="阶段三基于-transformer-的单场景生成式框架-hstu-mtgr"&gt;阶段三：基于 Transformer 的单场景生成式框架 (HSTU, MTGR)&lt;/h4&gt;
+&lt;p&gt;随着生成式推荐（Generative Recommendation）的兴起，阿里提出了 HSTU（2024），美团提出了 MTGR（2025）。它们开始将推荐系统视为序列转换任务，利用 Transformer 来捕捉行为序列中的深层模式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：这些模型主要还是在单场景下大杀四方，一旦扩展到多场景，巨长无比的序列会导致计算复杂度直接将集群撑爆。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="阶段四foundation-model-时代-mtfm"&gt;阶段四：Foundation Model 时代 (MTFM)&lt;/h4&gt;
+&lt;p&gt;MTFM（2025）集大成于一身。它既拥有 Transformer 的无限 Scaling 潜力，又通过异构 Token 化解决了多场景特征对齐的死穴，最后通过 User-level 聚合与 HTA 混合注意力机制，以近乎作弊的方式把时间复杂度给降了下来。&lt;/p&gt;
+&lt;h3 id="84-极致算子优化triton-与-flashattention-的魔法"&gt;8.4 极致算子优化：Triton 与 FlashAttention 的魔法&lt;/h3&gt;
+&lt;p&gt;我们再来深挖一下论文中提到的 &lt;strong&gt;Triton 算子融合&lt;/strong&gt; 和 &lt;strong&gt;FlashAttention 魔改&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在 GPU 内存层级中，SRAM（Shared Memory）的速度极快，但容量极小（每块 SM 只有几十到一百多 KB）；HBM（Global Memory）容量大（如 A100 的 80GB），但速度极慢。&lt;/p&gt;
+&lt;p&gt;在原生 PyTorch 中，计算 &lt;code&gt;GLN(Group Layer Normalization)&lt;/code&gt; 的流程如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;从 HBM 读取张量 \(X\) 到 SRAM。&lt;/li&gt;
+&lt;li&gt;计算均值和方差。&lt;/li&gt;
+&lt;li&gt;将均值和方差写回 HBM。&lt;/li&gt;
+&lt;li&gt;再次从 HBM 读取 \(X\)、均值、方差。&lt;/li&gt;
+&lt;li&gt;进行归一化计算，并乘以缩放参数。&lt;/li&gt;
+&lt;li&gt;最终写回 HBM。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在这个过程中，HBM 的读写（Memory Bound）占据了 90% 以上的时间，GPU 的计算核心（Compute Bound）反而闲得发慌。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MTFM 团队的 Triton 算子融合策略&lt;/strong&gt;：
+使用 Triton 编写定制化 Kernel，将上述 6 步合并为 1 步。通过在 SRAM 中保留中间变量，避免了与 HBM 的反复通信。更绝的是，他们将 &lt;strong&gt;动态掩码的生成&lt;/strong&gt; 也融合进了这个 Kernel 中。利用向量化加载（Vectorized Load，如 &lt;code&gt;tl.load(pointer, block_size)&lt;/code&gt;）直接在寄存器层级完成掩码过滤。&lt;/p&gt;
+&lt;p&gt;对于 FlashAttention-2，原生版本为了追求极致性能，假定了掩码是极其规律的因果下三角。当遇到 MTFM 这种“左上角全 1、中间下三角、右下角对角线”的奇葩矩阵时，原生的块分片（Block Tiling）策略会失效。
+美团团队在修改 FlashAttention 源码时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;构造连续对齐掩码内存&lt;/strong&gt;：将稀疏掩码在内存中重新排列（Memory Layout Reordering），保证每一次读取都是 128 bytes 连续对齐的，从而激活 GPU 的异步拷贝指令（cp.async）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;精细的数据流策略&lt;/strong&gt;：在 Forward 阶段，将极其微小的掩码块缓存到 Shared Memory 中；在 Backward 阶段，让掩码矩阵与计算梯度的中间变量在时间维度上复用同一块 SRAM 地址（Temporal Multiplexing），硬生生把掩码加载的延迟给掩盖（Overlap）掉了。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这种级别的工程压榨，在推荐系统领域堪称教科书级别的典范。&lt;/p&gt;
+&lt;h3 id="85-总结与启示"&gt;8.5 总结与启示&lt;/h3&gt;
+&lt;p&gt;MTFM 的横空出世，给所有依然在 DLRM 泥潭中挣扎的算法工程师敲响了警钟：
+&lt;strong&gt;不要试图用人工的先验知识，去战胜机器的算力和海量数据。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在推荐系统中，我们花费了无数个日夜去寻找所谓的高价值特征交叉（如性别和价格的交叉、年龄和品类的交叉）。我们发明了 FM、FFM、DeepFM 等无数种结构来拟合这些交叉。但 MTFM 证明了，只要将它们转化为统一的 Token，通过 Transformer 的自注意力机制，模型能够自动在极高维度上完成更深邃、更泛化的特征交叉。&lt;/p&gt;
+&lt;p&gt;而在多场景领域，MTFM 的“不妥协”——拒绝特征对齐、拒绝 Padding 填充、直接引入异构 Tokenizer——更是直击工业界痛点。它让推荐系统的架构变得空前干净、整洁。未来接入一个新场景，不需要改动核心骨干网络，只需要训练一个极小的映射 MLP。&lt;/p&gt;
+&lt;p&gt;我们有理由相信，MTFM 描绘的正是推荐系统的终极形态之一：&lt;strong&gt;一个无限大的、能够吞噬所有异构特征的、不断 Scaling 的统一基座模型。&lt;/strong&gt;&lt;/p&gt;</description></item><item><title>GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力</title><link>https://dingyadong.top/posts/009_gpsd_paper_review/</link><pubDate>Tue, 24 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/009_gpsd_paper_review/</guid><description>
+&lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
+&lt;p&gt;本文是关于最新论文《Scaling Transformers for Discriminative Recommendation via Generative Pretraining》（
+）的阅读笔记。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在大语言模型（LLM）领域，增加参数量和数据量通常能带来性能的对数线性增长，即 &lt;strong&gt;Scaling Law&lt;/strong&gt;。然而在推荐系统领域，特别是用于排序（Ranking）的&lt;strong&gt;判别式模型&lt;/strong&gt;（如 CTR/CVR 预测），这一规律却迟迟没有出现。&lt;/p&gt;
-&lt;p&gt;Meta 团队最近提出的 &lt;strong&gt;GPSD (Generative Pretraining for Scalable Discriminative Recommendation)&lt;/strong&gt; 框架，通过引入生成式预训练，成功打破了这一僵局，让判别式推荐模型也能随着参数规模的扩大而变强。&lt;/p&gt;
-&lt;h2 id="1-为什么推荐大模型容易掉点"&gt;1. 为什么推荐大模型容易“掉点”？&lt;/h2&gt;
-&lt;p&gt;在自然语言处理中，数据是密集的 token 流；但在推荐系统中，用户行为极其稀疏（百亿规模的物品 ID，大部分用户只消费过极小一部分）。&lt;/p&gt;
-&lt;p&gt;论文指出，直接在判别式任务（点击/转化预测）上训练大规模 Transformer，会遇到严重的&lt;strong&gt;数据稀疏导致的过拟合（Overfitting）&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;Meta 团队最近提出的 &lt;strong&gt;GPSD (Generative Pretraining for Scalable Discriminative Recommendation)&lt;/strong&gt; 框架，通过引入生成式预训练，成功打破了这一僵局，让判别式推荐模型也能随着参数规模的扩大而变强。本文将从核心问题、方法设计、实验分析、与现有方法对比、优缺点以及工程实践启示等多个角度，对这篇论文进行全面解读。&lt;/p&gt;
+&lt;h2 id="1-为什么推荐大模型容易掉点"&gt;1. 为什么推荐大模型容易”掉点”？&lt;/h2&gt;
+&lt;h3 id="11-nlp-与推荐系统的数据差异"&gt;1.1 NLP 与推荐系统的数据差异&lt;/h3&gt;
+&lt;p&gt;在自然语言处理中，数据是密集的 token 流——词表通常在几万到十几万量级，而且每个 token 在海量文本中都会被反复观测到，天然具备良好的统计充分性。但在推荐系统中，情况截然不同：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;稀疏参数（Embedding 表）极其庞大且难以充分训练。&lt;/li&gt;
-&lt;li&gt;随着模型层数（Dense 参数）增加，泛化误差（Generalization Gap）迅速扩大。&lt;/li&gt;
-&lt;li&gt;结果就是：模型参数越多，表现反而可能不如简单的小模型。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;物品空间极度庞大&lt;/strong&gt;：工业级推荐场景下，物品 ID（Item ID）可达数十亿规模，远超 NLP 词表大小。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用户交互极其稀疏&lt;/strong&gt;：绝大多数用户只消费过全部物品中极小的一部分（通常远低于 0.01%），导致大量 Embedding 参数缺乏有效的梯度更新。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;标签信号分布不均&lt;/strong&gt;：点击率（CTR）通常在个位数百分比，转化率（CVR）更是远低于 1%，正样本极度稀缺。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="2-gpsd生成式预训练的桥接艺术"&gt;2. GPSD：生成式预训练的“桥接”艺术&lt;/h2&gt;
-&lt;p&gt;GPSD 框架的核心思想是：&lt;strong&gt;先用生成式任务训练稀疏参数，再在判别式任务中冻结它们。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="12-判别式训练的过拟合困境"&gt;1.2 判别式训练的过拟合困境&lt;/h3&gt;
+&lt;p&gt;论文指出，直接在判别式任务（点击/转化预测）上训练大规模 Transformer，会遇到严重的**数据稀疏导致的过拟合（Overfitting）**问题。具体表现为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;稀疏参数（Embedding 表）难以充分训练&lt;/strong&gt;：当物品空间巨大但每个物品的观测样本有限时，Embedding 表中大量参数处于”欠训练”状态，容易记忆噪声而非学习泛化特征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;泛化误差随模型规模增大而扩大&lt;/strong&gt;：随着模型层数（Dense 参数）增加，模型在训练集上的 loss 持续下降，但验证集上的 loss 却反向增大，泛化差距（Generalization Gap）迅速扩大。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;”越大越差”的逆直觉现象&lt;/strong&gt;：模型参数越多，在测试集上的表现反而可能不如简单的小模型，这与 NLP/CV 领域”越大越好”的经验形成鲜明对比。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="13-过拟合的根源稀疏参数-vs-稠密参数"&gt;1.3 过拟合的根源：稀疏参数 vs 稠密参数&lt;/h3&gt;
+&lt;p&gt;论文通过系统性实验，进一步定位了过拟合的根源：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;稀疏参数（Sparse Parameters）&lt;/strong&gt;：主要指 Embedding 表，参数量通常占模型总参数的 90% 以上。由于推荐场景的数据稀疏性，这些参数是过拟合的”重灾区”。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稠密参数（Dense Parameters）&lt;/strong&gt;：指 Transformer 层中的注意力权重、前馈网络权重等。这些参数被所有样本共享更新，理论上不易过拟合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键发现&lt;/strong&gt;：当稀疏参数的质量得到保障后，增加稠密参数反而能带来持续的性能增益——这正是 GPSD 框架的理论基础。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="2-gpsd生成式预训练的桥接艺术"&gt;2. GPSD：生成式预训练的”桥接”艺术&lt;/h2&gt;
+&lt;p&gt;GPSD 框架的核心思想是：&lt;strong&gt;先用生成式任务训练稀疏参数，再在判别式任务中冻结它们。&lt;/strong&gt; 整个流程分为三个清晰的阶段：生成式预训练、桥接迁移、判别式微调。&lt;/p&gt;
 &lt;h3 id="21-阶段一生成式预训练-generative-pretraining"&gt;2.1 阶段一：生成式预训练 (Generative Pretraining)&lt;/h3&gt;
-&lt;p&gt;作者发现，自回归的生成式任务（预测用户下一个交互物品）对过拟合更有韧性。因为生成式训练通过 Sampled Softmax 引入了广泛的随机负采样，能让庞大的 Embedding 表（稀疏参数）得到更稳健的更新。&lt;/p&gt;
+&lt;h4 id="211-训练目标"&gt;2.1.1 训练目标&lt;/h4&gt;
+&lt;p&gt;生成式预训练阶段采用经典的**自回归（Autoregressive）**范式：给定用户的历史行为序列 $[i_1, i_2, ..., i_{t-1}]$，模型的目标是预测下一个交互物品 $i_t$。这与 GPT 系列模型在文本上的预训练目标本质上是一致的，只是将”预测下一个 token”替换为了”预测下一个 item”。&lt;/p&gt;
+&lt;h4 id="212-sampled-softmax-机制"&gt;2.1.2 Sampled Softmax 机制&lt;/h4&gt;
+&lt;p&gt;由于物品空间极其庞大（数十亿级别），直接在全量物品上计算 Softmax 是不现实的。GPSD 采用 &lt;strong&gt;Sampled Softmax&lt;/strong&gt; 来解决这一问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心思路&lt;/strong&gt;：在每次前向计算时，从全量物品中采样一批负样本（通常数千到数万个），仅在正样本 + 采样负样本构成的子集上计算 Softmax。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键优势&lt;/strong&gt;：每次训练步骤中，不同的负样本被随机采入，这意味着整个训练过程中，几乎所有物品的 Embedding 都会被频繁地更新到。这与判别式训练中负样本仅来自实际曝光（impression）形成了鲜明对比。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对抗过拟合的效果&lt;/strong&gt;：由于 Sampled Softmax 引入了广泛的随机负采样，大量原本在判别式训练中”沉睡”的 Embedding 得以被激活和优化，从根本上解决了稀疏参数欠训练的问题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="213-模型架构"&gt;2.1.3 模型架构&lt;/h4&gt;
+&lt;p&gt;预训练阶段使用的是标准的 &lt;strong&gt;Transformer Decoder&lt;/strong&gt; 架构：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入为用户行为序列的 Embedding 拼接&lt;/li&gt;
+&lt;li&gt;使用因果注意力掩码（Causal Attention Mask）确保自回归性质&lt;/li&gt;
+&lt;li&gt;输出层通过 Sampled Softmax 映射到物品空间&lt;/li&gt;
+&lt;li&gt;位置编码采用可学习的绝对位置编码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="214-生成式预训练的关键优势"&gt;2.1.4 生成式预训练的关键优势&lt;/h4&gt;
+&lt;p&gt;与直接在判别式任务上训练相比，生成式预训练具备以下优势：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据利用效率更高&lt;/strong&gt;：每条用户序列可以生成多个训练样本（序列中的每个位置都是一个预测目标），数据利用率远高于判别式训练。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐式的负采样覆盖更广&lt;/strong&gt;：Sampled Softmax 机制确保了海量物品的 Embedding 都能得到有效更新。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;语义表示质量更优&lt;/strong&gt;：生成式目标天然鼓励模型学习物品之间的序列依赖关系和语义相似性，产生的 Embedding 包含更丰富的语义信息。&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h3 id="22-阶段二桥接与冻结-sparse-freeze-strategy"&gt;2.2 阶段二：桥接与冻结 (Sparse Freeze Strategy)&lt;/h3&gt;
-&lt;p&gt;这是 GPSD 最关键的创新点。在将模型迁移到判别式任务（如 CTR 预测）时，采取 &lt;strong&gt;“冻结稀疏参数（Sparse Freeze）”&lt;/strong&gt; 的策略：&lt;/p&gt;
+&lt;p&gt;这是 GPSD 最关键的创新点。在将模型从生成式任务迁移到判别式任务（如 CTR 预测）时，如果简单地进行全参数微调，稀疏参数的过拟合问题会再次出现。GPSD 采取了**”冻结稀疏参数（Sparse Freeze）”**的桥接策略：&lt;/p&gt;
+&lt;h4 id="221-具体操作步骤"&gt;2.2.1 具体操作步骤&lt;/h4&gt;
 &lt;ol&gt;
-&lt;li&gt;继承预训练好的 Embedding 参数。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;在判别式微调阶段，固定住这些稀疏参数不更新&lt;/strong&gt;。&lt;/li&gt;
-&lt;li&gt;仅更新稠密的 Transformer 层或 MLP Head。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;继承预训练好的 Embedding 参数&lt;/strong&gt;：将生成式预训练阶段学到的所有 Embedding 参数（包括 Item Embedding、Feature Embedding 等）直接迁移到判别式模型中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;在判别式微调阶段，固定住所有稀疏参数不更新&lt;/strong&gt;：冻结 Embedding 表的梯度，使其在整个微调过程中保持预训练阶段学到的状态。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;仅更新稠密参数&lt;/strong&gt;：只对 Transformer 层、MLP Head、交叉网络等稠密参数进行梯度更新。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;这种策略完美避开了特征稀疏导致的过拟合陷阱，让模型能够专注于学习高阶的特征交叉。&lt;/p&gt;</description></item><item><title>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</title><link>https://dingyadong.top/posts/007_hstu_paper_review/</link><pubDate>Fri, 20 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/007_hstu_paper_review/</guid><description>&lt;blockquote&gt;
-&lt;p&gt;本文是关于 Meta AI 重磅论文《Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations》（&lt;a href="https://arxiv.org/pdf/2402.17152"&gt;arXiv:2402.17152&lt;/a&gt;）的阅读笔记，重点探讨 HSTU 架构如何改进传统的自注意力机制。&lt;/p&gt;
+&lt;h4 id="222-为什么冻结而非微调"&gt;2.2.2 为什么冻结而非微调？&lt;/h4&gt;
+&lt;p&gt;论文通过对比实验系统地回答了这个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;全参数微调（Full Fine-tune）&lt;/strong&gt;：虽然初始收敛速度更快，但随着训练推进，泛化差距迅速扩大，最终效果反而低于冻结策略。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稀疏冻结（Sparse Freeze）&lt;/strong&gt;：虽然初始收敛较慢，但泛化差距始终保持在较小水平，最终效果显著优于全参数微调。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;根本原因&lt;/strong&gt;：判别式训练的负样本来自有限的曝光日志，无法为稀疏参数提供足够多样的梯度信号。继续更新稀疏参数反而会”破坏”预训练阶段学到的高质量表示。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="223-冻结策略的数学直觉"&gt;2.2.3 冻结策略的数学直觉&lt;/h4&gt;
+&lt;p&gt;从优化理论角度来看，冻结稀疏参数可以理解为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将高维优化问题分解为两步低维优化&lt;/li&gt;
+&lt;li&gt;第一步在”数据丰富”的环境（生成式训练，Sampled Softmax 提供广泛负采样）中优化稀疏参数&lt;/li&gt;
+&lt;li&gt;第二步在”数据有限”的环境（判别式训练，仅曝光日志）中优化稠密参数&lt;/li&gt;
+&lt;li&gt;通过这种分而治之的策略，避免了在数据有限的环境中同时优化海量参数导致的过拟合&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="23-阶段三判别式微调-discriminative-fine-tuning"&gt;2.3 阶段三：判别式微调 (Discriminative Fine-tuning)&lt;/h3&gt;
+&lt;p&gt;在冻结稀疏参数之后，判别式微调阶段的任务是训练稠密参数来适配具体的业务目标（如 CTR 预估、CVR 预估）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;输入&lt;/strong&gt;：候选物品的冻结 Embedding + 用户序列的冻结 Embedding + 上下文特征&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型结构&lt;/strong&gt;：Transformer 编码器或 MLP 交叉网络（稠密参数可训练）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;输出&lt;/strong&gt;：通过 Sigmoid 得到点击率或转化率的预估值&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;损失函数&lt;/strong&gt;：标准的二元交叉熵（Binary Cross-Entropy）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph Stage1 [“Stage 1: Generative Pretraining”]
+A[用户历史行为序列] --&gt; B(Transformer Decoder)
+B --&gt; C[“预测下一个 Item (Sampled Softmax)”]
+C --&gt; D{预训练模型}
+end
+subgraph Stage2 [“Stage 2: Bridging Strategy”]
+D --&gt;|提取| E[“稀疏参数: Embeddings”]
+D --&gt;|提取| F[“稠密参数: Transformer”]
+end
+subgraph Stage3 [“Stage 3: Discriminative Training (CTR/CVR)”]
+E --&gt;|参数冻结| G(判别式 Transformer)
+F --&gt;|参数迁移| G
+H[“上下文特征 + 候选物品”] --&gt; G
+G --&gt;|仅更新稠密参数| I[“预估点击率/转化率”]
+end
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id="4-scaling-law-在推荐系统中的分析"&gt;4. Scaling Law 在推荐系统中的分析&lt;/h2&gt;
+&lt;h3 id="41-什么是-scaling-law"&gt;4.1 什么是 Scaling Law？&lt;/h3&gt;
+&lt;p&gt;Scaling Law 最初由 OpenAI 在 2020 年提出，揭示了语言模型性能与模型参数量、训练数据量、计算量之间的幂律关系。具体来说：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;模型越大，性能越好&lt;/strong&gt;：在充足数据和计算的前提下，增加参数量能带来可预测的性能提升&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;幂律关系&lt;/strong&gt;：性能提升遵循幂律的形式，即损失随参数量增加呈对数线性下降&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="42-推荐系统中-scaling-law-的缺失"&gt;4.2 推荐系统中 Scaling Law 的缺失&lt;/h3&gt;
+&lt;p&gt;在 GPSD 之前，推荐系统领域几乎没有观测到类似的 Scaling Law。原因在于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;传统方法的参数扩展主要集中在 Embedding 表&lt;/strong&gt;：增加 Embedding 维度或增加特征数量带来的收益迅速饱和&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稠密参数扩展受限于过拟合&lt;/strong&gt;：直接增加 Transformer 层数或宽度会导致泛化性能下降&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺乏有效的预训练范式&lt;/strong&gt;：NLP 领域的 Scaling Law 建立在大规模自监督预训练之上，而推荐系统缺乏对应的预训练方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="43-gpsd-如何实现推荐系统的-scaling-law"&gt;4.3 GPSD 如何实现推荐系统的 Scaling Law&lt;/h3&gt;
+&lt;p&gt;GPSD 的核心贡献之一，是首次在判别式推荐模型中验证了 Scaling Law 的存在：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;实验设置&lt;/strong&gt;：将稠密参数从 13K 逐步扩展到 0.3B（约 2 万倍），观察离线 AUC 指标的变化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键结果&lt;/strong&gt;：在使用 GPSD 框架后，AUC 随稠密参数量的增加呈现出平滑的幂律增长曲线&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对照实验&lt;/strong&gt;：不使用 GPSD（直接端到端判别式训练），增加参数量到一定规模后 AUC 开始下降，完全无法观测到 Scaling Law&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="44-scaling-law-成立的前提条件"&gt;4.4 Scaling Law 成立的前提条件&lt;/h3&gt;
+&lt;p&gt;GPSD 的实验揭示了推荐系统 Scaling Law 成立的关键前提：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;稀疏参数必须被高质量预训练&lt;/strong&gt;：只有当 Embedding 表具备良好的泛化表示时，增加稠密参数才有意义&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稀疏参数在微调阶段必须冻结&lt;/strong&gt;：防止判别式训练破坏预训练的表示质量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稠密参数是 Scaling 的真正受益者&lt;/strong&gt;：当稀疏参数质量有保障时，增加 Transformer 深度/宽度能够持续提升模型的特征交叉能力&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="5-与其他预训练方法的对比"&gt;5. 与其他预训练方法的对比&lt;/h2&gt;
+&lt;p&gt;为了更好地理解 GPSD 的贡献，以下从多个维度将 GPSD 与其他主流推荐预训练方法进行对比：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;维度&lt;/th&gt;
+&lt;th&gt;GPSD（本文）&lt;/th&gt;
+&lt;th&gt;SASRec / BERT4Rec&lt;/th&gt;
+&lt;th&gt;PinnerSage（Pinterest）&lt;/th&gt;
+&lt;th&gt;LLM4Rec（基于 LLM）&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;预训练任务&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;自回归生成式（Next Item Prediction + Sampled Softmax）&lt;/td&gt;
+&lt;td&gt;自回归 / 掩码语言模型&lt;/td&gt;
+&lt;td&gt;基于图的 PinSage Embedding&lt;/td&gt;
+&lt;td&gt;直接使用 LLM 文本理解&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;目标下游任务&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;判别式排序（CTR/CVR）&lt;/td&gt;
+&lt;td&gt;序列推荐（Top-K 召回）&lt;/td&gt;
+&lt;td&gt;召回 / 粗排&lt;/td&gt;
+&lt;td&gt;排序 / 会话推荐&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;参数迁移策略&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;冻结稀疏参数 + 微调稠密参数&lt;/td&gt;
+&lt;td&gt;全参数微调&lt;/td&gt;
+&lt;td&gt;仅使用 Embedding，不迁移模型结构&lt;/td&gt;
+&lt;td&gt;全参数微调或 LoRA&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;是否验证 Scaling Law&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;是（首次在判别式模型验证）&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;部分（继承 LLM 的 Scaling 特性）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;工业部署验证&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;是（Meta 线上 A/B 测试）&lt;/td&gt;
+&lt;td&gt;学术实验为主&lt;/td&gt;
+&lt;td&gt;是（Pinterest 线上部署）&lt;/td&gt;
+&lt;td&gt;少量工业验证&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Embedding 覆盖度&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;高（Sampled Softmax 覆盖全量物品）&lt;/td&gt;
+&lt;td&gt;低（仅序列内物品参与训练）&lt;/td&gt;
+&lt;td&gt;中等（图邻居扩展）&lt;/td&gt;
+&lt;td&gt;不涉及（使用文本特征）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;训练效率&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;中等（两阶段训练）&lt;/td&gt;
+&lt;td&gt;高（单阶段端到端）&lt;/td&gt;
+&lt;td&gt;低（需要构建图）&lt;/td&gt;
+&lt;td&gt;低（LLM 训练成本高）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;对比分析要点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;vs SASRec/BERT4Rec&lt;/strong&gt;：这类方法虽然也采用序列建模，但其预训练和下游任务都聚焦于召回场景，未涉及判别式排序。更重要的是，它们在微调时采用全参数更新，无法避免稀疏参数的过拟合问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;vs PinnerSage&lt;/strong&gt;：PinnerSage 通过图神经网络学习物品 Embedding，但仅将 Embedding 作为特征输入下游模型，不涉及模型结构的迁移，因此无法充分利用预训练模型的深层知识。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;vs LLM4Rec&lt;/strong&gt;：基于 LLM 的方法虽然能利用文本语义，但在处理 ID 特征和用户行为建模方面存在天然短板，且部署成本极高。GPSD 直接在推荐原生的 ID 空间中工作，与现有推荐系统架构兼容性更好。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="6-实验结果详细分析"&gt;6. 实验结果详细分析&lt;/h2&gt;
+&lt;h3 id="61-离线实验"&gt;6.1 离线实验&lt;/h3&gt;
+&lt;p&gt;GPSD 在多个维度上验证了其有效性：&lt;/p&gt;
+&lt;h4 id="611-scaling-law-验证"&gt;6.1.1 Scaling Law 验证&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;实验规模&lt;/strong&gt;：稠密参数从 13K 扩展到 0.3B，跨越约 4 个数量级&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心发现&lt;/strong&gt;：使用 GPSD 后，AUC 随稠密参数增加呈现平滑的幂律增长，拟合幂律曲线的 R-squared 值极高&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对照组表现&lt;/strong&gt;：不使用 GPSD 的端到端判别式训练，在参数量超过一定阈值后 AUC 显著下降&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="612-泛化差距分析"&gt;6.1.2 泛化差距分析&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;GPSD + Sparse Freeze&lt;/strong&gt;：训练 loss 与验证 loss 之间的差距始终保持在较小水平，且不随模型规模增大而显著扩大&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;端到端判别式训练&lt;/strong&gt;：泛化差距随模型规模增大而急剧扩大，表明严重的过拟合&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;全参数微调（不冻结稀疏参数）&lt;/strong&gt;：介于两者之间，但仍然存在明显的过拟合问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="613-消融实验"&gt;6.1.3 消融实验&lt;/h4&gt;
+&lt;p&gt;论文通过系统的消融实验验证了各组件的贡献：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;移除生成式预训练&lt;/strong&gt;：AUC 显著下降，证明预训练是 Scaling 的必要条件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;移除稀疏冻结&lt;/strong&gt;：泛化差距迅速扩大，证明冻结策略对于维持预训练质量至关重要&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;仅使用预训练 Embedding 不迁移模型结构&lt;/strong&gt;：AUC 有所提升但幅度有限，说明模型结构的迁移也贡献了一定价值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="62-线上实验"&gt;6.2 线上实验&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;部署平台&lt;/strong&gt;：Meta 内部的推荐排序系统&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实验形式&lt;/strong&gt;：标准的 A/B 测试，实验组使用 GPSD 框架训练的模型，对照组使用现有的判别式模型&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心指标收益&lt;/strong&gt;：论文报告了在核心业务指标（如点击率、转化率、用户互动时长等）上取得了统计显著的正向收益&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稳定性&lt;/strong&gt;：线上指标在持续运行期间保持稳定，无退化现象&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="63-训练效率分析"&gt;6.3 训练效率分析&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;预训练开销&lt;/strong&gt;：生成式预训练阶段需要额外的计算资源，但由于可以离线进行且模型收敛较快，总体开销可控&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;微调加速&lt;/strong&gt;：由于冻结了大量稀疏参数（占总参数 90% 以上），判别式微调阶段的梯度计算量和内存占用均大幅减少&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;综合效率&lt;/strong&gt;：两阶段训练的总计算成本与直接端到端训练的大模型相当，但最终效果显著更优&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="7-优缺点分析"&gt;7. 优缺点分析&lt;/h2&gt;
+&lt;h3 id="71-优势"&gt;7.1 优势&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;首次在判别式推荐模型中验证 Scaling Law&lt;/strong&gt;：这是该论文最核心的贡献，为推荐系统领域的”大模型化”提供了可行路径和理论支撑。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方法设计简洁且工程友好&lt;/strong&gt;：两阶段训练流程清晰，冻结策略实现简单（只需在优化器中排除稀疏参数），不需要对现有推荐系统架构做大幅改动。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;经过工业级验证&lt;/strong&gt;：在 Meta 的真实业务场景中完成了线上 A/B 测试并取得正收益，证明了方法的实用性和可靠性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;理论洞察深刻&lt;/strong&gt;：系统性地分析了稀疏参数与稠密参数在过拟合中的不同角色，为后续研究提供了清晰的理论框架。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;开源代码&lt;/strong&gt;：作者公开了实现代码，降低了复现和跟进研究的门槛。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="72-不足与局限"&gt;7.2 不足与局限&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;两阶段训练的流程复杂性&lt;/strong&gt;：虽然单看每个阶段都很简单，但两阶段训练意味着需要维护两套训练流水线、两套超参数配置，以及处理阶段之间的模型兼容性问题。在工程实践中，这增加了系统的维护成本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冻结策略可能丢失任务特异性信息&lt;/strong&gt;：完全冻结稀疏参数意味着 Embedding 无法适配判别式任务的特定需求。对于某些与生成式预训练分布差异较大的下游任务，这种”一刀切”的冻结可能不是最优选择。论文未探讨部分冻结或渐进解冻等更灵活的策略。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对预训练数据质量的强依赖&lt;/strong&gt;：稀疏参数的质量完全由预训练阶段决定，如果预训练数据存在偏差（如热门物品过度曝光、冷启动物品缺乏交互），这些偏差会被”冻结”到下游模型中且无法修正。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scaling Law 的验证范围有限&lt;/strong&gt;：实验仅在 Meta 的特定业务场景中验证，是否能推广到其他领域（如电商、短视频、音乐推荐等）尚需进一步证实。同时，论文主要关注了参数量维度的 Scaling，对数据量和计算量维度的 Scaling 关系探讨较少。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="8-工程实践启示"&gt;8. 工程实践启示&lt;/h2&gt;
+&lt;h3 id="81-推荐系统工程师的实践建议"&gt;8.1 推荐系统工程师的实践建议&lt;/h3&gt;
+&lt;p&gt;基于 GPSD 的核心发现，以下是一些可以在工程实践中借鉴的经验：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优先投资 Embedding 质量&lt;/strong&gt;：与其盲目增大模型规模，不如先确保 Embedding 表的训练质量。可以考虑在正式的排序模型训练之前，通过对比学习、生成式预训练等手段预热 Embedding。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分阶段训练的思路值得借鉴&lt;/strong&gt;：即使不完全复制 GPSD 的方案，”将困难的稀疏参数优化和稠密参数优化分开处理”这一思路本身就极具价值，可以在各种变体中灵活应用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冻结策略可以渐进式采用&lt;/strong&gt;：在工程实践中，可以先尝试冻结最容易过拟合的低频特征 Embedding，观察效果后再逐步扩大冻结范围。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;监控泛化差距作为模型健康指标&lt;/strong&gt;：论文中使用的泛化差距（训练 loss 与验证 loss 的差距）是一个非常实用的模型健康监控指标，建议在日常模型迭代中持续追踪。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="82-架构设计启示"&gt;8.2 架构设计启示&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;预训练与微调解耦&lt;/strong&gt;：将推荐系统架构设计为支持模块化的预训练和微调，便于独立优化各个组件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稀疏参数服务化&lt;/strong&gt;：预训练好的 Embedding 可以作为独立的服务（Embedding Service）对外提供，供多个下游任务共享，降低重复训练的成本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动态更新机制&lt;/strong&gt;：考虑设计增量更新机制，在新物品上线时能够快速生成高质量的 Embedding，而不需要重新运行完整的预训练流程。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="9-未来方向"&gt;9. 未来方向&lt;/h2&gt;
+&lt;p&gt;基于 GPSD 的研究成果，以下几个方向值得关注：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;推荐系统基础模型（Foundation Models for RecSys）&lt;/strong&gt;：GPSD 为推荐领域的基础模型奠定了初步基础。未来可以探索更大规模、跨场景、跨平台的预训练，构建真正意义上的推荐基础模型。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更灵活的参数迁移策略&lt;/strong&gt;：探索部分冻结、渐进解冻、LoRA 适配等更精细的参数迁移方法，在保持预训练质量的同时允许一定程度的任务适配。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多模态预训练&lt;/strong&gt;：将 GPSD 的思路扩展到多模态推荐场景，结合文本、图像、视频等多模态信息进行生成式预训练。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据量与计算量的 Scaling Law&lt;/strong&gt;：GPSD 主要探索了参数量维度的 Scaling，未来可以系统性地研究训练数据量和计算量对推荐模型性能的影响。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冷启动问题&lt;/strong&gt;：研究如何利用生成式预训练的知识来改善新用户和新物品的冷启动表现。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="总结"&gt;总结&lt;/h2&gt;
+&lt;p&gt;GPSD 框架证明了推荐系统也可以像 LLM 一样通过 Scaling Up 变得更聪明。它的核心贡献可以归纳为以下几点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;问题定位精准&lt;/strong&gt;：准确识别出稀疏参数过拟合是阻碍推荐模型 Scaling 的关键瓶颈。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方法设计精巧&lt;/strong&gt;：通过生成式预训练为 Embedding 表奠定坚实基础，再通过”参数冻结”策略在判别式微调阶段避免过拟合，实现了”分而治之”的优雅解决方案。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;首次验证推荐系统的 Scaling Law&lt;/strong&gt;：在工业级场景中证实了判别式推荐模型也能随着参数规模扩大而持续变强。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工业落地验证&lt;/strong&gt;：在 Meta 的真实业务中完成了线上验证，证明了方法的实用价值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这一研究为未来推荐领域的”基础大模型（Foundation Models）”提供了关键的路径，也为整个推荐系统社区带来了一个重要的信号：&lt;strong&gt;推荐模型的 Scaling 之路已经打通，关键在于找到正确的预训练和参数迁移策略。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;开源代码&lt;/strong&gt;：
+&lt;/p&gt;</description></item><item><title>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</title><link>https://dingyadong.top/posts/007_hstu_paper_review/</link><pubDate>Fri, 20 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/007_hstu_paper_review/</guid><description>
+&lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
+&lt;p&gt;本文是关于 Meta AI 重磅论文《Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations》（&lt;a href="https://arxiv.org/pdf/2402.17152" target="_blank" rel="noopener"&gt;arXiv:2402.17152&lt;/a&gt;）的阅读笔记，重点探讨 HSTU 架构如何改进传统的自注意力机制。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在自然语言处理（NLP）领域，基于 Transformer 的大模型通过 Scaling Law（缩放定律）展现了令人惊叹的涌现能力。然而在推荐系统领域，传统的深度学习推荐模型（DLRMs）极度依赖人工交叉特征，难以随着计算资源的增加实现模型效果的对数线性增长。&lt;/p&gt;
 &lt;p&gt;为了解决这一痛点，Meta AI 提出了**生成式推荐（Generative Recommenders, GRs）**的新范式，并专门为推荐场景设计了 &lt;strong&gt;HSTU（Hierarchical Sequential Transduction Unit）&lt;/strong&gt; 架构。HSTU 成功将千亿级异构特征统一为序列化表达，在训练效率和效果上大幅超越了标准 Transformer，并在工业界验证了万亿参数推荐大模型的 Scaling Law。&lt;/p&gt;
@@ -97,4 +1887,100 @@ end
 &lt;h2 id="2-hstu-相对于-self-attention-的核心改进"&gt;2. HSTU 相对于 Self-Attention 的核心改进&lt;/h2&gt;
 &lt;p&gt;HSTU 对传统的自注意力架构进行了大刀阔斧的重构，专门针对推荐数据的非平稳、极度稀疏特性进行了优化。&lt;/p&gt;
 &lt;h3 id="21-彻底抛弃笨重的-mlp-层"&gt;2.1 彻底抛弃笨重的 MLP 层&lt;/h3&gt;
-&lt;p&gt;HSTU 最大的架构创新在于&lt;strong&gt;完全移除了传统的 MLP 层&lt;/strong&gt;。它将多头注意力与前馈网络融合，替换为单层线性投影与门控网络。HSTU 巧妙地将计算分为两步：空间聚合（Spatial Aggregation）与点式变换（Pointwise Transformation）。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;HSTU 最大的架构创新在于&lt;strong&gt;完全移除了传统的 MLP 层&lt;/strong&gt;。它将多头注意力与前馈网络融合，替换为单层线性投影与门控网络。HSTU 巧妙地将计算分为两步：空间聚合（Spatial Aggregation）与点式变换（Pointwise Transformation）。&lt;/p&gt;
+&lt;p&gt;为了更直观地理解，我们可以看下面这张 HSTU 的微观结构图：&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+%% Define Styles
+classDef input fill:#f9f9f9,stroke:#333,stroke-width:2px;
+classDef linear fill:#e1f5fe,stroke:#2563eb,stroke-width:1px;
+classDef act fill:#fef3c7,stroke:#ea580c,stroke-width:1px;
+classDef attention fill:#dcfce7,stroke:#b45309,stroke-width:1px;
+classDef output fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
+%% Nodes
+Input["输入序列 X &lt;br/&gt; N x d"]:::input
+subgraph HSTU_Block ["HSTU Block (替代标准 Self-Attention + MLP)"]
+Norm1["Layer Norm"]:::linear
+Linear1["Linear Projection &lt;br/&gt; f1"]:::linear
+SiLU1["SiLU Activation &lt;br/&gt; φ1"]:::act
+Split["Split Channel &lt;br/&gt; 切分为 U, V, Q, K"]:::linear
+subgraph Spatial_Aggregation ["Spatial Aggregation (空间聚合)"]
+Attn["Q * K^T + Relative Bias &lt;br/&gt; 融合时序与位置"]:::attention
+SiLU2["SiLU Activation &lt;br/&gt; φ2"]:::act
+Mul_V["Attn_Score ⊙ V &lt;br/&gt; 聚合输出 A_V"]:::attention
+end
+subgraph Pointwise_Transformation ["Pointwise Transformation (点式变换)"]
+Norm2["Layer Norm"]:::linear
+Mul_U["Norm(A_V) ⊙ U &lt;br/&gt; 门控融合"]:::linear
+Linear2["Linear Projection &lt;br/&gt; f2"]:::linear
+end
+end
+Output["输出序列 Y &lt;br/&gt; N x d"]:::output
+%% Edges
+Input --&gt; Norm1
+Norm1 --&gt; Linear1
+Linear1 --&gt; SiLU1
+SiLU1 --&gt; Split
+Split --&gt;|Q, K| Attn
+Attn --&gt; SiLU2
+Split --&gt;|V| Mul_V
+SiLU2 --&gt; Mul_V
+Mul_V --&gt; Norm2
+Split --&gt;|U| Mul_U
+Norm2 --&gt; Mul_U
+Mul_U --&gt; Linear2
+Linear2 --&gt; Output
+Input --&gt;|"残差连接 Residual Connection"| Output
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;核心计算公式如下：&lt;/strong&gt;&lt;/p&gt;
+$$ U(X), V(X), Q(X), K(X) = \text{Split}(\phi_1(f_1(X))) $$&lt;p&gt;
+&lt;/p&gt;
+$$ A(X)V(X) = \phi_2 \left( Q(X)K(X)^T + r_{p,t}^{ab} \right) V(X) $$&lt;p&gt;
+&lt;/p&gt;
+$$ Y(X) = f_2(\text{Norm}(A(X)V(X)) \odot U(X)) $$&lt;p&gt;&lt;em&gt;其中，$f_1, f_2$ 为单层线性变换，$\phi_1, \phi_2$ 为 SiLU 激活函数，$r_{p,t}^{ab}$ 为融合了时序和位置的相对偏差。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;改进收益&lt;/strong&gt;：
+通过使用门控逐元素融合输出，HSTU 极大地减少了浮点运算量（FLOPs），并完美契合底层硬件的算子融合（Fused Kernel），极大提升了显存带宽利用率。&lt;/p&gt;
+&lt;h3 id="22-生成式训练与时间复杂度骤降"&gt;2.2 生成式训练与时间复杂度骤降&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;为什么标准 Transformer 在推荐系统中复杂度会变成 $\mathcal{O}(N^3)$？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在 NLP 中，Transformer 处理单条长度为 $N$ 的序列，时间复杂度是大家熟知的 $\mathcal{O}(N^2d + Nd^2)$。但在传统的推荐系统（如早期的 SASRec）中，通常采用&lt;strong&gt;流式逐样本（Impression-level）训练&lt;/strong&gt;。
+假设用户有历史序列 $[i_1, i_2, \dots, i_N]$，传统框架需要将其拆分为 $N$ 个独立的训练样本：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;样本 1：历史 $[i_1]$，预测 $i_2$&lt;/li&gt;
+&lt;li&gt;样本 2：历史 $[i_1, i_2]$，预测 $i_3$&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;li&gt;样本 $N$：历史 $[i_1, \dots, i_{N-1}]$，预测 $i_N$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这意味着 Transformer 需要对这 $N$ 个逐渐变长的子序列分别进行前向计算。我们将这 $N$ 个独立样本的计算量累加：
+&lt;/p&gt;
+$$ \text{Total Complexity} = \sum_{k=1}^{N} \mathcal{O}(k^2d + kd^2) $$&lt;p&gt;
+根据求和公式 $\sum_{k=1}^{N} k^2 \approx \frac{N^3}{3}$，总的训练时间复杂度就灾难性地飙升到了 &lt;strong&gt;$\mathcal{O}(N^3d + N^2d^2)$&lt;/strong&gt;。当用户序列 $N=10^4$ 时，计算量呈三次方级数爆炸，完全无法训练。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;HSTU 的降维打击：Generative Training&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在训练方式上，HSTU 采用了&lt;strong&gt;生成式训练（Generative Training）&lt;/strong&gt;，彻底摒弃了传统的逐样本拆分。它向 LLM 学习，把整个长度为 $N$ 的用户序列作为一个完整的样本送入模型，配合因果掩码（Causal Mask），在&lt;strong&gt;一次前向传播&lt;/strong&gt;中同时完成对所有历史节点的预测。&lt;/p&gt;
+&lt;p&gt;这一改变干掉了那层可怕的 $\sum_{k=1}^{N}$ 循环，成功将训练的时间复杂度指数级降维回了 &lt;strong&gt;$\mathcal{O}(N^2 d + N d^2)$&lt;/strong&gt;。同时，在推理阶段引入了 M-FALCON 微批处理算法，能够全面摊销超长序列的计算成本。&lt;/p&gt;
+&lt;h3 id="23-极端的特征序列化丢弃数值特征"&gt;2.3 极端的特征序列化：丢弃数值特征&lt;/h3&gt;
+&lt;p&gt;这篇论文中一个非常反直觉但极为有效的操作是：&lt;strong&gt;完全移除传统的数值特征（如历史 CTR 统计）&lt;/strong&gt;。
+HSTU 摒弃了 DLRM 复杂的并行特征网络，将用户交互行为（如点击、点赞）与慢变分类特征（如用户画像）按照时间戳合并压缩为&lt;strong&gt;一条主时间序列&lt;/strong&gt;。作者证明了，只要序列模型足够强大，它完全可以直接从极长的原始历史交互中自行捕获这些统计概率，无需人工干预。&lt;/p&gt;
+&lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+A[海量异构特征 Categorical &amp; Numerical] --&gt; B[丢弃数值特征 / 保留分类特征]
+B --&gt; C[特征序列化与时间轴压缩]
+C --&gt; D[合并为统一单时间序列]
+D --&gt; E[Generative Training 生成式训练]
+E --&gt; F[HSTU 编码器]
+F --&gt; G[Pointwise Projection: 线性生成 U,V,Q,K]
+G --&gt; H[Spatial Aggregation: 时空注意力与 SiLU 激活]
+H --&gt; I[Pointwise Transformation: 门控逐元素融合输出]
+I --&gt; J[多任务预测: 排序 Ranking / 召回 Retrieval]
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id="4-结论与工业界影响"&gt;4. 结论与工业界影响&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;惊人的速度优势&lt;/strong&gt;：在长度为 8192 的长序列上，HSTU 的推理和训练速度比基于 FlashAttention2 的标准 Transformer &lt;strong&gt;快了 5.3 倍到 15.2 倍&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;效果跃升&lt;/strong&gt;：在公开数据集上，HSTU 的 NDCG 指标最高超越基线模型达 &lt;strong&gt;65.8%&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;万亿参数与 Scaling Law 验证&lt;/strong&gt;：包含 1.5 万亿参数的 GRs 模型在十亿级用户的互联网平台上成功落地，线上核心指标提升 12.4%。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最重要的是，该研究首次在推荐系统领域证实了：&lt;strong&gt;推荐模型的质量随训练算力的增加呈幂律分布（Power-law）&lt;/strong&gt;，跨越了三个数量级（达到 GPT-3 / LLaMA-2 级别的算力），彻底打破了 DLRM 时代的瓶颈，为推荐领域的“基础大模型（Foundation Models）”铺平了道路。&lt;/p&gt;</description></item></channel></rss>

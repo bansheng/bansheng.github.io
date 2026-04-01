@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>多场景 on Bansheng's Blog</title><link>https://dingyadong.top/tags/%E5%A4%9A%E5%9C%BA%E6%99%AF/</link><description>Recent content in 多场景 on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 25 Mar 2026 20:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/%E5%A4%9A%E5%9C%BA%E6%99%AF/index.xml" rel="self" type="application/rss+xml"/><item><title>美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？</title><link>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</link><pubDate>Wed, 25 Mar 2026 20:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</guid><description>&lt;h2 id="1-导言推荐系统的大模型时代与多场景之痛"&gt;1. 导言：推荐系统的“大模型”时代与多场景之痛&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>多场景 | Yadong's Blog</title><link>https://dingyadong.top/tags/%E5%A4%9A%E5%9C%BA%E6%99%AF/</link><atom:link href="https://dingyadong.top/tags/%E5%A4%9A%E5%9C%BA%E6%99%AF/index.xml" rel="self" type="application/rss+xml"/><description>多场景</description><generator>HugoBlox Kit (https://hugoblox.com)</generator><language>zh-cn</language><lastBuildDate>Wed, 25 Mar 2026 20:00:00 +0800</lastBuildDate><image><url>https://dingyadong.top/media/icon.svg</url><title>多场景</title><link>https://dingyadong.top/tags/%E5%A4%9A%E5%9C%BA%E6%99%AF/</link></image><item><title>美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？</title><link>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</link><pubDate>Wed, 25 Mar 2026 20:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/</guid><description>&lt;h2 id="1-导言推荐系统的大模型时代与多场景之痛"&gt;1. 导言：推荐系统的“大模型”时代与多场景之痛&lt;/h2&gt;
 &lt;p&gt;在过去几年里，大语言模型（Large Language Models, LLMs）的飞速发展，彻底重塑了人工智能的版图。从单模态的文本生成到多模态的图文视频理解，基座模型（Foundation Models, FMs）以其统一的架构和惊人的“涌现能力”（Emergent Abilities），证明了 Scaling Laws（缩放定律）的伟大力量。而在推荐系统（Recommender Systems, RecSys）领域，工业界也逐渐开始验证 Scaling Laws，尝试通过增加模型参数量和训练数据量来打破业务指标的天花板。&lt;/p&gt;
 &lt;p&gt;然而，传统的推荐系统往往被局限在“单一场景”（Single-scenario）的孤岛中。例如，在外卖平台中，“美食推荐”、“商家推荐”、“神抢手（券包推荐）”等场景各自拥有独立的模型和特征体系。这种孤岛模式严重限制了推荐模型吸收全局数据的能力，使得 Scaling Laws 的潜力难以被完全释放。受到多模态大模型的启发，美团的技术团队提出：&lt;strong&gt;推荐大模型的下一个突破口，在于跨越场景的异构性，建立一个统一的、无需严格对齐的底层基础模型。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;这便是本文要深度剖析的主角——发表于 2025 年的重磅工业级论文 &lt;strong&gt;《MTFM: A Scalable and Alignment-free Foundation Model for Industrial Recommendation in Meituan》&lt;/strong&gt;。&lt;/p&gt;
@@ -18,4 +18,501 @@
 &lt;li&gt;&lt;strong&gt;在数据端&lt;/strong&gt;：将多个场景的数据强行拼接到一起，使用一个固定的特征模板（Fixed Template）。如果某个场景缺少某些特征（例如商家推荐场景没有菜品口味标签），就用 Padding（如零值或默认值）来填充；如果某些异构特征无法对齐，干脆直接丢弃。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;在模型端&lt;/strong&gt;：通过 MoE（Mixture of Experts）或星型拓扑结构，将模型参数解耦为“领域无关”（Domain-invariant）的共享参数和“领域特定”（Domain-specific）的独有参数。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点：&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;然而，这种范式在面对真实的超级工业生态时，暴露出三大致命弱点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;延展性的僵局（Rigidity in Extensibility）&lt;/strong&gt;：在美团这样的超级平台上，不同场景的特征模式（Feature Schemas）差异极大。强迫成百上千的异构特征去适配一个固定的模板，不仅容易出错，而且会导致严重的信息丢失。大量的 Padding 操作不仅浪费了存储，还引入了噪音。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;架构缺乏可扩展性（Lack of Architectural Scalability）&lt;/strong&gt;：无论是 STAR 还是各类复杂的 MoE 结构，本质上仍然是基于专家启发式规则（Expert Heuristics）手工打造的“定制化”网络。这种高度定制化的网络结构，很难像纯粹的 Transformer 那样，享受到简单堆叠层数带来的 Scaling Laws 红利。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高昂的计算成本（Prohibitive Computational Costs）&lt;/strong&gt;：在传统范式下，训练成本随着数据量的增加呈线性甚至超线性增长。将海量的多场景数据简单粗暴地融合在一起训练，会导致算力开销呈指数级爆炸，在经济上完全不可行。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;面对这些痛点，MTFM 给出的答案是：&lt;strong&gt;抛弃对齐（Alignment-free），万物皆 Token（Heterogeneous Tokenization），并引入混合目标注意力机制（Hybrid Target Attention）和极致的系统级优化。&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="2-核心思想与方法论摒弃对齐拥抱异构"&gt;2. 核心思想与方法论：摒弃“对齐”，拥抱“异构”&lt;/h2&gt;
+&lt;p&gt;在自然语言处理领域，无论是英文、中文还是代码，都可以通过 Tokenizer（如 BPE、TikToken）统一转化为 Token 序列。MTFM 敏锐地捕捉到了这一点，将其引入到推荐系统中，提出了 &lt;strong&gt;异构 Token 化（Heterogeneous Tokenization）&lt;/strong&gt; 的概念。&lt;/p&gt;
+&lt;h3 id="21-从特征模板到异构-token-序列"&gt;2.1 从特征模板到异构 Token 序列&lt;/h3&gt;
+&lt;p&gt;在传统的深度学习推荐模型（DLRM）中，输入通常是一个超大的稀疏向量或稠密 Embedding 的拼接：
+&lt;code&gt;[User_Emb, Item_Emb, Context_Emb, Cross_Emb, ...]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这种结构要求每一条样本都必须具有相同的维度和特征组合。而在 MTFM 中，输入不再是一个固定长度的向量，而是一个 &lt;strong&gt;变长的异构 Token 序列（Variable-length Sequence of Heterogeneous Tokens）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;具体来说，MTFM 将推荐系统中的所有特征抽象为三类核心 Token：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;H-token (Historical tokens)&lt;/strong&gt;：代表用户的长期历史交互行为序列。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;R-token (Real-time tokens)&lt;/strong&gt;：代表用户近期的、实时的跨场景交互行为序列。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;T-token (Target tokens)&lt;/strong&gt;：代表当前正在被请求或曝光的目标候选项（Candidate Items）及其对应的上下文和交叉特征。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="211-h-token-与-r-token-的生成"&gt;2.1.1 H-token 与 R-token 的生成&lt;/h4&gt;
+&lt;p&gt;以用户的历史行为序列 \(\{H_i\}\) 为例。序列中的每一个交互商品（Item） \(h_{ij}\) 都对应一个 H-token。由于不同历史序列中包含的特征维度可能不同，MTFM 为不同的历史序列分配了不同的 MLP（多层感知机）作为专属的 Tokenizer。&lt;/p&gt;
+&lt;p&gt;将原始特征经过 Embedding 层映射后，通过对应的 MLP 投影到一个统一的维度 \(d_{model}\)：&lt;/p&gt;
+$$
+\mathbf{h}_{ij} = \text{MLP}_i(\text{Emb}(h_{ij}))
+$$&lt;p&gt;随后，MTFM 将所有历史序列中的 Item Token 按照时间戳（Chronological order）进行排序，形成一个统一的 Embedding 矩阵：&lt;/p&gt;
+$$
+\mathbf{H} \in \mathbb{R}^{L_H \times d_{model}}
+$$&lt;p&gt;其中 \(L_H\) 是所有历史序列中 Item 的总数。&lt;/p&gt;
+&lt;p&gt;同理，用户的实时序列特征也被转化为 R-token 矩阵：&lt;/p&gt;
+$$
+\mathbf{R} \in \mathbb{R}^{L_R \times d_{model}}
+$$&lt;h4 id="212-t-token-的生成"&gt;2.1.2 T-token 的生成&lt;/h4&gt;
+&lt;p&gt;对于当前曝光的候选目标，MTFM 将用户画像特征（User Profile, \(U^s\)）、场景特定的交叉特征（Cross Features, \(C_i^s\)）以及目标物品特征（Item Features, \(I_i^s\)）进行拼接，并通过该场景特定的 MLP 进行降维投影：&lt;/p&gt;
+$$
+\mathbf{t}_i^s = \text{MLP}_s(\text{Emb}(U^s) \| \text{Emb}(C_i^s) \| \text{Emb}(I_i^s))
+$$&lt;p&gt;这里 \(\|\) 表示列拼接（Column concatenation）。所有场景下的曝光行为最终被转化为 T-token 矩阵：&lt;/p&gt;
+$$
+\mathbf{T} \in \mathbb{R}^{L_T \times d_{model}}
+$$&lt;p&gt;其中 \(L_T\) 是所有场景下曝光样本的总数。&lt;/p&gt;
+&lt;h4 id="213-统一序列表示"&gt;2.1.3 统一序列表示&lt;/h4&gt;
+&lt;p&gt;最终，所有的 H-token、R-token 和 T-token 会在行方向（Row concatenation）上进行拼接，形成输入到 Transformer 骨干网络的初始 Embedding 矩阵：&lt;/p&gt;
+$$
+\mathbf{X}^{(0)} = (\mathbf{H}; \mathbf{R}; \mathbf{T}) \in \mathbb{R}^{N \times d_{model}}
+$$&lt;p&gt;这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不同的用户，这个 \(N\) 是可变的（Variable-length）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;【深度思考：异构 Token 化的绝妙之处】&lt;/strong&gt;
+这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 \(d_{model}\) 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 \(\text{MLP}_s\) 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="3-数据组织革命user-level-多场景样本聚合"&gt;3. 数据组织革命：User-level 多场景样本聚合&lt;/h2&gt;
+&lt;p&gt;理解了 Token 化之后，我们面临下一个严峻挑战：计算复杂度。
+如果按照传统的“曝光级别”（Impression-level）进行训练，即每一次曝光（一个 User 对应一个 Item）作为一条独立样本，那么对于同一个用户，他极其冗长的历史行为序列（H-token）和实时序列（R-token）会在成百上千条样本中被重复计算。&lt;/p&gt;
+&lt;p&gt;在标准的 Transformer 中，自注意力机制的时间复杂度是 \(O(N^2 \cdot d)\)。如果序列长度 \(N\) 达到几千，这种重复计算将带来毁灭性的算力浪费。&lt;/p&gt;
+&lt;h3 id="31-继承与超越从-mtgr-到多场景聚合"&gt;3.1 继承与超越：从 MTGR 到多场景聚合&lt;/h3&gt;
+&lt;p&gt;为了解决这个问题，MTFM 继承了美团此前在 MTGR（Multi-Task Generative Recommendation）论文中提出的 &lt;strong&gt;用户级（User-level）样本聚合&lt;/strong&gt; 技术，并将其突破性地扩展到了多场景（Multi-scenario）环境。&lt;/p&gt;
+&lt;p&gt;在离线训练阶段，MTFM 将某个特定时间窗口内，&lt;strong&gt;同一个用户在所有业务场景下的所有曝光行为&lt;/strong&gt;，全部聚合为一条“超级样本”。&lt;/p&gt;
+&lt;p&gt;具体来说，每个用户 \(u\) 对应一条包含海量信息的训练样本 \(\mathbb{D}_u = (X_u, Y_u)\)。
+输入特征集 \(X\) 可以表示为：&lt;/p&gt;
+$$
+X = [ \{H_i\}_{i=1}^{N_H}, \{R_i\}_{i=1}^{N_R}, \{U^s\}_{s=1}^{N_S}, \{\{C_i^s, I_i^s\}_{i=1}^{N_E^s}\}_{s=1}^{N_S} ]
+$$&lt;p&gt;标签集 \(Y\) 表示为：&lt;/p&gt;
+$$
+Y = \{\{Y_i^s\}_{i=1}^{N_E^s}\}_{s=1}^{N_S}
+$$&lt;p&gt;参数解释：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;\(N_S\)：业务场景的总数。&lt;/li&gt;
+&lt;li&gt;\(N_E^s\)：在场景 \(s\) 下的曝光总数。&lt;/li&gt;
+&lt;li&gt;\(H_i, R_i\)：跨场景共享的历史和实时序列。&lt;/li&gt;
+&lt;li&gt;\(U^s, C_i^s, I_i^s\)：场景 \(s\) 特有的用户画像、交叉特征和物品特征。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="32-共享与独立解耦特征处理管线"&gt;3.2 共享与独立：解耦特征处理管线&lt;/h3&gt;
+&lt;p&gt;由于不同场景的特征模式存在本质上的不兼容（例如外卖场景的标签和打车场景的标签完全不同），MTFM 在数据流水线（Data Pipeline）上做出了精妙的设计：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;场景独立聚合&lt;/strong&gt;：对于场景特定的特征（\(U, C, I\)），首先在各个场景内部按照 User-level 进行聚合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨场景拼接&lt;/strong&gt;：将聚合后的各场景特征按照列方向（Column-wise）拼接，形成一个统一的候选目标表征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;全局特征合并&lt;/strong&gt;：最后，将全场景共享的特征（用户的生命周期历史序列 \(H\) 和实时序列 \(R\)）与上述拼接结果在 User-level 进行合并。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph 场景1: 外卖
+U1[User特征] --&gt; Agg1[场景内User-level聚合]
+C1[交叉特征] --&gt; Agg1
+I1[Item特征] --&gt; Agg1
+end
+subgraph 场景2: 优选
+U2[User特征] --&gt; Agg2[场景内User-level聚合]
+C2[交叉特征] --&gt; Agg2
+I2[Item特征] --&gt; Agg2
+end
+Agg1 --&gt; Concat[多场景特征按列拼接形成 T-token 集合]
+Agg2 --&gt; Concat
+H[全平台长序列 H-token] --&gt; Merge[最终超级样本构建]
+R[全平台实时序列 R-token] --&gt; Merge
+Concat --&gt; Merge
+Merge --&gt; MTFM[输入 MTFM 模型]
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这种设计彻底避免了数据 Pipeline 中的重复计算和冗余存储。在推理阶段（Online Inference），由于各个场景是独立发起请求的，每个场景只需要部署 MTFM 中与自己相关的 &lt;strong&gt;子图（Subgraph）&lt;/strong&gt;。推理请求在 Request-level 进行聚合，子图会自动绕过其他场景专属的 MLP Tokenizer，从而实现极高的推理效率。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="4-网络架构深度剖析混合目标注意力机制-hta"&gt;4. 网络架构深度剖析：混合目标注意力机制 (HTA)&lt;/h2&gt;
+&lt;p&gt;如果说异构 Token 化和 User-level 聚合是 MTFM 的数据地基，那么 &lt;strong&gt;混合目标注意力机制（Hybrid Target Attention, HTA）&lt;/strong&gt; 则是其架构上的王冠。&lt;/p&gt;
+&lt;p&gt;将推荐系统转化为 Transformer 的序列建模任务后，面临的最大梦魇就是 \(O(N^2)\) 的复杂度。虽然 User-level 聚合消除了冗余计算，但把所有场景的曝光候选物品（T-token）和超长历史序列（H/R-token）拼在一起，序列长度 \(N\) 极容易突破数千甚至上万。&lt;/p&gt;
+&lt;p&gt;为了平衡模型的表达能力（Efficacy）和计算效率（Efficiency），MTFM 借鉴了 LLM 领域的稀疏注意力思想，提出了一种由 &lt;strong&gt;全注意力层（Full Attention Layer）&lt;/strong&gt; 和 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt; 交替堆叠的混合架构。&lt;/p&gt;
+&lt;h3 id="41-全注意力层-full-attention-layer-与动态掩码"&gt;4.1 全注意力层 (Full Attention Layer) 与动态掩码&lt;/h3&gt;
+&lt;p&gt;在模型由 \(B\) 个堆叠的 Block 组成，为了缓解二次复杂度瓶颈，每个 Block 会包含 1 个全注意力层，以及随后紧跟的 \(K\) 个目标注意力层。&lt;/p&gt;
+&lt;p&gt;在全注意力层中，模型计算所有 Token 之间的全局依赖关系。为了进一步降低显存和计算开销，MTFM 采用了 &lt;strong&gt;分组查询注意力（Grouped-Query Attention, GQA）&lt;/strong&gt;。GQA 相比于 Multi-Head Attention (MHA)，多个 Query 共享一组 Key 和 Value，在保持模型效果几乎不变的前提下，大幅减少了 KV Cache 的显存占用。&lt;/p&gt;
+&lt;p&gt;全注意力层的数学表达如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;线性映射与分组切分&lt;/strong&gt;：
+&lt;/p&gt;
+$$
+\mathbf{U}^{(l)}, \{\mathbf{Q}^{(l,h)}\}_{h=1}^{H}, \{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)} \}_{g=1}^G = \text{Split}(\phi_1(f_1^{(l)}(\widetilde{\mathbf{X}}^{(l)})))
+$$&lt;p&gt;
+其中 \(H\) 是 Query 的头数，\(G\) 是 KV 的头数，\(r = H/G\)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;注意力计算与动态掩码（Dynamic Masking）&lt;/strong&gt;：
+&lt;/p&gt;
+$$
+\mathbf{A}^{(l,h)} = \phi_2(\mathbf{Q}^{(l,h)} \mathbf{K}^{(l,g)T} \odot \mathbf{M}) \mathbf{V}^{(l,g)}
+$$&lt;p&gt;
+&lt;/p&gt;
+$$
+\mathbf{A}^{(l)} = \mathbf{A}^{(l,1)} \| \cdots \| \mathbf{A}^{(l,H)}
+$$&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;门控层归一化与残差连接&lt;/strong&gt;：
+&lt;/p&gt;
+$$
+\mathbf{X}^{(l+1)} = f_2^{(l)}(\text{GLN}(\mathbf{A}^{(l)}) \odot \mathbf{U}^{(l)}) + \mathbf{X}^{(l)}
+$$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="411-防止信息泄露的动态掩码"&gt;4.1.1 防止信息泄露的动态掩码 \(\mathbf{M}\)&lt;/h4&gt;
+&lt;p&gt;在 User-level 聚合中，由于实时序列 \(R\) 和当前曝光目标 \(T\) 在时间上可能存在重叠，如果不加以限制，模型在预测时就会“看到未来”的数据，导致严重的信息泄露（Information Leakage）。&lt;/p&gt;
+&lt;p&gt;为此，MTFM 根据时间戳构建了极其严格的动态掩码矩阵 \(\mathbf{M}\)：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;H-tokens 视野&lt;/strong&gt;：H-token 对所有后续 Token 可见，因为它们代表最基础的历史偏好。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;R-tokens 视野&lt;/strong&gt;：R-token 遵循严格的因果掩码（Causal Mask），只能被时间戳晚于自己的 Token 看到。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;T-tokens 视野&lt;/strong&gt;：T-token 之间互相不可见（因为在一次曝光请求中，各个候选 Item 应该是平行的），T-token 只能看到自己以及时间戳早于它的 H 和 R。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="42-目标注意力层-target-attention-layer极致降本的核心"&gt;4.2 目标注意力层 (Target Attention Layer)：极致降本的核心&lt;/h3&gt;
+&lt;p&gt;全注意力层虽然强大，但每一层都做 \(O(N^2)\) 的计算实在是太奢侈了。在推荐系统的预测任务中，我们真正关心的是 &lt;strong&gt;最终目标（T-tokens）&lt;/strong&gt; 的表达，历史序列（H/R-tokens）的作用主要是作为 Context 辅助 T-token 的表征。&lt;/p&gt;
+&lt;p&gt;因此，MTFM 在全注意力层之后，级联了 \(K\) 个 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在 Target Attention Layer 中，&lt;strong&gt;模型只更新 T-token 的 Embedding&lt;/strong&gt;，而 H-token 和 R-token 的 Embedding 直接通过 Shortcut（捷径）连接，原封不动地传递到下一层！&lt;/p&gt;
+&lt;p&gt;数学推导如下：&lt;/p&gt;
+&lt;p&gt;首先，从归一化的特征矩阵和掩码矩阵中，单独切分出 T-token 对应的部分：&lt;/p&gt;
+$$
+\widetilde{\mathbf{X}}^{(l)}_T = \widetilde{\mathbf{X}}^{(l)}[L_H+L_R:]
+$$$$
+\mathbf{M}_T = \mathbf{M}[L_H+L_R:]
+$$&lt;p&gt;接下来，只用 T-token 去生成 Query \(\mathbf{Q}_T\)，而 Key \(\mathbf{K}\) 和 Value \(\mathbf{V}\) 依然由全局序列生成：&lt;/p&gt;
+$$
+\mathbf{U}^{(l)}_T, \{\mathbf{Q}^{(l,h)}_T\}_{h=1}^H = \text{Split}(\phi_1(f_{uq}^{(l)}(\widetilde{\mathbf{X}}_T^{(l)})))
+$$$$
+\{\mathbf{K}^{(l,g)}, \mathbf{V}^{(l,g)}\}_{g=1}^G = \text{Split}(\phi_1(f_{kv}^{(l)}(\widetilde{\mathbf{X}}^{(l)})))
+$$&lt;p&gt;注意力计算只在 T-token 作为 Query 时发生：&lt;/p&gt;
+$$
+\mathbf{A}^{(l,h)}_T = \phi_2(\mathbf{Q}_T^{(l,h)} \mathbf{K}^{(l,g)T} \odot \mathbf{M}_T) \mathbf{V}^{(l,g)}
+$$$$
+\mathbf{X}^{(l+1)}_T = f_2^{(l)}(\text{GLN}(\mathbf{A}_T^{(l)}) \odot \mathbf{U}_T^{(l)}) + \mathbf{X}_T^{(l)}
+$$&lt;p&gt;最后，将更新后的 T-token 与未更新的 H/R-token 重新拼接，输出给下一层：&lt;/p&gt;
+$$
+\mathbf{X}^{(l+1)} = (\mathbf{X}^{(l)}[:L_H+L_R]; \mathbf{X}^{(l+1)}_T)
+$$&lt;p&gt;&lt;strong&gt;【复杂度革命性降低】&lt;/strong&gt;
+在标准的 Transformer 中，一层的复杂度是 \(O(N^2)\)。
+在 Target Attention 中，因为 Query 的数量从 \(N\) 骤降到了 \(L_T\)（通常 \(L_T \ll N\)），注意力矩阵的大小从 \(N \times N\) 缩小到了 \(L_T \times N\)。
+因此，单个 Target Attention Layer 的复杂度降为 \(O(N \cdot L_T)\)。&lt;/p&gt;
+&lt;p&gt;结合 1 层 Full Attention 和 \(K\) 层 Target Attention，一个 Block 的平均复杂度被大幅压缩至：&lt;/p&gt;
+$$
+O\left(\frac{K \cdot N \cdot L_T + N^2}{K+1}\right)
+$$&lt;p&gt;由于 \(L_T\) 远远小于 \(N\)，这一设计让 MTFM 的训练吞吐量（Throughput）直接 &lt;strong&gt;翻倍（2x Speedup）&lt;/strong&gt;，且实验证明模型精度没有任何损失！&lt;/p&gt;
+&lt;p&gt;最后，最后一层输出的 T-tokens 会被送入一个 MMoE（Multi-gate Mixture-of-Experts）模块，用于计算多场景下不同目标（如 CTR、CTCVR 等）的最终预估分。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="5-挑战工程极限系统级与算子级极致优化"&gt;5. 挑战工程极限：系统级与算子级极致优化&lt;/h2&gt;
+&lt;p&gt;学术界的论文往往止步于漂亮的公式，但工业界的落地必须面对冰冷的硬件指标。为了让 MTFM 在美团这种日均百亿请求级别的场景中真正跑起来，工程团队在系统底层进行了令人叹为观止的深度优化。&lt;/p&gt;
+&lt;h3 id="51-离线训练的外科手术"&gt;5.1 离线训练的“外科手术”&lt;/h3&gt;
+&lt;h4 id="511-斩断-cpu-gpu-的流水线阻塞-pipeline-stall"&gt;5.1.1 斩断 CPU-GPU 的流水线阻塞 (Pipeline Stall)&lt;/h4&gt;
+&lt;p&gt;在 LLM 训练中，所有的文本 Tokenization 都可以在 GPU 上飞速完成，整个训练过程高度端到端。
+而在推荐系统中，特征工程极为繁重，大量的稀疏特征查找、拼接、聚合必须在 CPU 上进行。这就导致了 GPU 上计算极快的模型，常常需要停下来“干等” CPU 传输数据。这种 Host（CPU）与 Device（GPU）之间频繁的数据同步和串行依赖，形成了严重的 Pipeline Stall。&lt;/p&gt;
+&lt;p&gt;美团团队使用 CUDA Profiler 对框架进行了地毯式排查。优化策略主要有两点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;消除同步点 (Eliminate Synchronization Points)&lt;/strong&gt;：通过精细的流水线编排，让 CPU 的特征处理与 GPU 的前向/反向传播时间互相掩盖（Overlap）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优化 Device-to-Device (D2D) 拷贝&lt;/strong&gt;：推荐模型中存在大量的张量索引赋值操作。原生的 PyTorch 会触发多次碎片的 D2D 显存拷贝。MTFM 将这些操作合并为单次原子操作（Single Atomic Operations）。
+这一套组合拳打下来，训练吞吐量硬生生提升了 &lt;strong&gt;20%&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="512-为动态掩码量身定制-flashattention-2"&gt;5.1.2 为动态掩码量身定制 FlashAttention-2&lt;/h4&gt;
+&lt;p&gt;FlashAttention-2 是 Transformer 时代的算力神兵，但它原生只针对标准的因果掩码（Causal Mask）进行了优化。面对 MTFM 中复杂的、针对 H/R/T token 各种定制的“动态非标准稀疏掩码”，FlashAttention-2 经常会因为内存访问不连续而导致效率暴跌。&lt;/p&gt;
+&lt;p&gt;为了解决这个问题，美团团队直接手撕底层 Kernel：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;连续对齐内存布局&lt;/strong&gt;：重新构造了掩码的内存布局，满足异步拷贝（Asynchronous Copy）的对齐要求。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;共享内存极限压榨&lt;/strong&gt;：在极其有限的 Shared Memory 中精细设计数据流。前向计算时缓存掩码块，反向传播时让掩码与中间梯度变量实现“分时复用”。
+通过将掩码加载延迟完全隐藏在计算流水线中，这一改动彻底释放了 GPU 算力。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="513-triton-算子融合-operator-fusion"&gt;5.1.3 Triton 算子融合 (Operator Fusion)&lt;/h4&gt;
+&lt;p&gt;原生的 PyTorch 在计算 GLN（Group Layer Normalization）和构建动态掩码时，采用的是 Gather-Compute-Scatter 的碎片化模式。这会导致频繁的 Kernel Launch 开销和低效的全局内存读写。
+MTFM 团队基于 OpenAI 的 Triton 框架，实现了 GLN 和动态掩码的&lt;strong&gt;算子融合&lt;/strong&gt;。通过向量化内存访问（Vectorized Memory Access）提升带宽利用率，并设计了分组并行计算模式，进一步消除了中间结果的反复读写。
+&lt;strong&gt;算子层面的优化，为 MTFM 带来了额外的 57% 吞吐量提升！&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="52-在线推理的极限压榨"&gt;5.2 在线推理的“极限压榨”&lt;/h3&gt;
+&lt;p&gt;训练阶段可以靠堆卡，但在线推理阶段每一毫秒的延迟都直接影响着用户体验和服务器成本。MTFM 的推理优化同样硬核：&lt;/p&gt;
+&lt;h4 id="521-安培架构-24-结构化稀疏-structured-sparsity"&gt;5.2.1 安培架构 2:4 结构化稀疏 (Structured Sparsity)&lt;/h4&gt;
+&lt;p&gt;MTFM 创新性地利用了 NVIDIA Ampere 架构 GPU 特有的 Sparse Tensor Cores。
+在 HSTU 组件的线性投影层（计算 U, V, Q, K 及 Output）中，团队实施了 &lt;strong&gt;2:4 结构化剪枝（2:4 Structured Pruning）&lt;/strong&gt;。
+这意味着在每 4 个连续的权重参数中，强制将 2 个较小的值置为 0。配合专属的硬件指令，这不仅将显存占用直接压缩了 50%，还利用 Sparse Tensor Cores 达到了双倍的理论峰值矩阵乘法吞吐量！
+结果是：模型精度不降，吞吐量提升 10%，单次推理延迟下降 0.2ms。&lt;/p&gt;
+&lt;h4 id="522-细粒度注意力剪枝-fine-grained-attention-pruning"&gt;5.2.2 细粒度注意力剪枝 (Fine-grained Attention Pruning)&lt;/h4&gt;
+&lt;p&gt;动态掩码本质上是一种不规则稀疏矩阵。MTFM 在推理时设计了底层的计算跳过机制（Computation Skipping）。
+它不仅能动态剔除因为 Padding 产生的无效计算，还能结合具体的业务先验知识（比如：强制屏蔽 User 特征对 Target 特征的无效注意力权重），在底层 Kernel 计算前就将这些分支剪除，进一步提升了 5% 的吞吐。&lt;/p&gt;
+&lt;h4 id="523-场景感知子图部署与-m-falcon"&gt;5.2.3 场景感知子图部署与 M-Falcon&lt;/h4&gt;
+&lt;p&gt;这是 MTFM 能在多场景落地的关键一环。
+虽然 MTFM 是一个包含所有场景知识的“巨无霸”大模型，但在实际部署到“外卖”或者“优选”的推理机器上时，系统会自动将完整的计算图拆解。&lt;strong&gt;剥离掉与当前场景无关的特征处理分支（Scenario-aware Deployment）&lt;/strong&gt;，消除冗余计算。
+同时，结合 BF16 半精度推理以及最新的 &lt;strong&gt;M-Falcon 智能微批处理（Micro-batching）算法&lt;/strong&gt;（通过 KV-Cache 共享进一步压榨 GPU 利用率），MTFM 将在线系统的并发能力推向了极致。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="6-实验验证震撼的业务收益"&gt;6. 实验验证：震撼的业务收益&lt;/h2&gt;
+&lt;p&gt;在纸面上吹得再天花乱坠，也不如真实的线上指标来得实在。MTFM 在美团的多个真实核心场景中进行了严苛的 Offline 和 Online 验证。&lt;/p&gt;
+&lt;h3 id="61-离线实验全面碾压-baseline"&gt;6.1 离线实验：全面碾压 Baseline&lt;/h3&gt;
+&lt;p&gt;在离线评估中，MTFM 与业界顶级的多场景模型（如 STAR、M3OE 等）以及强大的单场景序列模型（如 HSTU、MTGR）进行了对比。&lt;/p&gt;
+&lt;p&gt;结果显示，MTFM 在多个场景（如 SQS 神抢手、PHF 拼好饭、FDS 美食推荐等）的多个任务（CTR、CTCVR）上取得了压倒性的胜利：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CTR 任务&lt;/strong&gt;：平均 GAUC（Grouped Area Under the Curve）提升高达 &lt;strong&gt;0.36 pp&lt;/strong&gt;（百分点），在部分场景最高提升达 &lt;strong&gt;0.76 pp&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CTCVR 任务&lt;/strong&gt;：平均 GAUC 提升 &lt;strong&gt;0.29 pp&lt;/strong&gt;，峰值提升 &lt;strong&gt;0.53 pp&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在推荐系统领域，千分之几的 GAUC 提升往往就能带来百万级的收入增长。0.36 pp 的平均提升，是一个堪称“跨代”的巨大突破。这证明了：&lt;strong&gt;让模型看到更多场景的异构数据，通过统一的大模型进行隐式知识迁移，远比在单场景下死磕模型结构要有效得多。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="62-线上-ab-测试真金白银的业务增长"&gt;6.2 线上 A/B 测试：真金白银的业务增长&lt;/h3&gt;
+&lt;p&gt;在线上真实流量的 A/B 测试中，MTFM 部署到了美团的“神抢手（SQS）”和“拼好饭（PHF）”等高流量场景。
+实验结果令人振奋：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;神抢手（券包推荐）&lt;/strong&gt;：订单量（Orders）飙升 &lt;strong&gt;+2.98%&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;拼好饭（美食推荐）&lt;/strong&gt;：订单量提升 &lt;strong&gt;+1.45%&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种直接拉动核心交易指标的成果，充分证明了 MTFM 框架在工业界超大规模落地中的巨大商业价值。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="7-深度反思与未来展望推荐系统终局之战"&gt;7. 深度反思与未来展望：推荐系统终局之战&lt;/h2&gt;
+&lt;p&gt;当我们深入读完这篇长达近万字的顶级工业论文，我们不得不惊叹于美团算法与工程团队的魄力与技术底蕴。MTFM 不仅仅是一篇论文，它是推荐系统发展史上的一个重要缩影。&lt;/p&gt;
+&lt;h3 id="71-从领域定制走向通用智能"&gt;7.1 从“领域定制”走向“通用智能”&lt;/h3&gt;
+&lt;p&gt;过去十几年，推荐系统的发展史就是一部“特征交叉结构”的发明史。从 FM 到 DeepFM，从 DCN 到 xDeepFM，算法工程师们绞尽脑汁地设计各种网络来捕捉特征交互。在多场景领域，大家又在绞尽脑汁设计各种 MoE、MMoE、PLE 来隔离领域知识。&lt;/p&gt;
+&lt;p&gt;而 MTFM 告诉我们：&lt;strong&gt;大道至简&lt;/strong&gt;。
+不要再去手工设计复杂的塔结构了，不要再去强行对齐那些根本不属于同一个维度的特征了。把一切都变成 Token，扔进基于 Transformer 的基础模型中，让注意力机制（Attention）去自动学习特征之间的相关性。只要你的数据足够多、参数量足够大（Scaling Laws），基础模型的泛化能力会碾压一切手工设计的启发式规则。&lt;/p&gt;
+&lt;h3 id="72-算法与工程的终极交响曲"&gt;7.2 算法与工程的终极交响曲&lt;/h3&gt;
+&lt;p&gt;MTFM 的成功，一半归功于算法的洞察，一半归功于工程的极致压榨。
+如果没有 User-level 的样本聚合，如果没有 Hybrid Target Attention 对复杂度的降维打击，如果没有 Triton 算子融合和 FlashAttention-2 的魔改，MTFM 根本不可能在成本敏感的工业界存活下来。
+这给我们留下了深刻的启示：&lt;strong&gt;未来的推荐大模型工程师，必须是“全栈”的。&lt;/strong&gt; 你不仅要懂算法原理，还要懂 CUDA，懂 GPU 内存层级，懂 Triton 算子开发。算法的创新必须与底层硬件的特性深度绑定（Hardware-aware Co-design），才能爆发出真正的威力。&lt;/p&gt;
+&lt;h3 id="73-推荐系统的未来dlrm-的终结"&gt;7.3 推荐系统的未来：DLRM 的终结？&lt;/h3&gt;
+&lt;p&gt;随着 MTFM 这样基于纯 Transformer 骨干架构的基础模型在工业界大放异彩，我们不禁要问：传统的 DLRM 时代是否即将落幕？
+当特征表征、序列建模、跨场景知识迁移都可以被统一到一个“万物皆 Token”的基础大模型中时，推荐系统正在以肉眼可见的速度向 NLP 的大语言模型（LLM）靠拢。&lt;/p&gt;
+&lt;p&gt;或许在不久的将来，美团（甚至整个工业界）的推荐系统，将只剩下一个极其庞大的、不断 Scaling 的统一大模型。它吞噬着来自外卖、单车、优选、酒店等所有场景的数据，像一个无所不知的智慧大脑，为每一个用户提供最精准的个性化服务。&lt;/p&gt;
+&lt;p&gt;MTFM，无疑是通向这个终局目标的一座坚实桥梁。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(全文完)&lt;/em&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="8-附录与深度扩展从理论到代码的终极拆解"&gt;8. 附录与深度扩展：从理论到代码的终极拆解&lt;/h2&gt;
+&lt;p&gt;为了让对技术细节有极致追求的读者能够完全吃透 MTFM，我们在本节中增加更为底层的原理论证、伪代码实现以及与业界主流方案的硬核对比。这部分内容将深入到模型结构的神经末梢和 CUDA 算子的内存分配逻辑中。&lt;/p&gt;
+&lt;h3 id="81-伪代码实现hybrid-target-attention-hta"&gt;8.1 伪代码实现：Hybrid Target Attention (HTA)&lt;/h3&gt;
+&lt;p&gt;前文提到了全注意力层和目标注意力层的数学公式，这里我们将它们转化为更直观的 PyTorch 风格伪代码。这有助于理解 T-token 是如何在 Target Attention Layer 中被单独更新的，以及 Shortcut 的具体运作方式。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch.nn&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;nn&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;torch.nn.functional&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;F&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MTFM_Block&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_heads&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;d_model&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;num_target_layers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 1层 Full Attention Layer (这里用标准的多头注意力替代 GQA 做演示)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_attn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MultiHeadAttention&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_heads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_ffn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FeedForward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# K层 Target Attention Layers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_attns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;MultiHeadAttention&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n_heads&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_ffns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;FeedForward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm1s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm2s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModuleList&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LayerNorm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d_model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;forward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;L_H&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;L_R&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s2"&gt; x: [Batch_size, N, d_model], N = L_H + L_R + L_T
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s2"&gt; mask: [Batch_size, N, N] 动态掩码矩阵
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s2"&gt; &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 1. Full Attention Layer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_norm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm1&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 全局计算 Q, K, V&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;attn_out&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_attn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;attn_out&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_norm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_norm2&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ffn_out&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;full_ffn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x_norm&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ffn_out&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 2. Target Attention Layers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ==========================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 找到 T-token 的起始位置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;context_len&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;L_H&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;L_R&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;num_target_layers&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 将 x 拆分为 Context (H, R) 和 Target (T)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;:,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 切分对应的 Mask&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# Target 只需要看自己和早于它的 Context，因此 mask 的维度是 [Batch_size, L_T, N]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;target_mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;:,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 对整个序列做 Norm 得到 Key 和 Value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm1s&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 只对 Target 做 Norm 得到 Query&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;q_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="n"&gt;context_len&lt;/span&gt;&lt;span class="p"&gt;:,&lt;/span&gt; &lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;k_full&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;v_full&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_norm_full&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 注意力计算：Query 数量大幅减少，只有 L_T 个&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;attn_out_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_attns&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;q_target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;k_full&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;v_full&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;mask&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;target_mask&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 更新 Target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;attn_out_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# FFN 更新 Target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target_norm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_norm2s&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="n"&gt;x_target&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ffn_out_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;target_ffns&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="n"&gt;x_target_norm&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x_target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;residual_target&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ffn_out_target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 将更新后的 Target 和未经修改的 Context 重新拼接，传给下一层！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# 这是极其关键的一步，保证了 Context 表征的不变性与算力的极大节约&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;torch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cat&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;x_context&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x_target&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;dim&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;通过这段伪代码可以非常清晰地看到，&lt;code&gt;q_target&lt;/code&gt; 的维度是 &lt;code&gt;[Batch_size, L_T, d_model]&lt;/code&gt;，而 &lt;code&gt;k_full&lt;/code&gt; 的维度是 &lt;code&gt;[Batch_size, N, d_model]&lt;/code&gt;。矩阵乘法 \(Q \cdot K^T\) 的计算量直接从 \(O(N \times N)\) 暴跌到了 \(O(L_T \times N)\)。在工业界推荐系统中，\(L_H\) 和 \(L_R\)（历史行为）通常长达上千甚至数千，而 \(L_T\)（单次请求的曝光候选）可能只有几十到一两百。这种不对称性正是 Target Attention 能够实现“算力魔法”的物理基础。&lt;/p&gt;
+&lt;h3 id="82-动态掩码-dynamic-masking-的拓扑结构解析"&gt;8.2 动态掩码 (Dynamic Masking) 的拓扑结构解析&lt;/h3&gt;
+&lt;p&gt;在 MTFM 中，掩码的设计绝非简单的因果下三角（Lower Triangular Causal Mask）。为了防范极其隐蔽的数据穿越（Information Leakage），掩码矩阵 \(\mathbf{M}\) 的内部结构被精心雕琢。&lt;/p&gt;
+&lt;p&gt;假设我们有 3 个 H-token (\(H_1, H_2, H_3\))，2 个 R-token (\(R_1, R_2\))，以及 2 个 T-token (\(T_1, T_2\))。
+整个序列 \(X = [H_1, H_2, H_3, R_1, R_2, T_1, T_2]\)。&lt;/p&gt;
+&lt;p&gt;其可见性矩阵 \(\mathbf{M}\)（1 表示可见，0 表示掩码屏蔽）如下所示：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: left"&gt;Query \ Key&lt;/th&gt;
+&lt;th style="text-align: center"&gt;H1&lt;/th&gt;
+&lt;th style="text-align: center"&gt;H2&lt;/th&gt;
+&lt;th style="text-align: center"&gt;H3&lt;/th&gt;
+&lt;th style="text-align: center"&gt;R1&lt;/th&gt;
+&lt;th style="text-align: center"&gt;R2&lt;/th&gt;
+&lt;th style="text-align: center"&gt;T1&lt;/th&gt;
+&lt;th style="text-align: center"&gt;T2&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;H1&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;H2&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;H3&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;R1&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;R2&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;T1&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;T2&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;td style="text-align: center"&gt;0&lt;/td&gt;
+&lt;td style="text-align: center"&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;深度解析&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;左上角 3x3 矩阵 (H 对 H)&lt;/strong&gt;：全是 1。H-token 代表长期历史，它们彼此之间没有严格的因果遮蔽需求，采用双向可见（Bidirectional Visibility）以获得更丰富的表征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;中间 2x2 矩阵 (R 对 R)&lt;/strong&gt;：是一个下三角矩阵。R-token 是近期的实时序列，必须严格遵循时间先后顺序（Causal Mask），防止未来的行为影响对过去状态的推断。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;右下角 2x2 矩阵 (T 对 T)&lt;/strong&gt;：是对角线矩阵。T-token 代表当前的多个候选曝光目标，在同一次打分请求中，它们是相互独立且平行的，绝对不能互相看到对方的特征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;左下角 (T 对 H, R)&lt;/strong&gt;：全是 1。T-token 必须能够利用所有的历史和实时信息来辅助预测。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;右上角 (H, R 对 T)&lt;/strong&gt;：全是 0。这是为了防止标签泄露（Label Leakage）。如果历史状态能够看到当前的预测目标，模型就会发生作弊现象。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这种不规则的稀疏矩阵结构，正是导致标准 FlashAttention-2 性能下降的罪魁祸首，也是美团团队为什么必须手写 Triton Kernel 和魔改 FlashAttention 的根本原因。&lt;/p&gt;
+&lt;h3 id="83-工业界多场景推荐-msr-模型演进编年史"&gt;8.3 工业界多场景推荐 (MSR) 模型演进编年史&lt;/h3&gt;
+&lt;p&gt;为了更好地评估 MTFM 的历史地位，我们需要将其放置在整个多场景推荐模型的发展脉络中进行审视。&lt;/p&gt;
+&lt;h4 id="阶段一硬共享与完全独立-hard-sharing-vs-fully-independent"&gt;阶段一：硬共享与完全独立 (Hard Sharing vs. Fully Independent)&lt;/h4&gt;
+&lt;p&gt;早期，由于算力限制，多场景推荐要么采用一个极其庞大的单一模型（Hard Sharing），底层 Embedding 完全共享，顶层用一个 MLP 强行拟合所有场景；要么就是每个场景维护一个完全独立的模型（Fully Independent）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：Hard Sharing 会导致跷跷板效应（Seesaw Effect），即大场景主导梯度，小场景效果极差；独立模型则无法利用全局数据，导致冷启动场景无法收敛。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="阶段二星型拓扑与-moe-时代-star-m3oe"&gt;阶段二：星型拓扑与 MoE 时代 (STAR, M3OE)&lt;/h4&gt;
+&lt;p&gt;以阿里 STAR（2021）为代表的模型开启了参数解耦的时代。STAR 引入了一个共享的中心网络（Center Network）和每个场景特有的网络（Scenario-specific Networks），通过权重相乘或相加来融合。
+随后的 M3OE 将 Mixture-of-Experts 引入，设计了复杂的门控网络（Gating Networks）来决定当前样本应该分配给哪些专家（Experts）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：虽然缓解了跷跷板效应，但它们依然要求极度死板的特征对齐。如果场景 A 有 50 个特征，场景 B 有 80 个特征，工程师必须手工把它们对齐到相同的维度。这在特征维度动辄上万的工业界，简直是灾难。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="阶段三基于-transformer-的单场景生成式框架-hstu-mtgr"&gt;阶段三：基于 Transformer 的单场景生成式框架 (HSTU, MTGR)&lt;/h4&gt;
+&lt;p&gt;随着生成式推荐（Generative Recommendation）的兴起，阿里提出了 HSTU（2024），美团提出了 MTGR（2025）。它们开始将推荐系统视为序列转换任务，利用 Transformer 来捕捉行为序列中的深层模式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;痛点&lt;/strong&gt;：这些模型主要还是在单场景下大杀四方，一旦扩展到多场景，巨长无比的序列会导致计算复杂度直接将集群撑爆。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="阶段四foundation-model-时代-mtfm"&gt;阶段四：Foundation Model 时代 (MTFM)&lt;/h4&gt;
+&lt;p&gt;MTFM（2025）集大成于一身。它既拥有 Transformer 的无限 Scaling 潜力，又通过异构 Token 化解决了多场景特征对齐的死穴，最后通过 User-level 聚合与 HTA 混合注意力机制，以近乎作弊的方式把时间复杂度给降了下来。&lt;/p&gt;
+&lt;h3 id="84-极致算子优化triton-与-flashattention-的魔法"&gt;8.4 极致算子优化：Triton 与 FlashAttention 的魔法&lt;/h3&gt;
+&lt;p&gt;我们再来深挖一下论文中提到的 &lt;strong&gt;Triton 算子融合&lt;/strong&gt; 和 &lt;strong&gt;FlashAttention 魔改&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在 GPU 内存层级中，SRAM（Shared Memory）的速度极快，但容量极小（每块 SM 只有几十到一百多 KB）；HBM（Global Memory）容量大（如 A100 的 80GB），但速度极慢。&lt;/p&gt;
+&lt;p&gt;在原生 PyTorch 中，计算 &lt;code&gt;GLN(Group Layer Normalization)&lt;/code&gt; 的流程如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;从 HBM 读取张量 \(X\) 到 SRAM。&lt;/li&gt;
+&lt;li&gt;计算均值和方差。&lt;/li&gt;
+&lt;li&gt;将均值和方差写回 HBM。&lt;/li&gt;
+&lt;li&gt;再次从 HBM 读取 \(X\)、均值、方差。&lt;/li&gt;
+&lt;li&gt;进行归一化计算，并乘以缩放参数。&lt;/li&gt;
+&lt;li&gt;最终写回 HBM。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在这个过程中，HBM 的读写（Memory Bound）占据了 90% 以上的时间，GPU 的计算核心（Compute Bound）反而闲得发慌。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MTFM 团队的 Triton 算子融合策略&lt;/strong&gt;：
+使用 Triton 编写定制化 Kernel，将上述 6 步合并为 1 步。通过在 SRAM 中保留中间变量，避免了与 HBM 的反复通信。更绝的是，他们将 &lt;strong&gt;动态掩码的生成&lt;/strong&gt; 也融合进了这个 Kernel 中。利用向量化加载（Vectorized Load，如 &lt;code&gt;tl.load(pointer, block_size)&lt;/code&gt;）直接在寄存器层级完成掩码过滤。&lt;/p&gt;
+&lt;p&gt;对于 FlashAttention-2，原生版本为了追求极致性能，假定了掩码是极其规律的因果下三角。当遇到 MTFM 这种“左上角全 1、中间下三角、右下角对角线”的奇葩矩阵时，原生的块分片（Block Tiling）策略会失效。
+美团团队在修改 FlashAttention 源码时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;构造连续对齐掩码内存&lt;/strong&gt;：将稀疏掩码在内存中重新排列（Memory Layout Reordering），保证每一次读取都是 128 bytes 连续对齐的，从而激活 GPU 的异步拷贝指令（cp.async）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;精细的数据流策略&lt;/strong&gt;：在 Forward 阶段，将极其微小的掩码块缓存到 Shared Memory 中；在 Backward 阶段，让掩码矩阵与计算梯度的中间变量在时间维度上复用同一块 SRAM 地址（Temporal Multiplexing），硬生生把掩码加载的延迟给掩盖（Overlap）掉了。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这种级别的工程压榨，在推荐系统领域堪称教科书级别的典范。&lt;/p&gt;
+&lt;h3 id="85-总结与启示"&gt;8.5 总结与启示&lt;/h3&gt;
+&lt;p&gt;MTFM 的横空出世，给所有依然在 DLRM 泥潭中挣扎的算法工程师敲响了警钟：
+&lt;strong&gt;不要试图用人工的先验知识，去战胜机器的算力和海量数据。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在推荐系统中，我们花费了无数个日夜去寻找所谓的高价值特征交叉（如性别和价格的交叉、年龄和品类的交叉）。我们发明了 FM、FFM、DeepFM 等无数种结构来拟合这些交叉。但 MTFM 证明了，只要将它们转化为统一的 Token，通过 Transformer 的自注意力机制，模型能够自动在极高维度上完成更深邃、更泛化的特征交叉。&lt;/p&gt;
+&lt;p&gt;而在多场景领域，MTFM 的“不妥协”——拒绝特征对齐、拒绝 Padding 填充、直接引入异构 Tokenizer——更是直击工业界痛点。它让推荐系统的架构变得空前干净、整洁。未来接入一个新场景，不需要改动核心骨干网络，只需要训练一个极小的映射 MLP。&lt;/p&gt;
+&lt;p&gt;我们有理由相信，MTFM 描绘的正是推荐系统的终极形态之一：&lt;strong&gt;一个无限大的、能够吞噬所有异构特征的、不断 Scaling 的统一基座模型。&lt;/strong&gt;&lt;/p&gt;</description></item></channel></rss>

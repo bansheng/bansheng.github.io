@@ -1,23 +1,341 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>HSTU on Bansheng's Blog</title><link>https://dingyadong.top/tags/hstu/</link><description>Recent content in HSTU on Bansheng's Blog</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Fri, 20 Mar 2026 12:00:00 +0800</lastBuildDate><atom:link href="https://dingyadong.top/tags/hstu/index.xml" rel="self" type="application/rss+xml"/><item><title>M-FALCON：HSTU 中解决“一对多”推荐推理的终极武器</title><link>https://dingyadong.top/posts/008_mfalcon_hstu_inference/</link><pubDate>Fri, 20 Mar 2026 12:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/008_mfalcon_hstu_inference/</guid><description>&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>HSTU | Yadong's Blog</title><link>https://dingyadong.top/tags/hstu/</link><atom:link href="https://dingyadong.top/tags/hstu/index.xml" rel="self" type="application/rss+xml"/><description>HSTU</description><generator>HugoBlox Kit (https://hugoblox.com)</generator><language>zh-cn</language><lastBuildDate>Fri, 20 Mar 2026 12:00:00 +0800</lastBuildDate><image><url>https://dingyadong.top/media/icon.svg</url><title>HSTU</title><link>https://dingyadong.top/tags/hstu/</link></image><item><title>M-FALCON：HSTU 中解决“一对多”推荐推理的终极武器</title><link>https://dingyadong.top/posts/008_mfalcon_hstu_inference/</link><pubDate>Fri, 20 Mar 2026 12:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/008_mfalcon_hstu_inference/</guid><description>
+&lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
 &lt;p&gt;在 Meta AI 提出的 HSTU（万亿参数推荐大模型）论文中，除了惊艳的生成式训练范式，还有一个非常硬核的推理加速技术：&lt;strong&gt;M-FALCON&lt;/strong&gt;。本文将为你深入浅出地拆解它的原理，以及它和我们常说的 KV-Cache 有什么异同。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2 id="1-推荐系统排序阶段的灾难性痛点"&gt;1. 推荐系统排序阶段的“灾难性”痛点&lt;/h2&gt;
-&lt;p&gt;在推荐系统的排序（Ranking）阶段，我们面临着一个典型的**“一用户对多候选”**（Target-aware Ranking）的场景：&lt;/p&gt;
+&lt;h2 id="1-推荐系统排序阶段的灾难性痛点"&gt;1. 推荐系统排序阶段的”灾难性”痛点&lt;/h2&gt;
+&lt;p&gt;在推荐系统的排序（Ranking）阶段，我们面临着一个典型的**”一用户对多候选”**（Target-aware Ranking）的场景：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;我们有一段长度为 $n$ 的用户历史行为序列（比如用户过去看过的 1000 个视频）。&lt;/li&gt;
 &lt;li&gt;我们有 $m$ 个需要被评估打分的候选视频（Target）。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;如果我们直接用标准的 Transformer（自回归模式）来计算，意味着每评估一个候选视频，都要把“用户历史 + 这个候选视频”送进模型跑一遍。
-对于 $m$ 个候选，这就需要跑 $m$ 次，整体计算复杂度高达 $\mathcal{O}(m \cdot n^2)$。当 $m$ 达到成千上万，且 $n$ 也很长时，在线推理的延迟是不可接受的。&lt;/p&gt;
-&lt;h2 id="2-m-falcon-是如何破局的"&gt;2. M-FALCON 是如何破局的？&lt;/h2&gt;
+&lt;h3 id="11-朴素方法的计算瓶颈"&gt;1.1 朴素方法的计算瓶颈&lt;/h3&gt;
+&lt;p&gt;如果我们直接用标准的 Transformer（自回归模式）来计算，意味着每评估一个候选视频，都要把”用户历史 + 这个候选视频”送进模型跑一遍。对于 $m$ 个候选，这就需要跑 $m$ 次，整体计算复杂度高达 $\mathcal{O}(m \cdot n^2)$。&lt;/p&gt;
+&lt;p&gt;具体来说，这个复杂度可以拆解为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;单次 Attention 计算&lt;/strong&gt;：对于长度为 $n$ 的序列，标准自注意力机制的复杂度为 $\mathcal{O}(n^2 \cdot d)$，其中 $d$ 是隐层维度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重复计算&lt;/strong&gt;：每个候选视频都需要独立地与整段用户历史交互，相当于把 $\mathcal{O}(n^2)$ 的计算重复了 $m$ 次。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实际数量级&lt;/strong&gt;：在工业级场景中，$n$ 通常在 $500 \sim 2000$，$m$ 通常在 $500 \sim 5000$。这意味着单次请求的计算量可以轻松达到 $10^9$ 级别的浮点运算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当 $m$ 达到成千上万，且 $n$ 也很长时，在线推理的延迟是不可接受的。工业推荐系统通常要求排序阶段在 &lt;strong&gt;10~50ms&lt;/strong&gt; 内完成，朴素方法根本无法满足这一要求。&lt;/p&gt;
+&lt;h3 id="12-为什么不能简单地缩小模型"&gt;1.2 为什么不能简单地缩小模型？&lt;/h3&gt;
+&lt;p&gt;一个自然的疑问是：既然计算量太大，能不能缩小模型？答案是&lt;strong&gt;不行&lt;/strong&gt;，原因如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;HSTU 的核心价值在于用超大模型（万亿参数）来统一建模用户行为序列，缩小模型会严重损害推荐质量。&lt;/li&gt;
+&lt;li&gt;用户历史序列的长度 $n$ 直接关系到推荐效果，截断历史会丢失宝贵的长期兴趣信号。&lt;/li&gt;
+&lt;li&gt;排序阶段的候选数 $m$ 由上游召回模块决定，不能随意减少。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此，&lt;strong&gt;推理加速&lt;/strong&gt;成为了唯一可行的路径，M-FALCON 正是为此而生。&lt;/p&gt;
+&lt;h2 id="2-前置知识kv-cache-机制详解"&gt;2. 前置知识：KV-Cache 机制详解&lt;/h2&gt;
+&lt;p&gt;在深入 M-FALCON 之前，我们需要先理解它所依赖的基础技术——&lt;strong&gt;KV-Cache&lt;/strong&gt;。这一机制最初在大语言模型（LLM）的自回归推理中被广泛使用。&lt;/p&gt;
+&lt;h3 id="21-标准-transformer-自注意力回顾"&gt;2.1 标准 Transformer 自注意力回顾&lt;/h3&gt;
+&lt;p&gt;在标准的多头自注意力（Multi-Head Self-Attention）中，给定输入序列 $X \in \mathbb{R}^{L \times d}$，我们通过三个投影矩阵得到：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Query（查询）&lt;/strong&gt;：$Q = X W_Q$&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key（键）&lt;/strong&gt;：$K = X W_K$&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Value（值）&lt;/strong&gt;：$V = X W_V$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;注意力计算公式为：&lt;/p&gt;
+$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V$$&lt;h3 id="22-自回归推理中的冗余计算"&gt;2.2 自回归推理中的冗余计算&lt;/h3&gt;
+&lt;p&gt;在 LLM 的自回归生成中，模型逐个 Token 生成输出。当生成第 $t$ 个 Token 时：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;需要计算当前 Token 的 Query $q_t$。&lt;/li&gt;
+&lt;li&gt;需要用 $q_t$ 与&lt;strong&gt;所有已生成 Token&lt;/strong&gt; 的 Key 和 Value 做注意力计算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果每次都重新计算所有 Token 的 K 和 V，复杂度为 $\mathcal{O}(t^2)$——这是极大的浪费，因为前 $t-1$ 个 Token 的 K 和 V 在之前的步骤中已经计算过了。&lt;/p&gt;
+&lt;h3 id="23-kv-cache-的核心思想"&gt;2.3 KV-Cache 的核心思想&lt;/h3&gt;
+&lt;p&gt;KV-Cache 的做法非常直观：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;缓存历史&lt;/strong&gt;：将每一步计算出的 $K_t$ 和 $V_t$ 存入一个不断增长的缓存中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;增量计算&lt;/strong&gt;：在第 $t$ 步，只需计算当前新 Token 的 $Q_t$、$K_t$、$V_t$，然后将 $K_t$、$V_t$ 追加到缓存，再用 $Q_t$ 与完整的缓存做注意力计算。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复杂度降低&lt;/strong&gt;：单步推理从 $\mathcal{O}(t^2)$ 降至 $\mathcal{O}(t)$，总生成 $T$ 个 Token 的复杂度从 $\mathcal{O}(T^3)$ 降至 $\mathcal{O}(T^2)$。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;KV-Cache 的关键优势在于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;避免重复计算&lt;/strong&gt;：已生成 Token 的 K、V 只计算一次。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;以空间换时间&lt;/strong&gt;：需要额外的显存来存储缓存，但换来了显著的速度提升。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数值等价&lt;/strong&gt;：缓存机制不改变计算结果，是一种无损加速。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="24-kv-cache-的局限性"&gt;2.4 KV-Cache 的局限性&lt;/h3&gt;
+&lt;p&gt;传统 KV-Cache 是为 &lt;strong&gt;”一对一”&lt;/strong&gt; 的自回归场景设计的，即一个前缀序列对应一个后续生成序列。但在推荐系统的排序场景中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同一个用户前缀需要对应 $m$ 个不同的候选——这是一个 &lt;strong&gt;”一对多”&lt;/strong&gt; 的场景。&lt;/li&gt;
+&lt;li&gt;即使用了 KV-Cache 避免了用户历史的重复计算，$m$ 个候选仍需逐个送入模型，&lt;strong&gt;逐个推理的方式受限于内存访存带宽&lt;/strong&gt;（Memory-bound），无法充分利用 GPU 的并行算力。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这正是 M-FALCON 要解决的问题。&lt;/p&gt;
+&lt;h2 id="3-m-falcon-是如何破局的"&gt;3. M-FALCON 是如何破局的？&lt;/h2&gt;
 &lt;p&gt;M-FALCON 全称是 &lt;em&gt;Microbatched Fast Attention Leveraging Cacheable OperatioNs&lt;/em&gt;。为了打破上述瓶颈，它采用了两个核心策略：&lt;strong&gt;KV-Cache 共享&lt;/strong&gt;与&lt;strong&gt;特殊掩码的微批处理 (Microbatching)&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3 id="21-用户历史的-kv-cache-预计算"&gt;2.1 用户历史的 KV-Cache 预计算&lt;/h3&gt;
-&lt;p&gt;既然这 $m$ 个候选视频都要和&lt;strong&gt;同一段&lt;/strong&gt;用户历史进行交互，那么用户历史在 Transformer 中计算出的 Query, Key, Value 其实是完全一致的。
-M-FALCON 借用了大语言模型（LLM）中成熟的 &lt;strong&gt;KV-Cache&lt;/strong&gt; 思想：首先把长度为 $n$ 的用户历史的 KV 矩阵计算出来并缓存（Cache）住。这样后续计算候选物品时，就不需要再重复计算历史序列的特征了。&lt;/p&gt;
-&lt;h3 id="22-微批处理与特殊的-attention-mask"&gt;2.2 微批处理与特殊的 Attention Mask&lt;/h3&gt;
-&lt;p&gt;这是 M-FALCON 最巧妙的地方。如果只用 KV-Cache，逐个计算候选商品依然很慢（内存访存带宽瓶颈，即 Memory-bound）。
-M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微批次（Microbatch）&lt;/strong&gt;，把它们拼接在用户历史的后面一起送入模型。&lt;/p&gt;</description></item><item><title>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</title><link>https://dingyadong.top/posts/007_hstu_paper_review/</link><pubDate>Fri, 20 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/007_hstu_paper_review/</guid><description>&lt;blockquote&gt;
-&lt;p&gt;本文是关于 Meta AI 重磅论文《Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations》（&lt;a href="https://arxiv.org/pdf/2402.17152"&gt;arXiv:2402.17152&lt;/a&gt;）的阅读笔记，重点探讨 HSTU 架构如何改进传统的自注意力机制。&lt;/p&gt;
+&lt;h3 id="31-用户历史的-kv-cache-预计算"&gt;3.1 用户历史的 KV-Cache 预计算&lt;/h3&gt;
+&lt;p&gt;既然这 $m$ 个候选视频都要和&lt;strong&gt;同一段&lt;/strong&gt;用户历史进行交互，那么用户历史在 Transformer 中计算出的 Query, Key, Value 其实是完全一致的。&lt;/p&gt;
+&lt;p&gt;M-FALCON 借用了大语言模型（LLM）中成熟的 &lt;strong&gt;KV-Cache&lt;/strong&gt; 思想：首先把长度为 $n$ 的用户历史的 KV 矩阵计算出来并缓存（Cache）住。这样后续计算候选物品时，就不需要再重复计算历史序列的特征了。&lt;/p&gt;
+&lt;p&gt;具体步骤如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Prefill 阶段&lt;/strong&gt;：将长度为 $n$ 的用户历史序列送入 HSTU 模型的所有 Transformer 层，得到每一层的 $K^{(l)}_{\text{hist}}, V^{(l)}_{\text{hist}} \in \mathbb{R}^{n \times d_k}$，其中 $l$ 表示层编号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缓存存储&lt;/strong&gt;：将所有层的 KV 对存储在 GPU 显存中。对于 $L$ 层、$H$ 头的模型，总缓存量为 $2 \times L \times H \times n \times d_k$。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复用&lt;/strong&gt;：后续每个候选物品的计算都直接读取这份缓存，无需重新计算。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="32-微批处理与特殊的-attention-mask"&gt;3.2 微批处理与特殊的 Attention Mask&lt;/h3&gt;
+&lt;p&gt;这是 M-FALCON 最巧妙的地方。如果只用 KV-Cache，逐个计算候选商品依然很慢（内存访存带宽瓶颈，即 Memory-bound）。&lt;/p&gt;
+&lt;p&gt;M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微批次（Microbatch）&lt;/strong&gt;，把它们拼接在用户历史的后面一起送入模型。&lt;/p&gt;
+&lt;p&gt;但这里有一个关键问题：&lt;strong&gt;同批次内的候选商品，彼此之间不能产生注意力交互&lt;/strong&gt;（也就是候选 A 不能”看到”候选 B），否则就会发生信息泄露（Crosstalk）。&lt;/p&gt;
+&lt;h4 id="321-为什么-crosstalk-是致命的"&gt;3.2.1 为什么 Crosstalk 是致命的？&lt;/h4&gt;
+&lt;p&gt;在排序场景中，每个候选物品应该独立地获得一个打分。如果候选 A 的表征受到了候选 B 的影响：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;排序不一致&lt;/strong&gt;：同一个候选物品在不同的微批次中会得到不同的分数（因为同批次的其他候选不同）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;信息泄漏&lt;/strong&gt;：候选物品之间产生了不该存在的信息流动，违反了排序任务的独立性假设。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;训练-推理不一致&lt;/strong&gt;：训练时每个候选是独立计算的，推理时如果引入了 Crosstalk，等于改变了计算图。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="322-注意力掩码的精确构造"&gt;3.2.2 注意力掩码的精确构造&lt;/h4&gt;
+&lt;p&gt;为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）。假设序列拼接后为 $[\text{hist}_1, \dots, \text{hist}_n, \text{cand}_1, \dots, \text{cand}_{b_m}]$，掩码矩阵 $M \in \mathbb{R}^{(n+b_m) \times (n+b_m)}$ 的构造规则为：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;用户历史内部&lt;/strong&gt;：标准的因果掩码（Causal Mask），即 $M_{ij} = 1$ 当且仅当 $i \geq j$（对于 $i, j \leq n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &gt; n, j \leq n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 自身&lt;/strong&gt;：候选商品对自己是可见的（对角线为 1），即 $M_{ii} = 1$。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &gt; n$）。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;用直观的矩阵形式表示，掩码结构如下：&lt;/p&gt;
+$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\\\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
+&lt;h4 id="323-微批次大小的选择"&gt;3.2.3 微批次大小的选择&lt;/h4&gt;
+&lt;p&gt;微批次大小 $b_m$ 是一个需要精心调优的超参数：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;$b_m$ 过小&lt;/strong&gt;：微批次数量 $\lceil m / b_m \rceil$ 过多，KV-Cache 的重复读取开销增大，无法充分利用 GPU 并行度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;$b_m$ 过大&lt;/strong&gt;：单次前向传播的序列长度 $n + b_m$ 增大，Attention 的计算量 $\mathcal{O}((n+b_m)^2)$ 快速增长，可能超出 GPU 显存限制。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;最佳平衡点&lt;/strong&gt;：通常 $b_m$ 取值在 $16 \sim 128$ 之间，具体取决于 $n$ 的大小、模型的层数和头数、以及 GPU 显存容量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="33-完整推理流程总结"&gt;3.3 完整推理流程总结&lt;/h3&gt;
+&lt;p&gt;M-FALCON 的完整推理流程可以归纳为以下步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Prefill&lt;/strong&gt;：输入用户历史序列，计算并缓存所有层的 KV。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分批&lt;/strong&gt;：将 $m$ 个候选划分为 $\lceil m / b_m \rceil$ 个微批次。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;并行解码&lt;/strong&gt;：对每个微批次，构造特殊掩码，读取 KV-Cache，执行一次前向传播，得到该批次所有候选的分数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;合并输出&lt;/strong&gt;：将所有微批次的分数汇总，输出最终排序列表。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="4-复杂度分析的详细推导"&gt;4. 复杂度分析的详细推导&lt;/h2&gt;
+&lt;h3 id="41-朴素方法的复杂度"&gt;4.1 朴素方法的复杂度&lt;/h3&gt;
+&lt;p&gt;不使用任何优化时，每个候选需要独立地与整段用户历史做 Attention：&lt;/p&gt;
+$$T_{\text{naive}} = m \cdot \mathcal{O}((n+1)^2) \approx \mathcal{O}(m \cdot n^2)$$&lt;p&gt;其中 $+1$ 是候选自身，当 $n \gg 1$ 时可忽略。&lt;/p&gt;
+&lt;h3 id="42-仅使用-kv-cache-的复杂度"&gt;4.2 仅使用 KV-Cache 的复杂度&lt;/h3&gt;
+&lt;p&gt;使用 KV-Cache 后，用户历史的 KV 只计算一次，但每个候选仍需独立推理：&lt;/p&gt;
+$$T_{\text{kv-cache}} = \underbrace{\mathcal{O}(n^2)}_{\text{Prefill 阶段}} + \underbrace{m \cdot \mathcal{O}(n)}_{\text{逐个解码}}$$&lt;ul&gt;
+&lt;li&gt;Prefill 阶段计算用户历史的 KV：$\mathcal{O}(n^2)$。&lt;/li&gt;
+&lt;li&gt;每个候选只需用自己的 Query 与缓存的 KV 做一次注意力：$\mathcal{O}(n)$。&lt;/li&gt;
+&lt;li&gt;总复杂度：$\mathcal{O}(n^2 + m \cdot n)$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;相比朴素方法，节省了 $m$ 倍的 Prefill 开销，但逐个解码仍然是 &lt;strong&gt;Memory-bound&lt;/strong&gt; 的（每次只计算一个 Token 的输出，算术强度极低）。&lt;/p&gt;
+&lt;h3 id="43-m-falcon-的复杂度"&gt;4.3 M-FALCON 的复杂度&lt;/h3&gt;
+&lt;p&gt;使用 M-FALCON（KV-Cache + 微批处理）后：&lt;/p&gt;
+$$T_{\text{M-FALCON}} = \underbrace{\mathcal{O}(n^2)}_{\text{Prefill}} + \underbrace{\lceil m/b_m \rceil \cdot \mathcal{O}(b_m \cdot (n + b_m))}_{\text{微批次解码}}$$&lt;p&gt;微批次解码的详细推导：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每个微批次有 $b_m$ 个候选 Token，它们各自需要 Attend to $n$ 个历史 Token 和自身，因此单个微批次的 Attention 计算量为 $\mathcal{O}(b_m \cdot (n + b_m))$。&lt;/li&gt;
+&lt;li&gt;更严格地，考虑完整的 $(n+b_m) \times (n+b_m)$ 注意力矩阵，由于掩码的存在，实际有效计算量为 $\mathcal{O}(n^2 + b_m \cdot n + b_m)$，其中 $n^2$ 部分可以通过 KV-Cache 跳过，所以增量计算只有 $\mathcal{O}(b_m \cdot (n + 1))$。&lt;/li&gt;
+&lt;li&gt;总复杂度：$\mathcal{O}(n^2 + \lceil m/b_m \rceil \cdot b_m \cdot n) = \mathcal{O}(n^2 + m \cdot n)$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="44-三种方法的复杂度对比"&gt;4.4 三种方法的复杂度对比&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;方法&lt;/th&gt;
+&lt;th&gt;复杂度&lt;/th&gt;
+&lt;th&gt;典型值 ($n=1000, m=1000$)&lt;/th&gt;
+&lt;th&gt;瓶颈类型&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;朴素方法&lt;/td&gt;
+&lt;td&gt;$\mathcal{O}(m \cdot n^2)$&lt;/td&gt;
+&lt;td&gt;$10^9$&lt;/td&gt;
+&lt;td&gt;Compute-bound&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;KV-Cache only&lt;/td&gt;
+&lt;td&gt;$\mathcal{O}(n^2 + m \cdot n)$&lt;/td&gt;
+&lt;td&gt;$2 \times 10^6$&lt;/td&gt;
+&lt;td&gt;Memory-bound&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;M-FALCON&lt;/td&gt;
+&lt;td&gt;$\mathcal{O}(n^2 + m \cdot n)$&lt;/td&gt;
+&lt;td&gt;$2 \times 10^6$&lt;/td&gt;
+&lt;td&gt;Compute-bound&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;关键观察：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;KV-Cache only 和 M-FALCON 的&lt;strong&gt;理论复杂度相同&lt;/strong&gt;，但 M-FALCON 通过微批处理将瓶颈从 Memory-bound 转化为 Compute-bound。&lt;/li&gt;
+&lt;li&gt;在现代 GPU 上，Compute-bound 的操作能更好地利用硬件的并行算力，实际延迟远低于 Memory-bound 的逐个解码。&lt;/li&gt;
+&lt;li&gt;论文实验表明，M-FALCON 在实际部署中可以带来 &lt;strong&gt;2~4 倍&lt;/strong&gt;的端到端延迟降低。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="5-m-falcon-原理流程图"&gt;5. M-FALCON 原理流程图&lt;/h2&gt;
+&lt;p&gt;下面这张图直观地展示了 M-FALCON 的工作流：&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+%% Define Styles
+classDef user fill:#f3f4f6,stroke:#3b82f6,stroke-width:2px;
+classDef cache fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
+classDef mask fill:#fef3c7,stroke:#d97706,stroke-width:2px;
+classDef output fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
+UserHistory[“用户历史序列 (长度 n)”]:::user
+UserHistory --&gt;|1. 仅计算一次| KVCache[“预计算并缓存 KV-Cache”]:::cache
+subgraph Microbatch_Processing [“2. 微批处理 (Microbatching)”]
+Candidates[“剩余待排序候选商品 (总数 m)”]
+Candidates --&gt;|切分为批次| Batch[“当前微批次 (大小 bm)”]
+Batch --&gt; Masking[“3. 构造特殊 Attention Mask&lt;br/&gt;(候选商品可见历史，但互不可见)”]:::mask
+KVCache --&gt; Masking
+Masking --&gt;|并行前向传播| Forward[“HSTU Block 计算”]
+end
+Forward --&gt; Scores[“输出该批次 bm 个商品的排序分值”]:::output
+Scores --&gt; Check{“是否还有剩余候选?”}
+Check -- “是 (处理下一批次)” --&gt; Batch
+Check -- “否” --&gt; Done[“返回最终排序列表”]
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id="6-与其他推理优化技术的全面对比"&gt;6. 与其他推理优化技术的全面对比&lt;/h2&gt;
+&lt;p&gt;M-FALCON 的出现，是 LLM 推理技术向推荐系统迁移的成功典范。下面我们从多个维度将 M-FALCON 与当前主流的推理优化技术进行系统对比。&lt;/p&gt;
+&lt;h3 id="61-对比总览表"&gt;6.1 对比总览表&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;维度&lt;/th&gt;
+&lt;th&gt;M-FALCON&lt;/th&gt;
+&lt;th&gt;标准 KV-Cache&lt;/th&gt;
+&lt;th&gt;PagedAttention (vLLM)&lt;/th&gt;
+&lt;th&gt;FlashAttention&lt;/th&gt;
+&lt;th&gt;Speculative Decoding&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;核心思想&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;KV-Cache + 微批掩码&lt;/td&gt;
+&lt;td&gt;缓存历史 KV 避免重复计算&lt;/td&gt;
+&lt;td&gt;分页管理 KV-Cache 显存&lt;/td&gt;
+&lt;td&gt;IO-aware 的精确注意力&lt;/td&gt;
+&lt;td&gt;小模型草稿 + 大模型验证&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;解决的问题&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;一对多排序推理加速&lt;/td&gt;
+&lt;td&gt;自回归生成加速&lt;/td&gt;
+&lt;td&gt;多请求并发显存管理&lt;/td&gt;
+&lt;td&gt;注意力计算 IO 瓶颈&lt;/td&gt;
+&lt;td&gt;自回归生成速度&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;适用场景&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;推荐排序&lt;/td&gt;
+&lt;td&gt;LLM 文本生成&lt;/td&gt;
+&lt;td&gt;LLM 高并发服务&lt;/td&gt;
+&lt;td&gt;通用 Transformer&lt;/td&gt;
+&lt;td&gt;LLM 文本生成&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;是否无损&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是&lt;/td&gt;
+&lt;td&gt;是（精确计算）&lt;/td&gt;
+&lt;td&gt;是（拒绝采样保证）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;加速倍数&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;2~4x&lt;/td&gt;
+&lt;td&gt;10~100x (vs 无缓存)&lt;/td&gt;
+&lt;td&gt;2~4x 吞吐提升&lt;/td&gt;
+&lt;td&gt;2~4x&lt;/td&gt;
+&lt;td&gt;2~3x&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;额外显存开销&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;KV-Cache 存储&lt;/td&gt;
+&lt;td&gt;KV-Cache 存储&lt;/td&gt;
+&lt;td&gt;分页表 + KV 块&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;小模型权重&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;是否可组合&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;可与 FlashAttention 组合&lt;/td&gt;
+&lt;td&gt;基础技术&lt;/td&gt;
+&lt;td&gt;可与 KV-Cache 组合&lt;/td&gt;
+&lt;td&gt;可与所有方法组合&lt;/td&gt;
+&lt;td&gt;可与 KV-Cache 组合&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="62-与标准-kv-cache-的深入对比"&gt;6.2 与标准 KV-Cache 的深入对比&lt;/h3&gt;
+&lt;p&gt;M-FALCON 本质上是 KV-Cache 技术在”一对多（One-to-Many）”特殊场景下的深度变种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;标准 KV-Cache&lt;/strong&gt; 是在&lt;strong&gt;时间维度&lt;/strong&gt;（预测下一个 Token）上复用，每步只生成一个新 Token，是 &lt;strong&gt;”一对一”&lt;/strong&gt; 的增量式复用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;M-FALCON&lt;/strong&gt; 是在&lt;strong&gt;候选维度&lt;/strong&gt;（给多个 Target 打分）上实现了跨样本的复用，同一份 KV-Cache 被 $m$ 个候选共享，是 &lt;strong&gt;”一对多”&lt;/strong&gt; 的批量式复用。&lt;/li&gt;
+&lt;li&gt;关键区别在于&lt;strong&gt;微批掩码&lt;/strong&gt;：标准 KV-Cache 不需要特殊掩码（因果掩码天然满足），而 M-FALCON 必须通过精心设计的掩码来防止候选间的 Crosstalk。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="63-与-pagedattention-vllm-的对比"&gt;6.3 与 PagedAttention (vLLM) 的对比&lt;/h3&gt;
+&lt;p&gt;两者解决的问题完全不同：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;PagedAttention&lt;/strong&gt; 解决的是多用户并发请求时，如何通过操作系统的”分页内存”机制来减少显存碎片，提高并发吞吐量。它关注的是 &lt;strong&gt;系统级（多请求间）&lt;/strong&gt; 的资源管理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;M-FALCON&lt;/strong&gt; 解决的是&lt;strong&gt;单用户单次请求中&lt;/strong&gt;，如何通过掩码技巧在一次计算内并行评估大量无关候选的问题。它关注的是 &lt;strong&gt;请求级（单请求内）&lt;/strong&gt; 的计算优化。&lt;/li&gt;
+&lt;li&gt;两者理论上可以组合使用：在多用户并发的推荐服务中，用 PagedAttention 管理跨请求的 KV-Cache 显存，用 M-FALCON 加速每个请求内部的候选评估。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="64-与-flashattention-的关系"&gt;6.4 与 FlashAttention 的关系&lt;/h3&gt;
+&lt;p&gt;FlashAttention 是一种硬件感知（IO-aware）的注意力计算实现，通过分块计算（Tiling）和减少 HBM 访问来加速 Attention：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;FlashAttention&lt;/strong&gt; 优化的是 Attention 算子本身的执行效率，对掩码模式不做限制。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;M-FALCON&lt;/strong&gt; 优化的是计算图层面的冗余消除和并行化。&lt;/li&gt;
+&lt;li&gt;两者是&lt;strong&gt;正交且可组合&lt;/strong&gt;的：M-FALCON 的微批 Attention 可以使用 FlashAttention 作为底层算子，从而同时获得两个层面的加速。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="7-优缺点分析"&gt;7. 优缺点分析&lt;/h2&gt;
+&lt;h3 id="71-m-falcon-的优势"&gt;7.1 M-FALCON 的优势&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;无损加速&lt;/strong&gt;：掩码机制保证了每个候选的计算与独立推理时完全等价，不引入任何近似误差。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;显著降低延迟&lt;/strong&gt;：在实际部署中可带来 2~4 倍的延迟降低，使万亿参数模型满足工业级延迟要求。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实现简洁&lt;/strong&gt;：核心改动仅在 Attention Mask 的构造和 KV-Cache 的管理上，不需要修改模型结构或训练流程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;灵活可调&lt;/strong&gt;：微批次大小 $b_m$ 可以根据硬件条件动态调整，便于适配不同的部署环境。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可组合性强&lt;/strong&gt;：可以与 FlashAttention、量化推理等其他优化技术叠加使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="72-m-falcon-的局限性"&gt;7.2 M-FALCON 的局限性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;显存开销&lt;/strong&gt;：需要为每个请求缓存完整的 KV-Cache（$2 \times L \times H \times n \times d_k$ 个浮点数），在超长历史序列或超大模型下，显存占用可能成为瓶颈。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;场景特定&lt;/strong&gt;：专门针对”一对多”的排序场景设计，不适用于通用的自回归生成任务。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批次大小调优&lt;/strong&gt;：$b_m$ 的最优值依赖于具体的硬件配置（GPU 型号、显存大小）和模型参数（层数、头数、维度），需要在每个部署环境中单独调优。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不解决 Prefill 瓶颈&lt;/strong&gt;：对于用户历史的初始计算（Prefill 阶段），复杂度仍为 $\mathcal{O}(n^2)$，当 $n$ 极大时这一阶段本身可能成为瓶颈。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;掩码实现复杂度&lt;/strong&gt;：自定义的稀疏掩码可能不被所有深度学习框架的 Attention 内核原生支持，需要编写自定义 CUDA kernel 或使用支持灵活掩码的库（如 FlashAttention v2+）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="8-工程实践启示"&gt;8. 工程实践启示&lt;/h2&gt;
+&lt;h3 id="81-对推荐系统工程师的启示"&gt;8.1 对推荐系统工程师的启示&lt;/h3&gt;
+&lt;p&gt;M-FALCON 的设计理念对推荐系统的工程实践有深远的启示意义：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;跨领域技术迁移&lt;/strong&gt;：M-FALCON 的成功说明，LLM 推理领域的成熟技术（KV-Cache、掩码机制等）可以被创造性地迁移到推荐系统中。工程师应当保持对相邻领域技术进展的敏感度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算图分析是优化的起点&lt;/strong&gt;：M-FALCON 的核心洞察来自对计算图中冗余的精准识别——$m$ 个候选共享同一份用户历史。在任何推理优化中，第一步都应该是分析计算图中是否存在可复用的中间结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Memory-bound vs Compute-bound 的转换&lt;/strong&gt;：M-FALCON 通过微批处理将逐个解码的 Memory-bound 操作转化为批量计算的 Compute-bound 操作。这一原则在 GPU 编程中具有普遍意义——尽量提高算术强度（Arithmetic Intensity）来充分利用 GPU 的计算吞吐。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="82-实际部署中的关键考量"&gt;8.2 实际部署中的关键考量&lt;/h3&gt;
+&lt;p&gt;在将 M-FALCON 落地到生产环境时，需要注意以下几点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;动态批次调度&lt;/strong&gt;：不同用户的历史长度 $n$ 不同，需要动态调整 $b_m$ 或采用 padding 策略。建议根据 $n$ 的分桶统计来预设几档 $b_m$ 值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;KV-Cache 的生命周期管理&lt;/strong&gt;：在高并发场景下，需要合理管理 KV-Cache 的分配与回收。可以借鉴 vLLM 的 PagedAttention 思想，用内存池来管理缓存。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;与量化的结合&lt;/strong&gt;：KV-Cache 可以使用低精度存储（如 FP16 甚至 INT8），在几乎不损失精度的前提下减少一半甚至更多的显存占用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多级缓存策略&lt;/strong&gt;：对于超长历史序列，可以考虑将 KV-Cache 分层：高频访问的近期历史放在 GPU HBM，低频的远期历史放在 CPU 内存或 SSD，按需加载。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;掩码的高效实现&lt;/strong&gt;：M-FALCON 的特殊掩码具有明显的块稀疏结构，可以利用 Block-Sparse Attention 内核来避免对零元素的无效计算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="83-未来演进方向"&gt;8.3 未来演进方向&lt;/h3&gt;
+&lt;p&gt;基于 M-FALCON 的技术路线，未来可能的演进方向包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;与 GQA/MQA 的结合&lt;/strong&gt;：Grouped-Query Attention 和 Multi-Query Attention 可以进一步压缩 KV-Cache 的大小，与 M-FALCON 的结合有望在更长的历史序列上取得更好的效果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动态稀疏注意力&lt;/strong&gt;：对于超长用户历史，不一定需要 Attend to 全部历史 Token，可以结合 TopK 稀疏注意力来进一步降低计算量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Prefix Caching 的跨请求复用&lt;/strong&gt;：如果不同用户存在相似的历史前缀（如热门物品），可以在请求间复用部分 KV-Cache，进一步提升系统整体吞吐。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="9-总结"&gt;9. 总结&lt;/h2&gt;
+&lt;p&gt;M-FALCON 是一项精巧且实用的推理优化技术，其核心贡献可以概括为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;识别了冗余&lt;/strong&gt;：在”一对多”排序场景中，$m$ 个候选共享同一份用户历史的 KV 表征，这份冗余可以被消除。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决了 Crosstalk&lt;/strong&gt;：通过精心设计的块稀疏注意力掩码，在一次前向传播中并行评估多个候选，同时保证候选之间互不干扰。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实现了瓶颈转换&lt;/strong&gt;：将逐个解码的 Memory-bound 操作转化为微批处理的 Compute-bound 操作，充分利用 GPU 的并行计算能力。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果没有 M-FALCON，拥有万亿参数的 HSTU 在严苛的工业级延迟要求下根本无法上线。它完美地在”生成式序列建模”与”高效在线排序”之间架起了一座桥梁，也为推荐系统领域的大模型推理优化提供了一个可借鉴的技术范式。&lt;/p&gt;</description></item><item><title>万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention</title><link>https://dingyadong.top/posts/007_hstu_paper_review/</link><pubDate>Fri, 20 Mar 2026 10:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/007_hstu_paper_review/</guid><description>
+&lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
+&lt;p&gt;本文是关于 Meta AI 重磅论文《Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations》（&lt;a href="https://arxiv.org/pdf/2402.17152" target="_blank" rel="noopener"&gt;arXiv:2402.17152&lt;/a&gt;）的阅读笔记，重点探讨 HSTU 架构如何改进传统的自注意力机制。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在自然语言处理（NLP）领域，基于 Transformer 的大模型通过 Scaling Law（缩放定律）展现了令人惊叹的涌现能力。然而在推荐系统领域，传统的深度学习推荐模型（DLRMs）极度依赖人工交叉特征，难以随着计算资源的增加实现模型效果的对数线性增长。&lt;/p&gt;
 &lt;p&gt;为了解决这一痛点，Meta AI 提出了**生成式推荐（Generative Recommenders, GRs）**的新范式，并专门为推荐场景设计了 &lt;strong&gt;HSTU（Hierarchical Sequential Transduction Unit）&lt;/strong&gt; 架构。HSTU 成功将千亿级异构特征统一为序列化表达，在训练效率和效果上大幅超越了标准 Transformer，并在工业界验证了万亿参数推荐大模型的 Scaling Law。&lt;/p&gt;
@@ -30,4 +348,100 @@ M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的&lt;strong&gt;微
 &lt;h2 id="2-hstu-相对于-self-attention-的核心改进"&gt;2. HSTU 相对于 Self-Attention 的核心改进&lt;/h2&gt;
 &lt;p&gt;HSTU 对传统的自注意力架构进行了大刀阔斧的重构，专门针对推荐数据的非平稳、极度稀疏特性进行了优化。&lt;/p&gt;
 &lt;h3 id="21-彻底抛弃笨重的-mlp-层"&gt;2.1 彻底抛弃笨重的 MLP 层&lt;/h3&gt;
-&lt;p&gt;HSTU 最大的架构创新在于&lt;strong&gt;完全移除了传统的 MLP 层&lt;/strong&gt;。它将多头注意力与前馈网络融合，替换为单层线性投影与门控网络。HSTU 巧妙地将计算分为两步：空间聚合（Spatial Aggregation）与点式变换（Pointwise Transformation）。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;HSTU 最大的架构创新在于&lt;strong&gt;完全移除了传统的 MLP 层&lt;/strong&gt;。它将多头注意力与前馈网络融合，替换为单层线性投影与门控网络。HSTU 巧妙地将计算分为两步：空间聚合（Spatial Aggregation）与点式变换（Pointwise Transformation）。&lt;/p&gt;
+&lt;p&gt;为了更直观地理解，我们可以看下面这张 HSTU 的微观结构图：&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+%% Define Styles
+classDef input fill:#f9f9f9,stroke:#333,stroke-width:2px;
+classDef linear fill:#e1f5fe,stroke:#2563eb,stroke-width:1px;
+classDef act fill:#fef3c7,stroke:#ea580c,stroke-width:1px;
+classDef attention fill:#dcfce7,stroke:#b45309,stroke-width:1px;
+classDef output fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
+%% Nodes
+Input["输入序列 X &lt;br/&gt; N x d"]:::input
+subgraph HSTU_Block ["HSTU Block (替代标准 Self-Attention + MLP)"]
+Norm1["Layer Norm"]:::linear
+Linear1["Linear Projection &lt;br/&gt; f1"]:::linear
+SiLU1["SiLU Activation &lt;br/&gt; φ1"]:::act
+Split["Split Channel &lt;br/&gt; 切分为 U, V, Q, K"]:::linear
+subgraph Spatial_Aggregation ["Spatial Aggregation (空间聚合)"]
+Attn["Q * K^T + Relative Bias &lt;br/&gt; 融合时序与位置"]:::attention
+SiLU2["SiLU Activation &lt;br/&gt; φ2"]:::act
+Mul_V["Attn_Score ⊙ V &lt;br/&gt; 聚合输出 A_V"]:::attention
+end
+subgraph Pointwise_Transformation ["Pointwise Transformation (点式变换)"]
+Norm2["Layer Norm"]:::linear
+Mul_U["Norm(A_V) ⊙ U &lt;br/&gt; 门控融合"]:::linear
+Linear2["Linear Projection &lt;br/&gt; f2"]:::linear
+end
+end
+Output["输出序列 Y &lt;br/&gt; N x d"]:::output
+%% Edges
+Input --&gt; Norm1
+Norm1 --&gt; Linear1
+Linear1 --&gt; SiLU1
+SiLU1 --&gt; Split
+Split --&gt;|Q, K| Attn
+Attn --&gt; SiLU2
+Split --&gt;|V| Mul_V
+SiLU2 --&gt; Mul_V
+Mul_V --&gt; Norm2
+Split --&gt;|U| Mul_U
+Norm2 --&gt; Mul_U
+Mul_U --&gt; Linear2
+Linear2 --&gt; Output
+Input --&gt;|"残差连接 Residual Connection"| Output
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;核心计算公式如下：&lt;/strong&gt;&lt;/p&gt;
+$$ U(X), V(X), Q(X), K(X) = \text{Split}(\phi_1(f_1(X))) $$&lt;p&gt;
+&lt;/p&gt;
+$$ A(X)V(X) = \phi_2 \left( Q(X)K(X)^T + r_{p,t}^{ab} \right) V(X) $$&lt;p&gt;
+&lt;/p&gt;
+$$ Y(X) = f_2(\text{Norm}(A(X)V(X)) \odot U(X)) $$&lt;p&gt;&lt;em&gt;其中，$f_1, f_2$ 为单层线性变换，$\phi_1, \phi_2$ 为 SiLU 激活函数，$r_{p,t}^{ab}$ 为融合了时序和位置的相对偏差。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;改进收益&lt;/strong&gt;：
+通过使用门控逐元素融合输出，HSTU 极大地减少了浮点运算量（FLOPs），并完美契合底层硬件的算子融合（Fused Kernel），极大提升了显存带宽利用率。&lt;/p&gt;
+&lt;h3 id="22-生成式训练与时间复杂度骤降"&gt;2.2 生成式训练与时间复杂度骤降&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;为什么标准 Transformer 在推荐系统中复杂度会变成 $\mathcal{O}(N^3)$？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在 NLP 中，Transformer 处理单条长度为 $N$ 的序列，时间复杂度是大家熟知的 $\mathcal{O}(N^2d + Nd^2)$。但在传统的推荐系统（如早期的 SASRec）中，通常采用&lt;strong&gt;流式逐样本（Impression-level）训练&lt;/strong&gt;。
+假设用户有历史序列 $[i_1, i_2, \dots, i_N]$，传统框架需要将其拆分为 $N$ 个独立的训练样本：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;样本 1：历史 $[i_1]$，预测 $i_2$&lt;/li&gt;
+&lt;li&gt;样本 2：历史 $[i_1, i_2]$，预测 $i_3$&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;li&gt;样本 $N$：历史 $[i_1, \dots, i_{N-1}]$，预测 $i_N$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这意味着 Transformer 需要对这 $N$ 个逐渐变长的子序列分别进行前向计算。我们将这 $N$ 个独立样本的计算量累加：
+&lt;/p&gt;
+$$ \text{Total Complexity} = \sum_{k=1}^{N} \mathcal{O}(k^2d + kd^2) $$&lt;p&gt;
+根据求和公式 $\sum_{k=1}^{N} k^2 \approx \frac{N^3}{3}$，总的训练时间复杂度就灾难性地飙升到了 &lt;strong&gt;$\mathcal{O}(N^3d + N^2d^2)$&lt;/strong&gt;。当用户序列 $N=10^4$ 时，计算量呈三次方级数爆炸，完全无法训练。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;HSTU 的降维打击：Generative Training&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在训练方式上，HSTU 采用了&lt;strong&gt;生成式训练（Generative Training）&lt;/strong&gt;，彻底摒弃了传统的逐样本拆分。它向 LLM 学习，把整个长度为 $N$ 的用户序列作为一个完整的样本送入模型，配合因果掩码（Causal Mask），在&lt;strong&gt;一次前向传播&lt;/strong&gt;中同时完成对所有历史节点的预测。&lt;/p&gt;
+&lt;p&gt;这一改变干掉了那层可怕的 $\sum_{k=1}^{N}$ 循环，成功将训练的时间复杂度指数级降维回了 &lt;strong&gt;$\mathcal{O}(N^2 d + N d^2)$&lt;/strong&gt;。同时，在推理阶段引入了 M-FALCON 微批处理算法，能够全面摊销超长序列的计算成本。&lt;/p&gt;
+&lt;h3 id="23-极端的特征序列化丢弃数值特征"&gt;2.3 极端的特征序列化：丢弃数值特征&lt;/h3&gt;
+&lt;p&gt;这篇论文中一个非常反直觉但极为有效的操作是：&lt;strong&gt;完全移除传统的数值特征（如历史 CTR 统计）&lt;/strong&gt;。
+HSTU 摒弃了 DLRM 复杂的并行特征网络，将用户交互行为（如点击、点赞）与慢变分类特征（如用户画像）按照时间戳合并压缩为&lt;strong&gt;一条主时间序列&lt;/strong&gt;。作者证明了，只要序列模型足够强大，它完全可以直接从极长的原始历史交互中自行捕获这些统计概率，无需人工干预。&lt;/p&gt;
+&lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+A[海量异构特征 Categorical &amp; Numerical] --&gt; B[丢弃数值特征 / 保留分类特征]
+B --&gt; C[特征序列化与时间轴压缩]
+C --&gt; D[合并为统一单时间序列]
+D --&gt; E[Generative Training 生成式训练]
+E --&gt; F[HSTU 编码器]
+F --&gt; G[Pointwise Projection: 线性生成 U,V,Q,K]
+G --&gt; H[Spatial Aggregation: 时空注意力与 SiLU 激活]
+H --&gt; I[Pointwise Transformation: 门控逐元素融合输出]
+I --&gt; J[多任务预测: 排序 Ranking / 召回 Retrieval]
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id="4-结论与工业界影响"&gt;4. 结论与工业界影响&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;惊人的速度优势&lt;/strong&gt;：在长度为 8192 的长序列上，HSTU 的推理和训练速度比基于 FlashAttention2 的标准 Transformer &lt;strong&gt;快了 5.3 倍到 15.2 倍&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;效果跃升&lt;/strong&gt;：在公开数据集上，HSTU 的 NDCG 指标最高超越基线模型达 &lt;strong&gt;65.8%&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;万亿参数与 Scaling Law 验证&lt;/strong&gt;：包含 1.5 万亿参数的 GRs 模型在十亿级用户的互联网平台上成功落地，线上核心指标提升 12.4%。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最重要的是，该研究首次在推荐系统领域证实了：&lt;strong&gt;推荐模型的质量随训练算力的增加呈幂律分布（Power-law）&lt;/strong&gt;，跨越了三个数量级（达到 GPT-3 / LLaMA-2 级别的算力），彻底打破了 DLRM 时代的瓶颈，为推荐领域的“基础大模型（Foundation Models）”铺平了道路。&lt;/p&gt;</description></item></channel></rss>
