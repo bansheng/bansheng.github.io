@@ -32,8 +32,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install
-          npx tailwindcss --help > /dev/null 2>&1 || npm install -D tailwindcss @tailwindcss/cli @tailwindcss/typography
+          npm install --ignore-scripts
+          npm install -D tailwindcss @tailwindcss/cli @tailwindcss/typography
 
       - name: Hugo Modules
         run: hugo mod get
