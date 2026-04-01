@@ -25,16 +25,12 @@ jobs:
           hugo-version: '0.158.0'
           extended: true
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install TailwindCSS
+      - name: Install TailwindCSS standalone
         run: |
-          npm install --save-dev tailwindcss @tailwindcss/cli @tailwindcss/typography
-          echo "Tailwind version:"
-          npx tailwindcss --help | head -1 || true
+          curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/download/v4.1.8/tailwindcss-linux-x64
+          chmod +x tailwindcss-linux-x64
+          sudo mv tailwindcss-linux-x64 /usr/local/bin/tailwindcss
+          tailwindcss --help | head -1
 
       - name: Hugo Modules
         run: hugo mod get
