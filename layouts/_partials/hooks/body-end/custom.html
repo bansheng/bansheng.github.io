@@ -1,0 +1,99 @@
+<!-- Mermaid.js for Flowchart Rendering -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+
+  function initMermaid() {
+    try {
+      const isDarkMode = document.documentElement.classList.contains('dark') ||
+                         window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: isDarkMode ? 'dark' : 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error',
+        fontFamily: '"PingFang SC", "Lantinghei SC", "Microsoft YaHei", sans-serif',
+        flowchart: {
+          nodeSpacing: 30,
+          rankSpacing: 40,
+          useMaxWidth: true,
+          htmlLabels: true
+        }
+      });
+
+      const renderWithRetry = (retryCount = 0) => {
+        mermaid.run({
+          querySelector: '.mermaid'
+        }).then(() => {
+          console.log('[Mermaid] Charts rendered successfully');
+        }).catch(err => {
+          console.error(`[Mermaid] Rendering failed (Retry ${retryCount}):`, err);
+          if (retryCount < 2) {
+            setTimeout(() => renderWithRetry(retryCount + 1), 500);
+          }
+        });
+      };
+
+      renderWithRetry();
+    } catch (e) {
+      console.error('[Mermaid] Initialization error:', e);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes') {
+        initMermaid();
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+</script>
+
+<!-- MathJax Support -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<!-- Giscus Comments -->
+{{ if .IsPage }}
+{{ $giscus := site.Params.hugoblox.comments.giscus }}
+{{ if $giscus }}
+<div class="giscus-wrapper" style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+    <script src="https://giscus.app/client.js"
+        data-repo="{{ $giscus.repo }}"
+        data-repo-id="{{ $giscus.repoId }}"
+        data-category="{{ $giscus.category }}"
+        data-category-id="{{ $giscus.categoryId }}"
+        data-mapping="{{ $giscus.mapping }}"
+        data-strict="{{ $giscus.strict }}"
+        data-reactions-enabled="{{ $giscus.reactionsEnabled }}"
+        data-emit-metadata="{{ $giscus.emitMetadata }}"
+        data-input-position="{{ $giscus.inputPosition }}"
+        data-theme="{{ $giscus.theme }}"
+        data-lang="{{ $giscus.lang }}"
+        data-loading="{{ $giscus.loading }}"
+        crossorigin="anonymous"
+        async>
+    </script>
+</div>
+{{ end }}
+{{ end }}

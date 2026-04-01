@@ -1,0 +1,67 @@
+hugoblox:
+  schema: "2.0"
+
+  identity:
+    name: Bansheng
+    tagline: AI/ML Researcher & Engineer
+    avatar: ""
+
+  theme:
+    day: minimal
+    night: dark
+    auto: true
+
+  typography:
+    pack: "humanist"
+
+  layout:
+    radius: md
+    spacing: spacious
+    avatar_shape: circle
+
+  header:
+    navbar:
+      enable: true
+      fixed: true
+      search:
+        enable: false
+      show_translations: false
+      highlight_active_link: true
+
+  footer:
+    style: minimal
+    show_social: true
+
+  copyright:
+    notice: "© {year} Bansheng"
+
+  seo:
+    description: "Bansheng 的技术博客 - AI/ML 论文精读、推荐系统、深度学习"
+
+  content:
+    math:
+      enable: true
+    toc:
+      enable: true
+    reading_time: true
+
+  comments:
+    enabled: true
+    provider: giscus
+    giscus:
+      repo: "bansheng/bansheng.github.io"
+      repoId: "MDEwOlJlcG9zaXRvcnkyMzQwMjExOTE="
+      category: "General"
+      categoryId: "DIC_kwDODfLhR84C4l9B"
+      mapping: "pathname"
+      strict: "0"
+      reactionsEnabled: "1"
+      emitMetadata: "0"
+      inputPosition: "bottom"
+      theme: "preferred_color_scheme"
+      lang: "zh-CN"
+      loading: "lazy"
+
+  locale:
+    date_format: "2006-01-02"
+    time_format: "15:04"

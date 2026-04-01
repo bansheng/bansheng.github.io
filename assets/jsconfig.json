@@ -1,0 +1,10 @@
+{
+ "compilerOptions": {
+  "baseUrl": ".",
+  "paths": {
+   "*": [
+    "../../../Library/Caches/hugo_cache/modules/filecache/modules/pkg/mod/github.com/!hugo!blox/kit/modules/blox@v0.0.0-20260327043553-76023f9461b1/assets/*"
+   ]
+  }
+ }
+}
