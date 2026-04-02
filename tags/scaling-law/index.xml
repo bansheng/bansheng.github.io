@@ -89,21 +89,17 @@
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-subgraph Stage1 [“Stage 1: Generative Pretraining”]
-A[用户历史行为序列] --&gt; B(Transformer Decoder)
-B --&gt; C[“预测下一个 Item (Sampled Softmax)”]
-C --&gt; D{预训练模型}
-end
-subgraph Stage2 [“Stage 2: Bridging Strategy”]
-D --&gt;|提取| E[“稀疏参数: Embeddings”]
-D --&gt;|提取| F[“稠密参数: Transformer”]
-end
-subgraph Stage3 [“Stage 3: Discriminative Training (CTR/CVR)”]
-E --&gt;|参数冻结| G(判别式 Transformer)
-F --&gt;|参数迁移| G
-H[“上下文特征 + 候选物品”] --&gt; G
-G --&gt;|仅更新稠密参数| I[“预估点击率/转化率”]
-end
+A[“Stage1: 用户行为序列”] --&gt; B(“Stage1: Transformer Decoder”)
+B --&gt; C[“Stage1: 预测下一Item”]
+C --&gt; D{“Stage1: 预训练模型”}
+E[“Stage2: 稀疏参数 Embeddings”]
+F[“Stage2: 稠密参数 Transformer”]
+H[“Stage3: 上下文+候选物品”] --&gt; G(“Stage3: 判别式Transformer”)
+G --&gt; I[“Stage3: 预估CTR/CVR”]
+D --&gt;|提取| E
+D --&gt;|提取| F
+E --&gt;|冻结| G
+F --&gt;|迁移| G
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 id="4-scaling-law-在推荐系统中的分析"&gt;4. Scaling Law 在推荐系统中的分析&lt;/h2&gt;
@@ -309,46 +305,31 @@ end
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-%% Define Styles
 classDef input fill:#f9f9f9,stroke:#333,stroke-width:2px;
 classDef linear fill:#e1f5fe,stroke:#2563eb,stroke-width:1px;
 classDef act fill:#fef3c7,stroke:#ea580c,stroke-width:1px;
 classDef attention fill:#dcfce7,stroke:#b45309,stroke-width:1px;
 classDef output fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
-%% Nodes
-Input["输入序列 X &lt;br/&gt; N x d"]:::input
-subgraph HSTU_Block ["HSTU Block (替代标准 Self-Attention + MLP)"]
-Norm1["Layer Norm"]:::linear
-Linear1["Linear Projection &lt;br/&gt; f1"]:::linear
-SiLU1["SiLU Activation &lt;br/&gt; φ1"]:::act
-Split["Split Channel &lt;br/&gt; 切分为 U, V, Q, K"]:::linear
-subgraph Spatial_Aggregation ["Spatial Aggregation (空间聚合)"]
-Attn["Q * K^T + Relative Bias &lt;br/&gt; 融合时序与位置"]:::attention
-SiLU2["SiLU Activation &lt;br/&gt; φ2"]:::act
-Mul_V["Attn_Score ⊙ V &lt;br/&gt; 聚合输出 A_V"]:::attention
-end
-subgraph Pointwise_Transformation ["Pointwise Transformation (点式变换)"]
-Norm2["Layer Norm"]:::linear
-Mul_U["Norm(A_V) ⊙ U &lt;br/&gt; 门控融合"]:::linear
-Linear2["Linear Projection &lt;br/&gt; f2"]:::linear
-end
-end
-Output["输出序列 Y &lt;br/&gt; N x d"]:::output
-%% Edges
-Input --&gt; Norm1
-Norm1 --&gt; Linear1
-Linear1 --&gt; SiLU1
-SiLU1 --&gt; Split
-Split --&gt;|Q, K| Attn
-Attn --&gt; SiLU2
-Split --&gt;|V| Mul_V
-SiLU2 --&gt; Mul_V
-Mul_V --&gt; Norm2
-Split --&gt;|U| Mul_U
-Norm2 --&gt; Mul_U
-Mul_U --&gt; Linear2
-Linear2 --&gt; Output
-Input --&gt;|"残差连接 Residual Connection"| Output
+Input["输入 X"]:::input
+Norm1["LayerNorm"]:::linear
+Linear1["Linear f1"]:::linear
+SiLU1["SiLU φ1"]:::act
+Split["Split → U,V,Q,K"]:::linear
+%% Spatial Aggregation
+Attn["QK^T + Bias"]:::attention
+SiLU2["SiLU φ2"]:::act
+Mul_V["Score ⊙ V"]:::attention
+%% Pointwise Transformation
+Norm2["LayerNorm"]:::linear
+Mul_U["Norm ⊙ U"]:::linear
+Linear2["Linear f2"]:::linear
+Output["输出 Y"]:::output
+Input --&gt; Norm1 --&gt; Linear1 --&gt; SiLU1 --&gt; Split
+Split --&gt;|"Q,K"| Attn --&gt; SiLU2 --&gt; Mul_V
+Split --&gt;|"V"| Mul_V
+Mul_V --&gt; Norm2 --&gt; Mul_U --&gt; Linear2 --&gt; Output
+Split --&gt;|"U"| Mul_U
+Input --&gt;|"残差连接"| Output
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;核心计算公式如下：&lt;/strong&gt;&lt;/p&gt;
@@ -382,7 +363,7 @@ HSTU 摒弃了 DLRM 复杂的并行特征网络，将用户交互行为（如点
 &lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
+graph TD
 A[海量异构特征 Categorical &amp; Numerical] --&gt; B[丢弃数值特征 / 保留分类特征]
 B --&gt; C[特征序列化与时间轴压缩]
 C --&gt; D[合并为统一单时间序列]

@@ -96,23 +96,12 @@ $$&lt;p&gt;参数解释：&lt;/p&gt;
 &lt;/ol&gt;
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
-subgraph 场景1: 外卖
-U1[User特征] --&gt; Agg1[场景内User-level聚合]
-C1[交叉特征] --&gt; Agg1
-I1[Item特征] --&gt; Agg1
-end
-subgraph 场景2: 优选
-U2[User特征] --&gt; Agg2[场景内User-level聚合]
-C2[交叉特征] --&gt; Agg2
-I2[Item特征] --&gt; Agg2
-end
-Agg1 --&gt; Concat[多场景特征按列拼接形成 T-token 集合]
-Agg2 --&gt; Concat
-H[全平台长序列 H-token] --&gt; Merge[最终超级样本构建]
-R[全平台实时序列 R-token] --&gt; Merge
-Concat --&gt; Merge
-Merge --&gt; MTFM[输入 MTFM 模型]
+graph TD
+U1[外卖 User特征] &amp; C1[外卖 交叉特征] &amp; I1[外卖 Item特征] --&gt; Agg1[外卖 场景聚合]
+U2[优选 User特征] &amp; C2[优选 交叉特征] &amp; I2[优选 Item特征] --&gt; Agg2[优选 场景聚合]
+Agg1 &amp; Agg2 --&gt; Concat[T-token 拼接]
+H[H-token 长序列] &amp; R[R-token 实时序列] &amp; Concat --&gt; Merge[超级样本构建]
+Merge --&gt; MTFM[MTFM 模型]
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;这种设计彻底避免了数据 Pipeline 中的重复计算和冗余存储。在推理阶段（Online Inference），由于各个场景是独立发起请求的，每个场景只需要部署 MTFM 中与自己相关的 &lt;strong&gt;子图（Subgraph）&lt;/strong&gt;。推理请求在 Request-level 进行聚合，子图会自动绕过其他场景专属的 MLP Tokenizer，从而实现极高的推理效率。&lt;/p&gt;

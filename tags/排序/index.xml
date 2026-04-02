@@ -23,24 +23,11 @@
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-subgraph 传统范式 ["传统推荐排序范式"]
-A1["DIN&lt;br/&gt;目标注意力"]
-A2["DIEN&lt;br/&gt;兴趣演化"]
-A3["DeepFM&lt;br/&gt;特征交叉"]
-A4["DCN&lt;br/&gt;交叉网络"]
-end
-subgraph 过渡探索 ["Transformer 初步探索"]
-B1["HSTU&lt;br/&gt;Meta 2024&lt;br/&gt;召回/检索"]
-B2["OneTrans&lt;br/&gt;2024&lt;br/&gt;排序尝试"]
-B3["GPSD&lt;br/&gt;Meta 2025&lt;br/&gt;预训练框架"]
-end
-subgraph SORT范式 ["SORT: 统一排序 Transformer"]
-C1["统一架构&lt;br/&gt;请求中心组织"]
-C2["系统优化&lt;br/&gt;稀疏注意力+MoE"]
-C3["工业落地&lt;br/&gt;训练+推理优化"]
-end
-传统范式 --&gt;|"架构碎片化&lt;br/&gt;可扩展性差"| 过渡探索
-过渡探索 --&gt;|"系统性优化"| SORT范式
+A1["DIN&lt;br/&gt;目标注意力"] &amp; A2["DIEN&lt;br/&gt;兴趣演化"] &amp; A3["DeepFM&lt;br/&gt;特征交叉"] &amp; A4["DCN&lt;br/&gt;交叉网络"]
+A4 --&gt;|"架构碎片化&lt;br/&gt;可扩展性差"| B1
+B1["HSTU&lt;br/&gt;Meta 2024"] &amp; B2["OneTrans&lt;br/&gt;2024"] &amp; B3["GPSD&lt;br/&gt;Meta 2025"]
+B3 --&gt;|"系统性优化"| C1
+C1["统一架构"] &amp; C2["系统优化&lt;br/&gt;稀疏注意力+MoE"] &amp; C3["工业落地"]
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;图 1：推荐排序模型的演进路径。&lt;/strong&gt; 从传统的专用架构（DIN、DeepFM 等），经过 Transformer 的初步探索（HSTU、OneTrans、GPSD），到 SORT 实现统一的工业级排序 Transformer。传统范式面临架构碎片化和可扩展性差的问题——每种特征交互方式都需要定制化的模型设计（如 DIN 的目标注意力、DeepFM 的二阶交叉、DCN 的显式交叉网络），导致工程维护成本高且难以通过简单增加参数来提升性能。过渡阶段的探索工作（HSTU 聚焦召回、GPSD 专注预训练框架、OneTrans 初步尝试排序）虽然各有突破，但尚未形成完整的工业级排序解决方案。SORT 通过系统性优化，首次在工业级排序场景中成功落地统一的 Transformer 架构，标志着推荐排序从&amp;quot;专用模型&amp;quot;向&amp;quot;统一基础模型&amp;quot;的范式转变。&lt;/p&gt;
@@ -98,16 +85,19 @@ end
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-Problem["核心矛盾&lt;br/&gt;高特征稀疏性&lt;br/&gt;× 低标签密度"] --&gt; Solutions
-subgraph Solutions ["SORT 六大解决方案"]
-direction TB
-S1["请求中心样本 → 效率↑"]
-S2["特殊 Token → 训练稳定"]
-S3["稀疏注意力+裁剪 → O(n)"]
-S4["DeepSeek MoE → 容量↑"]
-S5["预训练+冻结 → 过拟合↓"]
-S6["QKNorm+门控 → 大规模"]
-end
+Problem["核心矛盾&lt;br/&gt;高特征稀疏性&lt;br/&gt;× 低标签密度"]
+S1["① 请求中心样本 → 效率↑"]
+S2["② 特殊 Token → 训练稳定"]
+S3["③ 稀疏注意力+裁剪 → O(n)"]
+S4["④ DeepSeek MoE → 容量↑"]
+S5["⑤ 预训练+冻结 → 过拟合↓"]
+S6["⑥ QKNorm+门控 → 大规模"]
+Problem --&gt; S1
+Problem --&gt; S2
+Problem --&gt; S3
+Problem --&gt; S4
+Problem --&gt; S5
+Problem --&gt; S6
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;图 2：SORT 针对核心矛盾的系统性解决方案。&lt;/strong&gt; 面对高特征稀疏性和低标签密度的根本矛盾，SORT 提出了六个互补的优化方向，每个方向解决一个具体维度的问题：请求中心样本组织从数据层面减少冗余计算，提升训练效率；特殊 Token（BOS/SEP）从注意力分布层面稳定训练过程，防止注意力权重的异常分配；稀疏注意力和查询裁剪从计算复杂度层面将二次复杂度降至线性，并引入有益的时间衰减归纳偏置；DeepSeek MoE FFN 从模型容量层面在不增加激活计算量的前提下大幅扩展参数空间；生成式预训练加嵌入冻结策略从优化目标层面根本性地解决稀疏参数的过拟合问题；QKNorm 和门控注意力从数值稳定性层面保障大规模训练的收敛。这六个优化并非孤立存在，而是形成了一个有机整体——它们分别作用于数据、注意力、复杂度、容量、正则化和稳定性六个维度，共同构成了 SORT 的技术护城河。&lt;/p&gt;
@@ -138,16 +128,10 @@ $$S = \langle H, U, C \rangle$$&lt;p&gt;其中：&lt;/p&gt;
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-subgraph Traditional ["传统：物品中心"]
-direction TB
-R1["请求 N 个候选"] --&gt; S["N 条样本&lt;br/&gt;每条 = History+Profile+Item"]
-S --&gt; F["N 次前向传播&lt;br/&gt;⚠️ History 重复编码 N 次"]
-end
-subgraph SORT_Method ["SORT：请求中心"]
-direction TB
-R2["请求 N 个候选"] --&gt; US["1 条样本&lt;br/&gt;S = ⟨H, U, C₁...Cₙ⟩"]
-US --&gt; FF["1 次前向传播&lt;br/&gt;✅ History 仅编码 1 次"]
-end
+R1["传统：请求 N 个候选"] --&gt; S["传统：N 条样本&lt;br/&gt;每条 = History+Profile+Item"]
+S --&gt; F["传统：N 次前向传播&lt;br/&gt;⚠️ History 重复编码 N 次"]
+R2["SORT：请求 N 个候选"] --&gt; US["SORT：1 条样本&lt;br/&gt;S = ⟨H, U, C₁...Cₙ⟩"]
+US --&gt; FF["SORT：1 次前向传播&lt;br/&gt;✅ History 仅编码 1 次"]
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;图 3：传统物品中心 vs SORT 请求中心的样本组织对比。&lt;/strong&gt; 传统方法对每个候选物品生成独立样本，用户历史和画像被冗余编码 N 次，计算浪费严重。SORT 将一次请求中的所有候选物品打包为统一样本，通过单次前向传播同时处理所有候选，用户上下文仅编码一次。这不仅大幅降低了计算成本，还使候选物品之间能够通过注意力机制进行信息交互，为后续的排序决策提供了更丰富的比较信号。在实际工业场景中，一次请求通常包含数十到数百个候选物品，因此这种改进带来的效率提升非常显著。&lt;/p&gt;
@@ -283,22 +267,16 @@ $$\text{GatedAttn}(Q, K, V) = \sigma(G) \odot \text{Softmax}\left(\frac{QK^T}{\s
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-subgraph Input ["输入 Token 序列"]
-direction LR
-H["H₁, H₂, ..., Hₙ&lt;br/&gt;(History)"]
-C["C₁, C₂, ..., Cₘ&lt;br/&gt;(Candidates)"]
-end
-subgraph Layers ["渐进式 Query 裁剪"]
-direction TB
+H["输入: H₁, H₂, ..., Hₙ&lt;br/&gt;(History)"]
+C["输入: C₁, C₂, ..., Cₘ&lt;br/&gt;(Candidates)"]
 L1["浅层 1-4&lt;br/&gt;全量 Q/K/V + 局部窗口 w=256"]
 L2["中间层 5-8&lt;br/&gt;裁剪远距 History Q, 保留 K/V"]
 L3["深层 9-12&lt;br/&gt;≤128 History Q + 全量 Candidate"]
+O["输出: Candidate 隐层 → FFN&lt;br/&gt;→ CTR/CVR 预测"]
+H --&gt; L1
+C --&gt; L1
 L1 --&gt; L2 --&gt; L3
-end
-subgraph Output ["输出"]
-O["Candidate 隐层 → FFN&lt;br/&gt;→ CTR/CVR 预测"]
-end
-Input --&gt; Layers --&gt; Output
+L3 --&gt; O
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;图 4：SORT 的稀疏注意力与查询裁剪机制。&lt;/strong&gt; 在浅层，所有 Token 保留完整的 Query/Key/Value 进行局部注意力计算（窗口大小 256）；随着层数加深，距离候选物品较远的历史 Token 的 Query 被逐步裁剪，但其 Key 和 Value 仍然保留，确保候选物品可以访问完整的历史信息；在最深层，仅保留不超过 128 个历史 Token 的 Query 和所有候选 Token，最终通过候选 Token 的隐层输出进行 CTR/CVR 预测。这种设计将计算成本降低约 50%，同时通过引入时间衰减归纳偏置反而提升了模型性能。&lt;/p&gt;
@@ -450,17 +428,11 @@ Input --&gt; Layers --&gt; Output
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-subgraph Stage1 ["阶段一：生成式预训练"]
-direction TB
-A["行为序列"] --&gt; B["Transformer Decoder"] --&gt; C["Next-Item Prediction"]
-C --&gt;|"密集信号"| D["预训练 Embedding"]
-end
+A["Stage1: 行为序列"] --&gt; B["Stage1: Transformer Decoder"] --&gt; C["Stage1: Next-Item Prediction"]
+C --&gt;|"密集信号"| D["Stage1: 预训练 Embedding"]
 D --&gt;|"复制 + 冻结 ❄️"| G
-subgraph Stage2 ["阶段二：判别式排序"]
-direction TB
-F["请求样本 ⟨H,U,C⟩"] --&gt; G["Token化 🔒"]
-G --&gt; H["SORT Transformer 🔥"] --&gt; I["FFN → CTR/CVR"]
-end
+F["Stage2: 请求样本 ⟨H,U,C⟩"] --&gt; G["Stage2: Token化 🔒"]
+G --&gt; H["Stage2: SORT Transformer 🔥"] --&gt; I["Stage2: FFN → CTR/CVR"]
 I --&gt; R["转移+冻结: +2.81pt ✅"]
 &lt;/div&gt;
 &lt;/div&gt;

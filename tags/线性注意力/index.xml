@@ -84,7 +84,7 @@ $$ f(x-y) \approx g(x,y) = \mathbf{k}^T(x)\mathbf{k}(y) $$&lt;p&gt;&lt;strong&gt
 &lt;h2 id="4-架构流程图"&gt;4. 架构流程图&lt;/h2&gt;
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
+graph TD
 A[用户历史交互序列 + 时间戳] --&gt; B[Embedding 层]
 B --&gt; C[FuXi-Linear Block]
 C --&gt;|输入 X| D1[Retention Channel&lt;br&gt;提取语义信息]

@@ -302,19 +302,14 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-A[Raw Sparse Features] --&gt; B(Embedding Layer)
-B --&gt; C[Semantic Group-wise Tokenizer]
-C --&gt; D[Global Token + Grouped Tokens X]
-subgraph TokenMixer-Large Block
-D --&gt; E[Mixing: Split &amp; Concat]
-E --&gt; F[Pertoken SwiGLU + Norm]
-F --&gt; G[Reverting: Split &amp; Concat back to T]
-G --&gt; H[Pertoken SwiGLU + Norm]
-D -.-&gt;|Semantic Aligned Residual: F_revert + X| H
-end
-H --&gt; I[Deep Layers with Inter-Residual &amp; Aux Loss]
-I --&gt; J[Sparse-Pertoken MoE Layer]
-J --&gt; K[Mean Pooling &amp; Task Prediction]
+A[Sparse Features] --&gt; B[Embedding &amp; Tokenizer]
+B --&gt; C[Grouped Tokens X]
+D["Mixing: Split &amp; Concat"] --&gt; E["SwiGLU + Norm"]
+E --&gt; F["Reverting"] --&gt; G["SwiGLU + Norm"]
+C --&gt; D
+C -.-&gt;|Residual| G
+G --&gt; H[Deep Layers + MoE]
+H --&gt; I[Pooling &amp; Prediction]
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 id="优缺点分析"&gt;优缺点分析&lt;/h2&gt;

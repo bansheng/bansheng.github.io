@@ -170,25 +170,15 @@ $$T_{\text{M-FALCON}} = \underbrace{\mathcal{O}(n^2)}_{\text{Prefill}} + \underb
 &lt;p&gt;下面这张图直观地展示了 M-FALCON 的工作流：&lt;/p&gt;
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
-%% Define Styles
-classDef user fill:#f3f4f6,stroke:#3b82f6,stroke-width:2px;
-classDef cache fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
-classDef mask fill:#fef3c7,stroke:#d97706,stroke-width:2px;
-classDef output fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
-UserHistory[“用户历史序列 (长度 n)”]:::user
-UserHistory --&gt;|1. 仅计算一次| KVCache[“预计算并缓存 KV-Cache”]:::cache
-subgraph Microbatch_Processing [“2. 微批处理 (Microbatching)”]
-Candidates[“剩余待排序候选商品 (总数 m)”]
-Candidates --&gt;|切分为批次| Batch[“当前微批次 (大小 bm)”]
-Batch --&gt; Masking[“3. 构造特殊 Attention Mask&lt;br/&gt;(候选商品可见历史，但互不可见)”]:::mask
-KVCache --&gt; Masking
-Masking --&gt;|并行前向传播| Forward[“HSTU Block 计算”]
-end
-Forward --&gt; Scores[“输出该批次 bm 个商品的排序分值”]:::output
-Scores --&gt; Check{“是否还有剩余候选?”}
-Check -- “是 (处理下一批次)” --&gt; Batch
-Check -- “否” --&gt; Done[“返回最终排序列表”]
+graph TD
+A[“用户历史序列”] --&gt;|仅计算一次| B[“KV-Cache”]
+C[“候选商品”] --&gt;|切分| D[“微批次”]
+D --&gt; E[“Attention Mask + HSTU 计算”]
+B --&gt; E
+E --&gt; F[“批次排序分值”]
+F --&gt; G{“剩余候选”}
+G -- 是 --&gt; D
+G -- 否 --&gt; H[“最终排序列表”]
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 id="6-与其他推理优化技术的全面对比"&gt;6. 与其他推理优化技术的全面对比&lt;/h2&gt;
@@ -353,46 +343,31 @@ Check -- “否” --&gt; Done[“返回最终排序列表”]
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
 graph LR
-%% Define Styles
 classDef input fill:#f9f9f9,stroke:#333,stroke-width:2px;
 classDef linear fill:#e1f5fe,stroke:#2563eb,stroke-width:1px;
 classDef act fill:#fef3c7,stroke:#ea580c,stroke-width:1px;
 classDef attention fill:#dcfce7,stroke:#b45309,stroke-width:1px;
 classDef output fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
-%% Nodes
-Input["输入序列 X &lt;br/&gt; N x d"]:::input
-subgraph HSTU_Block ["HSTU Block (替代标准 Self-Attention + MLP)"]
-Norm1["Layer Norm"]:::linear
-Linear1["Linear Projection &lt;br/&gt; f1"]:::linear
-SiLU1["SiLU Activation &lt;br/&gt; φ1"]:::act
-Split["Split Channel &lt;br/&gt; 切分为 U, V, Q, K"]:::linear
-subgraph Spatial_Aggregation ["Spatial Aggregation (空间聚合)"]
-Attn["Q * K^T + Relative Bias &lt;br/&gt; 融合时序与位置"]:::attention
-SiLU2["SiLU Activation &lt;br/&gt; φ2"]:::act
-Mul_V["Attn_Score ⊙ V &lt;br/&gt; 聚合输出 A_V"]:::attention
-end
-subgraph Pointwise_Transformation ["Pointwise Transformation (点式变换)"]
-Norm2["Layer Norm"]:::linear
-Mul_U["Norm(A_V) ⊙ U &lt;br/&gt; 门控融合"]:::linear
-Linear2["Linear Projection &lt;br/&gt; f2"]:::linear
-end
-end
-Output["输出序列 Y &lt;br/&gt; N x d"]:::output
-%% Edges
-Input --&gt; Norm1
-Norm1 --&gt; Linear1
-Linear1 --&gt; SiLU1
-SiLU1 --&gt; Split
-Split --&gt;|Q, K| Attn
-Attn --&gt; SiLU2
-Split --&gt;|V| Mul_V
-SiLU2 --&gt; Mul_V
-Mul_V --&gt; Norm2
-Split --&gt;|U| Mul_U
-Norm2 --&gt; Mul_U
-Mul_U --&gt; Linear2
-Linear2 --&gt; Output
-Input --&gt;|"残差连接 Residual Connection"| Output
+Input["输入 X"]:::input
+Norm1["LayerNorm"]:::linear
+Linear1["Linear f1"]:::linear
+SiLU1["SiLU φ1"]:::act
+Split["Split → U,V,Q,K"]:::linear
+%% Spatial Aggregation
+Attn["QK^T + Bias"]:::attention
+SiLU2["SiLU φ2"]:::act
+Mul_V["Score ⊙ V"]:::attention
+%% Pointwise Transformation
+Norm2["LayerNorm"]:::linear
+Mul_U["Norm ⊙ U"]:::linear
+Linear2["Linear f2"]:::linear
+Output["输出 Y"]:::output
+Input --&gt; Norm1 --&gt; Linear1 --&gt; SiLU1 --&gt; Split
+Split --&gt;|"Q,K"| Attn --&gt; SiLU2 --&gt; Mul_V
+Split --&gt;|"V"| Mul_V
+Mul_V --&gt; Norm2 --&gt; Mul_U --&gt; Linear2 --&gt; Output
+Split --&gt;|"U"| Mul_U
+Input --&gt;|"残差连接"| Output
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;核心计算公式如下：&lt;/strong&gt;&lt;/p&gt;
@@ -426,7 +401,7 @@ HSTU 摒弃了 DLRM 复杂的并行特征网络，将用户交互行为（如点
 &lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
 &lt;div class="mermaid-wrapper"&gt;
 &lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
+graph TD
 A[海量异构特征 Categorical &amp; Numerical] --&gt; B[丢弃数值特征 / 保留分类特征]
 B --&gt; C[特征序列化与时间轴压缩]
 C --&gt; D[合并为统一单时间序列]
