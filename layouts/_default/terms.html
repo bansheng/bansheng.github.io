@@ -35,7 +35,7 @@
       {{- $name := .Name }}
       {{- $count := .Count }}
       {{- with site.GetPage (printf "/%s/%s" $type $name) }}
-        { text: {{ .Title | jsonify }}, size: {{ $count }}, url: {{ .RelPermalink | jsonify }} },
+        { text: "{{ .Title | safeJS }}", size: {{ $count }}, url: "{{ .RelPermalink | safeJS }}" },
       {{- end }}
     {{- end }}
   ];
