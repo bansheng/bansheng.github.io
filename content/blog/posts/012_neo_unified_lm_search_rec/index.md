@@ -1,6 +1,6 @@
 ---
 title: "NEO：用统一语言模型重新定义搜索、推荐与推理"
-date: 2026-04-02T22:00:00+08:00
+date: 2026-04-02T21:00:00+08:00
 draft: false
 tags: ["论文精读", "推荐系统", "LLM", "搜索", "语义ID", "生成式推荐", "NEO", "Spotify"]
 categories: ["Tech"]
