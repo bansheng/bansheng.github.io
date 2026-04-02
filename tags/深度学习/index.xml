@@ -28,6 +28,19 @@
 &lt;li&gt;&lt;strong&gt;残差对齐化 (Residual Alignment)&lt;/strong&gt;：通过 Mixing-Reverting 的对称设计，确保跨层残差连接的语义一致性，为深层网络训练铺平道路&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;稀疏高效化 (Sparse Efficiency)&lt;/strong&gt;：采用 Per-token MoE 实现真正的”稀疏训练+稀疏推理”，在保持模型容量的同时大幅降低计算开销&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: TokenMixer-Large 整体架构。Raw token 包含所有原始特征和序列聚合/抽取特征。整个模型由多个 TokenMixer-Large Block 堆叠而成，每个 Block 的骨干由 Norm、Mixing、S-P MoE、Reverting、Norm、S-P MoE 和残差连接组成。"
+srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_a96e4829249b2292.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_9c68ae2a97fcbf1d.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_c2a7ae1366e0da85.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_a96e4829249b2292.webp"
+width="760"
+height="276"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="2-tokenmixer-large-与初代-tokenmixer-rankmixer-的核心区别"&gt;2. TokenMixer-Large 与初代 TokenMixer (RankMixer) 的核心区别&lt;/h3&gt;
 &lt;p&gt;在理解 TokenMixer-Large 的创新之前，我们必须先看清它对初代架构做了哪些大刀阔斧的”革命”。以下是四个核心差异点：&lt;/p&gt;
 &lt;h3 id="21-从维度错位到mixing--reverting-绝对对齐"&gt;2.1 从“维度错位”到“Mixing &amp;amp; Reverting 绝对对齐”&lt;/h3&gt;
@@ -61,16 +74,29 @@
 &lt;li&gt;&lt;strong&gt;Pre-RMSNorm vs Post-LayerNorm&lt;/strong&gt;：Pre-RMSNorm 将归一化操作放在子层的输入端而非输出端，省去了均值计算步骤，减少了约 30% 的归一化开销。更重要的是，Pre-Norm 结构使得残差通道中的梯度流动更加顺畅，有利于深层网络的训练稳定性。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;pSwiGLU vs pFFN&lt;/strong&gt;：pSwiGLU（Per-token SwiGLU）将传统的 ReLU 激活替换为 SiLU（Swish）门控线性单元，引入了乘法门控机制，增强了特征的非线性表达能力。其公式为 $\text{SwiGLU}(x) = (xW_1) \otimes \text{SiLU}(xW_2)$，相比传统 FFN 增加了约 50% 的参数量，但带来的效果提升远超参数增长。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id="23-从浅层堆叠到深层跨层残差-inter-layer-residuals"&gt;2.3 从“浅层堆叠”到“深层跨层残差 (Inter-Layer Residuals)”&lt;/h3&gt;
+&lt;h3 id="23-从浅层堆叠到深层跨层残差-inter-layer-residuals"&gt;2.3 从”浅层堆叠”到”深层跨层残差 (Inter-Layer Residuals)”&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;初代 TokenMixer 的痛点&lt;/strong&gt;：随着网络加深（如从浅层的 2 层扩展到深层），极易发生梯度消失现象。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Large 版本的解法&lt;/strong&gt;：采取了“组合拳”：
+&lt;li&gt;&lt;strong&gt;Large 版本的解法&lt;/strong&gt;：采取了”组合拳”：
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;跨层残差与辅助损失&lt;/strong&gt;：每隔 2-3 层引入跨层残差连接，并将底层输出与高层输出结合计算辅助损失（Auxiliary Loss）。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Rezero 初始化&lt;/strong&gt;：将 SwiGLU 中最后一个投影矩阵的初始化方差缩小为 0.01，使模块在训练初期接近恒等映射，极大提升了模型收敛的稳定性。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Internal Residual（左）与 Auxiliary Loss（右）机制。跨层残差连接确保深层梯度流动，辅助损失通过中间层输出提供额外监督信号。"
+srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_6dde1adf4c3cac0d.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_ed292126ee3f73c5.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_d765f0985fc7ce9e.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_6dde1adf4c3cac0d.webp"
+width="760"
+height="412"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="24-稀疏-per-token-moe-sparse-pertoken-moe-的进化"&gt;2.4 稀疏 Per-token MoE (Sparse-Pertoken MoE) 的进化&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;初代 TokenMixer 的痛点&lt;/strong&gt;：原有的 ReLU-MoE 设计局限于“稠密训练、稀疏推理”范式，并未真正降低训练成本，且动态激活对线上推理极不友好。&lt;/li&gt;
@@ -83,6 +109,19 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;这使得模型能够真正实现”稀疏训练与稀疏推理”。在实验中，模型在仅激活一半参数（2.3B out of 4.6B）的情况下，FLOPs 下降近半，但取得了与稠密模型完全相同的业务增益（AUC +1.14%）。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 3: 单个 Block 内高性能算子的工作流程。绿色节点代表算子（operator），蓝色节点代表数据。标注星号（*）表示数据以 FP8 量化存储和计算。"
+srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_551817f61d0fc358.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_398fa1f1bd47369.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_7da354a1b841990b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_551817f61d0fc358.webp"
+width="760"
+height="393"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h2 id="与其他方法的对比分析"&gt;与其他方法的对比分析&lt;/h2&gt;
 &lt;p&gt;为了更全面地理解 TokenMixer-Large 的定位和优势，我们从架构设计、训练效率和扩展能力三个维度进行横向对比：&lt;/p&gt;
 &lt;h3 id="维度一架构设计对比"&gt;维度一：架构设计对比&lt;/h3&gt;
@@ -220,11 +259,37 @@
 &lt;h2 id="实验结果详细分析"&gt;实验结果详细分析&lt;/h2&gt;
 &lt;h3 id="scaling-law-验证"&gt;Scaling Law 验证&lt;/h3&gt;
 &lt;p&gt;TokenMixer-Large 在离线实验中展现出了清晰的 Scaling Law 特性：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 4: 三个核心业务场景的 Scaling Law 验证。(a) Feed Ads 15B (b) E-Commerce 7B (c) Live Streaming 4B。所有场景均展现出持续的 AUC 提升趋势。"
+srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_701841928bbeeb86.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_31b5ca9de6c56b92.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_cb75c2d5645cd226.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_701841928bbeeb86.webp"
+width="760"
+height="210"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;500M -&amp;gt; 1B&lt;/strong&gt;：CTCVR AUC 持续提升，验证了架构设计的有效性&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;1B -&amp;gt; 4B&lt;/strong&gt;：引入 Sparse-Pertoken MoE 后，模型在激活参数仅为 2.3B 的情况下达到了与 4.6B 稠密模型相当的性能&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;4B -&amp;gt; 15B&lt;/strong&gt;：离线实验表明 AUC 仍在持续提升，未出现明显的饱和趋势&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 5: TokenMixer-Large vs RankMixer(TokenMixer) 的 Scaling Law 对比。无论是参数量还是 FLOPs 维度，TokenMixer-Large 都展现出更陡峭的提升斜率。"
+srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5732f6cdf064d910.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_4b1b8eb7052f469b.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5886734552d50243.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5732f6cdf064d910.webp"
+width="760"
+height="405"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="消融实验关键发现"&gt;消融实验关键发现&lt;/h3&gt;
 &lt;p&gt;论文中的消融实验揭示了几个重要结论：&lt;/p&gt;
 &lt;ul&gt;
