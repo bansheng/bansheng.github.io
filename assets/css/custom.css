@@ -618,10 +618,16 @@ a[id^="share-link-"],
    Left sidebar - Sticky TOC while scrolling
 ------------------------------------------------------- */
 @media (min-width: 1280px) {
-  /* Make the left sidebar's scrollable content sticky */
+  /* Override align-self: flex-start so aside stretches to full article height */
+  .hb-sidebar-container {
+    align-self: stretch !important;
+  }
+
+  /* Make the inner scrollable content sticky within the tall aside */
   .hb-sidebar-container > .hb-scrollbar {
     position: sticky !important;
     top: var(--navbar-height, 64px) !important;
+    height: calc(100vh - var(--navbar-height, 64px)) !important;
     overflow-y: auto !important;
   }
 
