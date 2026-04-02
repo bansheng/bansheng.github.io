@@ -25,6 +25,13 @@
     flex-direction: row !important;
     padding-bottom: 0 !important;
     align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.navbar-nav a {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1rem !important;
 }
 
 /* Hide hamburger + brand name */
@@ -276,21 +283,55 @@ article .prose img:hover {
 /* -------------------------------------------------------
    Headings in prose
 ------------------------------------------------------- */
-.prose h1, .prose h2, .prose h3, .prose h4 {
+/* H1 */
+.prose h1 {
+    font-size: 2em !important;
+    font-weight: 800 !important;
+    color: #111827;
+    margin-top: 2.5em !important;
+    margin-bottom: 1em !important;
+    line-height: 1.25;
+    padding-bottom: 0.4em;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* H2 */
+.prose h2 {
+    font-size: 1.5em !important;
     font-weight: 700 !important;
     color: #111827;
-    margin-top: 2em !important;
+    margin-top: 2.2em !important;
     margin-bottom: 0.8em !important;
     line-height: 1.3;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* H3 */
+.prose h3 {
+    font-size: 1.25em !important;
+    font-weight: 700 !important;
+    color: #111827;
+    margin-top: 1.8em !important;
+    margin-bottom: 0.6em !important;
+    line-height: 1.35;
+}
+
+/* H4 */
+.prose h4 {
+    font-size: 1.1em !important;
+    font-weight: 600 !important;
+    color: #374151;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.5em !important;
 }
 
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 {
     color: #f1f5f9;
 }
 
-.prose h2 {
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid #e5e7eb;
+.dark .prose h1 {
+    border-bottom-color: #334155;
 }
 
 .dark .prose h2 {
@@ -298,15 +339,66 @@ article .prose img:hover {
 }
 
 /* -------------------------------------------------------
+   Paragraphs in prose
+------------------------------------------------------- */
+.prose p {
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+    line-height: 1.8 !important;
+}
+
+/* Space after heading → paragraph should be tighter */
+.prose h2 + p, .prose h3 + p, .prose h4 + p {
+    margin-top: 0.5em !important;
+}
+
+/* -------------------------------------------------------
    Lists in prose
 ------------------------------------------------------- */
 .prose ul, .prose ol {
     padding-left: 1.5em !important;
+    margin-top: 1em !important;
+    margin-bottom: 1.2em !important;
 }
 
 .prose li {
+    margin-top: 0.4em !important;
+    margin-bottom: 0.4em !important;
+    line-height: 1.7 !important;
+}
+
+/* Nested lists: tighter */
+.prose li ul, .prose li ol {
     margin-top: 0.3em !important;
     margin-bottom: 0.3em !important;
+}
+
+/* Space between list and next element */
+.prose ul + h2, .prose ol + h2,
+.prose ul + h3, .prose ol + h3 {
+    margin-top: 2.5em !important;
+}
+
+/* -------------------------------------------------------
+   Blockquotes - clear separation
+------------------------------------------------------- */
+.prose blockquote + p,
+.prose blockquote + h2,
+.prose blockquote + h3 {
+    margin-top: 1.5em !important;
+}
+
+/* -------------------------------------------------------
+   Horizontal rules as section dividers
+------------------------------------------------------- */
+.prose hr {
+    margin-top: 2.5em !important;
+    margin-bottom: 2.5em !important;
+    border-color: #e5e7eb;
+}
+
+.dark .prose hr {
+    border-color: #334155;
 }
 
 /* -------------------------------------------------------
@@ -523,97 +615,19 @@ a[id^="share-link-"],
 .contact-card.linkedin:hover .contact-title { color: #0a66c2; }
 
 /* -------------------------------------------------------
-   TOC - Fixed floating on the left side of the screen
+   Left sidebar - Sticky TOC while scrolling
 ------------------------------------------------------- */
 @media (min-width: 1280px) {
-  nav.hb-toc {
-    position: fixed !important;
-    left: 0 !important;
+  /* Make the left sidebar's scrollable content sticky */
+  .hb-sidebar-container > .hb-scrollbar {
+    position: sticky !important;
     top: var(--navbar-height, 64px) !important;
-    width: 220px !important;
-    max-height: calc(100vh - var(--navbar-height, 64px)) !important;
-    z-index: 30 !important;
-    padding: 20px 16px 20px 20px !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.04) !important;
     overflow-y: auto !important;
-    order: unset !important;
   }
 
-  .dark nav.hb-toc {
-    background: rgba(15, 23, 42, 0.92) !important;
-    border-right-color: rgba(255, 255, 255, 0.06) !important;
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3) !important;
-  }
-
-  /* Inner container: remove sticky since parent is fixed */
-  nav.hb-toc > div {
-    position: static !important;
-    max-height: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow-y: visible !important;
-  }
-
-  /* TOC title */
-  nav.hb-toc p {
-    font-size: 0.8rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-    color: #94a3b8 !important;
-    margin-bottom: 12px !important;
-  }
-
-  /* TOC links */
-  nav.hb-toc a {
-    display: block;
-    padding: 4px 0;
-    font-size: 0.8rem !important;
-    line-height: 1.5;
-    color: #64748b !important;
-    text-decoration: none !important;
-    transition: color 0.2s, transform 0.2s;
-    border-left: 2px solid transparent;
-    padding-left: 10px;
-    margin-left: -2px;
-  }
-
-  nav.hb-toc a:hover {
-    color: #2563eb !important;
-    border-left-color: #2563eb;
-  }
-
-  .dark nav.hb-toc a {
-    color: #94a3b8 !important;
-  }
-
-  .dark nav.hb-toc a:hover {
-    color: #60a5fa !important;
-    border-left-color: #60a5fa;
-  }
-
-  /* Active TOC item (highlighted by scroll spy if available) */
-  nav.hb-toc a.active-class,
-  nav.hb-toc li.active-class > a {
-    color: #2563eb !important;
-    border-left-color: #2563eb;
-    font-weight: 600;
-  }
-
-  .dark nav.hb-toc a.active-class,
-  .dark nav.hb-toc li.active-class > a {
-    color: #60a5fa !important;
-    border-left-color: #60a5fa;
-  }
-}
-
-/* On ultra-wide screens (1536px+), give content more left margin to avoid TOC overlap */
-@media (min-width: 1536px) {
+  /* Hide the right-side TOC to avoid duplication */
   nav.hb-toc {
-    width: 240px !important;
+    display: none !important;
   }
 }
 
