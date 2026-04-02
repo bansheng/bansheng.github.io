@@ -9,10 +9,37 @@
 
       mermaid.initialize({
         startOnLoad: false,
-        theme: isDarkMode ? 'dark' : 'neutral',
+        theme: 'base',
         securityLevel: 'loose',
         logLevel: 'error',
         fontFamily: '"PingFang SC", "Lantinghei SC", "Microsoft YaHei", sans-serif',
+        themeVariables: isDarkMode ? {
+          primaryColor: '#1e3a5f',
+          primaryTextColor: '#e2e8f0',
+          primaryBorderColor: '#3b82f6',
+          secondaryColor: '#312e81',
+          tertiaryColor: '#1e293b',
+          lineColor: '#64748b',
+          textColor: '#e2e8f0',
+          mainBkg: '#1e3a5f',
+          nodeBorder: '#3b82f6',
+          clusterBkg: '#0f172a',
+          clusterBorder: '#334155',
+          edgeLabelBackground: '#1e293b'
+        } : {
+          primaryColor: '#dbeafe',
+          primaryTextColor: '#1e293b',
+          primaryBorderColor: '#3b82f6',
+          secondaryColor: '#ede9fe',
+          tertiaryColor: '#f0fdf4',
+          lineColor: '#64748b',
+          textColor: '#1e293b',
+          mainBkg: '#dbeafe',
+          nodeBorder: '#3b82f6',
+          clusterBkg: '#f8fafc',
+          clusterBorder: '#cbd5e1',
+          edgeLabelBackground: '#ffffff'
+        },
         flowchart: {
           nodeSpacing: 30,
           rankSpacing: 40,
