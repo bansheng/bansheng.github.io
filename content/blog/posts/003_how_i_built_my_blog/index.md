@@ -255,11 +255,57 @@ git push origin source
 
 ## 技术栈
 
-- **框架**: Hugo 0.121.2 (Extended)
-- **主题**: PaperMod
-- **评论系统**: giscus
+- **框架**: Hugo 0.158.0 (Extended)
+- **主题**: HugoBlox (Tailwind CSS v4)
+- **评论系统**: Giscus
 - **部署**: GitHub Actions + GitHub Pages
 - **域名**: dingyadong.top
+- **封面生成**: Puppeteer + 自定义 HTML 模板
+- **架构图**: Excalidraw / Mermaid
+- **标签页**: D3.js 词云
+
+## 博客写作工具链
+
+### 生成文章封面
+
+每篇文章的封面图使用 Puppeteer 自动生成，左边是文章核心架构图，右边是标题。
+
+```bash
+# 生成单篇封面（自定义架构图 HTML）
+node scripts/generate-cover-v2.js \
+  --title "论文名" \
+  --subtitle "一句话描述" \
+  --diagram '<div>...你的架构图 HTML...</div>' \
+  --output content/blog/posts/xxx/featured.png \
+  --theme blue
+
+# 可选主题: blue / purple / green / orange / red / cyan
+```
+
+也可以用简单模式（纯标题+标签，无架构图）：
+
+```bash
+node scripts/generate-cover.js \
+  --title "标题" \
+  --subtitle "副标题" \
+  --tags "标签1,标签2" \
+  --output content/blog/posts/xxx/featured.png \
+  --theme purple
+```
+
+### 批量重新生成所有封面
+
+```bash
+bash scripts/generate-all-covers.sh
+```
+
+### 新建文章流程
+
+1. 创建 page bundle 目录：`mkdir -p content/blog/posts/012_xxx/`
+2. 写文章：`content/blog/posts/012_xxx/index.md`
+3. 生成封面：运行 `generate-cover-v2.js`
+4. 本地预览：`npx hugo server -D`
+5. 提交推送：`git add -A && git commit && git push`
 
 ## 参考资料
 
