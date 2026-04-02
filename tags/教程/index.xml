@@ -467,12 +467,44 @@
 &lt;/table&gt;
 &lt;h2 id="技术栈"&gt;技术栈&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;框架&lt;/strong&gt;: Hugo 0.121.2 (Extended)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;主题&lt;/strong&gt;: PaperMod&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;评论系统&lt;/strong&gt;: giscus&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;框架&lt;/strong&gt;: Hugo 0.158.0 (Extended)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;主题&lt;/strong&gt;: HugoBlox (Tailwind CSS v4)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;评论系统&lt;/strong&gt;: Giscus&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;部署&lt;/strong&gt;: GitHub Actions + GitHub Pages&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;域名&lt;/strong&gt;: dingyadong.top&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;封面生成&lt;/strong&gt;: Puppeteer + 自定义 HTML 模板&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;架构图&lt;/strong&gt;: Excalidraw / Mermaid&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;标签页&lt;/strong&gt;: D3.js 词云&lt;/li&gt;
 &lt;/ul&gt;
+&lt;h2 id="博客写作工具链"&gt;博客写作工具链&lt;/h2&gt;
+&lt;h3 id="生成文章封面"&gt;生成文章封面&lt;/h3&gt;
+&lt;p&gt;每篇文章的封面图使用 Puppeteer 自动生成，左边是文章核心架构图，右边是标题。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 生成单篇封面（自定义架构图 HTML）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;node scripts/generate-cover-v2.js &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --title &lt;span class="s2"&gt;&amp;#34;论文名&amp;#34;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --subtitle &lt;span class="s2"&gt;&amp;#34;一句话描述&amp;#34;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --diagram &lt;span class="s1"&gt;&amp;#39;&amp;lt;div&amp;gt;...你的架构图 HTML...&amp;lt;/div&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --output content/blog/posts/xxx/featured.png &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --theme blue
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 可选主题: blue / purple / green / orange / red / cyan&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;也可以用简单模式（纯标题+标签，无架构图）：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;node scripts/generate-cover.js &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --title &lt;span class="s2"&gt;&amp;#34;标题&amp;#34;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --subtitle &lt;span class="s2"&gt;&amp;#34;副标题&amp;#34;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --tags &lt;span class="s2"&gt;&amp;#34;标签1,标签2&amp;#34;&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --output content/blog/posts/xxx/featured.png &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; --theme purple
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="批量重新生成所有封面"&gt;批量重新生成所有封面&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash scripts/generate-all-covers.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="新建文章流程"&gt;新建文章流程&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;创建 page bundle 目录：&lt;code&gt;mkdir -p content/blog/posts/012_xxx/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;写文章：&lt;code&gt;content/blog/posts/012_xxx/index.md&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;生成封面：运行 &lt;code&gt;generate-cover-v2.js&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;本地预览：&lt;code&gt;npx hugo server -D&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;提交推送：&lt;code&gt;git add -A &amp;amp;&amp;amp; git commit &amp;amp;&amp;amp; git push&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
 &lt;h2 id="参考资料"&gt;参考资料&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
