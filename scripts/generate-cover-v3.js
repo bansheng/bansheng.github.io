@@ -30,7 +30,7 @@ const photoSeed = getArg('photo-seed') || '42';
 const output = getArg('output') || 'featured.png';
 
 const tagsHtml = tags.map(tag =>
-  `<span style="display:inline-block;padding:6px 14px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);border-radius:20px;font-size:13px;font-weight:600;color:white;backdrop-filter:blur(4px);">${tag}</span>`
+  `<span style="display:inline-block;padding:5px 12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:16px;font-size:12px;font-weight:600;color:white;backdrop-filter:blur(4px);">${tag}</span>`
 ).join('');
 
 const html = `<!DOCTYPE html>
@@ -58,16 +58,16 @@ const html = `<!DOCTYPE html>
   <!-- Content: bottom-left layout -->
   <div style="
     position:absolute;
-    bottom:48px;left:60px;right:60px;
+    bottom:40px;left:60px;right:60px;
     z-index:20;
     color:white;
   ">
     <!-- Article title (large, bold) -->
     <h1 style="
-      margin:0 0 16px 0;
-      font-size:42px;
+      margin:0 0 12px 0;
+      font-size:36px;
       font-weight:900;
-      line-height:1.2;
+      line-height:1.15;
       text-shadow:0 2px 8px rgba(0,0,0,0.4);
       color:white;
     ">${title}</h1>
@@ -75,7 +75,7 @@ const html = `<!DOCTYPE html>
     <!-- Tags -->
     <div style="
       display:flex;
-      gap:8px;
+      gap:6px;
       flex-wrap:wrap;
     ">${tagsHtml}</div>
   </div>
