@@ -28,7 +28,6 @@ const title = getArg('title') || 'Untitled';
 const tags = (getArg('tags') || '').split(',').filter(Boolean);
 const photoSeed = getArg('photo-seed') || '42';
 const output = getArg('output') || 'featured.png';
-const blogName = '设知道的人'; // Blog name - could be parameterized
 
 const tagsHtml = tags.map(tag =>
   `<span style="display:inline-block;padding:6px 14px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);border-radius:20px;font-size:13px;font-weight:600;color:white;backdrop-filter:blur(4px);">${tag}</span>`
@@ -63,15 +62,6 @@ const html = `<!DOCTYPE html>
     z-index:20;
     color:white;
   ">
-    <!-- Blog name (small text, semi-transparent) -->
-    <div style="
-      font-size:13px;
-      font-weight:600;
-      color:rgba(255,255,255,0.7);
-      margin-bottom:12px;
-      letter-spacing:0.5px;
-    ">${blogName}</div>
-
     <!-- Article title (large, bold) -->
     <h1 style="
       margin:0 0 16px 0;

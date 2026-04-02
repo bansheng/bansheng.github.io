@@ -153,7 +153,7 @@ TokenMixer-Large 在离线实验中展现出了清晰的 Scaling Law 特性：
 ## 流程图 (Flowchart)
 
 {{< mermaid >}}
-graph LR
+graph TD
     A[Raw Sparse Features] --> B(Embedding Layer)
     B --> C[Semantic Group-wise Tokenizer]
     C --> D[Global Token + Grouped Tokens X]

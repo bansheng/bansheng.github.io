@@ -158,7 +158,7 @@ $$
 3. **全局特征合并**：最后，将全场景共享的特征（用户的生命周期历史序列 \(H\) 和实时序列 \(R\)）与上述拼接结果在 User-level 进行合并。
 
 {{< mermaid >}}
-graph LR
+graph TD
     subgraph 场景1: 外卖
         U1[User特征] --> Agg1[场景内User-level聚合]
         C1[交叉特征] --> Agg1

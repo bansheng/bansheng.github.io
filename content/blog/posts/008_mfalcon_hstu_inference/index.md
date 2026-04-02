@@ -202,7 +202,7 @@ $$T_{\text{M-FALCON}} = \underbrace{\mathcal{O}(n^2)}_{\text{Prefill}} + \underb
 下面这张图直观地展示了 M-FALCON 的工作流：
 
 {{< mermaid >}}
-graph LR
+graph TD
     %% Define Styles
     classDef user fill:#f3f4f6,stroke:#3b82f6,stroke-width:2px;
     classDef cache fill:#dbeafe,stroke:#2563eb,stroke-width:2px;

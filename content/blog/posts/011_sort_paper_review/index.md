@@ -31,7 +31,7 @@ Transformer 架构凭借其卓越的可扩展性（Scalability），在大语言
 但这些工作要么聚焦于召回/检索阶段，要么在工业级排序场景中的落地效果有限。**SORT（Systematically Optimized Ranking Transformer）** 正是在这一背景下提出的——它系统性地解决了 Transformer 在工业级排序模型中面临的一系列挑战，并在 AliExpress 的真实业务场景中取得了显著收益。
 
 {{< mermaid >}}
-graph LR
+graph TD
     subgraph 传统范式 ["传统推荐排序范式"]
         A1["DIN<br/>目标注意力"] 
         A2["DIEN<br/>兴趣演化"]
@@ -273,7 +273,7 @@ SORT 采用**逐层递进式裁剪**：
 性能提升的原因在于查询裁剪隐式地引入了**时间衰减归纳偏置（Temporal Decay Inductive Bias）**——在推荐系统中，这是一个非常合理的先验：用户的近期行为比远期行为对当前兴趣的预测更为重要。
 
 {{< mermaid >}}
-graph LR
+graph TD
     subgraph Input ["输入 Token 序列"]
         direction LR
         H["H₁, H₂, ..., Hₙ<br/>(History)"]
@@ -384,7 +384,7 @@ SORT 比较了两种 MoE 方案：
 - 将优化重心聚焦于稠密的 Transformer 参数
 
 {{< mermaid >}}
-graph LR
+graph TD
     subgraph Stage1 ["阶段一：生成式预训练"]
         direction TB
         A["行为序列"] --> B["Transformer Decoder"] --> C["Next-Item Prediction"]

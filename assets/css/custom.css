@@ -423,12 +423,13 @@ article .prose img:hover {
     text-align: center;
 }
 
-/* Force SVG to scale down to fit container width, never overflow vertically */
+/* SVG: natural size but capped at container — balanced "not too big, not too small" */
 .mermaid svg {
+    display: block;
     max-width: 100%;
-    width: 100%;
     height: auto !important;
     min-height: 200px;
+    margin: 0 auto;
 }
 
 /* -------------------------------------------------------
@@ -618,17 +619,13 @@ a[id^="share-link-"],
    Left sidebar - Sticky TOC while scrolling
 ------------------------------------------------------- */
 @media (min-width: 1280px) {
-  /* Override align-self: flex-start so aside stretches to full article height */
+  /* Make the sidebar itself sticky — avoids flex-column child stretching bug */
   .hb-sidebar-container {
-    align-self: stretch !important;
-  }
-
-  /* Make the inner scrollable content sticky within the tall aside */
-  .hb-sidebar-container > .hb-scrollbar {
     position: sticky !important;
-    top: var(--navbar-height, 64px) !important;
-    height: calc(100vh - var(--navbar-height, 64px)) !important;
+    top: 64px !important;
+    max-height: calc(100vh - 64px) !important;
     overflow-y: auto !important;
+    align-self: flex-start !important;
   }
 
   /* Hide the right-side TOC to avoid duplication */

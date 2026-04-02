@@ -29,7 +29,7 @@ HSTU 最大的架构创新在于**完全移除了传统的 MLP 层**。它将多
 为了更直观地理解，我们可以看下面这张 HSTU 的微观结构图：
 
 {{< mermaid >}}
-graph LR
+graph TD
     %% Define Styles
     classDef input fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef linear fill:#e1f5fe,stroke:#2563eb,stroke-width:1px;
@@ -121,7 +121,7 @@ HSTU 摒弃了 DLRM 复杂的并行特征网络，将用户交互行为（如点
 ## 3. 架构流程图
 
 {{< mermaid >}}
-graph LR
+graph TD
     A[海量异构特征 Categorical & Numerical] --> B[丢弃数值特征 / 保留分类特征]
     B --> C[特征序列化与时间轴压缩]
     C --> D[合并为统一单时间序列]
