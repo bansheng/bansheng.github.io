@@ -73,7 +73,7 @@ const html = `<!DOCTYPE html>
   <div style="position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0);background-size:32px 32px;"></div>
 
   <!-- Left: Architecture diagram -->
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px;position:relative;z-index:2;">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:16px 12px;position:relative;z-index:2;">
     ${diagram}
   </div>
 

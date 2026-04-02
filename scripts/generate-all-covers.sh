@@ -59,17 +59,35 @@ $GEN --title "OpenClaw × 智谱" --subtitle "绕过 Coding Plan，免费接入�
   --output content/blog/posts/004_openclaw_zhipu_api_setup/featured.png --theme green
 
 $GEN --title "TokenMixer" --subtitle "工业级推荐系统的大模型扩展瓶颈突破" \
-  --diagram '<div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
-    <div style="padding:10px 18px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:10px;font-size:13px;font-weight:600;color:#374151;">Raw Sparse Features</div>
-    <div style="color:#d1d5db;">↓</div>
-    <div style="display:flex;gap:8px;">
-      <div style="padding:10px 14px;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;font-size:12px;font-weight:700;color:#b45309;">🔀 Mixing T→H</div>
-      <div style="padding:10px 14px;background:#ede9fe;border:1px solid #ddd6fe;border-radius:10px;font-size:12px;font-weight:700;color:#6d28d9;">♻️ Revert H→T</div>
+  --diagram '<div style="display:flex;gap:0;width:100%;height:100%;align-items:center;justify-content:center;">
+    <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
+      <div style="padding:10px 30px;background:#f3f4f6;border:2px solid #d1d5db;border-radius:12px;font-size:16px;font-weight:700;color:#374151;">Raw Sparse Features</div>
+      <div style="color:#b0b0b0;font-size:15px;line-height:1;">↓</div>
+      <div style="padding:9px 24px;background:#fff7ed;border:2px solid #fed7aa;border-radius:10px;font-size:15px;font-weight:700;color:#c2410c;">Tokenizer + Embedding</div>
+      <div style="color:#b0b0b0;font-size:15px;line-height:1;">↓</div>
+      <div style="display:flex;gap:5px;align-items:center;">
+        <div style="padding:8px 14px;background:#fef3c7;border:2px solid #fde68a;border-radius:10px;font-size:14px;font-weight:700;color:#b45309;">Mixing T→H</div>
+        <div style="font-size:15px;color:#b0b0b0;">⇄</div>
+        <div style="padding:8px 14px;background:#ede9fe;border:2px solid #ddd6fe;border-radius:10px;font-size:14px;font-weight:700;color:#6d28d9;">Revert H→T</div>
+      </div>
+      <div style="color:#b0b0b0;font-size:15px;line-height:1;">↓</div>
+      <div style="padding:7px 20px;background:#fef9c3;border:2px solid #fde047;border-radius:10px;font-size:14px;font-weight:700;color:#a16207;">Pre-RMSNorm</div>
+      <div style="color:#b0b0b0;font-size:15px;line-height:1;">↓</div>
+      <div style="padding:10px 24px;background:#dbeafe;border:2px solid #93c5fd;border-radius:12px;font-size:15px;font-weight:800;color:#1e40af;">Deep Stack (pSwiGLU)</div>
+      <div style="color:#b0b0b0;font-size:15px;line-height:1;">↓</div>
+      <div style="padding:9px 22px;background:#d1fae5;border:2px solid #6ee7b7;border-radius:10px;font-size:15px;font-weight:700;color:#047857;">Sparse Per-token MoE</div>
+      <div style="color:#b0b0b0;font-size:15px;line-height:1;">↓</div>
+      <div style="padding:8px 22px;background:#e0e7ff;border:2px solid #a5b4fc;border-radius:10px;font-size:14px;font-weight:700;color:#4338ca;">Mean Pooling</div>
+      <div style="color:#b0b0b0;font-size:15px;line-height:1;">↓</div>
+      <div style="padding:10px 30px;background:#f0fdf4;border:2px solid #86efac;border-radius:12px;font-size:16px;font-weight:800;color:#15803d;">Prediction</div>
     </div>
-    <div style="color:#d1d5db;">↓</div>
-    <div style="padding:10px 18px;background:#dbeafe;border:1px solid #bfdbfe;border-radius:10px;font-size:13px;font-weight:700;color:#1e40af;">Deep Stack + Inter-Residual</div>
-    <div style="color:#d1d5db;">↓</div>
-    <div style="padding:10px 18px;background:#d1fae5;border:1px solid #a7f3d0;border-radius:10px;font-size:13px;font-weight:700;color:#047857;">⚡ Sparse Per-token MoE</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:32px;margin-left:6px;">
+      <div style="font-size:9px;color:#d97706;font-weight:700;writing-mode:vertical-lr;letter-spacing:2px;margin-bottom:2px;">RESIDUAL</div>
+      <div style="border-left:2px dashed #f59e0b;height:440px;position:relative;">
+        <div style="position:absolute;top:-6px;left:-5px;color:#f59e0b;font-size:12px;">▲</div>
+        <div style="position:absolute;bottom:-6px;left:-5px;color:#f59e0b;font-size:12px;">▼</div>
+      </div>
+    </div>
   </div>' \
   --output content/blog/posts/005_tokenmixer_large_paper_review/featured.png --theme orange
 
