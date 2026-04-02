@@ -29,56 +29,38 @@ HSTU 最大的架构创新在于**完全移除了传统的 MLP 层**。它将多
 为了更直观地理解，我们可以看下面这张 HSTU 的微观结构图：
 
 {{< mermaid >}}
-graph TD
-    %% Define Styles
+graph LR
     classDef input fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef linear fill:#e1f5fe,stroke:#2563eb,stroke-width:1px;
     classDef act fill:#fef3c7,stroke:#ea580c,stroke-width:1px;
     classDef attention fill:#dcfce7,stroke:#b45309,stroke-width:1px;
     classDef output fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
 
-    %% Nodes
-    Input["输入序列 X <br/> N x d"]:::input
-    
-    subgraph HSTU_Block ["HSTU Block (替代标准 Self-Attention + MLP)"]
-        Norm1["Layer Norm"]:::linear
-        Linear1["Linear Projection <br/> f1"]:::linear
-        SiLU1["SiLU Activation <br/> φ1"]:::act
-        Split["Split Channel <br/> 切分为 U, V, Q, K"]:::linear
-        
-        subgraph Spatial_Aggregation ["Spatial Aggregation (空间聚合)"]
-            Attn["Q * K^T + Relative Bias <br/> 融合时序与位置"]:::attention
-            SiLU2["SiLU Activation <br/> φ2"]:::act
-            Mul_V["Attn_Score ⊙ V <br/> 聚合输出 A_V"]:::attention
-        end
-        
-        subgraph Pointwise_Transformation ["Pointwise Transformation (点式变换)"]
-            Norm2["Layer Norm"]:::linear
-            Mul_U["Norm(A_V) ⊙ U <br/> 门控融合"]:::linear
-            Linear2["Linear Projection <br/> f2"]:::linear
-        end
-    end
-    
-    Output["输出序列 Y <br/> N x d"]:::output
+    Input["输入 X"]:::input
 
-    %% Edges
-    Input --> Norm1
-    Norm1 --> Linear1
-    Linear1 --> SiLU1
-    SiLU1 --> Split
-    
-    Split -->|Q, K| Attn
-    Attn --> SiLU2
-    Split -->|V| Mul_V
-    SiLU2 --> Mul_V
-    
-    Mul_V --> Norm2
-    Split -->|U| Mul_U
-    Norm2 --> Mul_U
-    Mul_U --> Linear2
-    
-    Linear2 --> Output
-    Input -->|"残差连接 Residual Connection"| Output
+    Norm1["LayerNorm"]:::linear
+    Linear1["Linear f1"]:::linear
+    SiLU1["SiLU φ1"]:::act
+    Split["Split → U,V,Q,K"]:::linear
+
+    %% Spatial Aggregation
+    Attn["QK^T + Bias"]:::attention
+    SiLU2["SiLU φ2"]:::act
+    Mul_V["Score ⊙ V"]:::attention
+
+    %% Pointwise Transformation
+    Norm2["LayerNorm"]:::linear
+    Mul_U["Norm ⊙ U"]:::linear
+    Linear2["Linear f2"]:::linear
+
+    Output["输出 Y"]:::output
+
+    Input --> Norm1 --> Linear1 --> SiLU1 --> Split
+    Split -->|"Q,K"| Attn --> SiLU2 --> Mul_V
+    Split -->|"V"| Mul_V
+    Mul_V --> Norm2 --> Mul_U --> Linear2 --> Output
+    Split -->|"U"| Mul_U
+    Input -->|"残差连接"| Output
 {{< /mermaid >}}
 
 **核心计算公式如下：**

@@ -203,31 +203,14 @@ $$T_{\text{M-FALCON}} = \underbrace{\mathcal{O}(n^2)}_{\text{Prefill}} + \underb
 
 {{< mermaid >}}
 graph TD
-    %% Define Styles
-    classDef user fill:#f3f4f6,stroke:#3b82f6,stroke-width:2px;
-    classDef cache fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
-    classDef mask fill:#fef3c7,stroke:#d97706,stroke-width:2px;
-    classDef output fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
-
-    UserHistory[“用户历史序列 (长度 n)”]:::user
-    
-    UserHistory -->|1. 仅计算一次| KVCache[“预计算并缓存 KV-Cache”]:::cache
-    
-    subgraph Microbatch_Processing [“2. 微批处理 (Microbatching)”]
-        Candidates[“剩余待排序候选商品 (总数 m)”]
-        Candidates -->|切分为批次| Batch[“当前微批次 (大小 bm)”]
-        
-        Batch --> Masking[“3. 构造特殊 Attention Mask<br/>(候选商品可见历史，但互不可见)”]:::mask
-        KVCache --> Masking
-        
-        Masking -->|并行前向传播| Forward[“HSTU Block 计算”]
-    end
-    
-    Forward --> Scores[“输出该批次 bm 个商品的排序分值”]:::output
-    
-    Scores --> Check{“是否还有剩余候选?”}
-    Check -- “是 (处理下一批次)” --> Batch
-    Check -- “否” --> Done[“返回最终排序列表”]
+    A[“用户历史序列”] -->|仅计算一次| B[“KV-Cache”]
+    C[“候选商品”] -->|切分| D[“微批次”]
+    D --> E[“Attention Mask + HSTU 计算”]
+    B --> E
+    E --> F[“批次排序分值”]
+    F --> G{“剩余候选”}
+    G -- 是 --> D
+    G -- 否 --> H[“最终排序列表”]
 {{< /mermaid >}}
 
 ## 6. 与其他推理优化技术的全面对比

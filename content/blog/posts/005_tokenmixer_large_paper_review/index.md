@@ -153,23 +153,17 @@ TokenMixer-Large 在离线实验中展现出了清晰的 Scaling Law 特性：
 ## 流程图 (Flowchart)
 
 {{< mermaid >}}
-graph TD
-    A[Raw Sparse Features] --> B(Embedding Layer)
-    B --> C[Semantic Group-wise Tokenizer]
-    C --> D[Global Token + Grouped Tokens X]
-    
-    subgraph TokenMixer-Large Block
-        D --> E[Mixing: Split & Concat]
-        E --> F[Pertoken SwiGLU + Norm]
-        F --> G[Reverting: Split & Concat back to T]
-        G --> H[Pertoken SwiGLU + Norm]
-        
-        D -.->|Semantic Aligned Residual: F_revert + X| H
-    end
-    
-    H --> I[Deep Layers with Inter-Residual & Aux Loss]
-    I --> J[Sparse-Pertoken MoE Layer]
-    J --> K[Mean Pooling & Task Prediction]
+graph LR
+    A[Sparse Features] --> B[Embedding & Tokenizer]
+    B --> C[Grouped Tokens X]
+
+    D["Mixing: Split & Concat"] --> E["SwiGLU + Norm"]
+    E --> F["Reverting"] --> G["SwiGLU + Norm"]
+
+    C --> D
+    C -.->|Residual| G
+    G --> H[Deep Layers + MoE]
+    H --> I[Pooling & Prediction]
 {{< /mermaid >}}
 
 ## 优缺点分析
