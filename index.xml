@@ -4206,6 +4206,16 @@ H --&gt; I[Pooling &amp; Prediction]
 &lt;div class="contact-title"&gt;LinkedIn&lt;/div&gt;
 &lt;div class="contact-desc"&gt;建立职场联系&lt;br&gt;了解我的专业经历与动态&lt;/div&gt;
 &lt;/a&gt;
+&lt;!-- Google Scholar --&gt;
+&lt;a href="https://scholar.google.com/citations?hl=zh-CN&amp;user=Kmx28jUAAAAJ" target="_blank" rel="noopener noreferrer" class="contact-card scholar"&gt;
+&lt;svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"&gt;
+&lt;path d="M12 14l-1.5-4.5L2 4l10 2 10-2-8.5 5.5L12 14z"&gt;&lt;/path&gt;
+&lt;path d="M12 14l-2 6 2 1 2-1-2-6z"&gt;&lt;/path&gt;
+&lt;circle cx="18" cy="14" r="4"&gt;&lt;/circle&gt;
+&lt;/svg&gt;
+&lt;div class="contact-title"&gt;Google Scholar&lt;/div&gt;
+&lt;div class="contact-desc"&gt;学术主页&lt;br&gt;查看我的论文与引用&lt;/div&gt;
+&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;br&gt;&lt;br&gt;
 &lt;em&gt;注：你可以直接点击上方的卡片跳转，或者在邮件中注明来源（如：“来自博客”），这能帮我更快地处理你的信息哦！&lt;/em&gt;&lt;/p&gt;</description></item></channel></rss>
