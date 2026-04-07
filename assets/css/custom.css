@@ -615,6 +615,10 @@ a[id^="share-link-"],
 .contact-card.linkedin:hover .contact-icon,
 .contact-card.linkedin:hover .contact-title { color: #0a66c2; }
 
+.contact-card.scholar:hover::before { background: #4285f4; }
+.contact-card.scholar:hover .contact-icon,
+.contact-card.scholar:hover .contact-title { color: #4285f4; }
+
 /* -------------------------------------------------------
    Left sidebar - Sticky TOC while scrolling
 ------------------------------------------------------- */

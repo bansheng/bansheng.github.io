@@ -38,6 +38,17 @@ type: page
     <div class="contact-desc">建立职场联系<br>了解我的专业经历与动态</div>
   </a>
 
+  <!-- Google Scholar -->
+  <a href="https://scholar.google.com/citations?hl=zh-CN&user=Kmx28jUAAAAJ" target="_blank" rel="noopener noreferrer" class="contact-card scholar">
+    <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 14l-1.5-4.5L2 4l10 2 10-2-8.5 5.5L12 14z"></path>
+      <path d="M12 14l-2 6 2 1 2-1-2-6z"></path>
+      <circle cx="18" cy="14" r="4"></circle>
+    </svg>
+    <div class="contact-title">Google Scholar</div>
+    <div class="contact-desc">学术主页<br>查看我的论文与引用</div>
+  </a>
+
 </div>
 
 <br><br>
