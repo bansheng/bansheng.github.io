@@ -1,0 +1,65 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e4]:
+    - navigation [ref=e5]:
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "首页" [ref=e8] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e9]:
+          - link "博客" [ref=e10] [cursor=pointer]:
+            - /url: /blog/
+        - listitem [ref=e11]:
+          - link "标签" [ref=e12] [cursor=pointer]:
+            - /url: /tags/
+        - listitem [ref=e13]:
+          - link "联系我" [ref=e14] [cursor=pointer]:
+            - /url: /contact/
+      - button "appearance" [ref=e17] [cursor=pointer]:
+        - img [ref=e18]
+  - article [ref=e22]:
+    - heading "找不到页面" [level=1] [ref=e23]
+    - paragraph [ref=e24]: 也许你在找？
+    - heading "最新" [level=2] [ref=e25]
+    - list [ref=e26]:
+      - listitem [ref=e27]:
+        - link "博客" [ref=e28] [cursor=pointer]:
+          - /url: /blog/
+      - listitem [ref=e29]:
+        - link "UniMixer：统一推荐系统三大架构范式的缩放定律探索" [ref=e30] [cursor=pointer]:
+          - /url: /posts/013_unimixer_paper_review/
+      - listitem [ref=e31]:
+        - link "NEO：用统一语言模型重新定义搜索、推荐与推理" [ref=e32] [cursor=pointer]:
+          - /url: /posts/012_neo_unified_lm_search_rec/
+      - listitem [ref=e33]:
+        - link "SORT：面向工业级推荐系统的系统优化排序 Transformer" [ref=e34] [cursor=pointer]:
+          - /url: /posts/011_sort_paper_review/
+      - listitem [ref=e35]:
+        - link "美团推荐大模型 MTFM (Meituan Foundation Model) 深度硬核解析：跨场景推荐的终极答案？" [ref=e36] [cursor=pointer]:
+          - /url: /posts/010_mtfm_meituan_foundation_model/
+      - listitem [ref=e37]:
+        - link "GPSD：让判别式推荐模型也拥有 Scaling Law 的魔力" [ref=e38] [cursor=pointer]:
+          - /url: /posts/009_gpsd_paper_review/
+      - listitem [ref=e39]:
+        - link "M-FALCON：HSTU 中解决“一对多”推荐推理的终极武器" [ref=e40] [cursor=pointer]:
+          - /url: /posts/008_mfalcon_hstu_inference/
+      - listitem [ref=e41]:
+        - link "万亿参数推荐大模型：HSTU 架构如何超越传统 Self-Attention" [ref=e42] [cursor=pointer]:
+          - /url: /posts/007_hstu_paper_review/
+      - listitem [ref=e43]:
+        - link "FuXi-Linear：释放线性注意力在超长序列推荐中的潜力" [ref=e44] [cursor=pointer]:
+          - /url: /posts/006_fuxi_linear_paper_review/
+      - listitem [ref=e45]:
+        - 'link "TokenMixer-Large: 突破工业级推荐系统的大模型扩展瓶颈" [ref=e46] [cursor=pointer]':
+          - /url: /posts/005_tokenmixer_large_paper_review/
+  - contentinfo [ref=e48]:
+    - paragraph [ref=e49]: © 2026 Yadong Ding
+    - paragraph [ref=e50]:
+      - text: 由
+      - link "Hugo Blox Kit" [ref=e51] [cursor=pointer]:
+        - /url: https://hugoblox.com?utm_source=site_footer&utm_medium=referral&utm_campaign=poweredby_oss&utm_content=brand_na
+      - text: 支持发布——免费
+      - link "开源" [ref=e52] [cursor=pointer]:
+        - /url: https://github.com/HugoBlox/kit
+      - text: 网站，为创作者赋能。
+      - link "构建您的 →" [ref=e53] [cursor=pointer]:
+        - /url: https://hugoblox.com/start?utm_source=site_footer&utm_medium=referral&utm_campaign=poweredby_oss&utm_content=cta_na
