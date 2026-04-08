@@ -1,6 +1,5 @@
 ---
 title: "NormFormer：用额外归一化改进 Transformer 预训练"
-description: "深入分析 NormFormer 论文的算法创新与工程应用：如何通过三处额外归一化操作，以不到 6% 的计算开销换取 24% 的训练加速"
 date: 2026-04-09T10:00:00+08:00
 draft: false
 tags: ["论文精读", "NormFormer", "Transformer", "深度学习", "预训练", "归一化"]
