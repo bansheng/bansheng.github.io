@@ -1,6 +1,6 @@
 ---
 title: "NormFormer：用额外归一化改进 Transformer 预训练"
-date: 2026-04-09T10:00:00+08:00
+date: 2026-04-09T02:30:00+08:00
 draft: false
 tags: ["论文精读", "NormFormer", "Transformer", "深度学习", "预训练", "归一化"]
 categories: ["Tech"]
