@@ -1,0 +1,146 @@
+- generic [ref=e1]:
+  - banner:
+    - heading "Excalidraw" [level=1] [ref=e2]
+  - generic [active] [ref=e5]:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - img
+        - generic:
+          - text: Your drawings are saved in your browser's storage.
+          - text: Browser storage can be cleared unexpectedly.
+          - text: Save your work to a file regularly to avoid losing it.
+        - generic:
+          - button "打开 Cmd+O" [ref=e6] [cursor=pointer]:
+            - img [ref=e8]
+            - generic [ref=e10]: 打开
+            - generic [ref=e11]: Cmd+O
+          - button "帮助 ?" [ref=e12] [cursor=pointer]:
+            - img [ref=e14]
+            - generic [ref=e19]: 帮助
+            - generic [ref=e20]: "?"
+          - button "实时协作..." [ref=e21] [cursor=pointer]:
+            - img [ref=e23]
+            - generic [ref=e30]: 实时协作...
+          - link "Sign up" [ref=e31] [cursor=pointer]:
+            - /url: https://plus.excalidraw.com/plus?utm_source=excalidraw&utm_medium=app&utm_content=welcomeScreenGuest
+            - img [ref=e33]
+            - generic [ref=e39]: Sign up
+      - generic:
+        - generic:
+          - generic [ref=e41]:
+            - button [ref=e43] [cursor=pointer]:
+              - img [ref=e44]
+            - generic:
+              - img
+              - generic: 导出、首选项、语言……
+          - region "形状":
+            - generic [ref=e47]:
+              - generic:
+                - generic: 选择工具并开始绘图！
+                - img
+              - generic [ref=e50]:
+                - generic:
+                  - generic:
+                    - text: 要移动画布，请按住
+                    - generic: 鼠标滚轮
+                    - text: 或
+                    - generic: 空格
+                    - text: 同时拖拽鼠标，或使用抓手工具。
+                - heading "形状" [level=2] [ref=e51]
+                - generic [ref=e52]:
+                  - generic "绘制后保持所选的工具栏状态 — Q" [ref=e53] [cursor=pointer]:
+                    - checkbox "绘制后保持所选的工具栏状态"
+                    - img [ref=e55]
+                  - generic "抓手（平移工具） — H 或 null" [ref=e62] [cursor=pointer]:
+                    - radio "抓手（平移工具）"
+                    - img [ref=e64]
+                  - generic "选择 — V 或 1" [ref=e71] [cursor=pointer]:
+                    - radio "选择" [checked]
+                    - generic [ref=e72]:
+                      - img [ref=e73]
+                      - generic [ref=e78]: "1"
+                  - generic "矩形 — R 或 2" [ref=e79] [cursor=pointer]:
+                    - radio "矩形"
+                    - generic [ref=e80]:
+                      - img [ref=e81]
+                      - generic [ref=e85]: "2"
+                  - generic "菱形 — D 或 3" [ref=e86] [cursor=pointer]:
+                    - radio "菱形"
+                    - generic [ref=e87]:
+                      - img [ref=e88]
+                      - generic [ref=e92]: "3"
+                  - generic "椭圆 — O 或 4" [ref=e93] [cursor=pointer]:
+                    - radio "椭圆"
+                    - generic [ref=e94]:
+                      - img [ref=e95]
+                      - generic [ref=e99]: "4"
+                  - generic "箭头 — A 或 5" [ref=e100] [cursor=pointer]:
+                    - radio "箭头"
+                    - generic [ref=e101]:
+                      - img [ref=e102]
+                      - generic [ref=e107]: "5"
+                  - generic "线条 — L 或 6" [ref=e108] [cursor=pointer]:
+                    - radio "线条"
+                    - generic [ref=e109]:
+                      - img [ref=e110]
+                      - generic [ref=e111]: "6"
+                  - generic "自由书写 — P 或 7" [ref=e112] [cursor=pointer]:
+                    - radio "自由书写"
+                    - generic [ref=e113]:
+                      - img [ref=e114]
+                      - generic [ref=e118]: "7"
+                  - generic "文字 — T 或 8" [ref=e119] [cursor=pointer]:
+                    - radio "文字"
+                    - generic [ref=e120]:
+                      - img [ref=e121]
+                      - generic [ref=e126]: "8"
+                  - generic "插入图像 — 9" [ref=e127] [cursor=pointer]:
+                    - radio "插入图像"
+                    - generic [ref=e128]:
+                      - img [ref=e129]
+                      - generic [ref=e134]: "9"
+                  - generic "橡皮 — E 或 0" [ref=e135] [cursor=pointer]:
+                    - radio "橡皮"
+                    - generic [ref=e136]:
+                      - img [ref=e137]
+                      - generic [ref=e142]: "0"
+                  - button "更多工具" [ref=e145] [cursor=pointer]:
+                    - img [ref=e146]
+          - generic:
+            - generic [ref=e152]:
+              - link "Excalidraw+" [ref=e153] [cursor=pointer]:
+                - /url: https://plus.excalidraw.com/plus?utm_source=excalidraw&utm_medium=app&utm_content=guestBanner#excalidraw-redirect
+              - button "实时协作..." [ref=e154] [cursor=pointer]:
+                - img [ref=e155]
+            - generic "素材库" [ref=e157]:
+              - checkbox "素材库"
+              - img [ref=e160] [cursor=pointer]
+      - contentinfo:
+        - region "画布动作" [ref=e165]:
+          - heading "画布动作" [level=2] [ref=e166]
+          - generic [ref=e168]:
+            - button "缩小" [ref=e169] [cursor=pointer]:
+              - img [ref=e171]
+            - button "重置缩放" [ref=e173] [cursor=pointer]: 100%
+            - button "放大" [ref=e174] [cursor=pointer]:
+              - img [ref=e176]
+          - generic [ref=e178]:
+            - button "撤销" [disabled] [ref=e181]:
+              - img [ref=e183]
+            - button "重做" [disabled] [ref=e187]:
+              - img [ref=e189]
+        - link "Excalidraw 中关于端到端加密的博客" [ref=e192] [cursor=pointer]:
+          - /url: https://plus.excalidraw.com/blog/end-to-end-encryption
+          - img [ref=e194]
+        - generic [ref=e196]:
+          - generic:
+            - generic: 快捷键和帮助
+            - img
+          - button "帮助" [ref=e197] [cursor=pointer]:
+            - img [ref=e198]
+    - generic:
+      - img
+    - generic [ref=e203]: 绘制 Canvas
