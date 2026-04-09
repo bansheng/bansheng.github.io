@@ -53,51 +53,78 @@ fix: 修复M-FALCON博客中LaTeX公式的渲染错误
 
 ---
 
-## 2026-04-09 NormFormer博客缺失论文图表补充
+## 2026-04-09 NormFormer博客缺失论文图表补充与完整化
 
 ### 问题
-- NormFormer博客（014_normformer_paper_review）中引用了Figure 3、Figure 4等论文图表，但实际博客中不存在这些图片
-- 用户发现这个问题后，指出许多博客都缺少原始论文的图片来说明关键概念
+- NormFormer博客（014_normformer_paper_review）中引用了Figure 1、Figure 3、Figure 4等论文图表，但初次补充时 **Figure 1 在Markdown正文中没有被引用**
+- Figure 1（架构对比图）已存在于目录中，但文章中只有对应的表格对比，没有引用图片
 
-### 解决方案
+### 解决方案（第一阶段：初始补充）
 1. 从arXiv下载论文PDF（2110.09456）
-   ```bash
-   curl -L https://arxiv.org/pdf/2110.09456.pdf -o normformer.pdf
-   ```
+2. 定位关键图表所在的页面，使用pdfimages/pdftoppm提取
+3. 在博客Markdown中插入Figure 3、Figure 4&5的引用
 
-2. 使用系统工具提取PDF页面为图片
-   ```bash
-   pdftoppm /tmp/normformer.pdf /tmp/normformer_figures/page -png -r 150
-   ```
+### 解决方案（第二阶段：完整化，本次修复）
+1. **问题定位**：
+   - 检查目录：`014_normformer_paper_review/` 中确实存在 `figure1.png` 文件（184KB）
+   - 搜索Markdown内容：发现文章提到"架构对比"但没有引用Figure 1
 
-3. 定位关键图表所在的页面
-   - Figure 3（梯度分布对比）：page-06
-   - Figure 4&5（缩放参数和学习率稳定性）：page-07
-   - Figure 1（架构对比）：page-02
+2. **引用位置确认**：
+   - 第 137-149 行：`### 2.5 架构对比总结` 部分
+   - 这是论文讨论三种架构（Post-LN、Pre-LN、NormFormer）的核心位置
+   - Figure 1 理所当然应该在此处被引用
 
-4. 在博客Markdown中插入图片，用简洁的Markdown语法
-   ```markdown
-   ![Figure 3: Average L1 norm of gradients across layers](figure3.png)
-   ![Figure 4 & 5: Scaling parameters and learning rate stability](figure4_5.png)
-   ```
+3. **修复执行**：
+   - 在第 137 行"### 2.5 架构对比总结"标题后插入图片引用
+   - 使用：`![Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比](figure1.png)`
+   - 位置：在对比表格之前，作为视觉辅助
 
-5. Hugo自动处理了响应式图片生成（WebP格式，多种尺寸）
+### 修改详情
+```markdown
+### 2.5 架构对比总结
+
+![Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比](figure1.png)
+
+| 特性 | Post-LN | Pre-LN | NormFormer |
+|------|---------|--------|------------|
+...
+```
 
 ### Git提交
 ```
-commit: 4a7a2b3
+commit: 4a7a2b3 (初始补充，仅Figure 3和4&5)
 docs: 为NormFormer博客添加论文中的关键Figure图表
+
+commit: [待提交，本次修复]
+docs: 补全NormFormer博客 Figure 1 架构对比图引用
+- 在第 2.5 节"架构对比总结"中添加 Figure 1 的Markdown图片引用
+- 确保论文中的所有关键Figure都在文章中被正确引用
 ```
 
-### 以后如何避免
-1. **博客创作检查清单**：每当引用论文的Figure时，应该立即在博客中补充相应的图片
-2. **自动化工具**：可以创建一个脚本，在提交博客时检查是否所有提到的Figure都有对应的图片文件
-3. **模板改进**：在Hugo模板或CLAUDE.md中添加提醒：论文精读类博客必须包含关键Figure
-4. **批量修复**：已确认TokenMixer博客（005）已包含所有图片，其他博客逐步补充
+### 验证结果
+所有Figure引用情况（已完整化）：
+- 第 45 行：![Figure 3: Average L1 norm of gradients across layers](figure3.png) ✓
+- 第 123 行：![Figure 4 & 5: Scaling parameters and learning rate stability](figure4_5.png) ✓
+- 第 139 行（新增）：![Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比](figure1.png) ✓
 
-### 扫描结果
-- 005_tokenmixer_large_paper_review：5处Figure引用 ✓ 已有图片
-- 014_normformer_paper_review：4处Figure引用 ✓ 已补充图片（本次修复）
+所有在目录中的图片文件都已在文章中被引用。
+
+### 以后如何避免
+1. **博客创作检查清单**：完成论文解读后，必须验证：
+   - 所有论文Figure文件是否都存在于博客目录
+   - 所有存在的Figure文件是否都在Markdown中被引用
+   - 快速检查命令：
+     ```bash
+     echo "图片文件：" && ls -1 *.png | sort
+     echo "Markdown引用：" && grep -o 'figure[0-9_]*\.png' index.md | sort
+     # 两者应该一致
+     ```
+
+2. **自动化工具**：在提交前运行检查脚本，确保图片目录和Markdown引用完全对应
+
+3. **扫描结果**：
+   - 005_tokenmixer_large_paper_review：5处Figure引用 ✓ 已有图片
+   - 014_normformer_paper_review：4处Figure引用 ✓ 已补充图片（初始）→ 4处都已引用（本次完整化）
 
 ---
 

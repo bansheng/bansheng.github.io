@@ -136,6 +136,8 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 
 ### 2.5 架构对比总结
 
+![Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比](figure1.png)
+
 | 特性 | Post-LN | Pre-LN | NormFormer |
 |------|---------|--------|------------|
 | 归一化位置 | 残差连接之后 | 子层之前 | 多点分布式 |
