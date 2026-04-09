@@ -122,13 +122,13 @@ M-FALCON 将这 $m$ 个候选商品划分成大小为 $b_m$ 的**微批次（Mic
 为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）。假设序列拼接后为 $[\text{hist}_1, \dots, \text{hist}_n, \text{cand}_1, \dots, \text{cand}_{b_m}]$，掩码矩阵 $M \in \mathbb{R}^{(n+b_m) \times (n+b_m)}$ 的构造规则为：
 
 1. **用户历史内部**：标准的因果掩码（Causal Mask），即 $M_{ij} = 1$ 当且仅当 $i \geq j$（对于 $i, j \leq n$）。
-2. **候选 $\to$ 历史**：所有候选商品都可以”看到”（Attend to）**完整的**用户历史，即 $M_{ij} = 1$（对于 $i &gt; n, j \leq n$）。
+2. **候选 $\to$ 历史**：所有候选商品都可以”看到”（Attend to）**完整的**用户历史，即 $M_{ij} = 1$（对于 $i > n, j \leq n$）。
 3. **候选 $\to$ 自身**：候选商品对自己是可见的（对角线为 1），即 $M_{ii} = 1$。
-4. **候选 $\to$ 其他候选**：**互相不可见**，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &gt; n$）。
+4. **候选 $\to$ 其他候选**：**互相不可见**，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j > n$）。
 
 用直观的矩阵形式表示，掩码结构如下：
 
-$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} & \mathbf{0}_{n \times b_m} \\\\ \mathbf{1}_{b_m \times n} & I_{b_m \times b_m} \end{pmatrix}$$
+$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} & \mathbf{0}_{n \times b_m} \\ \mathbf{1}_{b_m \times n} & I_{b_m \times b_m} \end{pmatrix}$$
 
 其中 $I$ 是单位矩阵，表示候选只能看到自己。
 
