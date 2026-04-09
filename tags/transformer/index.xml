@@ -28,11 +28,11 @@ $$\text{PreLN}(x) = x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;Pre-LN �
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="Figure 3: Average L1 norm of gradients across layers"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_ce9e4517d3938ded.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_aafa20c969a65ead.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_ce29e0ac5a3b4248.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_912365e85f7a846.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_b53a7587722dff7c.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_1d8372aa986662be.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_ce9e4517d3938ded.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_912365e85f7a846.webp"
 width="760"
-height="536"
+height="240"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -75,11 +75,11 @@ $$\text{NormFFN}(x) = x + \underbrace{\text{LN}_{\text{mid}}}_{\text{新增}}(\s
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="Figure 4 &amp;amp; 5: Scaling parameters and learning rate stability"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_28085d0647fd858d.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_d93509ceb44f27e9.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_13adfa38586891e3.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_486bd82faad645a6.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_9c7ac67978c723e9.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_28085d0647fd858d.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp"
 width="760"
-height="507"
+height="249"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
