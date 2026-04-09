@@ -63,6 +63,8 @@ $$\text{UniMixing}(X) = \text{reshape}\left(G(X, W_G) \cdot [\text{local pattern
 
 在这个框架下，注意力机制、TokenMixer 和因式分解机只是**全局权重 $G$ 和局部模式的不同实例化**。这一发现不仅具有理论美感，更带来了实际的工程价值——既然三者本质相同，我们就能设计出集三者优势于一体的新架构。
 
+![Figure 1: UniMixer - Unified Architecture Comparing Three Feature Interaction Paradigms](figure_unimixer_architecture.png)
+
 ---
 
 ## 2. 来源元数据 (Metadata)
