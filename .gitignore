@@ -13,3 +13,4 @@ hugo
 /*.html
 /*.tar.gz
 .claude/
+resources/_gen/
