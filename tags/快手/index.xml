@@ -13,7 +13,7 @@
 &lt;p&gt;&lt;strong&gt;手工特征工程时代&lt;/strong&gt;（2010 年前）：依赖领域专家设计交叉特征，如&amp;quot;用户年龄 × 物品类别&amp;quot;。这种方式的问题在于人力成本高、覆盖度有限、无法捕获高阶交互。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&amp;lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;深度网络显式交叉时代&lt;/strong&gt;（2017-2022）：DCN、xDeepInt、AutoInt 等工作尝试通过显式的交叉网络结构捕获高阶交互。但这些方法往往带来复杂的网络设计和有限的扩展性。&lt;/p&gt;

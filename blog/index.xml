@@ -581,7 +581,7 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;p&gt;&lt;strong&gt;手工特征工程时代&lt;/strong&gt;（2010 年前）：依赖领域专家设计交叉特征，如&amp;quot;用户年龄 × 物品类别&amp;quot;。这种方式的问题在于人力成本高、覆盖度有限、无法捕获高阶交互。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&amp;lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;深度网络显式交叉时代&lt;/strong&gt;（2017-2022）：DCN、xDeepInt、AutoInt 等工作尝试通过显式的交叉网络结构捕获高阶交互。但这些方法往往带来复杂的网络设计和有限的扩展性。&lt;/p&gt;
@@ -3735,9 +3735,9 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 &lt;p&gt;为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）。假设序列拼接后为 $[\text{hist}_1, \dots, \text{hist}_n, \text{cand}_1, \dots, \text{cand}_{b_m}]$，掩码矩阵 $M \in \mathbb{R}^{(n+b_m) \times (n+b_m)}$ 的构造规则为：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;用户历史内部&lt;/strong&gt;：标准的因果掩码（Causal Mask），即 $M_{ij} = 1$ 当且仅当 $i \geq j$（对于 $i, j \leq n$）。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &gt; n, j \leq n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &amp;gt; n, j \leq n$）。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;候选 $\to$ 自身&lt;/strong&gt;：候选商品对自己是可见的（对角线为 1），即 $M_{ii} = 1$。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &gt; n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &amp;gt; n$）。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;用直观的矩阵形式表示，掩码结构如下：&lt;/p&gt;
 $$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\\\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
@@ -4220,7 +4220,7 @@ F --&gt; G[下一个 Item 预测]
 &lt;/table&gt;
 &lt;p&gt;核心差异总结：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
+&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &amp;gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
 &lt;li&gt;Softmax 注意力在短序列场景下仍有竞争力，因为其注意力分布更加”尖锐”，信息选择能力更强&lt;/li&gt;
 &lt;li&gt;FuXi-Linear 通过三通道设计弥补了线性注意力在位置编码和时间建模上的天然短板&lt;/li&gt;
 &lt;/ul&gt;
