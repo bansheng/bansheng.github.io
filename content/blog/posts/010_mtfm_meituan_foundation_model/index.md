@@ -178,6 +178,8 @@ graph TD
 
 为了平衡模型的表达能力（Efficacy）和计算效率（Efficiency），MTFM 借鉴了 LLM 领域的稀疏注意力思想，提出了一种由 **全注意力层（Full Attention Layer）** 和 **目标注意力层（Target Attention Layer）** 交替堆叠的混合架构。
 
+![Figure 1: MTFM Token Structure with H/R/T Heterogeneous Tokenization](figure_hrt_tokens.png)
+
 ### 4.1 全注意力层 (Full Attention Layer) 与动态掩码
 
 在模型由 \(B\) 个堆叠的 Block 组成，为了缓解二次复杂度瓶颈，每个 Block 会包含 1 个全注意力层，以及随后紧跟的 \(K\) 个目标注意力层。
@@ -212,6 +214,8 @@ $$
 1. **H-tokens 视野**：H-token 对所有后续 Token 可见，因为它们代表最基础的历史偏好。
 2. **R-tokens 视野**：R-token 遵循严格的因果掩码（Causal Mask），只能被时间戳晚于自己的 Token 看到。
 3. **T-tokens 视野**：T-token 之间互相不可见（因为在一次曝光请求中，各个候选 Item 应该是平行的），T-token 只能看到自己以及时间戳早于它的 H 和 R。
+
+![Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers](figure_hta_architecture.png)
 
 ### 4.2 目标注意力层 (Target Attention Layer)：极致降本的核心
 
