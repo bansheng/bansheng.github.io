@@ -89,6 +89,19 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;其中 $\lambda_{\text{resid}}$ 是可学习的逐维度缩放参数，用于调节残差连接中主干信号和子层输出的相对权重。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;重要警告：&lt;/strong&gt; 论文实验表明，ResScale 仅在小模型（125M、355M 参数）上有效，&lt;strong&gt;在 1.3B 及以上规模的模型上反而会导致性能下降&lt;/strong&gt;。因此，对于当前主流的大规模预训练场景，&lt;strong&gt;不建议使用 ResScale&lt;/strong&gt;。这一发现也提醒我们，并非所有的归一化/缩放操作都是&amp;quot;越多越好&amp;quot;的——过度参数化在大模型上可能导致优化困难。&lt;/p&gt;
 &lt;h3 id="25-架构对比总结"&gt;2.5 架构对比总结&lt;/h3&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_907d3f8b57aa34db.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_1b4a0d45be0471f7.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp"
+width="760"
+height="429"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -608,7 +621,7 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;p&gt;&lt;strong&gt;手工特征工程时代&lt;/strong&gt;（2010 年前）：依赖领域专家设计交叉特征，如&amp;quot;用户年龄 × 物品类别&amp;quot;。这种方式的问题在于人力成本高、覆盖度有限、无法捕获高阶交互。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&amp;lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;深度网络显式交叉时代&lt;/strong&gt;（2017-2022）：DCN、xDeepInt、AutoInt 等工作尝试通过显式的交叉网络结构捕获高阶交互。但这些方法往往带来复杂的网络设计和有限的扩展性。&lt;/p&gt;
@@ -649,6 +662,19 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;p&gt;UniMixer 论文的核心贡献在于回答了一个根本性问题：&lt;strong&gt;这三种看似不同的特征交互方式，是否存在统一的数学框架？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;答案是肯定的。论文揭示了一个优雅的统一结构：&lt;/p&gt;
 $$\text{UniMixing}(X) = \text{reshape}\left(G(X, W_G) \cdot [\text{local patterns}],\ 1,\ L\right)$$&lt;p&gt;在这个框架下，注意力机制、TokenMixer 和因式分解机只是&lt;strong&gt;全局权重 $G$ 和局部模式的不同实例化&lt;/strong&gt;。这一发现不仅具有理论美感，更带来了实际的工程价值——既然三者本质相同，我们就能设计出集三者优势于一体的新架构。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: UniMixer - Unified Architecture Comparing Three Feature Interaction Paradigms"
+srcset="https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_ae08bf85d000a81b.webp 320w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_cdb029024fea0521.webp 480w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_260aef64289daff9.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_ae08bf85d000a81b.webp"
+width="760"
+height="526"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="2-来源元数据-metadata"&gt;2. 来源元数据 (Metadata)&lt;/h2&gt;
 &lt;ul&gt;

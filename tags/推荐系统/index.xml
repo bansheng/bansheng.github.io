@@ -13,7 +13,7 @@
 &lt;p&gt;&lt;strong&gt;手工特征工程时代&lt;/strong&gt;（2010 年前）：依赖领域专家设计交叉特征，如&amp;quot;用户年龄 × 物品类别&amp;quot;。这种方式的问题在于人力成本高、覆盖度有限、无法捕获高阶交互。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&amp;lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;深度网络显式交叉时代&lt;/strong&gt;（2017-2022）：DCN、xDeepInt、AutoInt 等工作尝试通过显式的交叉网络结构捕获高阶交互。但这些方法往往带来复杂的网络设计和有限的扩展性。&lt;/p&gt;
@@ -54,6 +54,19 @@
 &lt;p&gt;UniMixer 论文的核心贡献在于回答了一个根本性问题：&lt;strong&gt;这三种看似不同的特征交互方式，是否存在统一的数学框架？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;答案是肯定的。论文揭示了一个优雅的统一结构：&lt;/p&gt;
 $$\text{UniMixing}(X) = \text{reshape}\left(G(X, W_G) \cdot [\text{local patterns}],\ 1,\ L\right)$$&lt;p&gt;在这个框架下，注意力机制、TokenMixer 和因式分解机只是&lt;strong&gt;全局权重 $G$ 和局部模式的不同实例化&lt;/strong&gt;。这一发现不仅具有理论美感，更带来了实际的工程价值——既然三者本质相同，我们就能设计出集三者优势于一体的新架构。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: UniMixer - Unified Architecture Comparing Three Feature Interaction Paradigms"
+srcset="https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_ae08bf85d000a81b.webp 320w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_cdb029024fea0521.webp 480w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_260aef64289daff9.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_ae08bf85d000a81b.webp"
+width="760"
+height="526"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="2-来源元数据-metadata"&gt;2. 来源元数据 (Metadata)&lt;/h2&gt;
 &lt;ul&gt;
@@ -653,6 +666,19 @@ style S4 fill:#ccc,color:#666
 &lt;h4 id="什么是-sid"&gt;什么是 SID？&lt;/h4&gt;
 &lt;p&gt;SID 是将目录中每个物品映射为一个短的离散 token 序列的方法。具体来说，每个物品 $e$ 被表示为 $SID(e) = (c_1, c_2, ..., c_M)$，其中每个 $c_i$ 来自一个大小为 $K$ 的码本。&lt;/p&gt;
 &lt;p&gt;NEO 使用 &lt;strong&gt;残差 K-means 量化（Residual K-means）&lt;/strong&gt; 来构建 SID，这是一种层级化的向量量化方法：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers"
+srcset="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp 320w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_927c031cff0b81f2.webp 480w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_f932a40cff4efb8b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp"
+width="760"
+height="507"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;首先将物品的内容嵌入（content embedding）通过第一个码本量化，捕获粗粒度的语义区域&lt;/li&gt;
 &lt;li&gt;计算残差（原始向量 - 量化向量），用第二个码本量化残差&lt;/li&gt;
@@ -2349,6 +2375,19 @@ $$&lt;p&gt;其中 \(L_T\) 是所有场景下曝光样本的总数。&lt;/p&gt;
 $$
 \mathbf{X}^{(0)} = (\mathbf{H}; \mathbf{R}; \mathbf{T}) \in \mathbb{R}^{N \times d_{model}}
 $$&lt;p&gt;这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不同的用户，这个 \(N\) 是可变的（Variable-length）。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列"
+srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
+width="760"
+height="570"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;【深度思考：异构 Token 化的绝妙之处】&lt;/strong&gt;
 这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 \(d_{model}\) 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 \(\text{MLP}_s\) 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。&lt;/p&gt;
 &lt;hr&gt;
@@ -2396,6 +2435,19 @@ Merge --&gt; MTFM[MTFM 模型]
 &lt;p&gt;如果说异构 Token 化和 User-level 聚合是 MTFM 的数据地基，那么 &lt;strong&gt;混合目标注意力机制（Hybrid Target Attention, HTA）&lt;/strong&gt; 则是其架构上的王冠。&lt;/p&gt;
 &lt;p&gt;将推荐系统转化为 Transformer 的序列建模任务后，面临的最大梦魇就是 \(O(N^2)\) 的复杂度。虽然 User-level 聚合消除了冗余计算，但把所有场景的曝光候选物品（T-token）和超长历史序列（H/R-token）拼在一起，序列长度 \(N\) 极容易突破数千甚至上万。&lt;/p&gt;
 &lt;p&gt;为了平衡模型的表达能力（Efficacy）和计算效率（Efficiency），MTFM 借鉴了 LLM 领域的稀疏注意力思想，提出了一种由 &lt;strong&gt;全注意力层（Full Attention Layer）&lt;/strong&gt; 和 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt; 交替堆叠的混合架构。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: MTFM Token Structure with H/R/T Heterogeneous Tokenization"
+srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
+width="760"
+height="570"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="41-全注意力层-full-attention-layer-与动态掩码"&gt;4.1 全注意力层 (Full Attention Layer) 与动态掩码&lt;/h3&gt;
 &lt;p&gt;在模型由 \(B\) 个堆叠的 Block 组成，为了缓解二次复杂度瓶颈，每个 Block 会包含 1 个全注意力层，以及随后紧跟的 \(K\) 个目标注意力层。&lt;/p&gt;
 &lt;p&gt;在全注意力层中，模型计算所有 Token 之间的全局依赖关系。为了进一步降低显存和计算开销，MTFM 采用了 &lt;strong&gt;分组查询注意力（Grouped-Query Attention, GQA）&lt;/strong&gt;。GQA 相比于 Multi-Head Attention (MHA)，多个 Query 共享一组 Key 和 Value，在保持模型效果几乎不变的前提下，大幅减少了 KV Cache 的显存占用。&lt;/p&gt;
@@ -2434,6 +2486,19 @@ $$&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;R-tokens 视野&lt;/strong&gt;：R-token 遵循严格的因果掩码（Causal Mask），只能被时间戳晚于自己的 Token 看到。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;T-tokens 视野&lt;/strong&gt;：T-token 之间互相不可见（因为在一次曝光请求中，各个候选 Item 应该是平行的），T-token 只能看到自己以及时间戳早于它的 H 和 R。&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers"
+srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_37f6e85c79864a9c.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_3e310efa3590fc65.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp"
+width="760"
+height="646"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="42-目标注意力层-target-attention-layer极致降本的核心"&gt;4.2 目标注意力层 (Target Attention Layer)：极致降本的核心&lt;/h3&gt;
 &lt;p&gt;全注意力层虽然强大，但每一层都做 \(O(N^2)\) 的计算实在是太奢侈了。在推荐系统的预测任务中，我们真正关心的是 &lt;strong&gt;最终目标（T-tokens）&lt;/strong&gt; 的表达，历史序列（H/R-tokens）的作用主要是作为 Context 辅助 T-token 的表征。&lt;/p&gt;
 &lt;p&gt;因此，MTFM 在全注意力层之后，级联了 \(K\) 个 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt;。&lt;/p&gt;
@@ -2878,22 +2943,19 @@ MTFM 团队基于 OpenAI 的 Triton 框架，实现了 GLN 和动态掩码的&lt
 &lt;li&gt;&lt;strong&gt;损失函数&lt;/strong&gt;：标准的二元交叉熵（Binary Cross-Entropy）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
-&lt;div class="mermaid-wrapper"&gt;
-&lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
-A[“Stage1: 用户行为序列”] --&gt; B(“Stage1: Transformer Decoder”)
-B --&gt; C[“Stage1: 预测下一Item”]
-C --&gt; D{“Stage1: 预训练模型”}
-E[“Stage2: 稀疏参数 Embeddings”]
-F[“Stage2: 稠密参数 Transformer”]
-H[“Stage3: 上下文+候选物品”] --&gt; G(“Stage3: 判别式Transformer”)
-G --&gt; I[“Stage3: 预估CTR/CVR”]
-D --&gt;|提取| E
-D --&gt;|提取| F
-E --&gt;|冻结| G
-F --&gt;|迁移| G
-&lt;/div&gt;
-&lt;/div&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_fdbac74ac0214b1b.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_9b0155f9ab4f5676.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp"
+width="760"
+height="475"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h2 id="4-scaling-law-在推荐系统中的分析"&gt;4. Scaling Law 在推荐系统中的分析&lt;/h2&gt;
 &lt;h3 id="41-什么是-scaling-law"&gt;4.1 什么是 Scaling Law？&lt;/h3&gt;
 &lt;p&gt;Scaling Law 最初由 OpenAI 在 2020 年提出，揭示了语言模型性能与模型参数量、训练数据量、计算量之间的幂律关系。具体来说：&lt;/p&gt;
@@ -2910,6 +2972,19 @@ F --&gt;|迁移| G
 &lt;/ul&gt;
 &lt;h3 id="43-gpsd-如何实现推荐系统的-scaling-law"&gt;4.3 GPSD 如何实现推荐系统的 Scaling Law&lt;/h3&gt;
 &lt;p&gt;GPSD 的核心贡献之一，是首次在判别式推荐模型中验证了 Scaling Law 的存在：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_e3e71a78e5905f40.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_8866e2ae02b8ee6.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp"
+width="760"
+height="484"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;实验设置&lt;/strong&gt;：将稠密参数从 13K 逐步扩展到 0.3B（约 2 万倍），观察离线 AUC 指标的变化&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;关键结果&lt;/strong&gt;：在使用 GPSD 框架后，AUC 随稠密参数量的增加呈现出平滑的幂律增长曲线&lt;/li&gt;
@@ -3167,12 +3242,12 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 &lt;p&gt;为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）。假设序列拼接后为 $[\text{hist}_1, \dots, \text{hist}_n, \text{cand}_1, \dots, \text{cand}_{b_m}]$，掩码矩阵 $M \in \mathbb{R}^{(n+b_m) \times (n+b_m)}$ 的构造规则为：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;用户历史内部&lt;/strong&gt;：标准的因果掩码（Causal Mask），即 $M_{ij} = 1$ 当且仅当 $i \geq j$（对于 $i, j \leq n$）。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &amp;gt; n, j \leq n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &gt; n, j \leq n$）。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;候选 $\to$ 自身&lt;/strong&gt;：候选商品对自己是可见的（对角线为 1），即 $M_{ii} = 1$。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &amp;gt; n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &gt; n$）。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;用直观的矩阵形式表示，掩码结构如下：&lt;/p&gt;
-$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\\\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
+$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
 &lt;h4 id="323-微批次大小的选择"&gt;3.2.3 微批次大小的选择&lt;/h4&gt;
 &lt;p&gt;微批次大小 $b_m$ 是一个需要精心调优的超参数：&lt;/p&gt;
 &lt;ul&gt;
@@ -3544,6 +3619,19 @@ I --&gt; J[多任务预测: 排序 Ranking / 召回 Retrieval]
 &lt;/ul&gt;
 &lt;h2 id="3-fuxi-linear-的核心架构创新"&gt;3. FuXi-Linear 的核心架构创新&lt;/h2&gt;
 &lt;p&gt;为了系统性地解决上述三大挑战，FuXi-Linear 设计了一种 &lt;strong&gt;三通道并行架构&lt;/strong&gt;：三个独立的通道分别负责处理语义信号、位置信号和时序信号，最终通过门控机制进行自适应融合。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: FuXi-Linear Three-Channel Parallel Architecture"
+srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_4ec32161bd5af700.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_527cfb5a198f2bfc.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp"
+width="760"
+height="443"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="31-语义保留通道-retention-channel"&gt;3.1 语义保留通道 (Retention Channel)&lt;/h3&gt;
 &lt;p&gt;语义保留通道是模型的核心骨干，负责从用户行为序列中提取物品之间的语义关联。该通道采用类似 RetNet 的 Retention 机制替代传统全注意力，其核心公式为：&lt;/p&gt;
 $$ Retention(Q,K,V,D) = (QK^T \odot D)V $$&lt;p&gt;其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数。&lt;/p&gt;
@@ -3652,7 +3740,7 @@ F --&gt; G[下一个 Item 预测]
 &lt;/table&gt;
 &lt;p&gt;核心差异总结：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &amp;gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
+&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
 &lt;li&gt;Softmax 注意力在短序列场景下仍有竞争力，因为其注意力分布更加”尖锐”，信息选择能力更强&lt;/li&gt;
 &lt;li&gt;FuXi-Linear 通过三通道设计弥补了线性注意力在位置编码和时间建模上的天然短板&lt;/li&gt;
 &lt;/ul&gt;
@@ -3728,6 +3816,19 @@ F --&gt; G[下一个 Item 预测]
 &lt;/ul&gt;
 &lt;h3 id="72-推理效率"&gt;7.2 推理效率&lt;/h3&gt;
 &lt;p&gt;这是 FuXi-Linear 最亮眼的实验结果：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Inference Efficiency Comparison - FuXi-Linear vs Baselines"
+srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_7e60b5214464902.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_77c1b1ae28603b89.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp"
+width="760"
+height="449"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Prefill 阶段&lt;/strong&gt;：相比最强 Transformer 基线，实现了高达 &lt;strong&gt;10x&lt;/strong&gt; 的加速。Prefill 是指首次处理用户完整历史序列的阶段，这对冷启动和重建缓存场景至关重要&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Decode 阶段&lt;/strong&gt;：实现了高达 &lt;strong&gt;21x&lt;/strong&gt; 的加速。Decode 是指每次用户产生新行为后的增量推理阶段，这是在线服务中最高频的操作&lt;/li&gt;

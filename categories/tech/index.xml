@@ -89,6 +89,19 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;其中 $\lambda_{\text{resid}}$ 是可学习的逐维度缩放参数，用于调节残差连接中主干信号和子层输出的相对权重。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;重要警告：&lt;/strong&gt; 论文实验表明，ResScale 仅在小模型（125M、355M 参数）上有效，&lt;strong&gt;在 1.3B 及以上规模的模型上反而会导致性能下降&lt;/strong&gt;。因此，对于当前主流的大规模预训练场景，&lt;strong&gt;不建议使用 ResScale&lt;/strong&gt;。这一发现也提醒我们，并非所有的归一化/缩放操作都是&amp;quot;越多越好&amp;quot;的——过度参数化在大模型上可能导致优化困难。&lt;/p&gt;
 &lt;h3 id="25-架构对比总结"&gt;2.5 架构对比总结&lt;/h3&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_907d3f8b57aa34db.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_1b4a0d45be0471f7.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp"
+width="760"
+height="429"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -608,7 +621,7 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;p&gt;&lt;strong&gt;手工特征工程时代&lt;/strong&gt;（2010 年前）：依赖领域专家设计交叉特征，如&amp;quot;用户年龄 × 物品类别&amp;quot;。这种方式的问题在于人力成本高、覆盖度有限、无法捕获高阶交互。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&amp;lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;因式分解机时代&lt;/strong&gt;（2010-2016）：FM（Factorization Machine）及其变体（FFM、DeepFM）通过学习特征的隐向量表示来自动建模二阶交互 $\hat{y} = w_0 + \sum_i w_i x_i + \sum_{i&lt;j} \langle v_i, v_j \rangle x_i x_j$。这开创了自动化特征交互的先河，但受限于交互阶数和表达能力。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;深度网络显式交叉时代&lt;/strong&gt;（2017-2022）：DCN、xDeepInt、AutoInt 等工作尝试通过显式的交叉网络结构捕获高阶交互。但这些方法往往带来复杂的网络设计和有限的扩展性。&lt;/p&gt;
@@ -649,6 +662,19 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;p&gt;UniMixer 论文的核心贡献在于回答了一个根本性问题：&lt;strong&gt;这三种看似不同的特征交互方式，是否存在统一的数学框架？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;答案是肯定的。论文揭示了一个优雅的统一结构：&lt;/p&gt;
 $$\text{UniMixing}(X) = \text{reshape}\left(G(X, W_G) \cdot [\text{local patterns}],\ 1,\ L\right)$$&lt;p&gt;在这个框架下，注意力机制、TokenMixer 和因式分解机只是&lt;strong&gt;全局权重 $G$ 和局部模式的不同实例化&lt;/strong&gt;。这一发现不仅具有理论美感，更带来了实际的工程价值——既然三者本质相同，我们就能设计出集三者优势于一体的新架构。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: UniMixer - Unified Architecture Comparing Three Feature Interaction Paradigms"
+srcset="https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_ae08bf85d000a81b.webp 320w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_cdb029024fea0521.webp 480w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_260aef64289daff9.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_unimixer_architecture_hu_ae08bf85d000a81b.webp"
+width="760"
+height="526"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="2-来源元数据-metadata"&gt;2. 来源元数据 (Metadata)&lt;/h2&gt;
 &lt;ul&gt;
@@ -1248,6 +1274,19 @@ style S4 fill:#ccc,color:#666
 &lt;h4 id="什么是-sid"&gt;什么是 SID？&lt;/h4&gt;
 &lt;p&gt;SID 是将目录中每个物品映射为一个短的离散 token 序列的方法。具体来说，每个物品 $e$ 被表示为 $SID(e) = (c_1, c_2, ..., c_M)$，其中每个 $c_i$ 来自一个大小为 $K$ 的码本。&lt;/p&gt;
 &lt;p&gt;NEO 使用 &lt;strong&gt;残差 K-means 量化（Residual K-means）&lt;/strong&gt; 来构建 SID，这是一种层级化的向量量化方法：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers"
+srcset="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp 320w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_927c031cff0b81f2.webp 480w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_f932a40cff4efb8b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp"
+width="760"
+height="507"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;首先将物品的内容嵌入（content embedding）通过第一个码本量化，捕获粗粒度的语义区域&lt;/li&gt;
 &lt;li&gt;计算残差（原始向量 - 量化向量），用第二个码本量化残差&lt;/li&gt;
@@ -2967,22 +3006,19 @@ $$\mathcal{L} = \sum_{t \in \{\text{click, cart, purchase}\}} w_t \cdot \text{BC
 &lt;li&gt;&lt;strong&gt;损失函数&lt;/strong&gt;：标准的二元交叉熵（Binary Cross-Entropy）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
-&lt;div class="mermaid-wrapper"&gt;
-&lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
-A[“Stage1: 用户行为序列”] --&gt; B(“Stage1: Transformer Decoder”)
-B --&gt; C[“Stage1: 预测下一Item”]
-C --&gt; D{“Stage1: 预训练模型”}
-E[“Stage2: 稀疏参数 Embeddings”]
-F[“Stage2: 稠密参数 Transformer”]
-H[“Stage3: 上下文+候选物品”] --&gt; G(“Stage3: 判别式Transformer”)
-G --&gt; I[“Stage3: 预估CTR/CVR”]
-D --&gt;|提取| E
-D --&gt;|提取| F
-E --&gt;|冻结| G
-F --&gt;|迁移| G
-&lt;/div&gt;
-&lt;/div&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_fdbac74ac0214b1b.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_9b0155f9ab4f5676.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp"
+width="760"
+height="475"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h2 id="4-scaling-law-在推荐系统中的分析"&gt;4. Scaling Law 在推荐系统中的分析&lt;/h2&gt;
 &lt;h3 id="41-什么是-scaling-law"&gt;4.1 什么是 Scaling Law？&lt;/h3&gt;
 &lt;p&gt;Scaling Law 最初由 OpenAI 在 2020 年提出，揭示了语言模型性能与模型参数量、训练数据量、计算量之间的幂律关系。具体来说：&lt;/p&gt;
@@ -2999,6 +3035,19 @@ F --&gt;|迁移| G
 &lt;/ul&gt;
 &lt;h3 id="43-gpsd-如何实现推荐系统的-scaling-law"&gt;4.3 GPSD 如何实现推荐系统的 Scaling Law&lt;/h3&gt;
 &lt;p&gt;GPSD 的核心贡献之一，是首次在判别式推荐模型中验证了 Scaling Law 的存在：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_e3e71a78e5905f40.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_8866e2ae02b8ee6.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp"
+width="760"
+height="484"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;实验设置&lt;/strong&gt;：将稠密参数从 13K 逐步扩展到 0.3B（约 2 万倍），观察离线 AUC 指标的变化&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;关键结果&lt;/strong&gt;：在使用 GPSD 框架后，AUC 随稠密参数量的增加呈现出平滑的幂律增长曲线&lt;/li&gt;
@@ -3256,12 +3305,12 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 &lt;p&gt;为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）。假设序列拼接后为 $[\text{hist}_1, \dots, \text{hist}_n, \text{cand}_1, \dots, \text{cand}_{b_m}]$，掩码矩阵 $M \in \mathbb{R}^{(n+b_m) \times (n+b_m)}$ 的构造规则为：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;用户历史内部&lt;/strong&gt;：标准的因果掩码（Causal Mask），即 $M_{ij} = 1$ 当且仅当 $i \geq j$（对于 $i, j \leq n$）。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &amp;gt; n, j \leq n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &gt; n, j \leq n$）。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;候选 $\to$ 自身&lt;/strong&gt;：候选商品对自己是可见的（对角线为 1），即 $M_{ii} = 1$。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &amp;gt; n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &gt; n$）。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;用直观的矩阵形式表示，掩码结构如下：&lt;/p&gt;
-$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\\\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
+$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
 &lt;h4 id="323-微批次大小的选择"&gt;3.2.3 微批次大小的选择&lt;/h4&gt;
 &lt;p&gt;微批次大小 $b_m$ 是一个需要精心调优的超参数：&lt;/p&gt;
 &lt;ul&gt;
@@ -3633,6 +3682,19 @@ I --&gt; J[多任务预测: 排序 Ranking / 召回 Retrieval]
 &lt;/ul&gt;
 &lt;h2 id="3-fuxi-linear-的核心架构创新"&gt;3. FuXi-Linear 的核心架构创新&lt;/h2&gt;
 &lt;p&gt;为了系统性地解决上述三大挑战，FuXi-Linear 设计了一种 &lt;strong&gt;三通道并行架构&lt;/strong&gt;：三个独立的通道分别负责处理语义信号、位置信号和时序信号，最终通过门控机制进行自适应融合。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: FuXi-Linear Three-Channel Parallel Architecture"
+srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_4ec32161bd5af700.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_527cfb5a198f2bfc.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp"
+width="760"
+height="443"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="31-语义保留通道-retention-channel"&gt;3.1 语义保留通道 (Retention Channel)&lt;/h3&gt;
 &lt;p&gt;语义保留通道是模型的核心骨干，负责从用户行为序列中提取物品之间的语义关联。该通道采用类似 RetNet 的 Retention 机制替代传统全注意力，其核心公式为：&lt;/p&gt;
 $$ Retention(Q,K,V,D) = (QK^T \odot D)V $$&lt;p&gt;其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数。&lt;/p&gt;
@@ -3741,7 +3803,7 @@ F --&gt; G[下一个 Item 预测]
 &lt;/table&gt;
 &lt;p&gt;核心差异总结：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &amp;gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
+&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
 &lt;li&gt;Softmax 注意力在短序列场景下仍有竞争力，因为其注意力分布更加”尖锐”，信息选择能力更强&lt;/li&gt;
 &lt;li&gt;FuXi-Linear 通过三通道设计弥补了线性注意力在位置编码和时间建模上的天然短板&lt;/li&gt;
 &lt;/ul&gt;
@@ -3817,6 +3879,19 @@ F --&gt; G[下一个 Item 预测]
 &lt;/ul&gt;
 &lt;h3 id="72-推理效率"&gt;7.2 推理效率&lt;/h3&gt;
 &lt;p&gt;这是 FuXi-Linear 最亮眼的实验结果：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Inference Efficiency Comparison - FuXi-Linear vs Baselines"
+srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_7e60b5214464902.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_77c1b1ae28603b89.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp"
+width="760"
+height="449"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Prefill 阶段&lt;/strong&gt;：相比最强 Transformer 基线，实现了高达 &lt;strong&gt;10x&lt;/strong&gt; 的加速。Prefill 是指首次处理用户完整历史序列的阶段，这对冷启动和重建缓存场景至关重要&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Decode 阶段&lt;/strong&gt;：实现了高达 &lt;strong&gt;21x&lt;/strong&gt; 的加速。Decode 是指每次用户产生新行为后的增量推理阶段，这是在线服务中最高频的操作&lt;/li&gt;

@@ -74,6 +74,19 @@ style S4 fill:#ccc,color:#666
 &lt;h4 id="什么是-sid"&gt;什么是 SID？&lt;/h4&gt;
 &lt;p&gt;SID 是将目录中每个物品映射为一个短的离散 token 序列的方法。具体来说，每个物品 $e$ 被表示为 $SID(e) = (c_1, c_2, ..., c_M)$，其中每个 $c_i$ 来自一个大小为 $K$ 的码本。&lt;/p&gt;
 &lt;p&gt;NEO 使用 &lt;strong&gt;残差 K-means 量化（Residual K-means）&lt;/strong&gt; 来构建 SID，这是一种层级化的向量量化方法：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers"
+srcset="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp 320w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_927c031cff0b81f2.webp 480w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_f932a40cff4efb8b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp"
+width="760"
+height="507"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;首先将物品的内容嵌入（content embedding）通过第一个码本量化，捕获粗粒度的语义区域&lt;/li&gt;
 &lt;li&gt;计算残差（原始向量 - 量化向量），用第二个码本量化残差&lt;/li&gt;

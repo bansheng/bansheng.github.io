@@ -44,6 +44,19 @@
 &lt;/ul&gt;
 &lt;h2 id="3-fuxi-linear-的核心架构创新"&gt;3. FuXi-Linear 的核心架构创新&lt;/h2&gt;
 &lt;p&gt;为了系统性地解决上述三大挑战，FuXi-Linear 设计了一种 &lt;strong&gt;三通道并行架构&lt;/strong&gt;：三个独立的通道分别负责处理语义信号、位置信号和时序信号，最终通过门控机制进行自适应融合。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: FuXi-Linear Three-Channel Parallel Architecture"
+srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_4ec32161bd5af700.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_527cfb5a198f2bfc.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp"
+width="760"
+height="443"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="31-语义保留通道-retention-channel"&gt;3.1 语义保留通道 (Retention Channel)&lt;/h3&gt;
 &lt;p&gt;语义保留通道是模型的核心骨干，负责从用户行为序列中提取物品之间的语义关联。该通道采用类似 RetNet 的 Retention 机制替代传统全注意力，其核心公式为：&lt;/p&gt;
 $$ Retention(Q,K,V,D) = (QK^T \odot D)V $$&lt;p&gt;其中衰减矩阵 $D_{i,j} = \gamma^{i-j}$，$\gamma$ 为可学习参数。&lt;/p&gt;
@@ -152,7 +165,7 @@ F --&gt; G[下一个 Item 预测]
 &lt;/table&gt;
 &lt;p&gt;核心差异总结：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &amp;gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
+&lt;li&gt;当序列长度 $n$ 远大于特征维度 $d$ 时（推荐系统中通常 $n &gt; 1000$，$d = 128 \sim 256$），线性注意力在速度上具有压倒性优势&lt;/li&gt;
 &lt;li&gt;Softmax 注意力在短序列场景下仍有竞争力，因为其注意力分布更加”尖锐”，信息选择能力更强&lt;/li&gt;
 &lt;li&gt;FuXi-Linear 通过三通道设计弥补了线性注意力在位置编码和时间建模上的天然短板&lt;/li&gt;
 &lt;/ul&gt;
@@ -228,6 +241,19 @@ F --&gt; G[下一个 Item 预测]
 &lt;/ul&gt;
 &lt;h3 id="72-推理效率"&gt;7.2 推理效率&lt;/h3&gt;
 &lt;p&gt;这是 FuXi-Linear 最亮眼的实验结果：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Inference Efficiency Comparison - FuXi-Linear vs Baselines"
+srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_7e60b5214464902.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_77c1b1ae28603b89.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp"
+width="760"
+height="449"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Prefill 阶段&lt;/strong&gt;：相比最强 Transformer 基线，实现了高达 &lt;strong&gt;10x&lt;/strong&gt; 的加速。Prefill 是指首次处理用户完整历史序列的阶段，这对冷启动和重建缓存场景至关重要&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Decode 阶段&lt;/strong&gt;：实现了高达 &lt;strong&gt;21x&lt;/strong&gt; 的加速。Decode 是指每次用户产生新行为后的增量推理阶段，这是在线服务中最高频的操作&lt;/li&gt;

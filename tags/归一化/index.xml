@@ -89,6 +89,19 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;其中 $\lambda_{\text{resid}}$ 是可学习的逐维度缩放参数，用于调节残差连接中主干信号和子层输出的相对权重。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;重要警告：&lt;/strong&gt; 论文实验表明，ResScale 仅在小模型（125M、355M 参数）上有效，&lt;strong&gt;在 1.3B 及以上规模的模型上反而会导致性能下降&lt;/strong&gt;。因此，对于当前主流的大规模预训练场景，&lt;strong&gt;不建议使用 ResScale&lt;/strong&gt;。这一发现也提醒我们，并非所有的归一化/缩放操作都是&amp;quot;越多越好&amp;quot;的——过度参数化在大模型上可能导致优化困难。&lt;/p&gt;
 &lt;h3 id="25-架构对比总结"&gt;2.5 架构对比总结&lt;/h3&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_907d3f8b57aa34db.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_1b4a0d45be0471f7.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp"
+width="760"
+height="429"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;

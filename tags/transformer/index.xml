@@ -89,6 +89,19 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;其中 $\lambda_{\text{resid}}$ 是可学习的逐维度缩放参数，用于调节残差连接中主干信号和子层输出的相对权重。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;重要警告：&lt;/strong&gt; 论文实验表明，ResScale 仅在小模型（125M、355M 参数）上有效，&lt;strong&gt;在 1.3B 及以上规模的模型上反而会导致性能下降&lt;/strong&gt;。因此，对于当前主流的大规模预训练场景，&lt;strong&gt;不建议使用 ResScale&lt;/strong&gt;。这一发现也提醒我们，并非所有的归一化/缩放操作都是&amp;quot;越多越好&amp;quot;的——过度参数化在大模型上可能导致优化困难。&lt;/p&gt;
 &lt;h3 id="25-架构对比总结"&gt;2.5 架构对比总结&lt;/h3&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_907d3f8b57aa34db.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_1b4a0d45be0471f7.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp"
+width="760"
+height="429"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -1696,6 +1709,19 @@ $$&lt;p&gt;其中 \(L_T\) 是所有场景下曝光样本的总数。&lt;/p&gt;
 $$
 \mathbf{X}^{(0)} = (\mathbf{H}; \mathbf{R}; \mathbf{T}) \in \mathbb{R}^{N \times d_{model}}
 $$&lt;p&gt;这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不同的用户，这个 \(N\) 是可变的（Variable-length）。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列"
+srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
+width="760"
+height="570"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;【深度思考：异构 Token 化的绝妙之处】&lt;/strong&gt;
 这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 \(d_{model}\) 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 \(\text{MLP}_s\) 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。&lt;/p&gt;
 &lt;hr&gt;
@@ -1743,6 +1769,19 @@ Merge --&gt; MTFM[MTFM 模型]
 &lt;p&gt;如果说异构 Token 化和 User-level 聚合是 MTFM 的数据地基，那么 &lt;strong&gt;混合目标注意力机制（Hybrid Target Attention, HTA）&lt;/strong&gt; 则是其架构上的王冠。&lt;/p&gt;
 &lt;p&gt;将推荐系统转化为 Transformer 的序列建模任务后，面临的最大梦魇就是 \(O(N^2)\) 的复杂度。虽然 User-level 聚合消除了冗余计算，但把所有场景的曝光候选物品（T-token）和超长历史序列（H/R-token）拼在一起，序列长度 \(N\) 极容易突破数千甚至上万。&lt;/p&gt;
 &lt;p&gt;为了平衡模型的表达能力（Efficacy）和计算效率（Efficiency），MTFM 借鉴了 LLM 领域的稀疏注意力思想，提出了一种由 &lt;strong&gt;全注意力层（Full Attention Layer）&lt;/strong&gt; 和 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt; 交替堆叠的混合架构。&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: MTFM Token Structure with H/R/T Heterogeneous Tokenization"
+srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
+width="760"
+height="570"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="41-全注意力层-full-attention-layer-与动态掩码"&gt;4.1 全注意力层 (Full Attention Layer) 与动态掩码&lt;/h3&gt;
 &lt;p&gt;在模型由 \(B\) 个堆叠的 Block 组成，为了缓解二次复杂度瓶颈，每个 Block 会包含 1 个全注意力层，以及随后紧跟的 \(K\) 个目标注意力层。&lt;/p&gt;
 &lt;p&gt;在全注意力层中，模型计算所有 Token 之间的全局依赖关系。为了进一步降低显存和计算开销，MTFM 采用了 &lt;strong&gt;分组查询注意力（Grouped-Query Attention, GQA）&lt;/strong&gt;。GQA 相比于 Multi-Head Attention (MHA)，多个 Query 共享一组 Key 和 Value，在保持模型效果几乎不变的前提下，大幅减少了 KV Cache 的显存占用。&lt;/p&gt;
@@ -1781,6 +1820,19 @@ $$&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;R-tokens 视野&lt;/strong&gt;：R-token 遵循严格的因果掩码（Causal Mask），只能被时间戳晚于自己的 Token 看到。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;T-tokens 视野&lt;/strong&gt;：T-token 之间互相不可见（因为在一次曝光请求中，各个候选 Item 应该是平行的），T-token 只能看到自己以及时间戳早于它的 H 和 R。&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers"
+srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_37f6e85c79864a9c.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_3e310efa3590fc65.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp"
+width="760"
+height="646"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h3 id="42-目标注意力层-target-attention-layer极致降本的核心"&gt;4.2 目标注意力层 (Target Attention Layer)：极致降本的核心&lt;/h3&gt;
 &lt;p&gt;全注意力层虽然强大，但每一层都做 \(O(N^2)\) 的计算实在是太奢侈了。在推荐系统的预测任务中，我们真正关心的是 &lt;strong&gt;最终目标（T-tokens）&lt;/strong&gt; 的表达，历史序列（H/R-tokens）的作用主要是作为 Context 辅助 T-token 的表征。&lt;/p&gt;
 &lt;p&gt;因此，MTFM 在全注意力层之后，级联了 \(K\) 个 &lt;strong&gt;目标注意力层（Target Attention Layer）&lt;/strong&gt;。&lt;/p&gt;
@@ -2225,22 +2277,19 @@ MTFM 团队基于 OpenAI 的 Triton 框架，实现了 GLN 和动态掩码的&lt
 &lt;li&gt;&lt;strong&gt;损失函数&lt;/strong&gt;：标准的二元交叉熵（Binary Cross-Entropy）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
-&lt;div class="mermaid-wrapper"&gt;
-&lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
-A[“Stage1: 用户行为序列”] --&gt; B(“Stage1: Transformer Decoder”)
-B --&gt; C[“Stage1: 预测下一Item”]
-C --&gt; D{“Stage1: 预训练模型”}
-E[“Stage2: 稀疏参数 Embeddings”]
-F[“Stage2: 稠密参数 Transformer”]
-H[“Stage3: 上下文+候选物品”] --&gt; G(“Stage3: 判别式Transformer”)
-G --&gt; I[“Stage3: 预估CTR/CVR”]
-D --&gt;|提取| E
-D --&gt;|提取| F
-E --&gt;|冻结| G
-F --&gt;|迁移| G
-&lt;/div&gt;
-&lt;/div&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_fdbac74ac0214b1b.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_9b0155f9ab4f5676.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp"
+width="760"
+height="475"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h2 id="4-scaling-law-在推荐系统中的分析"&gt;4. Scaling Law 在推荐系统中的分析&lt;/h2&gt;
 &lt;h3 id="41-什么是-scaling-law"&gt;4.1 什么是 Scaling Law？&lt;/h3&gt;
 &lt;p&gt;Scaling Law 最初由 OpenAI 在 2020 年提出，揭示了语言模型性能与模型参数量、训练数据量、计算量之间的幂律关系。具体来说：&lt;/p&gt;
@@ -2257,6 +2306,19 @@ F --&gt;|迁移| G
 &lt;/ul&gt;
 &lt;h3 id="43-gpsd-如何实现推荐系统的-scaling-law"&gt;4.3 GPSD 如何实现推荐系统的 Scaling Law&lt;/h3&gt;
 &lt;p&gt;GPSD 的核心贡献之一，是首次在判别式推荐模型中验证了 Scaling Law 的存在：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_e3e71a78e5905f40.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_8866e2ae02b8ee6.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp"
+width="760"
+height="484"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;实验设置&lt;/strong&gt;：将稠密参数从 13K 逐步扩展到 0.3B（约 2 万倍），观察离线 AUC 指标的变化&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;关键结果&lt;/strong&gt;：在使用 GPSD 框架后，AUC 随稠密参数量的增加呈现出平滑的幂律增长曲线&lt;/li&gt;

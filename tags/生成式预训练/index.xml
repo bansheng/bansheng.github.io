@@ -1124,22 +1124,19 @@ $$\mathcal{L} = \sum_{t \in \{\text{click, cart, purchase}\}} w_t \cdot \text{BC
 &lt;li&gt;&lt;strong&gt;损失函数&lt;/strong&gt;：标准的二元交叉熵（Binary Cross-Entropy）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="3-架构流程图"&gt;3. 架构流程图&lt;/h2&gt;
-&lt;div class="mermaid-wrapper"&gt;
-&lt;div class="mermaid" style="background: transparent;"&gt;
-graph LR
-A[“Stage1: 用户行为序列”] --&gt; B(“Stage1: Transformer Decoder”)
-B --&gt; C[“Stage1: 预测下一Item”]
-C --&gt; D{“Stage1: 预训练模型”}
-E[“Stage2: 稀疏参数 Embeddings”]
-F[“Stage2: 稠密参数 Transformer”]
-H[“Stage3: 上下文+候选物品”] --&gt; G(“Stage3: 判别式Transformer”)
-G --&gt; I[“Stage3: 预估CTR/CVR”]
-D --&gt;|提取| E
-D --&gt;|提取| F
-E --&gt;|冻结| G
-F --&gt;|迁移| G
-&lt;/div&gt;
-&lt;/div&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_fdbac74ac0214b1b.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_9b0155f9ab4f5676.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp"
+width="760"
+height="475"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;h2 id="4-scaling-law-在推荐系统中的分析"&gt;4. Scaling Law 在推荐系统中的分析&lt;/h2&gt;
 &lt;h3 id="41-什么是-scaling-law"&gt;4.1 什么是 Scaling Law？&lt;/h3&gt;
 &lt;p&gt;Scaling Law 最初由 OpenAI 在 2020 年提出，揭示了语言模型性能与模型参数量、训练数据量、计算量之间的幂律关系。具体来说：&lt;/p&gt;
@@ -1156,6 +1153,19 @@ F --&gt;|迁移| G
 &lt;/ul&gt;
 &lt;h3 id="43-gpsd-如何实现推荐系统的-scaling-law"&gt;4.3 GPSD 如何实现推荐系统的 Scaling Law&lt;/h3&gt;
 &lt;p&gt;GPSD 的核心贡献之一，是首次在判别式推荐模型中验证了 Scaling Law 的存在：&lt;/p&gt;
+&lt;p&gt;
+&lt;figure &gt;
+&lt;div class="flex justify-center "&gt;
+&lt;div class="w-full" &gt;
+&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
+srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_e3e71a78e5905f40.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_8866e2ae02b8ee6.webp 760w"
+sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp"
+width="760"
+height="484"
+loading="lazy" data-zoomable /&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;实验设置&lt;/strong&gt;：将稠密参数从 13K 逐步扩展到 0.3B（约 2 万倍），观察离线 AUC 指标的变化&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;关键结果&lt;/strong&gt;：在使用 GPSD 框架后，AUC 随稠密参数量的增加呈现出平滑的幂律增长曲线&lt;/li&gt;

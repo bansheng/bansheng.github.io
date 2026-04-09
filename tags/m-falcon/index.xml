@@ -88,12 +88,12 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 &lt;p&gt;为此，M-FALCON 设计了一种特殊的 Attention Mask（注意力掩码）。假设序列拼接后为 $[\text{hist}_1, \dots, \text{hist}_n, \text{cand}_1, \dots, \text{cand}_{b_m}]$，掩码矩阵 $M \in \mathbb{R}^{(n+b_m) \times (n+b_m)}$ 的构造规则为：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;用户历史内部&lt;/strong&gt;：标准的因果掩码（Causal Mask），即 $M_{ij} = 1$ 当且仅当 $i \geq j$（对于 $i, j \leq n$）。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &amp;gt; n, j \leq n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 历史&lt;/strong&gt;：所有候选商品都可以”看到”（Attend to）&lt;strong&gt;完整的&lt;/strong&gt;用户历史，即 $M_{ij} = 1$（对于 $i &gt; n, j \leq n$）。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;候选 $\to$ 自身&lt;/strong&gt;：候选商品对自己是可见的（对角线为 1），即 $M_{ii} = 1$。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &amp;gt; n$）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;候选 $\to$ 其他候选&lt;/strong&gt;：&lt;strong&gt;互相不可见&lt;/strong&gt;，即 $M_{ij} = 0$（对于 $i \neq j$ 且 $i, j &gt; n$）。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;用直观的矩阵形式表示，掩码结构如下：&lt;/p&gt;
-$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\\\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
+$$M = \begin{pmatrix} \text{CausalMask}_{n \times n} &amp; \mathbf{0}_{n \times b_m} \\ \mathbf{1}_{b_m \times n} &amp; I_{b_m \times b_m} \end{pmatrix}$$&lt;p&gt;其中 $I$ 是单位矩阵，表示候选只能看到自己。&lt;/p&gt;
 &lt;h4 id="323-微批次大小的选择"&gt;3.2.3 微批次大小的选择&lt;/h4&gt;
 &lt;p&gt;微批次大小 $b_m$ 是一个需要精心调优的超参数：&lt;/p&gt;
 &lt;ul&gt;
