@@ -79,6 +79,8 @@ SID 是将目录中每个物品映射为一个短的离散 token 序列的方法
 
 NEO 使用 **残差 K-means 量化（Residual K-means）** 来构建 SID，这是一种层级化的向量量化方法：
 
+![Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers](figure_sid_generation.png)
+
 1. 首先将物品的内容嵌入（content embedding）通过第一个码本量化，捕获粗粒度的语义区域
 2. 计算残差（原始向量 - 量化向量），用第二个码本量化残差
 3. 重复这一过程 $M$ 次，逐步精细化表示
