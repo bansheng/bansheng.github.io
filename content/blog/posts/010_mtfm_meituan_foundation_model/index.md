@@ -112,6 +112,8 @@ $$
 
 这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不同的用户，这个 \(N\) 是可变的（Variable-length）。
 
+![Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列](figure_hrt_tokens.png)
+
 **【深度思考：异构 Token 化的绝妙之处】**
 这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 \(d_{model}\) 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 \(\text{MLP}_s\) 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。
 

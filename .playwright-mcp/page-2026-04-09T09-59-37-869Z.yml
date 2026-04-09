@@ -1,0 +1,307 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "Skip to main content" [ref=e4] [cursor=pointer]:
+      - /url: "#content"
+    - generic [ref=e5]:
+      - link "Cornell University" [ref=e7] [cursor=pointer]:
+        - /url: https://www.cornell.edu/
+        - img "Cornell University" [ref=e8]
+      - link "Learn about arXiv becoming an independent nonprofit." [ref=e10] [cursor=pointer]:
+        - /url: https://tech.cornell.edu/arxiv/
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - text: We gratefully acknowledge support from the Simons Foundation,
+          - link "member institutions" [ref=e13] [cursor=pointer]:
+            - /url: https://info.arxiv.org/about/ourmembers.html
+          - text: ", and all contributors."
+        - link "Donate" [ref=e14] [cursor=pointer]:
+          - /url: https://info.arxiv.org/about/donate.html
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - link "arxiv logo" [ref=e17] [cursor=pointer]:
+          - /url: /
+          - img "arxiv logo" [ref=e18]
+        - generic [ref=e19]: ">"
+        - link "cs" [ref=e20] [cursor=pointer]:
+          - /url: /list/cs/recent
+        - generic [ref=e21]: ">"
+        - text: arXiv:2602.11235
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - textbox "Search term or terms" [ref=e26]:
+            - /placeholder: Search...
+          - paragraph [ref=e27]:
+            - link "Help" [ref=e28] [cursor=pointer]:
+              - /url: https://info.arxiv.org/help
+            - text: "|"
+            - link "Advanced Search" [ref=e29] [cursor=pointer]:
+              - /url: https://arxiv.org/search/advanced
+        - combobox "Field to search" [ref=e31]:
+          - option "All fields" [selected]
+          - option "Title"
+          - option "Author"
+          - option "Abstract"
+          - option "Comments"
+          - option "Journal reference"
+          - option "ACM classification"
+          - option "MSC classification"
+          - option "Report number"
+          - option "arXiv identifier"
+          - option "DOI"
+          - option "ORCID"
+          - option "arXiv author ID"
+          - option "Help pages"
+          - option "Full text"
+        - button "Search" [ref=e32] [cursor=pointer]
+  - main [ref=e33]:
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - heading "Computer Science > Information Retrieval" [level=1] [ref=e38]
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - text: "[Submitted on 11 Feb 2026 ("
+            - link "v1" [ref=e42] [cursor=pointer]:
+              - /url: https://arxiv.org/abs/2602.11235v1
+            - text: ), last revised 13 Feb 2026 (this version, v2)]
+          - 'heading "MTFM: A Scalable and Alignment-free Foundation Model for Industrial Recommendation in Meituan" [level=1] [ref=e43]'
+          - generic [ref=e44]:
+            - link "Xin Song" [ref=e45] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Song,+X
+            - text: ","
+            - link "Zhilin Guan" [ref=e46] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Guan,+Z
+            - text: ","
+            - link "Ruidong Han" [ref=e47] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Han,+R
+            - text: ","
+            - link "Binghao Tang" [ref=e48] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Tang,+B
+            - text: ","
+            - link "Tianwen Chen" [ref=e49] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Chen,+T
+            - text: ","
+            - link "Bing Li" [ref=e50] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Li,+B
+            - text: ","
+            - link "Zihao Li" [ref=e51] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Li,+Z
+            - text: ","
+            - link "Han Zhang" [ref=e52] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Zhang,+H
+            - text: ","
+            - link "Fei Jiang" [ref=e53] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Jiang,+F
+            - text: ","
+            - link "Qing Wang" [ref=e54] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Wang,+Q
+            - text: ","
+            - link "Zikang Xu" [ref=e55] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Xu,+Z
+            - text: ","
+            - link "Fengyi Li" [ref=e56] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Li,+F
+            - text: ","
+            - link "Chunzhen Jing" [ref=e57] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Jing,+C
+            - text: ","
+            - link "Lei Yu" [ref=e58] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Yu,+L
+            - text: ","
+            - link "Wei Lin" [ref=e59] [cursor=pointer]:
+              - /url: https://arxiv.org/search/cs?searchtype=author&query=Lin,+W
+          - blockquote [ref=e60]: Industrial recommendation systems typically involve multiple scenarios, yet existing cross-domain (CDR) and multi-scenario (MSR) methods often require prohibitive resources and strict input alignment, limiting their extensibility. We propose MTFM (Meituan Foundation Model for Recommendation), a transformer-based framework that addresses these challenges. Instead of pre-aligning inputs, MTFM transforms cross-domain data into heterogeneous tokens, capturing multi-scenario knowledge in an alignment-free manner. To enhance efficiency, we first introduce a multi-scenario user-level sample aggregation that significantly enhances training throughput by reducing the total number of instances. We further integrate Grouped-Query Attention and a customized Hybrid Target Attention to minimize memory usage and computational complexity. Furthermore, we implement various system-level optimizations, such as kernel fusion and the elimination of CPU-GPU blocking, to further enhance both training and inference throughput. Offline and online experiments validate the effectiveness of MTFM, demonstrating that significant performance gains are achieved by scaling both model capacity and multi-scenario training data.
+          - table "Additional metadata" [ref=e62]:
+            - rowgroup [ref=e63]:
+              - 'row "Subjects: Information Retrieval (cs.IR)" [ref=e64]':
+                - cell "Subjects:" [ref=e65]
+                - cell "Information Retrieval (cs.IR)" [ref=e66]
+              - 'row "Cite as: arXiv:2602.11235 [cs.IR]" [ref=e67]':
+                - cell "Cite as:" [ref=e68]
+                - cell "arXiv:2602.11235 [cs.IR]" [ref=e69]:
+                  - generic [ref=e70]:
+                    - link "arXiv:2602.11235" [ref=e71] [cursor=pointer]:
+                      - /url: https://arxiv.org/abs/2602.11235
+                    - text: "[cs.IR]"
+              - row "(or arXiv:2602.11235v2 [cs.IR] for this version)" [ref=e72]:
+                - cell [ref=e73]
+                - cell "(or arXiv:2602.11235v2 [cs.IR] for this version)" [ref=e74]:
+                  - text: (or
+                  - generic [ref=e75]:
+                    - link "arXiv:2602.11235v2" [ref=e76] [cursor=pointer]:
+                      - /url: https://arxiv.org/abs/2602.11235v2
+                    - text: "[cs.IR]"
+                  - text: for this version)
+              - row "https://doi.org/10.48550/arXiv.2602.11235 Focus to learn more" [ref=e77]:
+                - cell [ref=e78]
+                - cell "https://doi.org/10.48550/arXiv.2602.11235 Focus to learn more" [ref=e79]:
+                  - link "https://doi.org/10.48550/arXiv.2602.11235" [ref=e80] [cursor=pointer]:
+                    - /url: https://doi.org/10.48550/arXiv.2602.11235
+                  - button "Focus to learn more" [ref=e82]:
+                    - generic [ref=e84]: Focus to learn more
+        - generic [ref=e85]:
+          - heading "Submission history" [level=2] [ref=e86]
+          - text: "From: Han Ruidong ["
+          - link "view email" [ref=e87] [cursor=pointer]:
+            - /url: /show-email/312ea9ba/2602.11235
+          - text: "]"
+          - strong [ref=e88]:
+            - link "[v1]" [ref=e89] [cursor=pointer]:
+              - /url: /abs/2602.11235v1
+          - text: Wed, 11 Feb 2026 16:37:29 UTC (5,178 KB)
+          - strong [ref=e90]: "[v2]"
+          - text: Fri, 13 Feb 2026 09:38:24 UTC (5,015 KB)
+      - generic [ref=e91]:
+        - generic [ref=e92]:
+          - heading "Access Paper:" [level=2] [ref=e93]
+          - list [ref=e94]:
+            - listitem [ref=e95]:
+              - link "View PDF" [ref=e96] [cursor=pointer]:
+                - /url: /pdf/2602.11235
+            - listitem [ref=e97]:
+              - link "HTML (experimental)" [ref=e98] [cursor=pointer]:
+                - /url: https://arxiv.org/html/2602.11235v2
+            - listitem [ref=e99]:
+              - link "TeX Source" [ref=e100] [cursor=pointer]:
+                - /url: /src/2602.11235
+          - link "view license" [ref=e102] [cursor=pointer]:
+            - /url: http://arxiv.org/licenses/nonexclusive-distrib/1.0/
+        - generic [ref=e103]:
+          - text: "Current browse context:"
+          - generic [ref=e104]: cs.IR
+          - generic [ref=e105]:
+            - link "< prev" [ref=e107] [cursor=pointer]:
+              - /url: /prevnext?id=2602.11235&function=prev&context=cs.IR
+            - text: "|"
+            - link "next >" [ref=e109] [cursor=pointer]:
+              - /url: /prevnext?id=2602.11235&function=next&context=cs.IR
+          - generic [ref=e110]:
+            - link "new" [ref=e111] [cursor=pointer]:
+              - /url: /list/cs.IR/new
+            - text: "|"
+            - link "recent" [ref=e112] [cursor=pointer]:
+              - /url: /list/cs.IR/recent
+            - text: "|"
+            - link "2026-02" [ref=e113] [cursor=pointer]:
+              - /url: /list/cs.IR/2026-02
+          - generic [ref=e114]:
+            - text: "Change to browse by:"
+            - link "cs" [ref=e116] [cursor=pointer]:
+              - /url: /abs/2602.11235?context=cs
+        - generic [ref=e117]:
+          - heading "References & Citations" [level=3] [ref=e118]
+          - list [ref=e119]:
+            - listitem [ref=e120]:
+              - link "NASA ADS" [ref=e121] [cursor=pointer]:
+                - /url: https://ui.adsabs.harvard.edu/abs/arXiv:2602.11235
+            - listitem [ref=e122]:
+              - link "Google Scholar" [ref=e123] [cursor=pointer]:
+                - /url: https://scholar.google.com/scholar_lookup?arxiv_id=2602.11235
+            - listitem [ref=e124]:
+              - link "Semantic Scholar" [ref=e125] [cursor=pointer]:
+                - /url: https://api.semanticscholar.org/arXiv:2602.11235
+        - generic [ref=e127]: export BibTeX citation
+        - generic [ref=e128]:
+          - heading "Bookmark" [level=3] [ref=e130]
+          - link "BibSonomy logo" [ref=e131] [cursor=pointer]:
+            - /url: "http://www.bibsonomy.org/BibtexHandler?requTask=upload&url=https://arxiv.org/abs/2602.11235&description=MTFM: A Scalable and Alignment-free Foundation Model for Industrial Recommendation in Meituan"
+            - img "BibSonomy logo" [ref=e132]
+          - link "Reddit logo" [ref=e133] [cursor=pointer]:
+            - /url: "https://reddit.com/submit?url=https://arxiv.org/abs/2602.11235&title=MTFM: A Scalable and Alignment-free Foundation Model for Industrial Recommendation in Meituan"
+            - img "Reddit logo" [ref=e134]
+      - generic [ref=e136]:
+        - generic [ref=e137] [cursor=pointer]: Bibliographic Tools
+        - generic [ref=e138]:
+          - heading "Bibliographic and Citation Tools" [level=1] [ref=e139]
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - generic [ref=e143]:
+                - checkbox "Bibliographic Explorer Toggle"
+                - generic [ref=e145]: Bibliographic Explorer Toggle
+              - generic [ref=e146]:
+                - text: Bibliographic Explorer
+                - emphasis [ref=e147]:
+                  - text: (
+                  - link "What is the Explorer?" [ref=e148] [cursor=pointer]:
+                    - /url: https://info.arxiv.org/labs/showcase.html#arxiv-bibliographic-explorer
+                  - text: )
+            - generic [ref=e149]:
+              - generic [ref=e151]:
+                - checkbox "Connected Papers"
+                - generic [ref=e153]: Connected Papers Toggle
+              - generic [ref=e154]:
+                - text: Connected Papers
+                - emphasis [ref=e155]:
+                  - text: (
+                  - link "What is Connected Papers?" [ref=e156] [cursor=pointer]:
+                    - /url: https://www.connectedpapers.com/about
+                  - text: )
+            - generic [ref=e157]:
+              - generic [ref=e159]:
+                - checkbox "Litmaps"
+                - generic [ref=e161]: Litmaps Toggle
+              - generic [ref=e162]:
+                - text: Litmaps
+                - emphasis [ref=e163]:
+                  - text: (
+                  - link "What is Litmaps?" [ref=e164] [cursor=pointer]:
+                    - /url: https://www.litmaps.co/
+                  - text: )
+            - generic [ref=e165]:
+              - generic [ref=e167]:
+                - checkbox "scite Smart Citations"
+                - generic [ref=e169]: scite.ai Toggle
+              - generic [ref=e170]:
+                - text: scite Smart Citations
+                - emphasis [ref=e171]:
+                  - text: (
+                  - link "What are Smart Citations?" [ref=e172] [cursor=pointer]:
+                    - /url: https://www.scite.ai/
+                  - text: )
+        - generic [ref=e176] [cursor=pointer]: Code, Data, Media
+        - generic [ref=e177] [cursor=pointer]: Demos
+        - generic [ref=e178] [cursor=pointer]: Related Papers
+        - generic [ref=e179] [cursor=pointer]: About arXivLabs
+      - generic [ref=e180]:
+        - link "Which authors of this paper are endorsers?" [ref=e181] [cursor=pointer]:
+          - /url: /auth/show-endorsers/2602.11235
+        - text: "|"
+        - link "Disable MathJax" [ref=e182] [cursor=pointer]:
+          - /url: javascript:setMathjaxCookie()
+        - text: (
+        - link "What is MathJax?" [ref=e183] [cursor=pointer]:
+          - /url: https://info.arxiv.org/help/mathjax.html
+        - text: )
+  - contentinfo [ref=e184]:
+    - navigation "Secondary" [ref=e185]:
+      - generic [ref=e187]:
+        - list [ref=e189]:
+          - listitem [ref=e190]:
+            - link "About" [ref=e191] [cursor=pointer]:
+              - /url: https://info.arxiv.org/about
+          - listitem [ref=e192]:
+            - link "Help" [ref=e193] [cursor=pointer]:
+              - /url: https://info.arxiv.org/help
+        - list [ref=e195]:
+          - listitem [ref=e196]:
+            - link "Contact" [ref=e198] [cursor=pointer]:
+              - /url: https://info.arxiv.org/help/contact.html
+          - listitem [ref=e199]:
+            - link "Subscribe" [ref=e201] [cursor=pointer]:
+              - /url: https://info.arxiv.org/help/subscribe
+      - generic [ref=e203]:
+        - list [ref=e205]:
+          - listitem [ref=e206]:
+            - link "Copyright" [ref=e207] [cursor=pointer]:
+              - /url: https://info.arxiv.org/help/license/index.html
+          - listitem [ref=e208]:
+            - link "Privacy Policy" [ref=e209] [cursor=pointer]:
+              - /url: https://info.arxiv.org/help/policies/privacy_policy.html
+        - list [ref=e211]:
+          - listitem [ref=e212]:
+            - link "Web Accessibility Assistance" [ref=e213] [cursor=pointer]:
+              - /url: https://info.arxiv.org/help/web_accessibility.html
+          - listitem [ref=e214]:
+            - paragraph [ref=e215]:
+              - link "arXiv Operational Status" [ref=e216] [cursor=pointer]:
+                - /url: https://status.arxiv.org
+                - text: arXiv Operational Status
