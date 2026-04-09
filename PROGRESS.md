@@ -45,3 +45,43 @@ docs: 为NormFormer博客添加论文中的关键Figure图表
 ### 扫描结果
 - 005_tokenmixer_large_paper_review：5处Figure引用 ✓ 已有图片
 - 014_normformer_paper_review：4处Figure引用 ✓ 已补充图片（本次修复）
+
+---
+
+## 2026-04-09 PDF图表提取精度优化
+
+### 问题
+- 初次提取时直接使用 `pdftoppm` 转换整个PDF页面
+- 导致图片包含大量页面余白，体积过大（382KB/351KB）
+- 虽然Hugo会优化，但不符合最佳实践
+
+### 解决方案
+使用ImageMagick精确裁剪，去除页面余白：
+
+```bash
+# 估算Figure占页面的60-70%，精确裁剪
+convert figure3.png -crop 1275x900+0+250 +repage figure3_cropped.png
+convert figure4_5.png -crop 1275x850+0+300 +repage figure4_5_cropped.png
+```
+
+### 结果
+- figure3: 382KB → 222KB (-42%)
+- figure4_5: 351KB → 194KB (-45%)
+- 总计节省317KB
+
+### Git提交
+```
+commit: a6a8f66
+docs: 优化NormFormer博客图表，去除页面余白
+```
+
+### 以后的做法
+1. **提取单个Figure最佳实践**：
+   - 使用PDF viewer查看坐标或直接在Adobe/Preview中裁剪
+   - 或使用 `pdfcrop` 工具（更精确）：
+     ```bash
+     pdfcrop --bbox "50 400 550 700" paper.pdf cropped.pdf
+     pdftoppm cropped.pdf figure -png -r 200
+     ```
+
+2. **检查清单**：Figure图片不应超过500KB，通常100-300KB最佳
