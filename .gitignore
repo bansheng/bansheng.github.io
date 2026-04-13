@@ -14,3 +14,5 @@ hugo
 /*.tar.gz
 .claude/
 resources/_gen/
+.omc/
+.superpowers/
