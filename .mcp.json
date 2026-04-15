@@ -6,11 +6,7 @@
     },
     "figma": {
       "command": "npx",
-      "args": ["figma-developer-mcp"],
-      "env": {
-        "FIGMA_CLIENT_ID": "${FIGMA_CLIENT_ID}",
-        "FIGMA_CLIENT_SECRET": "${FIGMA_CLIENT_SECRET}"
-      }
+      "args": ["figma-developer-mcp"]
     }
   }
 }

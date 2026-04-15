@@ -1,6 +1,25 @@
 <!-- Mermaid.js for Flowchart Rendering -->
 <script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  // Store original source before first render so theme switch can re-render
+  function saveMermaidSources() {
+    document.querySelectorAll('.mermaid').forEach(el => {
+      if (!el.dataset.originalSource) {
+        el.dataset.originalSource = el.innerHTML;
+      }
+    });
+  }
+
+  // Restore original source and clear data-processed so mermaid.run() re-renders
+  function resetMermaidElements() {
+    document.querySelectorAll('.mermaid').forEach(el => {
+      if (el.dataset.originalSource) {
+        el.innerHTML = el.dataset.originalSource;
+      }
+      delete el.dataset.processed;
+    });
+  }
 
   function initMermaid() {
     try {
@@ -51,6 +70,9 @@
         }
       });
 
+      // Restore original source before re-rendering (fixes theme switch)
+      resetMermaidElements();
+
       const renderWithRetry = (retryCount = 0) => {
         mermaid.run({
           querySelector: '.mermaid'
@@ -71,8 +93,12 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMermaid);
+    document.addEventListener('DOMContentLoaded', () => {
+      saveMermaidSources();
+      initMermaid();
+    });
   } else {
+    saveMermaidSources();
     initMermaid();
   }
 

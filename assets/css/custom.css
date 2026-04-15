@@ -7,15 +7,6 @@
 ------------------------------------------------------- */
 .navbar {
     justify-content: center !important;
-}
-
-.navbar-nav {
-    justify-content: center !important;
-}
-
-/* Navbar: all items in one row, centered */
-.navbar {
-    justify-content: center !important;
     align-items: center !important;
     gap: 0.5rem;
 }
@@ -24,6 +15,7 @@
     display: flex !important;
     flex-direction: row !important;
     padding-bottom: 0 !important;
+    justify-content: center !important;
     align-items: center !important;
     gap: 0.5rem !important;
 }
@@ -34,16 +26,18 @@
     padding: 0.5rem 1rem !important;
 }
 
-/* Hide hamburger + brand name */
-.navbar-brand,
-button[aria-label*="menu" i],
-.lg\:hidden.order-3 {
-    display: none !important;
-}
+/* Hide hamburger + brand name on desktop only */
+@media (min-width: 768px) {
+    .navbar-brand,
+    button[aria-label*="menu" i],
+    .lg\:hidden.order-3 {
+        display: none !important;
+    }
 
-/* Put theme toggle inline with nav */
-.navbar [class*="order-"][class*="cursor-pointer"] {
-    display: none !important;
+    /* Put theme toggle inline with nav */
+    .navbar [class*="order-"][class*="cursor-pointer"] {
+        display: none !important;
+    }
 }
 
 /* -------------------------------------------------------
