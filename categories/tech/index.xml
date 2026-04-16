@@ -1,4 +1,265 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tech | Yadong's Blog</title><link>https://dingyadong.top/categories/tech/</link><atom:link href="https://dingyadong.top/categories/tech/index.xml" rel="self" type="application/rss+xml"/><description>Tech</description><generator>HugoBlox Kit (https://hugoblox.com)</generator><language>zh-cn</language><lastBuildDate>Mon, 13 Apr 2026 22:00:00 +0800</lastBuildDate><image><url>https://dingyadong.top/media/icon.svg</url><title>Tech</title><link>https://dingyadong.top/categories/tech/</link></image><item><title>视频号推荐超长序列技术演进：从端到端到 Cross-Mask Transformer</title><link>https://dingyadong.top/posts/015_weixin_channel_ultralong_seq/</link><pubDate>Mon, 13 Apr 2026 22:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/015_weixin_channel_ultralong_seq/</guid><description>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tech | Yadong's Blog</title><link>https://dingyadong.top/categories/tech/</link><atom:link href="https://dingyadong.top/categories/tech/index.xml" rel="self" type="application/rss+xml"/><description>Tech</description><generator>HugoBlox Kit (https://hugoblox.com)</generator><language>zh-cn</language><lastBuildDate>Wed, 15 Apr 2026 22:00:00 +0800</lastBuildDate><image><url>https://dingyadong.top/media/icon.svg</url><title>Tech</title><link>https://dingyadong.top/categories/tech/</link></image><item><title>TokenFormer：终结推荐系统的两个平行世界</title><link>https://dingyadong.top/posts/016_tokenformer_unified_rec/</link><pubDate>Wed, 15 Apr 2026 22:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/016_tokenformer_unified_rec/</guid><description>
+&lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
+&lt;p&gt;本文基于腾讯广告团队 2026 年 4 月最新发布的论文《TokenFormer: Unify the Multi-Field and Sequential Recommendation Worlds》（
+）撰写。论文提出了一种统一的推荐系统骨干架构，通过两项核心技术创新解决了长期困扰业界的&amp;quot;朴素统一导致序列坍缩传播&amp;quot;问题，并在微信视频号广告系统上取得了 &lt;strong&gt;+4.03% GMV&lt;/strong&gt; 的在线收益。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="0-两个推荐世界的长期割裂"&gt;0. 两个推荐世界的长期割裂&lt;/h2&gt;
+&lt;p&gt;在过去十年里，工业推荐系统悄然形成了两套彼此独立的技术体系：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第一套：多字段特征交互（Multi-Field Feature Interaction）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这套体系的核心是处理异构稀疏特征——用户画像、商品属性、上下文信息等来自不同字段的类别特征。DIN 用 Attention 做目标感知的历史权重，DCN 用交叉网络显式建模高阶特征交叉，DeepFM 引入因式分解机……无数工作都在探索如何更好地捕捉这些静态特征之间的相关性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第二套：序列行为动态建模（Sequential Behavior Modeling）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这套体系的核心是理解用户兴趣的时序演化——GRU4Rec 用 RNN 建模序列，SASRec 引入 Self-Attention，BERT4Rec 使用双向建模，后来又有 HSTU 在腾讯广告规模下证明了序列 Transformer 的价值……这套范式专注于从用户的行为轨迹中挖掘动态偏好。&lt;/p&gt;
+&lt;p&gt;两套体系共享相同的计算基元（Embedding、Attention），却长期平行演进，极少交融。现代工业推荐系统往往通过&lt;strong&gt;拼接&lt;/strong&gt;的方式将两者整合：将各字段特征过一套交互模块，将序列特征过另一套序列模块，最后把两个模块的输出 concat 进入后续网络。&lt;/p&gt;
+&lt;p&gt;这种异构拼接的方式显然不够优雅。自然的问题是：&lt;strong&gt;能否用一个统一的 Transformer 架构，直接端到端地处理所有输入？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;答案是可以的——但论文发现，朴素地统一这两类特征会触发一种此前未被识别的失效模式。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="1-发现问题序列坍缩传播"&gt;1. 发现问题：序列坍缩传播&lt;/h2&gt;
+&lt;h3 id="11-朴素统一为什么会失败"&gt;1.1 朴素统一为什么会失败&lt;/h3&gt;
+&lt;p&gt;最直观的统一方案是：将所有输入——多字段特征、序列行为、目标特征——展平为一条 token 流，然后喂给标准 Transformer。理论上，全注意力机制应该能够自行学习哪些 token 之间需要交互。&lt;/p&gt;
+&lt;p&gt;但实验告诉我们，这种方案会显著劣于精心设计的异构架构。论文通过仔细的表示分析找到了原因：&lt;strong&gt;序列坍缩传播（Sequential Collapse Propagation，SCP）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;现象&lt;/strong&gt;：非序列字段（如用户画像、上下文特征）的嵌入维度通常较低，而序列行为的建模需要更高的表示维度来承载时序动态。当低维非序列 token 与高维序列 token 在全注意力中充分交互时，序列表示会发生&lt;strong&gt;维度坍缩&lt;/strong&gt;——有效秩（effective rank）急剧下降，序列 token 的表示趋于同质化，丧失区分度。&lt;/p&gt;
+&lt;p&gt;可以用一个类比来理解：你在听一场 80 人的交响乐演奏时，如果强行让乐手们去迁就一位经验有限的独奏者的节奏，整体音乐的层次感反而会被拉低。&lt;/p&gt;
+&lt;h3 id="12-从谱分析看坍缩"&gt;1.2 从谱分析看坍缩&lt;/h3&gt;
+&lt;p&gt;论文通过分析 Transformer 各层的**有效秩（erank）**来量化这一现象。有效秩衡量的是一个矩阵在多少个奇异值方向上有实质性的&amp;quot;能量&amp;quot;——有效秩越高，表示越丰富，区分度越强。&lt;/p&gt;
+&lt;p&gt;在朴素统一的 Transformer 中，随着层数加深，序列 token 的表示矩阵谱衰减越来越陡峭：大量信息被压缩到少数几个主方向，模型失去了表达多样化序列模式的能力。&lt;/p&gt;
+&lt;p&gt;与此同时，论文还发现了另一个浪费：在深层网络中，序列 token 会&lt;strong&gt;反常地向非序列位置分配大量注意力权重&lt;/strong&gt;（平均 40.0 vs 序列内部的权重），尽管这种跨域注意力在深层并没有实质性收益。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="2-tokenformer-架构设计"&gt;2. TokenFormer 架构设计&lt;/h2&gt;
+&lt;p&gt;论文提出了 TokenFormer，通过两项互补的技术创新来解决上述问题。&lt;/p&gt;
+&lt;h3 id="21-统一令牌流"&gt;2.1 统一令牌流&lt;/h3&gt;
+&lt;p&gt;所有输入首先被组织为一条扁平化的令牌流：&lt;/p&gt;
+$$\mathbf{S} = [\underbrace{f_1, f_2, \ldots, f_m}_{\text{非序列字段} \mathcal{F}}, \underbrace{t_1, t_2, \ldots, t_n}_{\text{序列行为} \mathcal{T}}, \underbrace{v_1, \ldots, v_k}_{\text{目标特征} \mathcal{V}}]$$&lt;p&gt;与其他统一方案不同，TokenFormer 使用 &lt;strong&gt;RoPE（旋转位置编码）&lt;/strong&gt; 而非类型嵌入来区分不同段落。RoPE 通过位置感知索引方案，让模型在注意力计算阶段自然感知 token 的位置属性，而不需要额外引入分段标记。&lt;/p&gt;
+&lt;h3 id="22-bfts底部全注意力顶部滑动窗口"&gt;2.2 BFTS：底部全注意力，顶部滑动窗口&lt;/h3&gt;
+&lt;p&gt;这是 TokenFormer 的第一个核心创新：&lt;strong&gt;分层注意力设计（Bottom Full-attention, Top Sliding-window，BFTS）&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph TB
+subgraph "浅层（l ≤ lf）：全注意力"
+L1["Layer 1\n非序列 ↔ 序列\n全局特征融合"]
+L2["Layer 2\n跨域交互完成"]
+end
+subgraph "深层：收缩滑动窗口"
+L3["Layer 3\n窗口 w1\n序列局部建模"]
+L4["Layer 4\n窗口 w2 &amp;lt; w1\n精细时序优化"]
+L5["Layer 5\n窗口 w3 &amp;lt; w2\n近邻感知"]
+end
+L2 --&gt; L3
+L3 --&gt; L4
+L4 --&gt; L5
+note["非序列 token\n在深层完全禁止\n关注序列位置"]
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;设计逻辑如下：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;浅层（$\ell \leq \ell_f$）使用全因果注意力&lt;/strong&gt;：在这个阶段，让所有 token 充分交互，完成跨域特征融合。非序列字段的静态信息需要在这里&amp;quot;注入&amp;quot;到序列表示中。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;深层使用收缩窗口滑动注意力（SWA）&lt;/strong&gt;：一旦全局交互完成，深层应该专注于序列内部的局部时序建模。窗口大小随层数递减（$w_1 \gt w_2 \gt \cdots \gt w_{L_s}$），让网络从粗粒度到细粒度地精炼序列表示。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关键约束&lt;/strong&gt;：在深层，&lt;strong&gt;完全禁止序列 token 关注非序列位置&lt;/strong&gt;。这解决了前面提到的&amp;quot;反常跨域注意力&amp;quot;浪费问题，让深层注意力专心处理时序动态。&lt;/p&gt;
+&lt;p&gt;消融实验清楚地验证了这一设计的必要性：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;配置&lt;/th&gt;
+&lt;th&gt;相对 AUC 变化&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;全部使用全注意力（基线 Transformer）&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;全部使用滑动窗口（4S）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;−36.35‰&lt;/strong&gt;（灾难性失败）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;仅 BFTS&lt;/td&gt;
+&lt;td&gt;+4.91‰&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;完整 TokenFormer&lt;/td&gt;
+&lt;td&gt;+8.15‰&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;全 SWA 配置的灾难性失败(-36.35‰)说明：&lt;strong&gt;早期的全局特征融合是不可或缺的&lt;/strong&gt;。序列建模需要先&amp;quot;看见&amp;quot;上下文全貌，再聚焦局部。&lt;/p&gt;
+&lt;h3 id="23-nlir非线性交互表示"&gt;2.3 NLIR：非线性交互表示&lt;/h3&gt;
+&lt;p&gt;这是 TokenFormer 的第二个核心创新：&lt;strong&gt;非线性交互表示（Non-Linear Interaction Representation，NLIR）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;标准 Transformer 的注意力输出经过残差连接直接送入下一层：&lt;/p&gt;
+$$\mathbf{X}^{(l+1)} = \mathbf{X}^{(l)} + \text{Attn}(\mathbf{X}^{(l)})$$&lt;p&gt;TokenFormer 在注意力输出处插入了一个门控机制：&lt;/p&gt;
+$$\mathbf{G}^{(l)} = \mathbf{X}^{(l)} \mathbf{W}_g^{(l)} \quad \text{（门投影）}$$$$\tilde{\mathbf{I}}^{(l)} = \sigma(\mathbf{G}^{(l)}) \odot \mathbf{A}^{(l)} \quad \text{（乘法调制）}$$&lt;p&gt;其中 $\sigma$ 为 Sigmoid 函数，$\mathbf{A}^{(l)}$ 是注意力输出，$\odot$ 是逐元素乘法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;为什么这样设计？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Sigmoid 门控引入了非线性变换，本质上是让注意力输出的每个维度通过&amp;quot;开关&amp;quot;进行动态选通。这有两个作用：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;恢复有效秩&lt;/strong&gt;：线性注意力本身是低秩操作，难以避免秩退化。Sigmoid 非线性打破了线性的秩约束，为序列表示注入了更丰富的维度多样性。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;自适应梯度调制&lt;/strong&gt;：门控参数在训练中自动学习，早期层的门控值趋向于更保守（保留更多原始信息），深层的门控值更积极（筛选关键模式）。这与 FFN Mid-LayerNorm 在 NormFormer 中发挥的作用类似——模型自动学习各层之间的信息流量分配。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;论文通过**互信息（Mutual Information）**分析验证了 NLIR 的效果：在不同聚类数 K 下，BFTS+NLIR 的组合在各层一致提升了表示的区分度，单独使用任一模块也有显著收益。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="3-实验结果"&gt;3. 实验结果&lt;/h2&gt;
+&lt;h3 id="31-离线基准对比"&gt;3.1 离线基准对比&lt;/h3&gt;
+&lt;p&gt;论文在 KuaiRand-27K 数据集上进行了全面的离线评估，与多个推荐系统 Baseline 对比：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;用户中心（User-Centric）设置&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;模型&lt;/th&gt;
+&lt;th&gt;AUC 相对提升（vs Transformer 基线）&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;OneTrans&lt;/td&gt;
+&lt;td&gt;−1.71‰&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HyFormer&lt;/td&gt;
+&lt;td&gt;+4.47‰&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;TokenFormer-S&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+5.76‰&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;TokenFormer-L&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+8.15‰&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;新印象优化（New Impression Optimization）设置&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;模型&lt;/th&gt;
+&lt;th&gt;AUC 相对提升（vs Transformer* 基线）&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;OneTrans*&lt;/td&gt;
+&lt;td&gt;+4.98‰&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HyFormer*&lt;/td&gt;
+&lt;td&gt;+0.98‰&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;TokenFormer-S&lt;/strong&gt;*&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+11.42‰&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;TokenFormer 在两种设置下均大幅领先此前的统一推荐架构，证明了 BFTS+NLIR 的有效性。&lt;/p&gt;
+&lt;p&gt;值得注意的是，HyFormer 在新印象优化设置下出现了明显退化，而 TokenFormer 在两种设置下都保持了稳健的提升——这反映了统一架构的泛化能力。&lt;/p&gt;
+&lt;h3 id="32-效率与效果的权衡"&gt;3.2 效率与效果的权衡&lt;/h3&gt;
+&lt;p&gt;论文探索了 BFTS 配置（全注意力层数 + 滑动窗口层数）对效率的影响：&lt;/p&gt;
+&lt;div class="mermaid-wrapper"&gt;
+&lt;div class="mermaid" style="background: transparent;"&gt;
+graph LR
+subgraph "BFTS 配置探索"
+Config1["4F（全注意力）\n基线：AUC 0‰, GFLOPs 基准"]
+Config2["3F1S\n+0.21‰, −62.0‰ GFLOPs"]
+Config3["2F2S\n+0.85‰, −201.0‰ GFLOPs"]
+Config4["1F3S\n+0.05‰, −348.0‰ GFLOPs"]
+end
+Config1 --&gt; Config2 --&gt; Config3 --&gt; Config4
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;最优配置是 2F2S&lt;/strong&gt;：2 层全注意力 + 2 层滑动窗口，相比全注意力基线&lt;strong&gt;同时提升 AUC（+0.85‰）并大幅降低计算量（-201.0‰ GFLOPs）&lt;/strong&gt;。这验证了 BFTS 的设计不只是为了精度，也为工业部署提供了显著的效率优化。&lt;/p&gt;
+&lt;p&gt;窗口大小的选择也有讲究：窗口 [32, 16] 优于均匀窗口和其他尺寸，收缩模式（从粗到细）优于均匀模式。&lt;/p&gt;
+&lt;h3 id="33-表示质量分析"&gt;3.3 表示质量分析&lt;/h3&gt;
+&lt;p&gt;论文通过两个维度量化了 TokenFormer 在表示质量上的改善：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;有效秩（Effective Rank）分析&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;在朴素 Transformer 中，序列 token 的表示矩阵谱衰减随层数加深而急剧恶化——大量奇异值趋近于零，表示实际上坍缩到极低维度空间。TokenFormer 引入 NLIR 后，各层有效秩显著高于基线，特别是在深层仍能维持丰富的表示维度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意力模式分析&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;在浅层，TokenFormer 中静态（非序列）token 接收到的注意力权重（平均 52.7）高于 Vanilla Transformer（40.0），说明跨域融合更充分。在深层，TokenFormer 完全屏蔽了序列 token 对非序列位置的关注，而 Vanilla Transformer 仍在&amp;quot;浪费&amp;quot;注意力容量在无效的跨域交互上。&lt;/p&gt;
+&lt;h3 id="34-消融实验细节"&gt;3.4 消融实验细节&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;变体&lt;/th&gt;
+&lt;th&gt;AUC 相对基线&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Transformer（基线）&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;朴素统一&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;+NLIR 仅&lt;/td&gt;
+&lt;td&gt;+4.87‰&lt;/td&gt;
+&lt;td&gt;非线性门控&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;+BFTS 仅&lt;/td&gt;
+&lt;td&gt;+4.91‰&lt;/td&gt;
+&lt;td&gt;分层注意力&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;+NLIR +BFTS（TokenFormer）&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;+8.15‰&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;完整方案&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4S（全 SWA）&lt;/td&gt;
+&lt;td&gt;−36.35‰&lt;/td&gt;
+&lt;td&gt;无全注意力失败&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;两个组件各自贡献约 +4.9‰，合并后达到 +8.15‰，略有超加性效果，说明两种机制在解决 SCP 问题上具有互补性：NLIR 从表示维度出发恢复秩丰富度，BFTS 从注意力结构出发分离跨域融合与序列精炼。&lt;/p&gt;
+&lt;h3 id="35-在线-ab-测试"&gt;3.5 在线 A/B 测试&lt;/h3&gt;
+&lt;p&gt;论文报告了 TokenFormer 在&lt;strong&gt;微信视频号广告系统&lt;/strong&gt;的上线结果：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;测试时间&lt;/strong&gt;：2026 年 1 月至 2 月&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;流量曝露&lt;/strong&gt;：5% 流量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GMV 提升&lt;/strong&gt;：&lt;strong&gt;+4.03%&lt;/strong&gt;（相对基线）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对于视频号广告这样体量的商业化系统，+4% 的 GMV 是非常显著的在线收益，这也是对 TokenFormer 在工业规模下有效性的最直接验证。&lt;/p&gt;
+&lt;p&gt;论文还报告了模型缩放（Scaling）实验：从 TokenFormer-T（Tiny）到 TokenFormer-L（Large），在公开数据集上性能持续提升；在腾讯广告平台的内部数据集上，更大规模的模型没有出现饱和迹象，暗示了 TokenFormer 在工业规模数据下的 Scaling 潜力。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="4-核心洞察与延伸思考"&gt;4. 核心洞察与延伸思考&lt;/h2&gt;
+&lt;h3 id="41-为什么朴素统一是个陷阱"&gt;4.1 为什么&amp;quot;朴素统一&amp;quot;是个陷阱&lt;/h3&gt;
+&lt;p&gt;TokenFormer 最有价值的贡献之一，是对&amp;quot;序列坍缩传播&amp;quot;现象的精确识别与命名。在此之前，业界普遍的经验是&amp;quot;多字段交互模型和序列模型各自调好再合&amp;quot;，而 TokenFormer 揭示了这背后隐藏的理论原因：这两类特征的维度分布天然不匹配，强行在全注意力下交互会导致高维空间向低维空间的单向坍缩。&lt;/p&gt;
+&lt;p&gt;这个分析框架对其他推荐系统设计场景也有启发意义。每当我们看到&amp;quot;多种输入的统一建模&amp;quot;设计时，都应该问：&lt;strong&gt;不同模态/类型的输入之间，维度分布是否相容？它们的交互应该在何时、何处发生？&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="42-bfts-的架构直觉"&gt;4.2 BFTS 的架构直觉&lt;/h3&gt;
+&lt;p&gt;BFTS 的设计体现了一种&amp;quot;先全局融合，后局部精炼&amp;quot;的计算哲学。这与 Cross-Mask Transformer（视频号序列建模）中&amp;quot;跨域交叉 vs 域内交叉&amp;quot;的思路有相似之处，也呼应了 NLP 领域 Longformer、BigBird 等高效注意力架构的设计经验——在不同层次使用不同粒度的注意力是有理论依据的。&lt;/p&gt;
+&lt;p&gt;从工程角度，BFTS 带来了双赢：精度上升（序列 token 不再浪费注意力于无效跨域交互），计算下降（滑动窗口将平方复杂度降为线性）。2F2S 配置的 −201.0‰ GFLOPs 对工业部署而言意义重大。&lt;/p&gt;
+&lt;h3 id="43-nlir-与-swiglu-的关系"&gt;4.3 NLIR 与 SwiGLU 的关系&lt;/h3&gt;
+&lt;p&gt;NLIR 的门控形式 $\sigma(G) \odot A$ 与近年 LLM 中广泛使用的 &lt;strong&gt;SwiGLU/GLU&lt;/strong&gt; 机制有异曲同工之处：&lt;/p&gt;
+$$\text{SwiGLU}(X) = \text{SiLU}(XW_1) \odot (XW_2)$$&lt;p&gt;两者都利用非线性门控来增强特征的表达能力和选择性。NLIR 将这一思想应用到注意力输出的后处理环节，而非 FFN 内部，针对性地解决了序列表示的维度坍缩问题。这种跨领域的技术迁移也反映了推荐系统与 LLM 研究之间越来越深的融合趋势。&lt;/p&gt;
+&lt;h3 id="44-统一-vs-专家系统"&gt;4.4 统一 vs 专家系统&lt;/h3&gt;
+&lt;p&gt;TokenFormer 的出现引出了一个更深层的架构选择问题：在工业推荐中，&lt;strong&gt;统一骨干&lt;/strong&gt;（unified backbone）和&lt;strong&gt;混合专家&lt;/strong&gt;（mixture of experts / heterogeneous modules）哪种路线更有前途？&lt;/p&gt;
+&lt;p&gt;统一骨干的优点是参数共享、端到端优化、结构简洁、易于迭代。专家系统的优点是可以为不同类型的输入设计最适合的归纳偏置。&lt;/p&gt;
+&lt;p&gt;TokenFormer 的实验结果表明，一个设计精良的统一骨干&lt;strong&gt;可以超过异构专家组合&lt;/strong&gt;。但这需要精确识别并解决统一化过程中出现的失效模式（如 SCP），不能简单地&amp;quot;把所有东西扔进一个 Transformer&amp;quot;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="5-总结"&gt;5. 总结&lt;/h2&gt;
+&lt;p&gt;TokenFormer 是一篇解决了一个真实工程问题的论文。它的贡献链路清晰：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;识别问题&lt;/strong&gt;：朴素统一多字段特征与序列特征导致序列坍缩传播（SCP）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分析根因&lt;/strong&gt;：低维非序列 token 与高维序列 token 的全注意力交互引发维度坍缩，深层注意力的反常跨域分配造成额外浪费&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提出方案&lt;/strong&gt;：BFTS（分层注意力，早期全局融合+深层局部精炼）+ NLIR（非线性门控，恢复有效秩）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;验证效果&lt;/strong&gt;：离线 +8.15‰ AUC，在线 +4.03% GMV&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;从更宏观的视角来看，TokenFormer 代表了推荐系统架构从&amp;quot;异构组合&amp;quot;向&amp;quot;统一骨干&amp;quot;演进的一步重要尝试。随着 LLM 技术在推荐领域的渗透加深，这条技术路线还有巨大的探索空间：更长的序列、更多的模态输入、更强的跨任务泛化……TokenFormer 展示的&amp;quot;精确识别失效模式 + 针对性机制设计&amp;quot;方法论，将在这些探索中持续发挥价值。&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
+&lt;p&gt;&lt;strong&gt;参考文献：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Zhou, Y., et al. (2026). TokenFormer: Unify the Multi-Field and Sequential Recommendation Worlds.
+&lt;/li&gt;
+&lt;li&gt;Sun, F., et al. (2019). BERT4Rec: Sequential Recommendation with Bidirectional Encoder Representations from Transformer. CIKM 2019.&lt;/li&gt;
+&lt;li&gt;Zhai, J., et al. (2024). Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations.
+&lt;/li&gt;
+&lt;li&gt;Wang, R., et al. (2021). DCN V2: Improved Deep &amp;amp; Cross Network and Practical Lessons for Web-Scale Learning to Rank Systems. WWW 2021.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;</description></item><item><title>视频号推荐超长序列技术演进：从端到端到 Cross-Mask Transformer</title><link>https://dingyadong.top/posts/015_weixin_channel_ultralong_seq/</link><pubDate>Mon, 13 Apr 2026 22:00:00 +0800</pubDate><guid>https://dingyadong.top/posts/015_weixin_channel_ultralong_seq/</guid><description>
 &lt;blockquote class="border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 italic text-neutral-600 dark:text-neutral-400 my-6"&gt;
 &lt;p&gt;本文基于微信视频号技术团队于 2026 年 3 月发布的技术分享《视频号推荐超长序列技术演进》整理而成。这是视频号推荐技术公众号的第一期内容，系统性地回顾了视频号从 2022 年至 2025 年在超长用户行为序列建模上的探索历程，覆盖工程优化、稀疏感知结构、多域暴力建模三大阶段。&lt;/p&gt;
 &lt;/blockquote&gt;
