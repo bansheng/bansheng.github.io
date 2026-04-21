@@ -112,7 +112,7 @@ $$
 
 这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不同的用户，这个 \(N\) 是可变的（Variable-length）。
 
-![Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列](figure_hrt_tokens.png)
+![Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列](figure_hrt_tokens.svg)
 
 **【深度思考：异构 Token 化的绝妙之处】**
 这种设计彻底打破了传统 DLRM 对特征维度的强绑定。因为所有特征最终都被映射到了统一的 \(d_{model}\) 维度，Transformer 内部的注意力机制根本不需要知道某个 Token 是来自外卖场景还是单车场景，它只需要计算 Token 之间的相关性（Attention Score）。这种“Alignment-free”的特性，使得 MTFM 可以极其轻松地接入任何新的业务场景——只需要为新场景训练一个极小的 \(\text{MLP}_s\) 作为 Tokenizer 即可，骨干网络的参数无需做任何结构性修改。
@@ -180,7 +180,7 @@ graph TD
 
 为了平衡模型的表达能力（Efficacy）和计算效率（Efficiency），MTFM 借鉴了 LLM 领域的稀疏注意力思想，提出了一种由 **全注意力层（Full Attention Layer）** 和 **目标注意力层（Target Attention Layer）** 交替堆叠的混合架构。
 
-![Figure 1: MTFM Token Structure with H/R/T Heterogeneous Tokenization](figure_hrt_tokens.png)
+![Figure 2: MTFM Hybrid Target Attention (HTA) Architecture](figure_hta_architecture.svg)
 
 ### 4.1 全注意力层 (Full Attention Layer) 与动态掩码
 
@@ -217,7 +217,7 @@ $$
 2. **R-tokens 视野**：R-token 遵循严格的因果掩码（Causal Mask），只能被时间戳晚于自己的 Token 看到。
 3. **T-tokens 视野**：T-token 之间互相不可见（因为在一次曝光请求中，各个候选 Item 应该是平行的），T-token 只能看到自己以及时间戳早于它的 H 和 R。
 
-![Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers](figure_hta_architecture.png)
+![Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers](figure_hta_architecture.svg)
 
 ### 4.2 目标注意力层 (Target Attention Layer)：极致降本的核心
 

@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 520" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <!-- Background -->
+  <rect width="820" height="520" fill="#F8FAFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="410" y="32" text-anchor="middle" font-size="15" font-weight="bold" fill="#1E293B">TokenMixer-Large 整体架构</text>
+
+  <!-- ===== LEFT: Raw Token Input ===== -->
+  <!-- Raw Token Box -->
+  <rect x="30" y="60" width="140" height="50" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="100" y="81" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E40AF">Raw Token</text>
+  <text x="100" y="98" text-anchor="middle" font-size="10" fill="#3B82F6">原始特征 + 序列特征</text>
+
+  <!-- Arrow down -->
+  <line x1="100" y1="110" x2="100" y2="140" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== BLOCK repeated indicator ===== -->
+  <rect x="30" y="140" width="140" height="280" rx="10" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="100" y="158" text-anchor="middle" font-size="10" fill="#64748B">× N Blocks</text>
+
+  <!-- Pre-RMSNorm 1 -->
+  <rect x="45" y="163" width="110" height="34" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="100" y="185" text-anchor="middle" font-size="11" fill="#92400E">Pre-RMSNorm</text>
+
+  <!-- Arrow -->
+  <line x1="100" y1="197" x2="100" y2="212" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Mixing -->
+  <rect x="45" y="212" width="110" height="34" rx="6" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="100" y="229" text-anchor="middle" font-size="11" fill="#14532D">Mixing</text>
+  <text x="100" y="242" text-anchor="middle" font-size="9" fill="#166534">T → H tokens</text>
+
+  <!-- Arrow -->
+  <line x1="100" y1="246" x2="100" y2="261" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- S-P MoE 1 -->
+  <rect x="45" y="261" width="110" height="34" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="100" y="278" text-anchor="middle" font-size="11" fill="#4C1D95">S-P MoE</text>
+  <text x="100" y="291" text-anchor="middle" font-size="9" fill="#5B21B6">pSwiGLU + Expert</text>
+
+  <!-- Arrow -->
+  <line x1="100" y1="295" x2="100" y2="310" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Reverting -->
+  <rect x="45" y="310" width="110" height="34" rx="6" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="100" y="327" text-anchor="middle" font-size="11" fill="#14532D">Reverting</text>
+  <text x="100" y="340" text-anchor="middle" font-size="9" fill="#166534">H → T tokens</text>
+
+  <!-- Arrow -->
+  <line x1="100" y1="344" x2="100" y2="359" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Pre-RMSNorm 2 -->
+  <rect x="45" y="359" width="110" height="34" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="100" y="381" text-anchor="middle" font-size="11" fill="#92400E">Pre-RMSNorm</text>
+
+  <!-- Arrow -->
+  <line x1="100" y1="393" x2="100" y2="408" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- S-P MoE 2 -->
+  <rect x="45" y="408" width="110" height="34" rx="6" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="100" y="425" text-anchor="middle" font-size="11" fill="#4C1D95">S-P MoE</text>
+  <text x="100" y="438" text-anchor="middle" font-size="9" fill="#5B21B6">Shared Expert</text>
+
+  <!-- Residual connection (left side of block) -->
+  <path d="M 35 175 L 18 175 L 18 440 L 35 440" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="8" y="310" text-anchor="middle" font-size="9" fill="#EF4444" transform="rotate(-90,8,310)">残差连接</text>
+  <line x1="35" y1="440" x2="45" y2="440" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+
+  <!-- ===== RIGHT SIDE: Detailed explanation ===== -->
+
+  <!-- Section: Architecture Overview -->
+  <rect x="220" y="55" width="570" height="190" rx="10" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.5"/>
+  <text x="505" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#0369A1">架构设计核心原则</text>
+
+  <!-- Principle 1 -->
+  <rect x="235" y="88" width="165" height="145" rx="8" fill="white" stroke="#DBEAFE" stroke-width="1"/>
+  <text x="317" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#2563EB">架构纯净化</text>
+  <text x="317" y="125" text-anchor="middle" font-size="9" fill="#475569">移除碎片化算子</text>
+  <text x="317" y="139" text-anchor="middle" font-size="9" fill="#475569">仅保留矩阵乘法</text>
+  <rect x="245" y="148" width="144" height="28" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="317" y="162" text-anchor="middle" font-size="10" font-weight="bold" fill="#1D4ED8">MFU: ~60%</text>
+  <text x="317" y="175" text-anchor="middle" font-size="9" fill="#3B82F6">vs &lt;10% (DLRM-MLP)</text>
+  <text x="317" y="195" text-anchor="middle" font-size="9" fill="#475569">Pre-RMSNorm</text>
+  <text x="317" y="208" text-anchor="middle" font-size="9" fill="#475569">pSwiGLU 替换 pFFN</text>
+  <text x="317" y="221" text-anchor="middle" font-size="9" fill="#475569">纯净 Block 堆叠</text>
+
+  <!-- Principle 2 -->
+  <rect x="415" y="88" width="165" height="145" rx="8" fill="white" stroke="#DCFCE7" stroke-width="1"/>
+  <text x="497" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#16A34A">残差对齐化</text>
+  <text x="497" y="125" text-anchor="middle" font-size="9" fill="#475569">Mixing-Reverting 对称</text>
+  <text x="497" y="139" text-anchor="middle" font-size="9" fill="#475569">确保语义一致性</text>
+  <rect x="425" y="148" width="144" height="28" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="497" y="162" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803D">T→H→T 维度恢复</text>
+  <text x="497" y="175" text-anchor="middle" font-size="9" fill="#16A34A">语义严格对齐</text>
+  <text x="497" y="195" text-anchor="middle" font-size="9" fill="#475569">跨层残差连接</text>
+  <text x="497" y="208" text-anchor="middle" font-size="9" fill="#475569">Inter-Layer Residuals</text>
+  <text x="497" y="221" text-anchor="middle" font-size="9" fill="#475569">Rezero 初始化 (0.01)</text>
+
+  <!-- Principle 3 -->
+  <rect x="595" y="88" width="180" height="145" rx="8" fill="white" stroke="#EDE9FE" stroke-width="1"/>
+  <text x="685" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#7C3AED">稀疏高效化</text>
+  <text x="685" y="125" text-anchor="middle" font-size="9" fill="#475569">Per-token MoE</text>
+  <text x="685" y="139" text-anchor="middle" font-size="9" fill="#475569">真正稀疏训练+推理</text>
+  <rect x="605" y="148" width="160" height="28" rx="4" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="685" y="162" text-anchor="middle" font-size="10" font-weight="bold" fill="#6D28D9">2.3B 激活 / 4.6B 总量</text>
+  <text x="685" y="175" text-anchor="middle" font-size="9" fill="#7C3AED">FLOPs 下降近半</text>
+  <text x="685" y="195" text-anchor="middle" font-size="9" fill="#475569">门控值缩放</text>
+  <text x="685" y="208" text-anchor="middle" font-size="9" fill="#475569">共享专家稳定训练</text>
+  <text x="685" y="221" text-anchor="middle" font-size="9" fill="#475569">AUC 增益不损失</text>
+
+  <!-- ===== BOTTOM: Component Details ===== -->
+  <!-- Mixing detail -->
+  <rect x="220" y="260" width="265" height="110" rx="8" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="352" y="280" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803D">Mixing 操作详解</text>
+  <text x="232" y="298" font-size="10" fill="#166534">输入: X [T, D]</text>
+  <text x="232" y="313" font-size="10" fill="#166534">Step 1: Split &amp; Concat → H [H, T·D/H]</text>
+  <text x="232" y="328" font-size="10" fill="#166534">Step 2: pSwiGLU(H) + H → H_next</text>
+  <text x="232" y="343" font-size="10" fill="#166534">Step 3: Reverting → X_revert [T, D]</text>
+  <text x="232" y="358" font-size="10" fill="#166534">输出: pSwiGLU(X_revert) + X （残差对齐）</text>
+
+  <!-- S-P MoE detail -->
+  <rect x="500" y="260" width="290" height="110" rx="8" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5"/>
+  <text x="645" y="280" text-anchor="middle" font-size="12" font-weight="bold" fill="#6D28D9">Sparse Per-token MoE</text>
+  <text x="512" y="298" font-size="10" fill="#4C1D95">策略: 先扩大，后稀疏 (First Enlarge, Then Sparse)</text>
+  <text x="512" y="313" font-size="10" fill="#4C1D95">专家拆分: pSwiGLU → 多细粒度 Expert</text>
+  <text x="512" y="328" font-size="10" fill="#4C1D95">门控缩放: Gate Value Scaling 解决梯度不足</text>
+  <text x="512" y="343" font-size="10" fill="#4C1D95">共享专家: Shared Expert 稳定训练</text>
+  <text x="512" y="358" font-size="10" fill="#4C1D95">效果: AUC +1.14% (同 4.6B 稠密模型)</text>
+
+  <!-- Scale info -->
+  <rect x="220" y="385" width="570" height="50" rx="8" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1.5"/>
+  <text x="505" y="406" text-anchor="middle" font-size="12" font-weight="bold" fill="#C2410C">规模与业务验证</text>
+  <text x="300" y="423" text-anchor="middle" font-size="10" fill="#9A3412">离线: 15B 参数</text>
+  <text x="505" y="423" text-anchor="middle" font-size="10" fill="#9A3412">在线: 7B 参数</text>
+  <text x="700" y="423" text-anchor="middle" font-size="10" fill="#9A3412">三大业务: 电商/广告/直播</text>
+
+  <!-- Output -->
+  <line x1="100" y1="442" x2="100" y2="472" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="30" y="472" width="140" height="34" rx="8" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="100" y="489" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Pooling</text>
+  <text x="100" y="502" text-anchor="middle" font-size="10" fill="#B91C1C">&amp; Prediction</text>
+
+  <!-- Legend -->
+  <rect x="220" y="448" width="570" height="58" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="235" y="465" font-size="10" font-weight="bold" fill="#475569">图例:</text>
+  <rect x="275" y="452" width="16" height="12" rx="2" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="296" y="463" font-size="9" fill="#475569">归一化层</text>
+  <rect x="355" y="452" width="16" height="12" rx="2" fill="#DCFCE7" stroke="#16A34A" stroke-width="1"/>
+  <text x="376" y="463" font-size="9" fill="#475569">Mixing/Reverting</text>
+  <rect x="465" y="452" width="16" height="12" rx="2" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1"/>
+  <text x="486" y="463" font-size="9" fill="#475569">稀疏 MoE</text>
+  <line x1="545" y1="458" x2="570" y2="458" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="575" y="463" font-size="9" fill="#475569">残差连接</text>
+  <line x1="635" y1="458" x2="660" y2="458" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="665" y="463" font-size="9" fill="#475569">数据流</text>
+
+  <text x="235" y="498" font-size="9" fill="#64748B">* TokenMixer-Large 通过 N 个 Block 堆叠，每个 Block 包含: Norm → Mixing → S-P MoE → Reverting → Norm → S-P MoE + 残差</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748B"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#EF4444"/>
+    </marker>
+  </defs>
+</svg>

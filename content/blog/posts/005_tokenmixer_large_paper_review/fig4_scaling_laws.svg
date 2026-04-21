@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 480" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arrowX" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748B"/>
+    </marker>
+    <marker id="arrowY" markerWidth="8" markerHeight="8" refX="3" refY="6" orient="auto">
+      <path d="M0,6 L3,0 L6,6 z" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="820" height="480" fill="#F8FAFC" rx="8"/>
+
+  <!-- Main Title -->
+  <text x="410" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1E293B">三个核心业务场景的 Scaling Law 验证</text>
+  <text x="410" y="46" text-anchor="middle" font-size="10" fill="#64748B">随参数规模增加，各业务 CTCVR AUC 持续提升，未出现明显饱和趋势</text>
+
+  <!-- ===== CHART (a): Feed Ads 15B ===== -->
+  <!-- Chart frame -->
+  <rect x="30" y="60" width="230" height="280" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="145" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#2563EB">(a) Feed Ads</text>
+  <text x="145" y="94" text-anchor="middle" font-size="10" fill="#64748B">最大规模: 15B 参数</text>
+
+  <!-- Y axis -->
+  <line x1="70" y1="105" x2="70" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowY)"/>
+  <!-- X axis -->
+  <line x1="70" y1="310" x2="245" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowX)"/>
+
+  <!-- Y axis label -->
+  <text x="50" y="210" text-anchor="middle" font-size="9" fill="#64748B" transform="rotate(-90,50,210)">AUC 增益 (%)</text>
+  <!-- X axis label -->
+  <text x="157" y="328" text-anchor="middle" font-size="9" fill="#64748B">参数规模</text>
+
+  <!-- X axis ticks -->
+  <text x="85" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">500M</text>
+  <text x="118" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">1B</text>
+  <text x="151" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">4B</text>
+  <text x="184" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">7B</text>
+  <text x="217" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">15B</text>
+
+  <!-- Y axis ticks -->
+  <text x="62" y="308" text-anchor="end" font-size="8" fill="#94A3B8">0</text>
+  <text x="62" y="273" text-anchor="end" font-size="8" fill="#94A3B8">0.5</text>
+  <text x="62" y="238" text-anchor="end" font-size="8" fill="#94A3B8">1.0</text>
+  <text x="62" y="203" text-anchor="end" font-size="8" fill="#94A3B8">1.5</text>
+  <text x="62" y="168" text-anchor="end" font-size="8" fill="#94A3B8">2.0</text>
+  <text x="62" y="133" text-anchor="end" font-size="8" fill="#94A3B8">2.5</text>
+
+  <!-- Grid lines -->
+  <line x1="70" y1="273" x2="235" y2="273" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="70" y1="238" x2="235" y2="238" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="70" y1="203" x2="235" y2="203" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="70" y1="168" x2="235" y2="168" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="70" y1="133" x2="235" y2="133" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- Feed Ads scaling curve: 500M=0.94, 1B=1.2, 4B=1.6, 7B=2.0, 15B=2.4 -->
+  <!-- Y mapping: 0→310, 0.5→273, 1.0→238, 1.5→203, 2.0→168, 2.5→133 -->
+  <!-- 0.94 → 310 - 0.94*70 = 244; 1.2 → 310-84=226; 1.6 → 310-112=198; 2.0 → 168; 2.4 → 310-168=142 -->
+  <polyline points="85,244 118,226 151,198 184,168 217,142"
+    fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Data points -->
+  <circle cx="85" cy="244" r="4" fill="#2563EB"/>
+  <circle cx="118" cy="226" r="4" fill="#2563EB"/>
+  <circle cx="151" cy="198" r="4" fill="#2563EB"/>
+  <circle cx="184" cy="168" r="4" fill="#2563EB"/>
+  <circle cx="217" cy="142" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
+
+  <!-- Annotations -->
+  <text x="88" y="239" font-size="8" fill="#2563EB">+0.94%</text>
+  <text x="218" y="138" font-size="8" fill="#EF4444">15B</text>
+
+  <!-- Trend arrow -->
+  <path d="M 95 240 Q 155 190 215 145" fill="none" stroke="#2563EB" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+
+  <!-- Sparse MoE annotation -->
+  <rect x="130" y="185" width="60" height="22" rx="3" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="160" y="196" text-anchor="middle" font-size="7" fill="#92400E">SP-MoE</text>
+  <text x="160" y="205" text-anchor="middle" font-size="7" fill="#92400E">引入 ↑</text>
+  <line x1="151" y1="198" x2="151" y2="207" stroke="#D97706" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <!-- ===== CHART (b): E-Commerce 7B ===== -->
+  <rect x="295" y="60" width="230" height="280" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="410" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#10B981">(b) E-Commerce</text>
+  <text x="410" y="94" text-anchor="middle" font-size="10" fill="#64748B">最大规模: 7B 参数（在线部署）</text>
+
+  <!-- Y axis -->
+  <line x1="335" y1="105" x2="335" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowY)"/>
+  <line x1="335" y1="310" x2="510" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowX)"/>
+
+  <text x="315" y="210" text-anchor="middle" font-size="9" fill="#64748B" transform="rotate(-90,315,210)">AUC 增益 (%)</text>
+  <text x="422" y="328" text-anchor="middle" font-size="9" fill="#64748B">参数规模</text>
+
+  <!-- X ticks -->
+  <text x="350" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">500M</text>
+  <text x="383" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">1B</text>
+  <text x="416" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">4B</text>
+  <text x="449" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">7B</text>
+
+  <!-- Y ticks -->
+  <text x="327" y="308" text-anchor="end" font-size="8" fill="#94A3B8">0</text>
+  <text x="327" y="273" text-anchor="end" font-size="8" fill="#94A3B8">0.5</text>
+  <text x="327" y="238" text-anchor="end" font-size="8" fill="#94A3B8">1.0</text>
+  <text x="327" y="203" text-anchor="end" font-size="8" fill="#94A3B8">1.5</text>
+  <text x="327" y="168" text-anchor="end" font-size="8" fill="#94A3B8">2.0</text>
+
+  <!-- Grid -->
+  <line x1="335" y1="273" x2="500" y2="273" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="335" y1="238" x2="500" y2="238" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="335" y1="203" x2="500" y2="203" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="335" y1="168" x2="500" y2="168" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- E-Commerce curve: 500M=0.76, 1B=1.1, 4B=1.5, 7B=1.9 (order GMV +1.66%, +2.98%) -->
+  <!-- 0.76→310-53=257; 1.1→310-77=233; 1.5→310-105=205; 1.9→310-133=177 -->
+  <polyline points="350,257 383,233 416,205 449,177"
+    fill="none" stroke="#10B981" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <circle cx="350" cy="257" r="4" fill="#10B981"/>
+  <circle cx="383" cy="233" r="4" fill="#10B981"/>
+  <circle cx="416" cy="205" r="4" fill="#10B981"/>
+  <circle cx="449" cy="177" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
+
+  <text x="353" y="252" font-size="8" fill="#10B981">+0.76%</text>
+  <text x="450" y="173" font-size="8" fill="#EF4444">7B</text>
+
+  <!-- Business result annotation -->
+  <rect x="340" y="130" width="145" height="32" rx="4" fill="#ECFDF5" stroke="#86EFAC" stroke-width="1"/>
+  <text x="412" y="144" text-anchor="middle" font-size="8" font-weight="bold" fill="#065F46">在线效果</text>
+  <text x="412" y="157" text-anchor="middle" font-size="8" fill="#059669">订单 +1.66%　GMV +2.98%</text>
+
+  <!-- ===== CHART (c): Live Streaming 4B ===== -->
+  <rect x="560" y="60" width="230" height="280" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="675" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#EF4444">(c) Live Streaming</text>
+  <text x="675" y="94" text-anchor="middle" font-size="10" fill="#64748B">最大规模: 4B 参数</text>
+
+  <!-- Y axis -->
+  <line x1="600" y1="105" x2="600" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowY)"/>
+  <line x1="600" y1="310" x2="775" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowX)"/>
+
+  <text x="580" y="210" text-anchor="middle" font-size="9" fill="#64748B" transform="rotate(-90,580,210)">AUC 增益 (%)</text>
+  <text x="687" y="328" text-anchor="middle" font-size="9" fill="#64748B">参数规模</text>
+
+  <!-- X ticks -->
+  <text x="620" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">500M</text>
+  <text x="655" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">1B</text>
+  <text x="695" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">2.3B</text>
+  <text x="730" y="322" text-anchor="middle" font-size="8" fill="#94A3B8">4B</text>
+
+  <!-- Y ticks -->
+  <text x="592" y="308" text-anchor="end" font-size="8" fill="#94A3B8">0</text>
+  <text x="592" y="273" text-anchor="end" font-size="8" fill="#94A3B8">0.5</text>
+  <text x="592" y="238" text-anchor="end" font-size="8" fill="#94A3B8">1.0</text>
+  <text x="592" y="203" text-anchor="end" font-size="8" fill="#94A3B8">1.5</text>
+
+  <!-- Grid -->
+  <line x1="600" y1="273" x2="765" y2="273" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="600" y1="238" x2="765" y2="238" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="600" y1="203" x2="765" y2="203" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- Live Streaming curve: 500M=0.6, 1B=0.9, 2.3B=1.14, 4B=1.4 -->
+  <!-- 0.6→310-42=268; 0.9→310-63=247; 1.14→310-80=230; 1.4→310-98=212 -->
+  <polyline points="620,268 655,247 695,230 730,212"
+    fill="none" stroke="#EF4444" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <circle cx="620" cy="268" r="4" fill="#EF4444"/>
+  <circle cx="655" cy="247" r="4" fill="#EF4444"/>
+  <circle cx="695" cy="230" r="4" fill="#EF4444"/>
+  <circle cx="730" cy="212" r="6" fill="#EF4444" stroke="white" stroke-width="1.5"/>
+
+  <text x="623" y="263" font-size="8" fill="#EF4444">+0.6%</text>
+  <text x="731" y="208" font-size="8" fill="#EF4444">4B</text>
+
+  <!-- SP-MoE marker -->
+  <rect x="670" y="216" width="60" height="22" rx="3" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="700" y="227" text-anchor="middle" font-size="7" fill="#92400E">SP-MoE</text>
+  <text x="700" y="236" text-anchor="middle" font-size="7" fill="#92400E">2.3B激活</text>
+  <line x1="695" y1="230" x2="695" y2="238" stroke="#D97706" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <!-- Business result -->
+  <rect x="605" y="130" width="145" height="22" rx="4" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <text x="677" y="145" text-anchor="middle" font-size="8" fill="#991B1B">在线收入增长 +1.4%</text>
+
+  <!-- ===== BOTTOM SUMMARY ===== -->
+  <rect x="30" y="355" width="760" height="105" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="410" y="375" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E293B">Scaling Law 关键结论</text>
+
+  <!-- Col 1 -->
+  <rect x="45" y="383" width="220" height="68" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="155" y="400" text-anchor="middle" font-size="10" font-weight="bold" fill="#1D4ED8">500M → 1B</text>
+  <text x="155" y="415" text-anchor="middle" font-size="9" fill="#1E40AF">纯密集训练阶段</text>
+  <text x="155" y="430" text-anchor="middle" font-size="9" fill="#3B82F6">CTCVR AUC 持续提升</text>
+  <text x="155" y="443" text-anchor="middle" font-size="9" fill="#3B82F6">架构设计有效性验证</text>
+
+  <!-- Col 2 -->
+  <rect x="285" y="383" width="250" height="68" rx="6" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <text x="410" y="400" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803D">1B → 4B (SP-MoE 引入)</text>
+  <text x="410" y="415" text-anchor="middle" font-size="9" fill="#166534">激活参数仅 2.3B，总量 4.6B</text>
+  <text x="410" y="430" text-anchor="middle" font-size="9" fill="#16A34A">FLOPs 下降近半</text>
+  <text x="410" y="443" text-anchor="middle" font-size="9" fill="#16A34A">AUC 增益与稠密模型相当</text>
+
+  <!-- Col 3 -->
+  <rect x="555" y="383" width="220" height="68" rx="6" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1"/>
+  <text x="665" y="400" text-anchor="middle" font-size="10" font-weight="bold" fill="#C2410C">4B → 15B</text>
+  <text x="665" y="415" text-anchor="middle" font-size="9" fill="#9A3412">离线实验持续提升</text>
+  <text x="665" y="430" text-anchor="middle" font-size="9" fill="#EA580C">无明显饱和趋势</text>
+  <text x="665" y="443" text-anchor="middle" font-size="9" fill="#EA580C">为后续扩展提供信心</text>
+</svg>

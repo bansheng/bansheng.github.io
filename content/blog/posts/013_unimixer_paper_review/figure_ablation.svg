@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="900" height="480">
+  <defs>
+    <style>
+      text { font-family: 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif; }
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="480" fill="#F8FAFC"/>
+
+  <!-- Title -->
+  <text x="450" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">UniMixer 消融实验：各组件贡献量化分析</text>
+  <text x="450" y="46" text-anchor="middle" font-size="12" fill="#64748B">UniMixer 6.57M 参数规模 — 逐一移除各设计组件后的 AUC 变化</text>
+
+  <!-- ===== LEFT: Horizontal Bar Chart ===== -->
+  <rect x="30" y="58" width="520" height="360" rx="10" fill="#fff" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="290" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">ΔAUC 损失（移除各组件后）</text>
+
+  <!-- Y axis line -->
+  <line x1="260" y1="95" x2="260" y2="370" stroke="#94A3B8" stroke-width="1.5"/>
+  <!-- X axis -->
+  <line x1="90" y1="370" x2="520" y2="370" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="310" y="392" text-anchor="middle" font-size="11" fill="#475569">性能下降 |ΔAUC| (%)</text>
+
+  <!-- X axis ticks -->
+  <line x1="260" y1="370" x2="260" y2="376" stroke="#94A3B8" stroke-width="1"/>
+  <text x="260" y="388" text-anchor="middle" font-size="10" fill="#64748B">0</text>
+  <line x1="310" y1="370" x2="310" y2="376" stroke="#94A3B8" stroke-width="1"/>
+  <text x="310" y="388" text-anchor="middle" font-size="10" fill="#64748B">0.04</text>
+  <line x1="360" y1="370" x2="360" y2="376" stroke="#94A3B8" stroke-width="1"/>
+  <text x="360" y="388" text-anchor="middle" font-size="10" fill="#64748B">0.08</text>
+  <line x1="410" y1="370" x2="410" y2="376" stroke="#94A3B8" stroke-width="1"/>
+  <text x="410" y="388" text-anchor="middle" font-size="10" fill="#64748B">0.12</text>
+  <line x1="460" y1="370" x2="460" y2="376" stroke="#94A3B8" stroke-width="1"/>
+  <text x="460" y="388" text-anchor="middle" font-size="10" fill="#64748B">0.16</text>
+
+  <!-- Grid lines -->
+  <line x1="310" y1="95" x2="310" y2="370" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="4,3"/>
+  <line x1="360" y1="95" x2="360" y2="370" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="4,3"/>
+  <line x1="410" y1="95" x2="410" y2="370" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="4,3"/>
+  <line x1="460" y1="95" x2="460" y2="370" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="4,3"/>
+
+  <!-- Bars (bars extend rightward from x=260):
+       1px = 0.001% loss. Scale: 50px = 0.1%
+       温度系数: -0.165% → width = 165/1000*500 = 82.5px → ~206px end
+       模型预热: -0.086% → width = 43px → ~303px end... wait, let me recalculate
+       Scale: 50px per 0.04% → 1% = 1250px too much
+       Better: 250px = 0.20%, so 1px = 0.0008%
+       0.165% → 206px; 0.086% → 108px; 0.057% → 71px; 0.044% → 55px
+  -->
+
+  <!-- Row 1: 温度系数 (most impactful: -0.165%) -->
+  <text x="254" y="128" text-anchor="end" font-size="12" fill="#1E293B">温度系数 τ</text>
+  <rect x="260" y="108" width="206" height="32" rx="4" fill="#EF4444"/>
+  <rect x="260" y="108" width="206" height="32" rx="4" fill="url(#bar1-grad)" opacity="0.15"/>
+  <text x="472" y="129" font-size="11" font-weight="bold" fill="#EF4444">-0.165%</text>
+  <!-- Impact badge -->
+  <rect x="474" y="110" width="48" height="16" rx="4" fill="#FEE2E2"/>
+  <text x="498" y="121" text-anchor="middle" font-size="9" fill="#EF4444">最关键</text>
+
+  <!-- Row 2: 模型预热 (-0.086%) -->
+  <text x="254" y="178" text-anchor="end" font-size="12" fill="#1E293B">模型预热</text>
+  <rect x="260" y="158" width="108" height="32" rx="4" fill="#F97316"/>
+  <text x="374" y="179" font-size="11" font-weight="bold" fill="#F97316">-0.086%</text>
+  <rect x="376" y="160" width="36" height="16" rx="4" fill="#FED7AA"/>
+  <text x="394" y="171" text-anchor="middle" font-size="9" fill="#C2410C">显著</text>
+
+  <!-- Row 3: 对称性约束 (-0.057%) -->
+  <text x="254" y="228" text-anchor="end" font-size="12" fill="#1E293B">对称性约束</text>
+  <rect x="260" y="208" width="71" height="32" rx="4" fill="#F59E0B"/>
+  <text x="337" y="229" font-size="11" font-weight="bold" fill="#92400E">-0.057%</text>
+  <rect x="340" y="210" width="36" height="16" rx="4" fill="#FEF3C7"/>
+  <text x="358" y="221" text-anchor="middle" font-size="9" fill="#92400E">中等</text>
+
+  <!-- Row 4: 分块特异权重 (-0.044%) -->
+  <text x="254" y="278" text-anchor="end" font-size="12" fill="#1E293B">分块特异权重</text>
+  <rect x="260" y="258" width="55" height="32" rx="4" fill="#10B981"/>
+  <text x="321" y="279" font-size="11" font-weight="bold" fill="#10B981">-0.044%</text>
+  <rect x="326" y="260" width="36" height="16" rx="4" fill="#D1FAE5"/>
+  <text x="344" y="271" text-anchor="middle" font-size="9" fill="#065F46">轻微</text>
+
+  <!-- Baseline reference line (complete model) -->
+  <line x1="260" y1="315" x2="260" y2="355" stroke="#2563EB" stroke-width="2"/>
+  <text x="254" y="330" text-anchor="end" font-size="12" fill="#2563EB">完整模型</text>
+  <text x="270" y="330" font-size="11" fill="#2563EB">AUC = 0.7485</text>
+  <rect x="260" y="338" width="120" height="8" rx="4" fill="#DBEAFE"/>
+  <text x="386" y="346" font-size="10" fill="#2563EB">基准线</text>
+
+  <!-- ===== RIGHT: Detailed Table + Insights ===== -->
+  <rect x="565" y="58" width="310" height="360" rx="10" fill="#fff" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="720" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">详细实验数据</text>
+
+  <!-- Table header -->
+  <rect x="575" y="88" width="290" height="26" rx="4" fill="#1E293B"/>
+  <text x="660" y="104" text-anchor="middle" font-size="11" fill="#fff">设置</text>
+  <text x="755" y="104" text-anchor="middle" font-size="11" fill="#fff">AUC</text>
+  <text x="820" y="104" text-anchor="middle" font-size="11" fill="#fff">ΔAUC</text>
+
+  <!-- Table rows -->
+  <!-- Row 1: Complete model (highlight) -->
+  <rect x="575" y="114" width="290" height="28" rx="0" fill="#EFF6FF"/>
+  <text x="660" y="132" text-anchor="middle" font-size="11" font-weight="bold" fill="#1D4ED8">完整 UniMixer</text>
+  <text x="755" y="132" text-anchor="middle" font-size="11" fill="#1D4ED8">0.7485</text>
+  <text x="820" y="132" text-anchor="middle" font-size="11" fill="#1D4ED8">—</text>
+
+  <!-- Row 2 -->
+  <rect x="575" y="142" width="290" height="28" rx="0" fill="#fff"/>
+  <text x="660" y="160" text-anchor="middle" font-size="11" fill="#475569">去除温度系数</text>
+  <text x="755" y="160" text-anchor="middle" font-size="11" fill="#475569">0.7468</text>
+  <text x="820" y="160" text-anchor="middle" font-size="11" font-weight="bold" fill="#EF4444">-0.165%</text>
+
+  <!-- Row 3 -->
+  <rect x="575" y="170" width="290" height="28" rx="0" fill="#F8FAFC"/>
+  <text x="660" y="188" text-anchor="middle" font-size="11" fill="#475569">去除模型预热</text>
+  <text x="755" y="188" text-anchor="middle" font-size="11" fill="#475569">0.7476</text>
+  <text x="820" y="188" text-anchor="middle" font-size="11" font-weight="bold" fill="#F97316">-0.086%</text>
+
+  <!-- Row 4 -->
+  <rect x="575" y="198" width="290" height="28" rx="0" fill="#fff"/>
+  <text x="660" y="216" text-anchor="middle" font-size="11" fill="#475569">去除对称性约束</text>
+  <text x="755" y="216" text-anchor="middle" font-size="11" fill="#475569">0.7479</text>
+  <text x="820" y="216" text-anchor="middle" font-size="11" fill="#92400E">-0.057%</text>
+
+  <!-- Row 5 -->
+  <rect x="575" y="226" width="290" height="28" rx="0" fill="#F8FAFC"/>
+  <text x="660" y="244" text-anchor="middle" font-size="11" fill="#475569">去除分块特异权重</text>
+  <text x="755" y="244" text-anchor="middle" font-size="11" fill="#475569">0.7480</text>
+  <text x="820" y="244" text-anchor="middle" font-size="11" fill="#10B981">-0.044%</text>
+
+  <!-- Row border bottom -->
+  <line x1="575" y1="254" x2="865" y2="254" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Insight boxes -->
+  <rect x="575" y="262" width="290" height="72" rx="6" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <text x="720" y="280" text-anchor="middle" font-size="11" font-weight="bold" fill="#EF4444">关键洞察 #1</text>
+  <text x="720" y="296" text-anchor="middle" font-size="10" fill="#475569">温度系数是最关键组件 (-0.165%)</text>
+  <text x="720" y="312" text-anchor="middle" font-size="10" fill="#475569">"先探索后收敛"的退火策略</text>
+  <text x="720" y="326" text-anchor="middle" font-size="10" fill="#475569">对找到最优混合模式至关重要</text>
+
+  <rect x="575" y="342" width="290" height="62" rx="6" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1"/>
+  <text x="720" y="360" text-anchor="middle" font-size="11" font-weight="bold" fill="#C2410C">关键洞察 #2</text>
+  <text x="720" y="376" text-anchor="middle" font-size="10" fill="#475569">模型预热同样重要 (-0.086%)</text>
+  <text x="720" y="392" text-anchor="middle" font-size="10" fill="#475569">高温初始化避免局部最优</text>
+
+  <!-- ===== Bottom conclusion ===== -->
+  <rect x="30" y="428" width="840" height="46" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="450" y="447" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803D">设计哲学总结</text>
+  <text x="450" y="465" text-anchor="middle" font-size="11" fill="#1E293B">每个组件均为正向贡献；温度退火（-0.165%）+ 预热策略（-0.086%）合计贡献 UniMixer 总增益的约 65%</text>
+</svg>

@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748B"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#EF4444"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#10B981"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="480" fill="#F8FAFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-size="15" font-weight="bold" fill="#1E293B">Internal Residual 与 Auxiliary Loss 机制</text>
+
+  <!-- Divider -->
+  <line x1="400" y1="45" x2="400" y2="460" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+  <!-- ===== LEFT PANEL: Internal Residual ===== -->
+  <text x="200" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#2563EB">Internal Residual（跨层残差）</text>
+  <text x="200" y="76" text-anchor="middle" font-size="10" fill="#64748B">每隔 2-3 层引入跨层残差连接</text>
+
+  <!-- Block 1 -->
+  <rect x="140" y="90" width="120" height="38" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="200" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Block 1</text>
+  <text x="200" y="122" text-anchor="middle" font-size="9" fill="#3B82F6">Norm → Mixing → MoE → Revert</text>
+
+  <!-- Arrow down -->
+  <line x1="200" y1="128" x2="200" y2="148" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Block 2 -->
+  <rect x="140" y="148" width="120" height="38" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="200" y="166" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Block 2</text>
+  <text x="200" y="180" text-anchor="middle" font-size="9" fill="#3B82F6">Norm → Mixing → MoE → Revert</text>
+
+  <!-- Arrow down -->
+  <line x1="200" y1="186" x2="200" y2="206" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Add node (+ symbol) at junction -->
+  <circle cx="200" cy="218" r="14" fill="white" stroke="#EF4444" stroke-width="2"/>
+  <text x="200" y="223" text-anchor="middle" font-size="16" font-weight="bold" fill="#EF4444">+</text>
+
+  <!-- Cross-layer residual line from Block 1 output -->
+  <path d="M 260 109 L 290 109 L 290 218 L 214 218" fill="none" stroke="#EF4444" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowRed)"/>
+  <text x="292" y="165" font-size="9" fill="#EF4444" text-anchor="start">跨层残差</text>
+  <text x="292" y="178" font-size="9" fill="#EF4444" text-anchor="start">Inter-Layer</text>
+
+  <!-- Arrow down from add node -->
+  <line x1="200" y1="232" x2="200" y2="252" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Block 3 -->
+  <rect x="140" y="252" width="120" height="38" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="200" y="270" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Block 3</text>
+  <text x="200" y="284" text-anchor="middle" font-size="9" fill="#3B82F6">Norm → Mixing → MoE → Revert</text>
+
+  <!-- Arrow down -->
+  <line x1="200" y1="290" x2="200" y2="310" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Block 4 -->
+  <rect x="140" y="310" width="120" height="38" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="200" y="328" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">Block 4</text>
+  <text x="200" y="342" text-anchor="middle" font-size="9" fill="#3B82F6">Norm → Mixing → MoE → Revert</text>
+
+  <!-- Arrow down -->
+  <line x1="200" y1="348" x2="200" y2="368" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Add node 2 -->
+  <circle cx="200" cy="380" r="14" fill="white" stroke="#EF4444" stroke-width="2"/>
+  <text x="200" y="385" text-anchor="middle" font-size="16" font-weight="bold" fill="#EF4444">+</text>
+
+  <!-- Cross-layer residual from Block 3 output -->
+  <path d="M 260 271 L 290 271 L 290 380 L 214 380" fill="none" stroke="#EF4444" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowRed)"/>
+
+  <!-- Arrow down from add node 2 -->
+  <line x1="200" y1="394" x2="200" y2="414" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Output -->
+  <rect x="140" y="414" width="120" height="32" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="200" y="432" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Output</text>
+  <text x="200" y="444" text-anchor="middle" font-size="9" fill="#B91C1C">Pooling &amp; Prediction</text>
+
+  <!-- Rezero note -->
+  <rect x="50" y="455" width="300" height="18" rx="4" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1"/>
+  <text x="200" y="468" text-anchor="middle" font-size="9" fill="#92400E">Rezero 初始化: 方差 0.01，训练初期接近恒等映射</text>
+
+  <!-- ===== RIGHT PANEL: Auxiliary Loss ===== -->
+  <text x="600" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#10B981">Auxiliary Loss（辅助损失）</text>
+  <text x="600" y="76" text-anchor="middle" font-size="10" fill="#64748B">中间层输出提供额外监督信号</text>
+
+  <!-- Input -->
+  <rect x="540" y="90" width="120" height="32" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="600" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#065F46">浅层 Block 输出</text>
+
+  <!-- Arrow down -->
+  <line x1="600" y1="122" x2="600" y2="142" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Mid layers group -->
+  <rect x="520" y="142" width="160" height="80" rx="8" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="600" y="162" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803D">中间层 (Blocks 3-6)</text>
+  <rect x="540" y="170" width="120" height="24" rx="4" fill="#DCFCE7" stroke="#4ADE80" stroke-width="1"/>
+  <text x="600" y="186" text-anchor="middle" font-size="10" fill="#166534">Block 3 / Block 4</text>
+  <rect x="540" y="196" width="120" height="24" rx="4" fill="#DCFCE7" stroke="#4ADE80" stroke-width="1"/>
+  <text x="600" y="212" text-anchor="middle" font-size="10" fill="#166534">Block 5 / Block 6</text>
+
+  <!-- Branch for aux loss -->
+  <line x1="600" y1="222" x2="600" y2="250" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Branch point -->
+  <circle cx="600" cy="250" r="5" fill="#10B981"/>
+
+  <!-- Main branch continues down -->
+  <line x1="600" y1="255" x2="600" y2="290" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Aux loss branch -->
+  <path d="M 600 250 L 720 250 L 720 300" fill="none" stroke="#10B981" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowGreen)"/>
+
+  <!-- Aux loss box -->
+  <rect x="670" y="300" width="100" height="50" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="720" y="320" text-anchor="middle" font-size="10" font-weight="bold" fill="#065F46">Aux Loss</text>
+  <text x="720" y="334" text-anchor="middle" font-size="9" fill="#059669">辅助监督</text>
+  <text x="720" y="347" text-anchor="middle" font-size="9" fill="#059669">信号</text>
+
+  <!-- Deep layers -->
+  <rect x="520" y="290" width="160" height="80" rx="8" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="600" y="310" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803D">深层 (Blocks 7-N)</text>
+  <rect x="540" y="318" width="120" height="24" rx="4" fill="#DCFCE7" stroke="#4ADE80" stroke-width="1"/>
+  <text x="600" y="334" text-anchor="middle" font-size="10" fill="#166534">Block 7 / Block 8</text>
+  <rect x="540" y="344" width="120" height="24" rx="4" fill="#DCFCE7" stroke="#4ADE80" stroke-width="1"/>
+  <text x="600" y="360" text-anchor="middle" font-size="10" fill="#166534">Block N-1 / Block N</text>
+
+  <!-- Arrow down -->
+  <line x1="600" y1="370" x2="600" y2="395" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Combine node -->
+  <circle cx="600" cy="407" r="14" fill="white" stroke="#10B981" stroke-width="2"/>
+  <text x="600" y="412" text-anchor="middle" font-size="14" font-weight="bold" fill="#10B981">Σ</text>
+
+  <!-- Aux loss joins main loss -->
+  <path d="M 720 350 L 720 407 L 614 407" fill="none" stroke="#10B981" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowGreen)"/>
+  <text x="730" y="390" font-size="9" fill="#10B981" text-anchor="start">梯度回传</text>
+
+  <!-- Arrow down from combine -->
+  <line x1="600" y1="421" x2="600" y2="441" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Final Loss -->
+  <rect x="540" y="441" width="120" height="32" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="600" y="459" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Final Loss</text>
+  <text x="600" y="471" text-anchor="middle" font-size="9" fill="#B91C1C">主损失 + 辅助损失</text>
+
+  <!-- Effect note -->
+  <rect x="420" y="455" width="360" height="18" rx="4" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="600" y="468" text-anchor="middle" font-size="9" fill="#065F46">缓解深层梯度消失，确保中间层特征有效学习</text>
+</svg>

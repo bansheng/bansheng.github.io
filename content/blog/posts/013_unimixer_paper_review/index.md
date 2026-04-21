@@ -63,7 +63,7 @@ $$\text{UniMixing}(X) = \text{reshape}\left(G(X, W_G) \cdot [\text{local pattern
 
 在这个框架下，注意力机制、TokenMixer 和因式分解机只是**全局权重 $G$ 和局部模式的不同实例化**。这一发现不仅具有理论美感，更带来了实际的工程价值——既然三者本质相同，我们就能设计出集三者优势于一体的新架构。
 
-![Figure 2: UniMixer 整体架构——左侧展示 UniMixing 模块，中间为 UniMixer Block（含 Pertoken SwiGLU + UniMixing + SiameseNorm），右侧为 UniMixing-Lite 的低秩近似结构](figure_architecture.jpg)
+![Figure 2: UniMixer 整体架构——左侧展示 UniMixing 模块，中间为 UniMixer Block（含 Pertoken SwiGLU + UniMixing + SiameseNorm），右侧为 UniMixing-Lite 的低秩近似结构](figure_architecture.svg)
 
 ---
 
@@ -110,7 +110,7 @@ $$\text{TokenMixer}(X) = \text{reshape}\left(W^{\text{perm}} \cdot \text{flatten
 2. 排列矩阵是**稀疏的**——大部分元素为 0
 3. 当 $T = H$ 时，排列矩阵是**对称的**
 
-![Figure 3: (a) 不同方法的全局混合权重可视化——注意力机制呈现尖锐稀疏的对角模式，TokenMixer 的等价排列矩阵，以及 UniMixer 学到的均匀分散权重；(b) 基于规则的 TokenMixer 等价参数化示意](figure_mixing_weights.jpg)
+![Figure 3: (a) 不同方法的全局混合权重可视化——注意力机制呈现尖锐稀疏的对角模式，TokenMixer 的等价排列矩阵，以及 UniMixer 学到的均匀分散权重；(b) 基于规则的 TokenMixer 等价参数化示意](figure_mixing_weights.svg)
 
 #### 4.1.2 从排列矩阵到可学习权重
 
@@ -286,7 +286,7 @@ UniMixer 论文的重要贡献之一，就是**在统一框架下，为推荐系
 
 #### 4.6.2 幂律关系
 
-![Figure 4: UniMixer-2B/UniMixer-Lite-2B 与 RankMixer 的缩放定律对比——左图为 ΔAUCvs. 参数量，右图为 ΔAUCvs. FLOPs，x 轴均为对数坐标。UniMixer-Lite 的幂律曲线斜率最陡，缩放效率最高](figure_scaling_laws.jpg)
+![Figure 4: UniMixer-2B/UniMixer-Lite-2B 与 RankMixer 的缩放定律对比——左图为 ΔAUCvs. 参数量，右图为 ΔAUCvs. FLOPs，x 轴均为对数坐标。UniMixer-Lite 的幂律曲线斜率最陡，缩放效率最高](figure_scaling_laws.svg)
 
 论文验证了 AUC 增益与参数量之间的幂律关系：
 
@@ -326,7 +326,7 @@ UniMixer-Lite 的缩放指数比 RankMixer 高出 **22.3%**，这意味着在相
 
 论文提供了详尽的消融实验，量化了每个设计选择的贡献：
 
-![Table 3: UniMixer 6.57M 各组件消融实验结果——温度系数和模型预热对整体性能影响最显著](figure_ablation.jpg)
+![Table 3: UniMixer 6.57M 各组件消融实验结果——温度系数和模型预热对整体性能影响最显著](figure_ablation.svg)
 
 | 设置 | AUC | ΔAUC | 影响程度 |
 |------|-----|------|---------|

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10B981"/>
+    </marker>
+    <style>
+      text { font-family: 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="#F8FAFC"/>
+
+  <!-- Title -->
+  <text x="450" y="32" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">UniMixer 整体架构</text>
+
+  <!-- ===== COLUMN 1: UniMixing Module ===== -->
+  <rect x="20" y="50" width="260" height="450" rx="12" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
+  <text x="150" y="74" text-anchor="middle" font-size="14" font-weight="bold" fill="#1D4ED8">UniMixing 模块</text>
+
+  <!-- Input X -->
+  <rect x="60" y="90" width="180" height="36" rx="8" fill="#2563EB"/>
+  <text x="150" y="113" text-anchor="middle" font-size="13" fill="#fff">输入 X ∈ ℝ^(T×D)</text>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="126" x2="150" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Kronecker Decomp -->
+  <rect x="50" y="150" width="200" height="44" rx="8" fill="#fff" stroke="#BFDBFE" stroke-width="1.5"/>
+  <text x="150" y="168" text-anchor="middle" font-size="12" fill="#1E293B">Kronecker 积分解</text>
+  <text x="150" y="185" text-anchor="middle" font-size="11" fill="#64748B">W^perm = G ⊗ I</text>
+
+  <!-- Fork arrows -->
+  <line x1="90" y1="194" x2="90" y2="216" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="210" y1="194" x2="210" y2="216" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="90" y1="194" x2="210" y2="194" stroke="#475569" stroke-width="1.5"/>
+
+  <!-- Global Weight WG -->
+  <rect x="35" y="218" width="120" height="52" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="95" y="239" text-anchor="middle" font-size="12" fill="#1E293B">全局权重 W_G</text>
+  <text x="95" y="256" text-anchor="middle" font-size="11" fill="#2563EB">可学习参数</text>
+
+  <!-- Local Patterns WB -->
+  <rect x="175" y="218" width="120" height="52" rx="8" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="235" y="239" text-anchor="middle" font-size="12" fill="#1E293B">局部模式 W_B</text>
+  <text x="235" y="256" text-anchor="middle" font-size="11" fill="#10B981">块权重矩阵</text>
+
+  <!-- Arrows to Sinkhorn -->
+  <line x1="95" y1="270" x2="95" y2="292" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="235" y1="270" x2="235" y2="292" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Sinkhorn-Knopp -->
+  <rect x="35" y="294" width="120" height="44" rx="8" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5"/>
+  <text x="95" y="312" text-anchor="middle" font-size="11" fill="#92400E">Sinkhorn-Knopp</text>
+  <text x="95" y="327" text-anchor="middle" font-size="11" fill="#92400E">双随机约束</text>
+
+  <rect x="175" y="294" width="120" height="44" rx="8" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5"/>
+  <text x="235" y="312" text-anchor="middle" font-size="11" fill="#92400E">Sinkhorn-Knopp</text>
+  <text x="235" y="327" text-anchor="middle" font-size="11" fill="#92400E">双随机约束</text>
+
+  <!-- Merge arrows -->
+  <line x1="95" y1="338" x2="95" y2="360" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="235" y1="338" x2="235" y2="360" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="95" y1="360" x2="235" y2="360" stroke="#475569" stroke-width="1.5"/>
+  <line x1="150" y1="360" x2="150" y2="378" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- UniMixing Output -->
+  <rect x="55" y="380" width="190" height="44" rx="8" fill="#2563EB"/>
+  <text x="150" y="399" text-anchor="middle" font-size="12" fill="#fff">UniMixing 交互</text>
+  <text x="150" y="415" text-anchor="middle" font-size="11" fill="#BFDBFE">reshape(G·[local], 1, L)</text>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="424" x2="150" y2="446" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Output -->
+  <rect x="60" y="448" width="180" height="36" rx="8" fill="#1E293B"/>
+  <text x="150" y="471" text-anchor="middle" font-size="13" fill="#fff">输出特征表示</text>
+
+  <!-- Temperature Annealing label -->
+  <text x="150" y="505" text-anchor="middle" font-size="10" fill="#64748B">温度退火: τ: 1.0 → 0.05</text>
+
+  <!-- ===== COLUMN 2: UniMixer Block ===== -->
+  <rect x="310" y="50" width="260" height="450" rx="12" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="440" y="74" text-anchor="middle" font-size="14" font-weight="bold" fill="#15803D">UniMixer Block</text>
+
+  <!-- Input -->
+  <rect x="350" y="90" width="180" height="36" rx="8" fill="#10B981"/>
+  <text x="440" y="113" text-anchor="middle" font-size="13" fill="#fff">输入 X̄_ℓ, Ȳ_ℓ</text>
+
+  <!-- Arrow -->
+  <line x1="440" y1="126" x2="440" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- SiameseNorm -->
+  <rect x="345" y="150" width="190" height="52" rx="8" fill="#fff" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="440" y="170" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803D">SiameseNorm</text>
+  <text x="440" y="188" text-anchor="middle" font-size="11" fill="#64748B">双流 RMSNorm 耦合</text>
+
+  <!-- Arrow -->
+  <line x1="440" y1="202" x2="440" y2="224" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- UniMixing block -->
+  <rect x="345" y="226" width="190" height="44" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="440" y="249" text-anchor="middle" font-size="12" fill="#1D4ED8">UniMixing</text>
+  <text x="440" y="264" text-anchor="middle" font-size="11" fill="#64748B">特征交互核心</text>
+
+  <!-- Arrow -->
+  <line x1="440" y1="270" x2="440" y2="292" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Pertoken SwiGLU -->
+  <rect x="345" y="294" width="190" height="52" rx="8" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5"/>
+  <text x="440" y="315" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">Pertoken SwiGLU</text>
+  <text x="440" y="333" text-anchor="middle" font-size="10" fill="#64748B">每 Token 独立 FFN 参数</text>
+
+  <!-- Arrow -->
+  <line x1="440" y1="346" x2="440" y2="368" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Stack indicator -->
+  <rect x="345" y="370" width="190" height="44" rx="8" fill="#fff" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="440" y="390" text-anchor="middle" font-size="12" fill="#15803D">× M 层堆叠</text>
+  <text x="440" y="407" text-anchor="middle" font-size="11" fill="#64748B">Sparse-Pertoken MoE</text>
+
+  <!-- Arrow -->
+  <line x1="440" y1="414" x2="440" y2="436" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Output -->
+  <rect x="350" y="438" width="180" height="36" rx="8" fill="#1E293B"/>
+  <text x="440" y="461" text-anchor="middle" font-size="13" fill="#fff">预测输出</text>
+
+  <!-- Block annotation -->
+  <text x="440" y="495" text-anchor="middle" font-size="10" fill="#64748B">Pre/Post Norm 双流融合</text>
+  <text x="440" y="508" text-anchor="middle" font-size="10" fill="#64748B">X̄_{ℓ+1} = RMSNorm(X̄_ℓ + O_ℓ)</text>
+
+  <!-- ===== COLUMN 3: UniMixing-Lite ===== -->
+  <rect x="600" y="50" width="280" height="450" rx="12" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1.5"/>
+  <text x="740" y="74" text-anchor="middle" font-size="14" font-weight="bold" fill="#C2410C">UniMixing-Lite</text>
+  <text x="740" y="90" text-anchor="middle" font-size="11" fill="#EA580C">低秩近似 + 基矩阵组合</text>
+
+  <!-- Full WG label -->
+  <rect x="630" y="100" width="220" height="36" rx="8" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1.5"/>
+  <text x="740" y="123" text-anchor="middle" font-size="12" fill="#92400E">完整 UniMixer 参数</text>
+
+  <!-- Arrow with annotation -->
+  <line x1="740" y1="136" x2="740" y2="158" stroke="#C2410C" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="755" y="150" font-size="10" fill="#C2410C">压缩</text>
+
+  <!-- Low-rank WG -->
+  <rect x="620" y="160" width="240" height="72" rx="8" fill="#fff" stroke="#FED7AA" stroke-width="1.5"/>
+  <text x="740" y="180" text-anchor="middle" font-size="12" font-weight="bold" fill="#C2410C">低秩近似全局权重</text>
+  <text x="740" y="198" text-anchor="middle" font-size="11" fill="#1E293B">W_G ≈ W_r = A_G B_G</text>
+  <text x="740" y="216" text-anchor="middle" font-size="10" fill="#64748B">A_G ∈ ℝ^((L/B)×r), r ≪ L/B</text>
+
+  <!-- Arrow -->
+  <line x1="740" y1="232" x2="740" y2="254" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Basis Composition -->
+  <rect x="620" y="256" width="240" height="88" rx="8" fill="#fff" stroke="#FED7AA" stroke-width="1.5"/>
+  <text x="740" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#C2410C">基矩阵组合</text>
+  <text x="740" y="294" text-anchor="middle" font-size="11" fill="#1E293B">W_B^(i) = Σ ω_ℓ^(i) Z_ℓ</text>
+  <text x="740" y="311" text-anchor="middle" font-size="10" fill="#64748B">共享基矩阵 {Z_ℓ}, ℓ=1..b</text>
+  <text x="740" y="328" text-anchor="middle" font-size="10" fill="#64748B">参数: O(L/B·B²) → O(b·B²)</text>
+
+  <!-- Arrow -->
+  <line x1="740" y1="344" x2="740" y2="366" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Comparison table -->
+  <rect x="620" y="368" width="240" height="100" rx="8" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1.5"/>
+  <text x="740" y="385" text-anchor="middle" font-size="11" font-weight="bold" fill="#C2410C">参数效率对比</text>
+  <!-- Table rows -->
+  <line x1="630" y1="392" x2="850" y2="392" stroke="#FED7AA" stroke-width="1"/>
+  <text x="680" y="406" text-anchor="middle" font-size="10" fill="#64748B">模型</text>
+  <text x="780" y="406" text-anchor="middle" font-size="10" fill="#64748B">参数</text>
+  <text x="840" y="406" text-anchor="middle" font-size="10" fill="#64748B">ΔAUC</text>
+  <line x1="630" y1="410" x2="850" y2="410" stroke="#FED7AA" stroke-width="1"/>
+  <text x="680" y="424" text-anchor="middle" font-size="10" fill="#64748B">RankMixer</text>
+  <text x="780" y="424" text-anchor="middle" font-size="10" fill="#64748B">135.5M</text>
+  <text x="840" y="424" text-anchor="middle" font-size="10" fill="#64748B">+0.475%</text>
+  <line x1="630" y1="428" x2="850" y2="428" stroke="#FED7AA" stroke-width="1"/>
+  <text x="680" y="442" text-anchor="middle" font-size="10" fill="#C2410C">Lite-4B</text>
+  <text x="780" y="442" text-anchor="middle" font-size="10" fill="#C2410C">84.5M</text>
+  <text x="840" y="442" text-anchor="middle" font-size="10" fill="#C2410C">+0.814%</text>
+  <line x1="630" y1="446" x2="850" y2="446" stroke="#FED7AA" stroke-width="1"/>
+  <text x="680" y="460" text-anchor="middle" font-size="10" fill="#64748B">Scaling α</text>
+  <text x="780" y="460" text-anchor="middle" font-size="10" fill="#64748B">0.116</text>
+  <text x="840" y="460" text-anchor="middle" font-size="10" fill="#10B981">0.142</text>
+
+  <text x="740" y="490" text-anchor="middle" font-size="10" fill="#64748B">84.5M 参数超越 135.5M 基线</text>
+
+  <!-- Cross-column arrows (between col1 and col2) -->
+  <line x1="280" y1="262" x2="308" y2="262" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-blue)" stroke-dasharray="5,3"/>
+
+  <!-- Cross-column arrows (between col2 and col3) -->
+  <line x1="570" y1="262" x2="598" y2="262" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-green)" stroke-dasharray="5,3"/>
+
+  <!-- Legend -->
+  <rect x="20" y="506" width="860" height="12" rx="4" fill="none"/>
+  <rect x="20" y="507" width="12" height="8" rx="2" fill="#2563EB"/>
+  <text x="36" y="516" font-size="10" fill="#64748B">UniMixing 核心</text>
+  <rect x="130" y="507" width="12" height="8" rx="2" fill="#10B981"/>
+  <text x="146" y="516" font-size="10" fill="#64748B">UniMixer Block</text>
+  <rect x="250" y="507" width="12" height="8" rx="2" fill="#C2410C"/>
+  <text x="266" y="516" font-size="10" fill="#64748B">Lite 轻量化</text>
+</svg>

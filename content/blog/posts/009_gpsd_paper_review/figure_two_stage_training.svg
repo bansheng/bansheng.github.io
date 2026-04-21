@@ -1,0 +1,123 @@
+<svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10B981"/>
+    </marker>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6B7280"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="520" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" font-size="17" font-weight="bold" fill="#1E293B">GPSD 两阶段训练框架</text>
+  <text x="400" y="58" text-anchor="middle" font-size="12" fill="#64748B">Generative Pretraining for Scalable Discriminative Recommendation</text>
+
+  <!-- ═══════════════════════ STAGE 1 BOX ═══════════════════════ -->
+  <rect x="30" y="80" width="340" height="280" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <rect x="30" y="80" width="340" height="36" rx="12" fill="#2563EB"/>
+  <rect x="30" y="104" width="340" height="12" fill="#2563EB"/>
+  <text x="200" y="103" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFFFFF">阶段一：生成式预训练</text>
+  <text x="200" y="120" text-anchor="middle" font-size="11" fill="#BFDBFE">Generative Pretraining</text>
+
+  <!-- Input sequence box -->
+  <rect x="55" y="138" width="290" height="48" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="200" y="157" text-anchor="middle" font-size="12" font-weight="bold" fill="#1D4ED8">用户行为序列输入</text>
+  <text x="200" y="174" text-anchor="middle" font-size="11" fill="#3B82F6">[i₁, i₂, ..., i_{t-1}]  →  预测 i_t</text>
+
+  <!-- Arrow down -->
+  <line x1="200" y1="186" x2="200" y2="204" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Transformer Decoder box -->
+  <rect x="55" y="204" width="290" height="52" rx="8" fill="#2563EB" stroke="#1D4ED8" stroke-width="1.5"/>
+  <text x="200" y="225" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Transformer Decoder</text>
+  <text x="200" y="245" text-anchor="middle" font-size="11" fill="#BFDBFE">因果注意力掩码 · 可学习位置编码</text>
+
+  <!-- Arrow down -->
+  <line x1="200" y1="256" x2="200" y2="274" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Sampled Softmax box -->
+  <rect x="55" y="274" width="290" height="48" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="200" y="294" text-anchor="middle" font-size="12" font-weight="bold" fill="#1D4ED8">Sampled Softmax</text>
+  <text x="200" y="311" text-anchor="middle" font-size="11" fill="#3B82F6">广泛随机负采样 · 全量 Item Embedding 更新</text>
+
+  <!-- Key note -->
+  <rect x="55" y="336" width="290" height="12" rx="4" fill="none"/>
+  <text x="200" y="346" text-anchor="middle" font-size="11" fill="#1D4ED8">训练目标：Next Item Prediction（自回归）</text>
+
+  <!-- ═══════════════════════ FREEZE BRIDGE ═══════════════════════ -->
+  <!-- Arrow right from Stage 1 -->
+  <line x1="370" y1="220" x2="428" y2="220" stroke="#6B7280" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrow-gray)"/>
+
+  <!-- Freeze label box -->
+  <rect x="375" y="240" width="50" height="34" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="400" y="256" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400E">冻结</text>
+  <text x="400" y="268" text-anchor="middle" font-size="9" fill="#92400E">Sparse</text>
+
+  <!-- Freeze description -->
+  <text x="400" y="300" text-anchor="middle" font-size="10" fill="#78350F">Embedding 参数</text>
+  <text x="400" y="313" text-anchor="middle" font-size="10" fill="#78350F">迁移并冻结</text>
+
+  <!-- ═══════════════════════ STAGE 2 BOX ═══════════════════════ -->
+  <rect x="430" y="80" width="340" height="280" rx="12" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+  <rect x="430" y="80" width="340" height="36" rx="12" fill="#10B981"/>
+  <rect x="430" y="104" width="340" height="12" fill="#10B981"/>
+  <text x="600" y="103" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFFFFF">阶段二：判别式微调</text>
+  <text x="600" y="120" text-anchor="middle" font-size="11" fill="#A7F3D0">Discriminative Fine-tuning</text>
+
+  <!-- Frozen embedding input -->
+  <rect x="455" y="138" width="290" height="48" rx="8" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="600" y="157" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">冻结的 Embedding 输入</text>
+  <text x="600" y="174" text-anchor="middle" font-size="11" fill="#059669">Item Emb ⊕ 用户序列 Emb ⊕ 上下文特征</text>
+
+  <!-- Arrow down -->
+  <line x1="600" y1="186" x2="600" y2="204" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+  <!-- Transformer Encoder box -->
+  <rect x="455" y="204" width="290" height="52" rx="8" fill="#10B981" stroke="#059669" stroke-width="1.5"/>
+  <text x="600" y="225" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">Transformer Encoder / MLP</text>
+  <text x="600" y="245" text-anchor="middle" font-size="11" fill="#A7F3D0">仅稠密参数可训练 · 稀疏参数全程冻结</text>
+
+  <!-- Arrow down -->
+  <line x1="600" y1="256" x2="600" y2="274" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+  <!-- Output box -->
+  <rect x="455" y="274" width="290" height="48" rx="8" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1.5"/>
+  <text x="600" y="294" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">CTR / CVR 预测输出</text>
+  <text x="600" y="311" text-anchor="middle" font-size="11" fill="#059669">Sigmoid → 点击率 / 转化率</text>
+
+  <!-- Key note -->
+  <text x="600" y="346" text-anchor="middle" font-size="11" fill="#065F46">损失函数：Binary Cross-Entropy</text>
+
+  <!-- ═══════════════════════ SCALING LAW RESULT ═══════════════════════ -->
+  <rect x="30" y="390" width="740" height="100" rx="10" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5"/>
+  <text x="400" y="413" text-anchor="middle" font-size="13" font-weight="bold" fill="#C2410C">核心发现：Scaling Law 成立的前提</text>
+
+  <!-- Three columns -->
+  <rect x="50" y="425" width="210" height="52" rx="7" fill="#FED7AA" stroke="#FB923C" stroke-width="1"/>
+  <text x="155" y="445" text-anchor="middle" font-size="11" font-weight="bold" fill="#7C2D12">稀疏参数高质量预训练</text>
+  <text x="155" y="461" text-anchor="middle" font-size="10" fill="#9A3412">Sampled Softmax 覆盖全量物品</text>
+  <text x="155" y="474" text-anchor="middle" font-size="10" fill="#9A3412">Embedding 充分激活</text>
+
+  <rect x="295" y="425" width="210" height="52" rx="7" fill="#FED7AA" stroke="#FB923C" stroke-width="1"/>
+  <text x="400" y="445" text-anchor="middle" font-size="11" font-weight="bold" fill="#7C2D12">微调阶段冻结稀疏参数</text>
+  <text x="400" y="461" text-anchor="middle" font-size="10" fill="#9A3412">防止判别式训练破坏</text>
+  <text x="400" y="474" text-anchor="middle" font-size="10" fill="#9A3412">预训练高质量表示</text>
+
+  <rect x="540" y="425" width="210" height="52" rx="7" fill="#FED7AA" stroke="#FB923C" stroke-width="1"/>
+  <text x="645" y="445" text-anchor="middle" font-size="11" font-weight="bold" fill="#7C2D12">稠密参数持续受益 Scaling</text>
+  <text x="645" y="461" text-anchor="middle" font-size="10" fill="#9A3412">增加 Transformer 深度/宽度</text>
+  <text x="645" y="474" text-anchor="middle" font-size="10" fill="#9A3412">AUC 呈幂律持续增长</text>
+
+  <!-- separators -->
+  <line x1="277" y1="430" x2="277" y2="472" stroke="#FB923C" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="522" y1="430" x2="522" y2="472" stroke="#FB923C" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- Bottom legend -->
+  <text x="400" y="510" text-anchor="middle" font-size="10" fill="#94A3B8">Meta GPSD · arXiv:2506.03699 · 稠密参数 13K → 0.3B 验证</text>
+</svg>

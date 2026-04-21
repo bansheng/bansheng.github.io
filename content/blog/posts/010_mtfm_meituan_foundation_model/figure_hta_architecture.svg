@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+    <marker id="arr-white" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="white"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3B82F6"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8B5CF6"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="520" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="34" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">MTFM 混合目标注意力机制（HTA）架构</text>
+  <text x="400" y="53" text-anchor="middle" font-size="11" fill="#64748B">B 个 Block 交替堆叠：1 × Full Attention Layer + K × Target Attention Layer</text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- INPUT: X^(0) -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="30" y="72" width="110" height="100" rx="8" fill="white" stroke="#475569" stroke-width="2"/>
+  <text x="85" y="96" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">X⁽⁰⁾</text>
+  <text x="85" y="113" text-anchor="middle" font-size="9" fill="#64748B">N × d_model</text>
+  <rect x="38" y="120" width="94" height="16" rx="3" fill="#DBEAFE"/>
+  <text x="85" y="131" text-anchor="middle" font-size="9" fill="#1D4ED8">H-tokens (L_H)</text>
+  <rect x="38" y="140" width="94" height="12" rx="3" fill="#D1FAE5"/>
+  <text x="85" y="150" text-anchor="middle" font-size="9" fill="#065F46">R-tokens (L_R)</text>
+  <rect x="38" y="156" width="94" height="12" rx="3" fill="#FEF3C7"/>
+  <text x="85" y="166" text-anchor="middle" font-size="9" fill="#92400E">T-tokens (L_T)</text>
+
+  <!-- arrow X^(0) → Block -->
+  <line x1="140" y1="122" x2="162" y2="122" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- BLOCK (repeated B times) - main container -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="163" y="68" width="462" height="310" rx="10" fill="white" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="394" y="88" text-anchor="middle" font-size="11" fill="#94A3B8">Block × B（重复堆叠）</text>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- Full Attention Layer box -->
+  <!-- ─────────────────────────────────────────────── -->
+  <rect x="178" y="96" width="196" height="260" rx="8" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="276" y="116" text-anchor="middle" font-size="12" font-weight="bold" fill="#4338CA">Full Attention Layer</text>
+  <text x="276" y="131" text-anchor="middle" font-size="10" fill="#6366F1">全局注意力（GQA）</text>
+
+  <!-- GQA box -->
+  <rect x="190" y="140" width="172" height="56" rx="6" fill="#C7D2FE" stroke="#6366F1" stroke-width="1.2"/>
+  <text x="276" y="161" text-anchor="middle" font-size="11" font-weight="bold" fill="#312E81">GQA</text>
+  <text x="276" y="176" text-anchor="middle" font-size="9" fill="#4338CA">Grouped-Query Attention</text>
+  <text x="276" y="189" text-anchor="middle" font-size="9" fill="#4338CA">H heads Q · G groups KV (H/G=r)</text>
+
+  <!-- Dynamic Mask box inside full attn -->
+  <rect x="190" y="206" width="172" height="44" rx="6" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="276" y="224" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">Dynamic Mask M</text>
+  <text x="276" y="239" text-anchor="middle" font-size="9" fill="#DC2626">H双向 · R因果 · T对角</text>
+
+  <!-- GLN + Residual -->
+  <rect x="190" y="260" width="172" height="38" rx="6" fill="#E0E7FF" stroke="#6366F1" stroke-width="1"/>
+  <text x="276" y="277" text-anchor="middle" font-size="10" font-weight="bold" fill="#312E81">GLN + 残差连接</text>
+  <text x="276" y="291" text-anchor="middle" font-size="9" fill="#4338CA">门控层归一化 · Gate ⊙ U</text>
+
+  <!-- Full attention output label -->
+  <text x="276" y="322" text-anchor="middle" font-size="9" fill="#64748B">更新所有 N 个 Token</text>
+  <text x="276" y="336" text-anchor="middle" font-size="9" fill="#64748B">复杂度 O(N²)</text>
+
+  <!-- ─────────────────────────────────────────────── -->
+  <!-- Target Attention Layer box (K layers) -->
+  <!-- ─────────────────────────────────────────────── -->
+  <rect x="394" y="96" width="218" height="260" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2"/>
+  <text x="503" y="116" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">Target Attention Layer × K</text>
+  <text x="503" y="131" text-anchor="middle" font-size="10" fill="#F59E0B">目标注意力（仅更新 T-token）</text>
+
+  <!-- Q from T only -->
+  <rect x="406" y="140" width="94" height="44" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="453" y="157" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400E">Query Q_T</text>
+  <text x="453" y="172" text-anchor="middle" font-size="9" fill="#B45309">仅 T-token 生成</text>
+  <text x="453" y="184" text-anchor="middle" font-size="8.5" fill="#B45309">L_T × d_model</text>
+
+  <!-- K, V from all tokens -->
+  <rect x="510" y="140" width="94" height="44" rx="6" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.2"/>
+  <text x="557" y="157" text-anchor="middle" font-size="10" font-weight="bold" fill="#0C4A6E">K, V</text>
+  <text x="557" y="172" text-anchor="middle" font-size="9" fill="#0369A1">全局序列生成</text>
+  <text x="557" y="184" text-anchor="middle" font-size="8.5" fill="#0369A1">N × d_model</text>
+
+  <!-- Attention computation -->
+  <rect x="406" y="196" width="198" height="44" rx="6" fill="#FED7AA" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="505" y="215" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400E">注意力计算</text>
+  <text x="505" y="230" text-anchor="middle" font-size="9" fill="#B45309">Q_T · Kᵀ ⊙ M_T · V</text>
+  <text x="505" y="243" text-anchor="middle" font-size="8.5" fill="#78350F">复杂度 O(L_T × N) ≪ O(N²)</text>
+
+  <!-- Update T only + Shortcut H/R -->
+  <rect x="406" y="252" width="94" height="48" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="453" y="270" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400E">更新 T-token</text>
+  <text x="453" y="284" text-anchor="middle" font-size="9" fill="#B45309">GLN + 残差</text>
+  <text x="453" y="296" text-anchor="middle" font-size="8.5" fill="#B45309">仅 L_T 行更新</text>
+
+  <!-- Shortcut H/R (pass-through) -->
+  <rect x="510" y="252" width="94" height="48" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="557" y="268" text-anchor="middle" font-size="10" font-weight="bold" fill="#14532D">H/R Shortcut</text>
+  <text x="557" y="283" text-anchor="middle" font-size="9" fill="#15803D">捷径直通</text>
+  <text x="557" y="295" text-anchor="middle" font-size="8.5" fill="#16A34A">H/R 原封不动</text>
+
+  <!-- Recombine annotation -->
+  <text x="503" y="322" text-anchor="middle" font-size="9" fill="#64748B">X^(l+1) = (X_HR ; X_T_updated)</text>
+  <text x="503" y="336" text-anchor="middle" font-size="9" fill="#64748B">重新拼接传入下一层</text>
+
+  <!-- Arrow: Full → Target inside block -->
+  <line x1="374" y1="218" x2="392" y2="218" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Arrows inside Target Attention -->
+  <line x1="453" y1="184" x2="453" y2="194" stroke="#F59E0B" stroke-width="1.2" marker-end="url(#arr-orange)"/>
+  <line x1="557" y1="184" x2="557" y2="194" stroke="#0284C7" stroke-width="1.2" marker-end="url(#arr-blue)"/>
+  <line x1="453" y1="240" x2="453" y2="250" stroke="#F59E0B" stroke-width="1.2" marker-end="url(#arr-orange)"/>
+  <line x1="557" y1="240" x2="557" y2="250" stroke="#0284C7" stroke-width="1.2" marker-end="url(#arr-blue)"/>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- Right side of HTA: output X^(l+1) and repeat arrow -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- output arrow from block -->
+  <line x1="625" y1="222" x2="648" y2="222" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Block repeat annotation (curved arrow top) -->
+  <path d="M 394 76 Q 394 58 276 58 Q 178 58 178 76" fill="none" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <text x="285" y="55" text-anchor="middle" font-size="9" fill="#94A3B8">重复 B 次</text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- OUTPUT: final X^(B) then MMoE -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- Output sequence box -->
+  <rect x="650" y="172" width="110" height="100" rx="8" fill="white" stroke="#475569" stroke-width="2"/>
+  <text x="705" y="196" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E293B">X⁽ᴮ⁾</text>
+  <text x="705" y="212" text-anchor="middle" font-size="9" fill="#64748B">最终 Embedding</text>
+  <rect x="658" y="220" width="94" height="14" rx="3" fill="#DBEAFE"/>
+  <text x="705" y="230" text-anchor="middle" font-size="8.5" fill="#1D4ED8">H/R-tokens</text>
+  <rect x="658" y="238" width="94" height="26" rx="3" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="705" y="255" text-anchor="middle" font-size="9" font-weight="bold" fill="#92400E">T-tokens ★</text>
+
+  <!-- arrow to MMoE -->
+  <line x1="705" y1="272" x2="705" y2="292" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- MMoE box -->
+  <rect x="650" y="294" width="110" height="54" rx="8" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="705" y="316" text-anchor="middle" font-size="11" font-weight="bold" fill="#5B21B6">MMoE</text>
+  <text x="705" y="331" text-anchor="middle" font-size="9" fill="#7C3AED">多任务预估头</text>
+  <text x="705" y="344" text-anchor="middle" font-size="8.5" fill="#8B5CF6">CTR · CTCVR · ...</text>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- Dynamic Mask Detail Panel (bottom) -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rect x="30" y="396" width="600" height="110" rx="8" fill="white" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="330" y="415" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E293B">动态掩码矩阵 M 可见性规则</text>
+
+  <!-- Mask matrix visual (simplified 5×5) -->
+  <g transform="translate(46, 425)">
+    <!-- labels row -->
+    <text x="56" y="12" text-anchor="middle" font-size="9" fill="#1D4ED8">H</text>
+    <text x="80" y="12" text-anchor="middle" font-size="9" fill="#10B981">R₁</text>
+    <text x="104" y="12" text-anchor="middle" font-size="9" fill="#10B981">R₂</text>
+    <text x="128" y="12" text-anchor="middle" font-size="9" fill="#F59E0B">T₁</text>
+    <text x="152" y="12" text-anchor="middle" font-size="9" fill="#F59E0B">T₂</text>
+
+    <!-- labels column -->
+    <text x="38" y="32" text-anchor="end" font-size="9" fill="#1D4ED8">H</text>
+    <text x="38" y="52" text-anchor="end" font-size="9" fill="#10B981">R₁</text>
+    <text x="38" y="72" text-anchor="end" font-size="9" fill="#10B981">R₂</text>
+    <text x="38" y="92" text-anchor="end" font-size="9" fill="#F59E0B">T₁</text>
+
+    <!-- Row H: H H H R R T T  → H sees all H, no R/T -->
+    <rect x="42" y="19" width="20" height="20" rx="2" fill="#DBEAFE"/>
+    <text x="52" y="33" text-anchor="middle" font-size="9" fill="#1D4ED8">1</text>
+    <rect x="66" y="19" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="76" y="33" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+    <rect x="90" y="19" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="100" y="33" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+    <rect x="114" y="19" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="124" y="33" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+    <rect x="138" y="19" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="148" y="33" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+
+    <!-- Row R1: H=1, R1=1, R2=0, T=0 -->
+    <rect x="42" y="41" width="20" height="20" rx="2" fill="#DBEAFE"/>
+    <text x="52" y="55" text-anchor="middle" font-size="9" fill="#1D4ED8">1</text>
+    <rect x="66" y="41" width="20" height="20" rx="2" fill="#D1FAE5"/>
+    <text x="76" y="55" text-anchor="middle" font-size="9" fill="#065F46">1</text>
+    <rect x="90" y="41" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="100" y="55" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+    <rect x="114" y="41" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="124" y="55" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+    <rect x="138" y="41" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="148" y="55" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+
+    <!-- Row R2: H=1, R1=1, R2=1, T=0 (causal) -->
+    <rect x="42" y="61" width="20" height="20" rx="2" fill="#DBEAFE"/>
+    <text x="52" y="75" text-anchor="middle" font-size="9" fill="#1D4ED8">1</text>
+    <rect x="66" y="61" width="20" height="20" rx="2" fill="#D1FAE5"/>
+    <text x="76" y="75" text-anchor="middle" font-size="9" fill="#065F46">1</text>
+    <rect x="90" y="61" width="20" height="20" rx="2" fill="#D1FAE5"/>
+    <text x="100" y="75" text-anchor="middle" font-size="9" fill="#065F46">1</text>
+    <rect x="114" y="61" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="124" y="75" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+    <rect x="138" y="61" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="148" y="75" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+
+    <!-- Row T1: H=1, R1=1, R2=1, T1=1, T2=0 (diagonal) -->
+    <rect x="42" y="81" width="20" height="20" rx="2" fill="#DBEAFE"/>
+    <text x="52" y="95" text-anchor="middle" font-size="9" fill="#1D4ED8">1</text>
+    <rect x="66" y="81" width="20" height="20" rx="2" fill="#D1FAE5"/>
+    <text x="76" y="95" text-anchor="middle" font-size="9" fill="#065F46">1</text>
+    <rect x="90" y="81" width="20" height="20" rx="2" fill="#D1FAE5"/>
+    <text x="100" y="95" text-anchor="middle" font-size="9" fill="#065F46">1</text>
+    <rect x="114" y="81" width="20" height="20" rx="2" fill="#FEF3C7"/>
+    <text x="124" y="95" text-anchor="middle" font-size="9" fill="#92400E">1</text>
+    <rect x="138" y="81" width="20" height="20" rx="2" fill="#E2E8F0"/>
+    <text x="148" y="95" text-anchor="middle" font-size="9" fill="#94A3B8">0</text>
+  </g>
+
+  <!-- Rules text -->
+  <text x="222" y="438" font-size="10" font-weight="bold" fill="#1E293B">可见性规则：</text>
+  <rect x="222" y="445" width="10" height="10" rx="2" fill="#DBEAFE"/>
+  <text x="236" y="454" font-size="9.5" fill="#1D4ED8">H-token：双向可见（历史全局上下文）</text>
+  <rect x="222" y="460" width="10" height="10" rx="2" fill="#D1FAE5"/>
+  <text x="236" y="469" font-size="9.5" fill="#065F46">R-token：因果掩码（严格时序，防止未来泄露）</text>
+  <rect x="222" y="475" width="10" height="10" rx="2" fill="#FEF3C7"/>
+  <text x="236" y="484" font-size="9.5" fill="#92400E">T-token：对角可见（候选物品相互独立，防止标签泄露）</text>
+  <rect x="222" y="490" width="10" height="10" rx="2" fill="#E2E8F0"/>
+  <text x="236" y="499" font-size="9.5" fill="#64748B">屏蔽（0）：防止信息穿越与特征作弊</text>
+
+  <!-- Complexity comparison panel -->
+  <rect x="644" y="396" width="138" height="110" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="713" y="416" text-anchor="middle" font-size="11" font-weight="bold" fill="#14532D">复杂度对比</text>
+  <text x="713" y="432" text-anchor="middle" font-size="10" fill="#64748B">Standard Transformer:</text>
+  <text x="713" y="447" text-anchor="middle" font-size="11" font-weight="bold" fill="#DC2626">O(N²)</text>
+  <line x1="657" y1="454" x2="769" y2="454" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="713" y="468" text-anchor="middle" font-size="10" fill="#64748B">1 Full + K Target:</text>
+  <text x="713" y="484" text-anchor="middle" font-size="10" font-weight="bold" fill="#16A34A">O((N²+K·N·L_T)</text>
+  <text x="713" y="497" text-anchor="middle" font-size="10" font-weight="bold" fill="#16A34A">/ (K+1))</text>
+
+  <!-- bottom note -->
+  <text x="400" y="516" text-anchor="middle" font-size="9.5" fill="#94A3B8">L_T ≪ N → 吞吐量提升 2× · FlashAttention-2 定制 Kernel · Triton 算子融合</text>
+</svg>

@@ -94,7 +94,7 @@ $$x_{l+1}^{\text{NormFormer}} = \text{NormFFN}(\text{NormScaledMHA}(x_l))$$
 
 #### 三种架构的特性对比
 
-![Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比](figure1.png)
+![Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比](figure1.svg)
 
 | 特性 | Post-LN | Pre-LN | NormFormer |
 |------|---------|--------|------------|
@@ -234,7 +234,7 @@ $$\text{NormFFN}(x) = x + \underbrace{\text{LN}_{\text{mid}}}_{\text{新增}}(\s
 
 **这是解决梯度失配的核心机制。** 论文的 Figure 4 & 5 展示了一个极为重要的发现：
 
-![Figure 4 & 5: Scaling parameters and learning rate stability](figure4_5.png)
+![Figure 4 & 5: Scaling parameters and learning rate stability](figure4_5.svg)
 
 **早期层的 FFN LN gamma 参数系统性地小于后期层的**。这意味着 FFN Mid-LayerNorm 自适应地减小了早期层全连接层输入的幅度，从而有效降低了早期层的梯度，缓解了 Pre-LN 固有的"早层梯度过大"问题。这种设计妙处在于：
 
