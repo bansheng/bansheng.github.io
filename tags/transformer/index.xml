@@ -653,11 +653,11 @@ $$\text{PreLN}(x) = x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;Pre-LN �
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="Figure 3: Average L1 norm of gradients across layers"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_4c7d6128ffffc602.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_45d12f87337d3458.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_1ef4795c62986c12.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_3998438df5d9f5ef.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_1fefc4ae03010801.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_f718c2a947b08856.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_4c7d6128ffffc602.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_3998438df5d9f5ef.webp"
 width="760"
-height="239"
+height="209"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -669,11 +669,11 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="梯度流向图：Post-LN vs Pre-LN vs NormFormer"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_2888b64f237160ca.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_c541fc62113dabc4.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_f61a535502b159fd.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_ecb356253dc58d97.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_8b329c43d2314bd6.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_4811b6ada503dfb0.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_2888b64f237160ca.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_ecb356253dc58d97.webp"
 width="760"
-height="472"
+height="441"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -787,11 +787,11 @@ $$\text{NormScaledMHA}(x) = x + \text{LN}(\text{HeadScaleMHA}(\text{LN}(x)))$$&l
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="Post-Attention LayerNorm 原理"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_68693677cfca0559.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_ec157132294a949a.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_dd187e237c4b2b5.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_1d8a62b3a00e8a20.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_c2be06c548100887.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_12f499b55f8ccc4d.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_68693677cfca0559.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_1d8a62b3a00e8a20.webp"
 width="760"
-height="486"
+height="499"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -839,11 +839,11 @@ $$\text{HeadScaleMHA}(Q, K, V) = \text{Concat}(\gamma_1 \cdot h_1, \gamma_2 \cdo
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="HeadScale 原理：逐头缩放"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_a21cc79fa53ff874.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_e50b9c80ed4768a4.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_2e036a0011ac033e.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_d08fe0b7775c2490.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_dfdd157823e5e7e9.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_e702e509fdef94c3.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_a21cc79fa53ff874.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_d08fe0b7775c2490.webp"
 width="760"
-height="437"
+height="430"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -898,11 +898,11 @@ $$\text{NormFFN}(x) = x + \underbrace{\text{LN}_{\text{mid}}}_{\text{新增}}(\s
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="FFN Mid-LayerNorm 原理：自适应梯度控制"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_f159dc6b06971f29.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_f6e83aa42fbf88ee.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_5fec5fcb52c7b5a0.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_a655460b83712dcb.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_ed5c2df0da4b557f.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_80dcb86ac9c7f397.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_f159dc6b06971f29.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_a655460b83712dcb.webp"
 width="760"
-height="325"
+height="332"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1033,11 +1033,11 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="消融实验贡献度分析"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_69a0685725e267e8.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_caaba11b1ed3b54b.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_b143e237df55cfae.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_9221948ac1a186cf.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_68c55f8899fbf861.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_3b0f77bb086fccec.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_69a0685725e267e8.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_9221948ac1a186cf.webp"
 width="760"
-height="421"
+height="408"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
