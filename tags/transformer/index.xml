@@ -690,13 +690,8 @@ $$x_{l+1}^{\text{NormFormer}} = \text{NormFFN}(\text{NormScaledMHA}(x_l))$$&lt;p
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_907d3f8b57aa34db.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_1b4a0d45be0471f7.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp"
-width="760"
-height="429"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure1.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -885,13 +880,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 4 &amp;amp; 5: Scaling parameters and learning rate stability"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_486bd82faad645a6.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_9c7ac67978c723e9.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp"
-width="760"
-height="249"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 4 &amp;amp; 5: Scaling parameters and learning rate stability"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -2618,13 +2608,8 @@ $$&lt;p&gt;这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列"
-srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
-width="760"
-height="570"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -2678,13 +2663,8 @@ Merge --&gt; MTFM[MTFM 模型]
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: MTFM Token Structure with H/R/T Heterogeneous Tokenization"
-srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
-width="760"
-height="570"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: MTFM Hybrid Target Attention (HTA) Architecture"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -2729,13 +2709,8 @@ $$&lt;/li&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers"
-srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_37f6e85c79864a9c.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_3e310efa3590fc65.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp"
-width="760"
-height="646"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -3186,13 +3161,8 @@ MTFM 团队基于 OpenAI 的 Triton 框架，实现了 GLN 和动态掩码的&lt
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
-srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_fdbac74ac0214b1b.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_9b0155f9ab4f5676.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp"
-width="760"
-height="475"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -3215,13 +3185,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
-srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_e3e71a78e5905f40.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_8866e2ae02b8ee6.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp"
-width="760"
-height="484"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;

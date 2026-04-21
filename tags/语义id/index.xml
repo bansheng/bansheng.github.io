@@ -77,13 +77,8 @@ style S4 fill:#ccc,color:#666
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers"
-srcset="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp 320w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_927c031cff0b81f2.webp 480w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_f932a40cff4efb8b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp"
-width="760"
-height="507"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers"
+src="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;

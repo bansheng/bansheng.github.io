@@ -47,13 +47,8 @@
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: FuXi-Linear Three-Channel Parallel Architecture"
-srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_4ec32161bd5af700.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_527cfb5a198f2bfc.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp"
-width="760"
-height="443"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: FuXi-Linear Three-Channel Parallel Architecture"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -244,13 +239,8 @@ F --&gt; G[下一个 Item 预测]
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Inference Efficiency Comparison - FuXi-Linear vs Baselines"
-srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_7e60b5214464902.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_77c1b1ae28603b89.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp"
-width="760"
-height="449"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Inference Efficiency Comparison - FuXi-Linear vs Baselines"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;

@@ -31,13 +31,8 @@
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: TokenMixer-Large 整体架构。Raw token 包含所有原始特征和序列聚合/抽取特征。整个模型由多个 TokenMixer-Large Block 堆叠而成，每个 Block 的骨干由 Norm、Mixing、S-P MoE、Reverting、Norm、S-P MoE 和残差连接组成。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_a96e4829249b2292.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_9c68ae2a97fcbf1d.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_c2a7ae1366e0da85.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_a96e4829249b2292.webp"
-width="760"
-height="276"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: TokenMixer-Large 整体架构。Raw token 包含所有原始特征和序列聚合/抽取特征。整个模型由多个 TokenMixer-Large Block 堆叠而成，每个 Block 的骨干由 Norm、Mixing、S-P MoE、Reverting、Norm、S-P MoE 和残差连接组成。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -87,13 +82,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Internal Residual（左）与 Auxiliary Loss（右）机制。跨层残差连接确保深层梯度流动，辅助损失通过中间层输出提供额外监督信号。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_6dde1adf4c3cac0d.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_ed292126ee3f73c5.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_d765f0985fc7ce9e.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_6dde1adf4c3cac0d.webp"
-width="760"
-height="412"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Internal Residual（左）与 Auxiliary Loss（右）机制。跨层残差连接确保深层梯度流动，辅助损失通过中间层输出提供额外监督信号。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -112,13 +102,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 3: 单个 Block 内高性能算子的工作流程。绿色节点代表算子（operator），蓝色节点代表数据。标注星号（*）表示数据以 FP8 量化存储和计算。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_551817f61d0fc358.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_398fa1f1bd47369.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_7da354a1b841990b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_551817f61d0fc358.webp"
-width="760"
-height="393"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 3: 单个 Block 内高性能算子的工作流程。绿色节点代表算子（operator），蓝色节点代表数据。标注星号（*）表示数据以 FP8 量化存储和计算。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -262,13 +247,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 4: 三个核心业务场景的 Scaling Law 验证。(a) Feed Ads 15B (b) E-Commerce 7B (c) Live Streaming 4B。所有场景均展现出持续的 AUC 提升趋势。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_701841928bbeeb86.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_31b5ca9de6c56b92.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_cb75c2d5645cd226.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_701841928bbeeb86.webp"
-width="760"
-height="210"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 4: 三个核心业务场景的 Scaling Law 验证。(a) Feed Ads 15B (b) E-Commerce 7B (c) Live Streaming 4B。所有场景均展现出持续的 AUC 提升趋势。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -280,13 +260,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 5: TokenMixer-Large vs RankMixer(TokenMixer) 的 Scaling Law 对比。无论是参数量还是 FLOPs 维度，TokenMixer-Large 都展现出更陡峭的提升斜率。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5732f6cdf064d910.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_4b1b8eb7052f469b.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5886734552d50243.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5732f6cdf064d910.webp"
-width="760"
-height="405"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 5: TokenMixer-Large vs RankMixer(TokenMixer) 的 Scaling Law 对比。无论是参数量还是 FLOPs 维度，TokenMixer-Large 都展现出更陡峭的提升斜率。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;

@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arrowX" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748B"/>
+    </marker>
+    <marker id="arrowY" markerWidth="8" markerHeight="8" refX="3" refY="6" orient="auto">
+      <path d="M0,6 L3,0 L6,6 z" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="480" fill="#F8FAFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1E293B">TokenMixer-Large vs RankMixer Scaling Law 对比</text>
+  <text x="400" y="46" text-anchor="middle" font-size="10" fill="#64748B">参数量维度（左）与 FLOPs 维度（右）的 AUC 增益对比</text>
+
+  <!-- Divider -->
+  <line x1="400" y1="58" x2="400" y2="420" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- ===== LEFT CHART: AUC Gain vs Parameters ===== -->
+  <rect x="20" y="58" width="370" height="310" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="205" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E293B">AUC 增益 vs 参数量</text>
+
+  <!-- Y axis -->
+  <line x1="75" y1="92" x2="75" y2="335" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowY)"/>
+  <!-- X axis -->
+  <line x1="75" y1="335" x2="370" y2="335" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowX)"/>
+
+  <!-- Y axis label -->
+  <text x="35" y="215" text-anchor="middle" font-size="9" fill="#64748B" transform="rotate(-90,35,215)">CTCVR AUC 增益 (%)</text>
+  <!-- X axis label -->
+  <text x="222" y="352" text-anchor="middle" font-size="9" fill="#64748B">参数量（对数轴）</text>
+
+  <!-- X ticks (log scale) -->
+  <text x="100" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">500M</text>
+  <text x="150" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">1B</text>
+  <text x="210" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">4B</text>
+  <text x="265" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">7B</text>
+  <text x="330" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">15B</text>
+
+  <!-- Y ticks -->
+  <text x="67" y="333" text-anchor="end" font-size="8" fill="#94A3B8">0</text>
+  <text x="67" y="295" text-anchor="end" font-size="8" fill="#94A3B8">0.5</text>
+  <text x="67" y="257" text-anchor="end" font-size="8" fill="#94A3B8">1.0</text>
+  <text x="67" y="219" text-anchor="end" font-size="8" fill="#94A3B8">1.5</text>
+  <text x="67" y="181" text-anchor="end" font-size="8" fill="#94A3B8">2.0</text>
+  <text x="67" y="143" text-anchor="end" font-size="8" fill="#94A3B8">2.5</text>
+  <text x="67" y="105" text-anchor="end" font-size="8" fill="#94A3B8">3.0</text>
+
+  <!-- Grid lines -->
+  <line x1="75" y1="295" x2="360" y2="295" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="75" y1="257" x2="360" y2="257" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="75" y1="219" x2="360" y2="219" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="75" y1="181" x2="360" y2="181" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="75" y1="143" x2="360" y2="143" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="75" y1="105" x2="360" y2="105" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- RankMixer curve (flatter slope) -->
+  <!-- 500M=0.84, 1B=1.0, (plateau) 1.5B~=1.05 -->
+  <!-- Y: 0→335, 0.5→295, 1.0→257, 1.5→219, 2.0→181, 2.5→143, 3.0→105 -->
+  <!-- 0.84→335-67=268; 1.0→257; 1.1→335-88=247; 1.15→335-92=243 -->
+  <polyline points="100,268 150,257 210,248 265,243"
+    fill="none" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round" stroke-dasharray="6,3"/>
+
+  <!-- RankMixer data points -->
+  <circle cx="100" cy="268" r="4" fill="#94A3B8"/>
+  <circle cx="150" cy="257" r="4" fill="#94A3B8"/>
+  <circle cx="210" cy="248" r="4" fill="#94A3B8"/>
+  <circle cx="265" cy="243" r="5" fill="#94A3B8"/>
+
+  <!-- TokenMixer-Large curve (steeper slope) -->
+  <!-- 500M=0.94, 1B=1.2, 4B=1.6, 7B=2.0, 15B=2.4 -->
+  <!-- 0.94→335-75=260; 1.2→335-96=239; 1.6→335-128=207; 2.0→181; 2.4→335-192=143 -->
+  <polyline points="100,260 150,239 210,207 265,181 330,143"
+    fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- TokenMixer-Large data points -->
+  <circle cx="100" cy="260" r="4" fill="#2563EB"/>
+  <circle cx="150" cy="239" r="4" fill="#2563EB"/>
+  <circle cx="210" cy="207" r="4" fill="#2563EB"/>
+  <circle cx="265" cy="181" r="4" fill="#2563EB"/>
+  <circle cx="330" cy="143" r="6" fill="#EF4444" stroke="white" stroke-width="2"/>
+
+  <!-- Gap annotation -->
+  <line x1="265" y1="181" x2="265" y2="243" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="275" y="210" font-size="9" fill="#EF4444" font-weight="bold">更大</text>
+  <text x="275" y="222" font-size="9" fill="#EF4444" font-weight="bold">差距</text>
+
+  <!-- Slope label for TokenMixer-Large -->
+  <text x="270" y="165" font-size="9" fill="#2563EB" font-weight="bold">更陡斜率</text>
+  <path d="M 285 163 L 310 152" fill="none" stroke="#2563EB" stroke-width="1" marker-end="url(#arrowX)"/>
+
+  <!-- Legend for left chart -->
+  <rect x="85" y="96" width="175" height="40" rx="5" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+  <line x1="95" y1="111" x2="120" y2="111" stroke="#2563EB" stroke-width="2.5"/>
+  <circle cx="107" cy="111" r="3" fill="#2563EB"/>
+  <text x="126" y="115" font-size="9" fill="#1E293B">TokenMixer-Large</text>
+  <line x1="95" y1="128" x2="120" y2="128" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+  <circle cx="107" cy="128" r="3" fill="#94A3B8"/>
+  <text x="126" y="132" font-size="9" fill="#1E293B">RankMixer (TokenMixer)</text>
+
+  <!-- ===== RIGHT CHART: AUC Gain vs FLOPs ===== -->
+  <rect x="410" y="58" width="370" height="310" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="595" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E293B">AUC 增益 vs 训练 FLOPs</text>
+
+  <!-- Y axis -->
+  <line x1="465" y1="92" x2="465" y2="335" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowY)"/>
+  <!-- X axis -->
+  <line x1="465" y1="335" x2="760" y2="335" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrowX)"/>
+
+  <!-- Y axis label -->
+  <text x="425" y="215" text-anchor="middle" font-size="9" fill="#64748B" transform="rotate(-90,425,215)">CTCVR AUC 增益 (%)</text>
+  <!-- X axis label -->
+  <text x="612" y="352" text-anchor="middle" font-size="9" fill="#64748B">训练 FLOPs（对数轴）</text>
+
+  <!-- X ticks -->
+  <text x="490" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">4.2T</text>
+  <text x="540" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">10T</text>
+  <text x="600" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">20T</text>
+  <text x="660" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">50T</text>
+  <text x="730" y="346" text-anchor="middle" font-size="8" fill="#94A3B8">100T</text>
+
+  <!-- Y ticks -->
+  <text x="457" y="333" text-anchor="end" font-size="8" fill="#94A3B8">0</text>
+  <text x="457" y="295" text-anchor="end" font-size="8" fill="#94A3B8">0.5</text>
+  <text x="457" y="257" text-anchor="end" font-size="8" fill="#94A3B8">1.0</text>
+  <text x="457" y="219" text-anchor="end" font-size="8" fill="#94A3B8">1.5</text>
+  <text x="457" y="181" text-anchor="end" font-size="8" fill="#94A3B8">2.0</text>
+  <text x="457" y="143" text-anchor="end" font-size="8" fill="#94A3B8">2.5</text>
+
+  <!-- Grid lines -->
+  <line x1="465" y1="295" x2="750" y2="295" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="465" y1="257" x2="750" y2="257" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="465" y1="219" x2="750" y2="219" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="465" y1="181" x2="750" y2="181" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="465" y1="143" x2="750" y2="143" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- RankMixer FLOPs curve (dense training, hits ceiling fast) -->
+  <!-- 4.2T=0.84, 10T=0.95, 20T=1.05, 50T=1.1 (flattens) -->
+  <!-- 0.84→268; 0.95→295-76=259; 1.05→295-84=251; 1.1→335-88=247 -->
+  <polyline points="490,268 540,259 600,251 660,247"
+    fill="none" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round" stroke-dasharray="6,3"/>
+
+  <circle cx="490" cy="268" r="4" fill="#94A3B8"/>
+  <circle cx="540" cy="259" r="4" fill="#94A3B8"/>
+  <circle cx="600" cy="251" r="4" fill="#94A3B8"/>
+  <circle cx="660" cy="247" r="5" fill="#94A3B8"/>
+
+  <!-- TokenMixer-Large FLOPs curve (sparse + efficient = steeper per-FLOP gain) -->
+  <!-- 4.2T=0.94, 15.1T=1.14, 30T=1.6, 80T=2.0, 150T=2.4 -->
+  <!-- 0.94→260; 1.14→335-91=244; 1.6→207; 2.0→181; 2.4→143 -->
+  <polyline points="490,260 545,244 610,207 680,181 740,150"
+    fill="none" stroke="#10B981" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <circle cx="490" cy="260" r="4" fill="#10B981"/>
+  <circle cx="545" cy="244" r="4" fill="#10B981"/>
+  <circle cx="610" cy="207" r="4" fill="#10B981"/>
+  <circle cx="680" cy="181" r="4" fill="#10B981"/>
+  <circle cx="740" cy="150" r="6" fill="#EF4444" stroke="white" stroke-width="2"/>
+
+  <!-- Efficiency annotation: SP-MoE saves FLOPs -->
+  <rect x="545" y="228" width="90" height="30" rx="4" fill="#ECFDF5" stroke="#86EFAC" stroke-width="1"/>
+  <text x="590" y="241" text-anchor="middle" font-size="8" font-weight="bold" fill="#065F46">SP-MoE</text>
+  <text x="590" y="254" text-anchor="middle" font-size="8" fill="#059669">FLOPs↓ 近半</text>
+  <line x1="545" y1="244" x2="545" y2="242" stroke="#10B981" stroke-width="1.5"/>
+
+  <!-- Steeper slope label -->
+  <text x="690" y="168" font-size="9" fill="#10B981" font-weight="bold">更高 FLOPs</text>
+  <text x="690" y="180" font-size="9" fill="#10B981" font-weight="bold">效率</text>
+
+  <!-- Legend for right chart -->
+  <rect x="475" y="96" width="175" height="40" rx="5" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+  <line x1="485" y1="111" x2="510" y2="111" stroke="#10B981" stroke-width="2.5"/>
+  <circle cx="497" cy="111" r="3" fill="#10B981"/>
+  <text x="516" y="115" font-size="9" fill="#1E293B">TokenMixer-Large</text>
+  <line x1="485" y1="128" x2="510" y2="128" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,3"/>
+  <circle cx="497" cy="128" r="3" fill="#94A3B8"/>
+  <text x="516" y="132" font-size="9" fill="#1E293B">RankMixer (TokenMixer)</text>
+
+  <!-- ===== BOTTOM SUMMARY ===== -->
+  <rect x="20" y="380" width="760" height="88" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="400" y="400" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E293B">核心结论</text>
+
+  <!-- Left summary -->
+  <rect x="35" y="407" width="225" height="52" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="147" y="422" text-anchor="middle" font-size="10" font-weight="bold" fill="#1D4ED8">参数量维度</text>
+  <text x="147" y="436" text-anchor="middle" font-size="9" fill="#1E40AF">TokenMixer-Large 斜率更陡</text>
+  <text x="147" y="450" text-anchor="middle" font-size="9" fill="#3B82F6">同等参数量下 AUC 增益更大</text>
+
+  <!-- Mid summary -->
+  <rect x="285" y="407" width="230" height="52" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="400" y="422" text-anchor="middle" font-size="10" font-weight="bold" fill="#065F46">FLOPs 维度</text>
+  <text x="400" y="436" text-anchor="middle" font-size="9" fill="#059669">SP-MoE 稀疏化大幅提升效率</text>
+  <text x="400" y="450" text-anchor="middle" font-size="9" fill="#10B981">单位 FLOPs AUC 增益持续领先</text>
+
+  <!-- Right summary -->
+  <rect x="540" y="407" width="228" height="52" rx="6" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1"/>
+  <text x="654" y="422" text-anchor="middle" font-size="10" font-weight="bold" fill="#C2410C">综合优势</text>
+  <text x="654" y="436" text-anchor="middle" font-size="9" fill="#9A3412">架构设计 + 稀疏训练</text>
+  <text x="654" y="450" text-anchor="middle" font-size="9" fill="#EA580C">双维度均展现更优扩展性</text>
+</svg>

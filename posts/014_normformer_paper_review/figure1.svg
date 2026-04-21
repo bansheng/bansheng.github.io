@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="900" height="500">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#EF4444"/>
+    </marker>
+    <style>
+      text { font-family: 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif; }
+      .node-box { rx: 8; ry: 8; }
+      .title { font-size: 15px; font-weight: 600; }
+      .node-label { font-size: 12px; }
+      .sub-label { font-size: 10px; fill: #64748B; }
+      .caption { font-size: 11px; fill: #475569; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" class="title" fill="#1E293B" font-size="16px" font-weight="700">三种 Transformer 架构对比：Post-LN vs Pre-LN vs NormFormer</text>
+
+  <!-- ============================================================ -->
+  <!-- COLUMN 1: Post-LN -->
+  <!-- ============================================================ -->
+  <text x="150" y="72" text-anchor="middle" class="title" fill="#64748B" font-size="14px" font-weight="600">Post-LN</text>
+  <text x="150" y="88" text-anchor="middle" class="sub-label" font-size="10px">（原始 Transformer）</text>
+
+  <!-- Input x -->
+  <rect x="100" y="100" width="100" height="34" fill="#E2E8F0" rx="8"/>
+  <text x="150" y="122" text-anchor="middle" class="node-label" fill="#334155">输入 x</text>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="134" x2="150" y2="155" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- MHA box -->
+  <rect x="95" y="155" width="110" height="34" fill="#BFDBFE" rx="8"/>
+  <text x="150" y="177" text-anchor="middle" class="node-label" fill="#1D4ED8">MHA</text>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="189" x2="150" y2="210" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Add -->
+  <rect x="114" y="210" width="72" height="30" fill="#F1F5F9" rx="8" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="150" y="230" text-anchor="middle" class="node-label" fill="#475569">Add</text>
+
+  <!-- Residual bypass for post-ln col1 -->
+  <path d="M 100 117 C 55 117 55 225 114 225" fill="none" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="240" x2="150" y2="260" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- LayerNorm -->
+  <rect x="89" y="260" width="122" height="34" fill="#A7F3D0" rx="8"/>
+  <text x="150" y="282" text-anchor="middle" class="node-label" fill="#065F46">LayerNorm</text>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="294" x2="150" y2="315" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- FFN -->
+  <rect x="100" y="315" width="100" height="34" fill="#BFDBFE" rx="8"/>
+  <text x="150" y="337" text-anchor="middle" class="node-label" fill="#1D4ED8">FFN</text>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="349" x2="150" y2="370" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Add2 -->
+  <rect x="114" y="370" width="72" height="30" fill="#F1F5F9" rx="8" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="150" y="390" text-anchor="middle" class="node-label" fill="#475569">Add</text>
+
+  <!-- Residual bypass2 col1 -->
+  <path d="M 200 277 C 230 277 230 385 186 385" fill="none" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+
+  <!-- Arrow down -->
+  <line x1="150" y1="400" x2="150" y2="420" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- LayerNorm2 -->
+  <rect x="89" y="420" width="122" height="34" fill="#A7F3D0" rx="8"/>
+  <text x="150" y="442" text-anchor="middle" class="node-label" fill="#065F46">LayerNorm</text>
+
+  <!-- ============================================================ -->
+  <!-- COLUMN 2: Pre-LN -->
+  <!-- ============================================================ -->
+  <text x="450" y="72" text-anchor="middle" class="title" fill="#2563EB" font-size="14px" font-weight="600">Pre-LN</text>
+  <text x="450" y="88" text-anchor="middle" class="sub-label" font-size="10px">（GPT-2/3 标准）</text>
+
+  <!-- Input x -->
+  <rect x="400" y="100" width="100" height="34" fill="#E2E8F0" rx="8"/>
+  <text x="450" y="122" text-anchor="middle" class="node-label" fill="#334155">输入 x</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="134" x2="450" y2="155" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- LayerNorm pre-MHA -->
+  <rect x="389" y="155" width="122" height="34" fill="#A7F3D0" rx="8"/>
+  <text x="450" y="177" text-anchor="middle" class="node-label" fill="#065F46">LayerNorm</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="189" x2="450" y2="210" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- MHA -->
+  <rect x="395" y="210" width="110" height="34" fill="#BFDBFE" rx="8"/>
+  <text x="450" y="232" text-anchor="middle" class="node-label" fill="#1D4ED8">MHA</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="244" x2="450" y2="265" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Add -->
+  <rect x="414" y="265" width="72" height="30" fill="#F1F5F9" rx="8" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="450" y="285" text-anchor="middle" class="node-label" fill="#475569">Add</text>
+
+  <!-- Residual bypass col2 -->
+  <path d="M 400 117 C 355 117 355 280 414 280" fill="none" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="295" x2="450" y2="315" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- LayerNorm pre-FFN -->
+  <rect x="389" y="315" width="122" height="34" fill="#A7F3D0" rx="8"/>
+  <text x="450" y="337" text-anchor="middle" class="node-label" fill="#065F46">LayerNorm</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="349" x2="450" y2="370" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- FFN -->
+  <rect x="400" y="370" width="100" height="34" fill="#BFDBFE" rx="8"/>
+  <text x="450" y="392" text-anchor="middle" class="node-label" fill="#1D4ED8">FFN</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="404" x2="450" y2="425" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Add2 -->
+  <rect x="414" y="425" width="72" height="30" fill="#F1F5F9" rx="8" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="450" y="445" text-anchor="middle" class="node-label" fill="#475569">Add</text>
+
+  <!-- Residual bypass2 col2 -->
+  <path d="M 511 332 C 545 332 545 440 486 440" fill="none" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+
+  <!-- ============================================================ -->
+  <!-- COLUMN 3: NormFormer -->
+  <!-- ============================================================ -->
+  <text x="750" y="72" text-anchor="middle" class="title" fill="#10B981" font-size="14px" font-weight="600">NormFormer</text>
+  <text x="750" y="88" text-anchor="middle" class="sub-label" font-size="10px">（Pre-LN + 3 处额外归一化）</text>
+
+  <!-- Input x -->
+  <rect x="700" y="100" width="100" height="34" fill="#E2E8F0" rx="8"/>
+  <text x="750" y="122" text-anchor="middle" class="node-label" fill="#334155">输入 x</text>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="134" x2="750" y2="148" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- LayerNorm pre-MHA (inherited Pre-LN) -->
+  <rect x="689" y="148" width="122" height="30" fill="#A7F3D0" rx="8"/>
+  <text x="750" y="168" text-anchor="middle" class="node-label" fill="#065F46">LayerNorm</text>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="178" x2="750" y2="195" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- MHA with HeadScale label -->
+  <rect x="695" y="195" width="110" height="34" fill="#BFDBFE" rx="8"/>
+  <text x="750" y="212" text-anchor="middle" class="node-label" fill="#1D4ED8">MHA</text>
+  <text x="750" y="224" text-anchor="middle" font-size="9px" fill="#2563EB">+ HeadScale ★</text>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="229" x2="750" y2="245" stroke="#EF4444" stroke-width="1.8" marker-end="url(#arrow-red)"/>
+
+  <!-- Post-Attn LN (NEW - highlighted) -->
+  <rect x="689" y="245" width="122" height="30" fill="#FEE2E2" rx="8" stroke="#EF4444" stroke-width="2"/>
+  <text x="750" y="261" text-anchor="middle" class="node-label" fill="#B91C1C" font-weight="600">LayerNorm ★</text>
+  <text x="750" y="272" text-anchor="middle" font-size="9px" fill="#EF4444">Post-Attention</text>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="275" x2="750" y2="291" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Add -->
+  <rect x="714" y="291" width="72" height="28" fill="#F1F5F9" rx="8" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="750" y="310" text-anchor="middle" class="node-label" fill="#475569">Add</text>
+
+  <!-- Residual bypass col3 -->
+  <path d="M 700 117 C 655 117 655 305 714 305" fill="none" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="319" x2="750" y2="334" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- LayerNorm pre-FFN -->
+  <rect x="689" y="334" width="122" height="28" fill="#A7F3D0" rx="8"/>
+  <text x="750" y="353" text-anchor="middle" class="node-label" fill="#065F46">LayerNorm</text>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="362" x2="750" y2="375" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- FFN Linear1 -->
+  <rect x="700" y="375" width="100" height="26" fill="#BFDBFE" rx="6"/>
+  <text x="750" y="393" text-anchor="middle" font-size="11px" fill="#1D4ED8">FFN Linear₁ + Act</text>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="401" x2="750" y2="414" stroke="#EF4444" stroke-width="1.8" marker-end="url(#arrow-red)"/>
+
+  <!-- FFN Mid-LN (NEW - highlighted) -->
+  <rect x="689" y="414" width="122" height="28" fill="#FEE2E2" rx="8" stroke="#EF4444" stroke-width="2"/>
+  <text x="750" y="426" text-anchor="middle" class="node-label" fill="#B91C1C" font-weight="600">LayerNorm ★</text>
+  <text x="750" y="438" text-anchor="middle" font-size="9px" fill="#EF4444">FFN Mid</text>
+
+  <!-- Arrow down -->
+  <line x1="750" y1="442" x2="750" y2="455" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- FFN Linear2 + Add -->
+  <rect x="700" y="455" width="100" height="26" fill="#BFDBFE" rx="6"/>
+  <text x="750" y="473" text-anchor="middle" font-size="11px" fill="#1D4ED8">FFN Linear₂ + Add</text>
+
+  <!-- Residual bypass2 col3 -->
+  <path d="M 811 347 C 845 347 845 468 800 468" fill="none" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="4,3"/>
+
+  <!-- ============================================================ -->
+  <!-- Legend -->
+  <!-- ============================================================ -->
+  <rect x="260" y="465" width="380" height="24" fill="white" rx="6" stroke="#E2E8F0" stroke-width="1"/>
+  <rect x="272" y="472" width="14" height="10" fill="#A7F3D0" rx="2" stroke="#10B981" stroke-width="0.5"/>
+  <text x="290" y="482" font-size="10px" fill="#065F46">原有 LayerNorm</text>
+  <rect x="368" y="472" width="14" height="10" fill="#FEE2E2" rx="2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="386" y="482" font-size="10px" fill="#B91C1C">★ NormFormer 新增</text>
+  <rect x="497" y="472" width="14" height="10" fill="#BFDBFE" rx="2"/>
+  <text x="515" y="482" font-size="10px" fill="#1D4ED8">计算模块</text>
+
+  <!-- Dividers between columns -->
+  <line x1="300" y1="60" x2="300" y2="490" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="600" y1="60" x2="600" y2="490" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="5,4"/>
+</svg>

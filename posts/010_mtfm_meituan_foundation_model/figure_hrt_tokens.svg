@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3B82F6"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10B981"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B"/>
+    </marker>
+    <marker id="arrow-dark" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="520" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="36" text-anchor="middle" font-size="16" font-weight="bold" fill="#1E293B">MTFM 异构 Token 化：从异构特征到统一序列 X⁽⁰⁾</text>
+  <text x="400" y="55" text-anchor="middle" font-size="11" fill="#64748B">H-token（历史序列）· R-token（实时序列）· T-token（目标物品）</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- COLUMN 1: Raw Features (left) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- H-token source: Historical sequences -->
+  <rect x="18" y="75" width="148" height="130" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="92" y="95" text-anchor="middle" font-size="12" font-weight="bold" fill="#1D4ED8">历史序列特征</text>
+  <text x="92" y="110" text-anchor="middle" font-size="10" fill="#3B82F6">H-tokens 来源</text>
+
+  <rect x="28" y="118" width="128" height="22" rx="5" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="92" y="133" text-anchor="middle" font-size="10" fill="#1E40AF">外卖历史订单序列 H₁</text>
+
+  <rect x="28" y="146" width="128" height="22" rx="5" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="92" y="161" text-anchor="middle" font-size="10" fill="#1E40AF">优选购买历史序列 H₂</text>
+
+  <rect x="28" y="174" width="128" height="22" rx="5" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="92" y="189" text-anchor="middle" font-size="10" fill="#1E40AF">更多场景历史序列 ...</text>
+
+  <!-- R-token source: Real-time sequences -->
+  <rect x="18" y="225" width="148" height="108" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="92" y="245" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">实时序列特征</text>
+  <text x="92" y="260" text-anchor="middle" font-size="10" fill="#10B981">R-tokens 来源</text>
+
+  <rect x="28" y="268" width="128" height="22" rx="5" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="92" y="283" text-anchor="middle" font-size="10" fill="#065F46">近期实时行为序列 R₁</text>
+
+  <rect x="28" y="296" width="128" height="22" rx="5" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="92" y="311" text-anchor="middle" font-size="10" fill="#065F46">跨场景实时行为 R₂</text>
+
+  <!-- T-token source: Target items -->
+  <rect x="18" y="353" width="148" height="130" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="92" y="373" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">目标物品特征</text>
+  <text x="92" y="388" text-anchor="middle" font-size="10" fill="#F59E0B">T-tokens 来源</text>
+
+  <rect x="28" y="396" width="128" height="22" rx="5" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1"/>
+  <text x="92" y="411" text-anchor="middle" font-size="10" fill="#92400E">用户画像 U^s</text>
+
+  <rect x="28" y="424" width="128" height="22" rx="5" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1"/>
+  <text x="92" y="439" text-anchor="middle" font-size="10" fill="#92400E">交叉特征 C_i^s</text>
+
+  <rect x="28" y="452" width="128" height="22" rx="5" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1"/>
+  <text x="92" y="467" text-anchor="middle" font-size="10" fill="#92400E">物品特征 I_i^s</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- COLUMN 2: Embedding + MLP Tokenizer -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- Emb layer H -->
+  <rect x="208" y="100" width="80" height="82" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="248" y="135" text-anchor="middle" font-size="11" font-weight="bold" fill="#1D4ED8">Emb</text>
+  <text x="248" y="152" text-anchor="middle" font-size="10" fill="#3B82F6">Lookup</text>
+  <text x="248" y="168" text-anchor="middle" font-size="9" fill="#93C5FD">稀疏→稠密</text>
+
+  <!-- Emb layer R -->
+  <rect x="208" y="248" width="80" height="60" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="248" y="272" text-anchor="middle" font-size="11" font-weight="bold" fill="#065F46">Emb</text>
+  <text x="248" y="289" text-anchor="middle" font-size="10" fill="#10B981">Lookup</text>
+
+  <!-- Emb layer T -->
+  <rect x="208" y="376" width="80" height="82" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="248" y="411" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400E">Emb</text>
+  <text x="248" y="428" text-anchor="middle" font-size="10" fill="#F59E0B">Lookup</text>
+  <text x="248" y="444" text-anchor="middle" font-size="9" fill="#FCD34D">拼接 U‖C‖I</text>
+
+  <!-- MLP Tokenizer H -->
+  <rect x="330" y="100" width="90" height="82" rx="8" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1.5"/>
+  <text x="375" y="132" text-anchor="middle" font-size="11" font-weight="bold" fill="white">MLP_i</text>
+  <text x="375" y="150" text-anchor="middle" font-size="10" fill="#BFDBFE">Tokenizer</text>
+  <text x="375" y="167" text-anchor="middle" font-size="9" fill="#DBEAFE">→ d_model</text>
+
+  <!-- MLP Tokenizer R -->
+  <rect x="330" y="248" width="90" height="60" rx="8" fill="#10B981" stroke="#065F46" stroke-width="1.5"/>
+  <text x="375" y="272" text-anchor="middle" font-size="11" font-weight="bold" fill="white">MLP_r</text>
+  <text x="375" y="290" text-anchor="middle" font-size="10" fill="#D1FAE5">→ d_model</text>
+
+  <!-- MLP Tokenizer T -->
+  <rect x="330" y="376" width="90" height="82" rx="8" fill="#F59E0B" stroke="#92400E" stroke-width="1.5"/>
+  <text x="375" y="408" text-anchor="middle" font-size="11" font-weight="bold" fill="white">MLP_s</text>
+  <text x="375" y="426" text-anchor="middle" font-size="10" fill="#FEF3C7">Tokenizer</text>
+  <text x="375" y="443" text-anchor="middle" font-size="9" fill="white">→ d_model</text>
+
+  <!-- Arrows: raw features → Emb -->
+  <line x1="166" y1="140" x2="206" y2="140" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <line x1="166" y1="279" x2="206" y2="279" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <line x1="166" y1="417" x2="206" y2="417" stroke="#F59E0B" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+  <!-- Arrows: Emb → MLP -->
+  <line x1="288" y1="140" x2="328" y2="140" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <line x1="288" y1="279" x2="328" y2="279" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <line x1="288" y1="417" x2="328" y2="417" stroke="#F59E0B" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- COLUMN 3: Token Matrices -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- H Token Matrix -->
+  <rect x="464" y="88" width="100" height="106" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <text x="514" y="112" text-anchor="middle" font-size="12" font-weight="bold" fill="#1D4ED8">H</text>
+  <!-- Matrix grid lines -->
+  <line x1="470" y1="120" x2="558" y2="120" stroke="#BFDBFE" stroke-width="0.8"/>
+  <line x1="470" y1="132" x2="558" y2="132" stroke="#BFDBFE" stroke-width="0.8"/>
+  <line x1="470" y1="144" x2="558" y2="144" stroke="#BFDBFE" stroke-width="0.8"/>
+  <line x1="470" y1="156" x2="558" y2="156" stroke="#BFDBFE" stroke-width="0.8"/>
+  <line x1="470" y1="168" x2="558" y2="168" stroke="#BFDBFE" stroke-width="0.8"/>
+  <line x1="502" y1="118" x2="502" y2="182" stroke="#BFDBFE" stroke-width="0.8"/>
+  <line x1="530" y1="118" x2="530" y2="182" stroke="#BFDBFE" stroke-width="0.8"/>
+  <text x="514" y="181" text-anchor="middle" font-size="9" fill="#3B82F6">L_H × d_model</text>
+
+  <!-- R Token Matrix -->
+  <rect x="464" y="238" width="100" height="80" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+  <text x="514" y="262" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">R</text>
+  <line x1="470" y1="270" x2="558" y2="270" stroke="#6EE7B7" stroke-width="0.8"/>
+  <line x1="470" y1="282" x2="558" y2="282" stroke="#6EE7B7" stroke-width="0.8"/>
+  <line x1="470" y1="294" x2="558" y2="294" stroke="#6EE7B7" stroke-width="0.8"/>
+  <line x1="502" y1="268" x2="502" y2="306" stroke="#6EE7B7" stroke-width="0.8"/>
+  <line x1="530" y1="268" x2="530" y2="306" stroke="#6EE7B7" stroke-width="0.8"/>
+  <text x="514" y="308" text-anchor="middle" font-size="9" fill="#10B981">L_R × d_model</text>
+
+  <!-- T Token Matrix -->
+  <rect x="464" y="364" width="100" height="106" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2"/>
+  <text x="514" y="388" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">T</text>
+  <line x1="470" y1="396" x2="558" y2="396" stroke="#FCD34D" stroke-width="0.8"/>
+  <line x1="470" y1="408" x2="558" y2="408" stroke="#FCD34D" stroke-width="0.8"/>
+  <line x1="470" y1="420" x2="558" y2="420" stroke="#FCD34D" stroke-width="0.8"/>
+  <line x1="470" y1="432" x2="558" y2="432" stroke="#FCD34D" stroke-width="0.8"/>
+  <line x1="470" y1="444" x2="558" y2="444" stroke="#FCD34D" stroke-width="0.8"/>
+  <line x1="502" y1="394" x2="502" y2="458" stroke="#FCD34D" stroke-width="0.8"/>
+  <line x1="530" y1="394" x2="530" y2="458" stroke="#FCD34D" stroke-width="0.8"/>
+  <text x="514" y="458" text-anchor="middle" font-size="9" fill="#F59E0B">L_T × d_model</text>
+
+  <!-- Arrows: MLP → Token Matrix -->
+  <line x1="420" y1="141" x2="462" y2="141" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <line x1="420" y1="279" x2="462" y2="279" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <line x1="420" y1="417" x2="462" y2="417" stroke="#F59E0B" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- COLUMN 4: Concatenation arrow + final output -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- Concat bracket (vertical lines) -->
+  <line x1="600" y1="141" x2="625" y2="141" stroke="#3B82F6" stroke-width="1.5"/>
+  <line x1="600" y1="279" x2="625" y2="279" stroke="#10B981" stroke-width="1.5"/>
+  <line x1="600" y1="417" x2="625" y2="417" stroke="#F59E0B" stroke-width="1.5"/>
+  <line x1="625" y1="141" x2="625" y2="417" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="625" y1="279" x2="648" y2="279" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow-dark)"/>
+
+  <!-- Concat label -->
+  <text x="630" y="220" text-anchor="start" font-size="10" fill="#64748B">Row</text>
+  <text x="630" y="234" text-anchor="start" font-size="10" fill="#64748B">Concat</text>
+  <text x="630" y="248" text-anchor="start" font-size="10" fill="#64748B">(H;R;T)</text>
+
+  <!-- Final unified sequence X^(0) -->
+  <rect x="652" y="148" width="126" height="262" rx="8" fill="white" stroke="#475569" stroke-width="2"/>
+  <text x="715" y="170" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">X⁽⁰⁾</text>
+  <text x="715" y="187" text-anchor="middle" font-size="9" fill="#64748B">N × d_model</text>
+
+  <!-- H portion in X^(0) -->
+  <rect x="660" y="195" width="110" height="78" rx="5" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="715" y="230" text-anchor="middle" font-size="11" font-weight="bold" fill="#1D4ED8">H-tokens</text>
+  <text x="715" y="247" text-anchor="middle" font-size="9" fill="#3B82F6">L_H 行</text>
+  <text x="715" y="263" text-anchor="middle" font-size="9" fill="#3B82F6">历史行为序列</text>
+
+  <!-- R portion in X^(0) -->
+  <rect x="660" y="279" width="110" height="58" rx="5" fill="#D1FAE5" stroke="#10B981" stroke-width="1.2"/>
+  <text x="715" y="305" text-anchor="middle" font-size="11" font-weight="bold" fill="#065F46">R-tokens</text>
+  <text x="715" y="322" text-anchor="middle" font-size="9" fill="#10B981">L_R 行 · 实时序列</text>
+
+  <!-- T portion in X^(0) -->
+  <rect x="660" y="343" width="110" height="58" rx="5" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="715" y="370" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400E">T-tokens</text>
+  <text x="715" y="387" text-anchor="middle" font-size="9" fill="#F59E0B">L_T 行 · 目标物品</text>
+
+  <!-- Dimension annotation -->
+  <line x1="780" y1="195" x2="790" y2="195" stroke="#94A3B8" stroke-width="1"/>
+  <line x1="780" y1="401" x2="790" y2="401" stroke="#94A3B8" stroke-width="1"/>
+  <line x1="785" y1="195" x2="785" y2="401" stroke="#94A3B8" stroke-width="1"/>
+  <text x="791" y="295" text-anchor="start" font-size="9" fill="#94A3B8" transform="rotate(90,791,295)">N = L_H+L_R+L_T</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- Bottom annotations / legend -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="18" y="497" width="764" height="18" rx="4" fill="#F1F5F9"/>
+  <circle cx="60" cy="506" r="5" fill="#3B82F6"/>
+  <text x="70" y="510" font-size="10" fill="#1E293B">H-token: 长期历史偏好</text>
+  <circle cx="220" cy="506" r="5" fill="#10B981"/>
+  <text x="230" y="510" font-size="10" fill="#1E293B">R-token: 近期实时行为</text>
+  <circle cx="380" cy="506" r="5" fill="#F59E0B"/>
+  <text x="390" y="510" font-size="10" fill="#1E293B">T-token: 目标候选物品（场景特定 MLP_s）</text>
+  <text x="700" y="510" text-anchor="end" font-size="10" fill="#94A3B8">Alignment-free · 异构 Token 化</text>
+</svg>

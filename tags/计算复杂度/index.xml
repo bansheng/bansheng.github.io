@@ -66,13 +66,8 @@ $$&lt;p&gt;这里的 \(N = L_H + L_R + L_T\)，即序列的总长度。对于不
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列"
-srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
-width="760"
-height="570"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: MTFM H/R/T Token 结构 - 从异构特征到统一序列"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -126,13 +121,8 @@ Merge --&gt; MTFM[MTFM 模型]
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: MTFM Token Structure with H/R/T Heterogeneous Tokenization"
-srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_6eed98e8a12ca5e.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_47221da93cb3965b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hrt_tokens_hu_8cc6582177063c86.webp"
-width="760"
-height="570"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: MTFM Hybrid Target Attention (HTA) Architecture"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -177,13 +167,8 @@ $$&lt;/li&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers"
-srcset="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp 320w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_37f6e85c79864a9c.webp 480w, https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_3e310efa3590fc65.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture_hu_c0f316c30ea751ac.webp"
-width="760"
-height="646"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Hybrid Target Attention (HTA) Architecture with Full and Target Attention Layers"
+src="https://dingyadong.top/posts/010_mtfm_meituan_foundation_model/figure_hta_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;

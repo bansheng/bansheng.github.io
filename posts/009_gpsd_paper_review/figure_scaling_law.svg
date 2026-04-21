@@ -1,0 +1,149 @@
+<svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+    <marker id="arrow-x" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="480" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="36" text-anchor="middle" font-size="17" font-weight="bold" fill="#1E293B">GPSD Scaling Law 验证</text>
+  <text x="400" y="56" text-anchor="middle" font-size="12" fill="#64748B">稠密参数量 vs AUC 性能（稠密参数 13K → 0.3B，约 2 万倍扩展）</text>
+
+  <!-- ═══════════════════ CHART AREA ═══════════════════ -->
+  <!-- Chart background -->
+  <rect x="80" y="75" width="520" height="300" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+
+  <!-- Grid lines (horizontal) -->
+  <line x1="80" y1="135" x2="600" y2="135" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="80" y1="195" x2="600" y2="195" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="80" y1="255" x2="600" y2="255" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="80" y1="315" x2="600" y2="315" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- Grid lines (vertical) -->
+  <line x1="180" y1="75" x2="180" y2="375" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="280" y1="75" x2="280" y2="375" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="380" y1="75" x2="380" y2="375" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="480" y1="75" x2="480" y2="375" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- Y-axis -->
+  <line x1="80" y1="75" x2="80" y2="380" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- X-axis -->
+  <line x1="75" y1="375" x2="610" y2="375" stroke="#475569" stroke-width="2" marker-end="url(#arrow-x)"/>
+
+  <!-- Y-axis label -->
+  <text x="25" y="230" text-anchor="middle" font-size="12" fill="#475569" transform="rotate(-90,25,230)">AUC 离线指标</text>
+
+  <!-- X-axis label -->
+  <text x="340" y="420" text-anchor="middle" font-size="12" fill="#475569">稠密参数量（对数坐标）</text>
+
+  <!-- X-axis ticks and labels -->
+  <line x1="80" y1="375" x2="80" y2="382" stroke="#475569" stroke-width="1.5"/>
+  <text x="80" y="396" text-anchor="middle" font-size="10" fill="#64748B">13K</text>
+
+  <line x1="180" y1="375" x2="180" y2="382" stroke="#475569" stroke-width="1.5"/>
+  <text x="180" y="396" text-anchor="middle" font-size="10" fill="#64748B">100K</text>
+
+  <line x1="280" y1="375" x2="280" y2="382" stroke="#475569" stroke-width="1.5"/>
+  <text x="280" y="396" text-anchor="middle" font-size="10" fill="#64748B">1M</text>
+
+  <line x1="380" y1="375" x2="380" y2="382" stroke="#475569" stroke-width="1.5"/>
+  <text x="380" y="396" text-anchor="middle" font-size="10" fill="#64748B">10M</text>
+
+  <line x1="480" y1="375" x2="480" y2="382" stroke="#475569" stroke-width="1.5"/>
+  <text x="480" y="396" text-anchor="middle" font-size="10" fill="#64748B">100M</text>
+
+  <line x1="580" y1="375" x2="580" y2="382" stroke="#475569" stroke-width="1.5"/>
+  <text x="580" y="396" text-anchor="middle" font-size="10" fill="#64748B">0.3B</text>
+
+  <!-- Y-axis ticks and labels -->
+  <line x1="73" y1="135" x2="80" y2="135" stroke="#475569" stroke-width="1.5"/>
+  <text x="68" y="139" text-anchor="end" font-size="10" fill="#64748B">高</text>
+
+  <line x1="73" y1="195" x2="80" y2="195" stroke="#475569" stroke-width="1.5"/>
+  <line x1="73" y1="255" x2="80" y2="255" stroke="#475569" stroke-width="1.5"/>
+  <line x1="73" y1="315" x2="80" y2="315" stroke="#475569" stroke-width="1.5"/>
+
+  <line x1="73" y1="375" x2="80" y2="375" stroke="#475569" stroke-width="1.5"/>
+  <text x="68" y="379" text-anchor="end" font-size="10" fill="#64748B">低</text>
+
+  <!-- ═══ GPSD curve (blue - power law growth) ═══ -->
+  <!-- Smooth power-law rising curve: starts at (80,330), ends at (580,105) -->
+  <path d="M 80,330 C 130,305 180,280 230,255 C 280,232 330,210 380,188 C 430,168 480,148 530,128 L 580,110"
+        fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- GPSD data points -->
+  <circle cx="80" cy="330" r="5" fill="#2563EB"/>
+  <circle cx="180" cy="290" r="5" fill="#2563EB"/>
+  <circle cx="280" cy="252" r="5" fill="#2563EB"/>
+  <circle cx="380" cy="210" r="5" fill="#2563EB"/>
+  <circle cx="480" cy="160" r="5" fill="#2563EB"/>
+  <circle cx="580" cy="112" r="5" fill="#2563EB"/>
+
+  <!-- ═══ Baseline curve (red - degrades after peak) ═══ -->
+  <!-- Rises then falls: peak around 280, then degrades -->
+  <path d="M 80,330 C 130,308 180,290 230,278 C 255,273 280,272 310,276 C 350,283 400,298 450,315 L 530,340 L 580,358"
+        fill="none" stroke="#EF4444" stroke-width="3" stroke-linecap="round" stroke-dasharray="8,4"/>
+
+  <!-- Baseline data points -->
+  <circle cx="80" cy="330" r="5" fill="#EF4444"/>
+  <circle cx="180" cy="295" r="5" fill="#EF4444"/>
+  <circle cx="280" cy="272" r="5" fill="#EF4444"/>
+  <circle cx="380" cy="296" r="5" fill="#EF4444"/>
+  <circle cx="480" cy="330" r="5" fill="#EF4444"/>
+  <circle cx="580" cy="358" r="5" fill="#EF4444"/>
+
+  <!-- Annotation: GPSD power law label -->
+  <rect x="455" y="113" width="140" height="34" rx="6" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="525" y="129" text-anchor="middle" font-size="11" font-weight="bold" fill="#2563EB">GPSD（本文）</text>
+  <text x="525" y="143" text-anchor="middle" font-size="10" fill="#3B82F6">幂律增长 AUC ↑</text>
+
+  <!-- Annotation: Baseline label -->
+  <rect x="440" y="348" width="148" height="34" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="514" y="364" text-anchor="middle" font-size="11" font-weight="bold" fill="#EF4444">端到端判别式训练</text>
+  <text x="514" y="378" text-anchor="middle" font-size="10" fill="#EF4444">规模扩大后 AUC ↓</text>
+
+  <!-- Arrow to GPSD line -->
+  <line x1="455" y1="125" x2="535" y2="125" stroke="#2563EB" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Arrow to baseline line -->
+  <line x1="440" y1="358" x2="545" y2="345" stroke="#EF4444" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Peak marker on baseline -->
+  <line x1="280" y1="272" x2="280" y2="245" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="283" y="242" font-size="10" fill="#EF4444">性能峰值</text>
+  <text x="283" y="254" font-size="9" fill="#EF4444">后续退化</text>
+
+  <!-- ═══════════════════ RIGHT PANEL: Key Findings ═══════════════════ -->
+  <rect x="630" y="75" width="155" height="300" rx="10" fill="#F0FDF4" stroke="#10B981" stroke-width="1.5"/>
+  <text x="707" y="98" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">关键发现</text>
+
+  <rect x="642" y="108" width="131" height="60" rx="6" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="707" y="125" text-anchor="middle" font-size="11" font-weight="bold" fill="#065F46">GPSD</text>
+  <text x="707" y="140" text-anchor="middle" font-size="10" fill="#047857">幂律曲线</text>
+  <text x="707" y="154" text-anchor="middle" font-size="10" fill="#047857">R² 极高</text>
+  <text x="707" y="162" text-anchor="middle" font-size="9" fill="#047857">↑ 持续增益</text>
+
+  <rect x="642" y="178" width="131" height="60" rx="6" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="1"/>
+  <text x="707" y="195" text-anchor="middle" font-size="11" font-weight="bold" fill="#991B1B">无 GPSD</text>
+  <text x="707" y="210" text-anchor="middle" font-size="10" fill="#B91C1C">超过阈值后</text>
+  <text x="707" y="224" text-anchor="middle" font-size="10" fill="#B91C1C">AUC 下降</text>
+  <text x="707" y="238" text-anchor="middle" font-size="9" fill="#B91C1C">↓ 过拟合</text>
+
+  <rect x="642" y="248" width="131" height="72" rx="6" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1"/>
+  <text x="707" y="265" text-anchor="middle" font-size="11" font-weight="bold" fill="#78350F">实验规模</text>
+  <text x="707" y="281" text-anchor="middle" font-size="10" fill="#92400E">13K → 0.3B</text>
+  <text x="707" y="295" text-anchor="middle" font-size="10" fill="#92400E">约 2 万倍</text>
+  <text x="707" y="309" text-anchor="middle" font-size="9" fill="#92400E">Meta 工业验证</text>
+
+  <!-- ═══════════════════ BOTTOM INSIGHT ═══════════════════ -->
+  <rect x="30" y="400" width="740" height="60" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="400" y="422" text-anchor="middle" font-size="13" font-weight="bold" fill="#1D4ED8">Scaling Law 成立的关键：稀疏参数必须经过生成式预训练并在微调阶段冻结</text>
+  <text x="400" y="442" text-anchor="middle" font-size="11" fill="#3B82F6">只有当 Embedding 质量有保障时，增加 Transformer 稠密参数才能带来持续的幂律性能提升</text>
+  <text x="400" y="456" text-anchor="middle" font-size="10" fill="#64748B">Meta GPSD · arXiv:2506.03699 · 首次在判别式推荐模型中验证 Scaling Law</text>
+</svg>

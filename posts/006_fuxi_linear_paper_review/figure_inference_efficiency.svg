@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" font-family="'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="860" height="500" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="430" y="36" text-anchor="middle" font-size="17" font-weight="bold" fill="#1E293B">FuXi-Linear 推理效率对比</text>
+  <text x="430" y="56" text-anchor="middle" font-size="12" fill="#64748B">Inference Efficiency Comparison vs Transformer Baselines</text>
+
+  <!-- ============================= -->
+  <!-- LEFT PANEL: Bar Chart         -->
+  <!-- ============================= -->
+
+  <!-- Panel background -->
+  <rect x="30" y="72" width="390" height="310" rx="10" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="225" y="97" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">推理加速倍数对比（相对于 Transformer）</text>
+  <text x="225" y="112" text-anchor="middle" font-size="10" fill="#64748B">Speedup Ratio vs Softmax Attention Baseline</text>
+
+  <!-- Y-axis -->
+  <line x1="90" y1="125" x2="90" y2="355" stroke="#CBD5E1" stroke-width="1.5"/>
+  <!-- X-axis -->
+  <line x1="90" y1="355" x2="390" y2="355" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- Y-axis gridlines and labels -->
+  <!-- Max = 25x, grid at 5, 10, 15, 20, 25 -->
+  <!-- y=355 is 0x, y=125 is 25x; range=230px; 1x = 9.2px -->
+  <line x1="88" y1="355" x2="390" y2="355" stroke="#F1F5F9" stroke-width="1"/>
+  <text x="82" y="359" text-anchor="end" font-size="10" fill="#94A3B8">0x</text>
+
+  <line x1="88" y1="309" x2="390" y2="309" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="82" y="313" text-anchor="end" font-size="10" fill="#94A3B8">5x</text>
+
+  <line x1="88" y1="263" x2="390" y2="263" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="82" y="267" text-anchor="end" font-size="10" fill="#94A3B8">10x</text>
+
+  <line x1="88" y1="217" x2="390" y2="217" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="82" y="221" text-anchor="end" font-size="10" fill="#94A3B8">15x</text>
+
+  <line x1="88" y1="171" x2="390" y2="171" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="82" y="175" text-anchor="end" font-size="10" fill="#94A3B8">20x</text>
+
+  <line x1="88" y1="125" x2="390" y2="125" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="82" y="129" text-anchor="end" font-size="10" fill="#94A3B8">25x</text>
+
+  <!-- Y label -->
+  <text x="20" y="245" text-anchor="middle" font-size="11" fill="#64748B" transform="rotate(-90,20,245)">加速倍数 (Speedup)</text>
+
+  <!-- ===== Bars ===== -->
+  <!-- Bar width=52, gap=18 -->
+  <!-- Groups: Baseline(1x), SASRec(~1.2x), LinRec(~3x), Mamba4Rec(~5x), FuXi-Linear Prefill(10x), FuXi-Linear Decode(21x) -->
+  <!-- x positions: 102, 172, 242, 312, 372 (last two are FuXi split into two narrow bars) -->
+
+  <!-- Transformer Baseline: 1x = 9.2px tall; y = 355-9.2=345.8 -->
+  <rect x="102" y="346" width="40" height="9" rx="3" fill="#94A3B8"/>
+  <text x="122" y="342" text-anchor="middle" font-size="10" fill="#64748B">1x</text>
+  <text x="122" y="371" text-anchor="middle" font-size="9" fill="#475569">Transformer</text>
+  <text x="122" y="381" text-anchor="middle" font-size="9" fill="#475569">Baseline</text>
+
+  <!-- SASRec: ~1.0x (softmax, same complexity) -->
+  <rect x="152" y="346" width="40" height="9" rx="3" fill="#94A3B8"/>
+  <text x="172" y="342" text-anchor="middle" font-size="10" fill="#64748B">1x</text>
+  <text x="172" y="371" text-anchor="middle" font-size="9" fill="#475569">SASRec</text>
+  <text x="172" y="381" text-anchor="middle" font-size="9" fill="#475569">(Softmax)</text>
+
+  <!-- LinRec: ~3x = 27.6px; y = 355-27.6=327.4 -->
+  <rect x="202" y="328" width="40" height="27" rx="3" fill="#6EE7B7"/>
+  <text x="222" y="324" text-anchor="middle" font-size="10" fill="#065F46">3x</text>
+  <text x="222" y="371" text-anchor="middle" font-size="9" fill="#475569">LinRec</text>
+  <text x="222" y="381" text-anchor="middle" font-size="9" fill="#475569">(Linear)</text>
+
+  <!-- Mamba4Rec: ~5x = 46px; y = 355-46=309 -->
+  <rect x="252" y="309" width="40" height="46" rx="3" fill="#34D399"/>
+  <text x="272" y="305" text-anchor="middle" font-size="10" fill="#065F46">5x</text>
+  <text x="272" y="371" text-anchor="middle" font-size="9" fill="#475569">Mamba4Rec</text>
+  <text x="272" y="381" text-anchor="middle" font-size="9" fill="#475569">(SSM)</text>
+
+  <!-- FuXi-Linear Prefill: 10x = 92px; y = 355-92=263 -->
+  <rect x="309" y="263" width="30" height="92" rx="3" fill="#2563EB"/>
+  <text x="324" y="258" text-anchor="middle" font-size="11" font-weight="bold" fill="#1D4ED8">10x</text>
+  <text x="324" y="371" text-anchor="middle" font-size="9" fill="#1D4ED8">Prefill</text>
+  <text x="324" y="381" text-anchor="middle" font-size="9" fill="#1D4ED8">加速</text>
+
+  <!-- FuXi-Linear Decode: 21x = 193.2px; y = 355-193.2=161.8 -->
+  <rect x="347" y="162" width="30" height="193" rx="3" fill="#1D4ED8"/>
+  <text x="362" y="157" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E40AF">21x</text>
+  <text x="362" y="371" text-anchor="middle" font-size="9" fill="#1E40AF">Decode</text>
+  <text x="362" y="381" text-anchor="middle" font-size="9" fill="#1E40AF">加速</text>
+
+  <!-- FuXi-Linear group label -->
+  <rect x="302" y="388" width="82" height="16" rx="4" fill="#DBEAFE"/>
+  <text x="343" y="399" text-anchor="middle" font-size="9" font-weight="bold" fill="#1D4ED8">FuXi-Linear</text>
+
+  <!-- Legend -->
+  <rect x="95" y="408" width="12" height="10" rx="2" fill="#94A3B8"/>
+  <text x="112" y="418" font-size="10" fill="#475569">Softmax 基线</text>
+  <rect x="185" y="408" width="12" height="10" rx="2" fill="#34D399"/>
+  <text x="202" y="418" font-size="10" fill="#475569">线性模型竞品</text>
+  <rect x="285" y="408" width="12" height="10" rx="2" fill="#2563EB"/>
+  <text x="302" y="418" font-size="10" fill="#1D4ED8">FuXi-Linear</text>
+
+  <!-- ============================= -->
+  <!-- RIGHT PANEL: Metrics Cards    -->
+  <!-- ============================= -->
+
+  <rect x="440" y="72" width="394" height="310" rx="10" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="637" y="97" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">核心效率指标详解</text>
+  <text x="637" y="112" text-anchor="middle" font-size="10" fill="#64748B">Key Efficiency Metrics Breakdown</text>
+
+  <!-- Card 1: Prefill -->
+  <rect x="458" y="122" width="170" height="120" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="543" y="142" text-anchor="middle" font-size="12" font-weight="bold" fill="#1D4ED8">Prefill 阶段</text>
+  <text x="543" y="158" text-anchor="middle" font-size="10" fill="#3B82F6">首次处理完整历史序列</text>
+  <!-- Big number -->
+  <text x="543" y="198" text-anchor="middle" font-size="36" font-weight="bold" fill="#2563EB">10x</text>
+  <text x="543" y="216" text-anchor="middle" font-size="10" fill="#64748B">相比 Transformer 加速</text>
+  <text x="543" y="232" text-anchor="middle" font-size="10" fill="#64748B">适用：冷启动、缓存重建</text>
+
+  <!-- Card 2: Decode -->
+  <rect x="644" y="122" width="170" height="120" rx="8" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="2"/>
+  <text x="729" y="142" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E40AF">Decode 阶段</text>
+  <text x="729" y="158" text-anchor="middle" font-size="10" fill="#3B82F6">增量推理（新行为后更新）</text>
+  <text x="729" y="198" text-anchor="middle" font-size="36" font-weight="bold" fill="#1D4ED8">21x</text>
+  <text x="729" y="216" text-anchor="middle" font-size="10" fill="#64748B">相比 Transformer 加速</text>
+  <text x="729" y="232" text-anchor="middle" font-size="10" fill="#64748B">适用：实时在线服务（最高频）</text>
+
+  <!-- Card 3: KV Cache -->
+  <rect x="458" y="256" width="170" height="112" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="543" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">KV Cache 大小</text>
+
+  <!-- Comparison bars: Transformer grows; FuXi fixed -->
+  <text x="543" y="293" text-anchor="middle" font-size="10" fill="#64748B">Transformer：随序列长度线性增长</text>
+  <rect x="470" y="298" width="80" height="10" rx="3" fill="#FCA5A5"/>
+  <rect x="554" y="298" width="30" height="10" rx="3" fill="#FCA5A5" opacity="0.5"/>
+  <text x="600" y="308" font-size="9" fill="#EF4444">→ ∞</text>
+
+  <text x="543" y="323" text-anchor="middle" font-size="10" fill="#64748B">FuXi-Linear：固定大小 d×d</text>
+  <rect x="470" y="328" width="52" height="10" rx="3" fill="#6EE7B7"/>
+  <text x="528" y="338" font-size="9" fill="#10B981">✓ 恒定</text>
+
+  <text x="543" y="356" text-anchor="middle" font-size="10" fill="#059669">超长序列下节省数 GB 显存</text>
+
+  <!-- Card 4: Complexity -->
+  <rect x="644" y="256" width="170" height="112" rx="8" fill="#FFF7ED" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="729" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">计算复杂度</text>
+
+  <text x="729" y="295" text-anchor="middle" font-size="10" fill="#64748B">Transformer Decode</text>
+  <rect x="656" y="299" width="146" height="16" rx="4" fill="#FED7AA"/>
+  <text x="729" y="311" text-anchor="middle" font-size="10" font-weight="bold" fill="#C2410C">O(n·d) — 随序列长度增长</text>
+
+  <text x="729" y="330" text-anchor="middle" font-size="10" fill="#64748B">FuXi-Linear Decode</text>
+  <rect x="656" y="334" width="146" height="16" rx="4" fill="#BBF7D0"/>
+  <text x="729" y="346" text-anchor="middle" font-size="10" font-weight="bold" fill="#065F46">O(d²) — 固定，不依赖 n</text>
+
+  <text x="729" y="363" text-anchor="middle" font-size="10" fill="#92400E">n≫d 时具压倒性优势</text>
+
+  <!-- ============================= -->
+  <!-- BOTTOM SUMMARY BAR            -->
+  <!-- ============================= -->
+  <rect x="30" y="395" width="804" height="82" rx="10" fill="white" stroke="#E2E8F0" stroke-width="1.5"/>
+
+  <!-- 3 summary stats -->
+  <rect x="50" y="408" width="240" height="56" rx="8" fill="#EFF6FF"/>
+  <text x="170" y="427" text-anchor="middle" font-size="11" font-weight="bold" fill="#1D4ED8">在线推理场景</text>
+  <text x="170" y="443" text-anchor="middle" font-size="11" fill="#475569">用户新行为 → 增量更新状态矩阵</text>
+  <text x="170" y="457" text-anchor="middle" font-size="11" fill="#2563EB">单步 O(d²)，与序列长度完全无关</text>
+
+  <rect x="310" y="408" width="240" height="56" rx="8" fill="#ECFDF5"/>
+  <text x="430" y="427" text-anchor="middle" font-size="11" font-weight="bold" fill="#065F46">冷启动 / 缓存重建</text>
+  <text x="430" y="443" text-anchor="middle" font-size="11" fill="#475569">首次 Prefill 处理完整历史</text>
+  <text x="430" y="457" text-anchor="middle" font-size="11" fill="#10B981">chunk-wise 并行，10x 加速</text>
+
+  <rect x="570" y="408" width="240" height="56" rx="8" fill="#FFF7ED"/>
+  <text x="690" y="427" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400E">显存优势</text>
+  <text x="690" y="443" text-anchor="middle" font-size="11" fill="#475569">KV Cache 大小 = d×d（固定）</text>
+  <text x="690" y="457" text-anchor="middle" font-size="11" fill="#F59E0B">序列 10⁴ 级别也无显存压力</text>
+</svg>

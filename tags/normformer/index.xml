@@ -73,13 +73,8 @@ $$x_{l+1}^{\text{NormFormer}} = \text{NormFFN}(\text{NormScaledMHA}(x_l))$$&lt;p
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_907d3f8b57aa34db.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_1b4a0d45be0471f7.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp"
-width="760"
-height="429"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure1.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -268,13 +263,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 4 &amp;amp; 5: Scaling parameters and learning rate stability"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_486bd82faad645a6.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_9c7ac67978c723e9.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp"
-width="760"
-height="249"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 4 &amp;amp; 5: Scaling parameters and learning rate stability"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;

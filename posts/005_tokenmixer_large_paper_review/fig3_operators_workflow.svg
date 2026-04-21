@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748B"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#F59E0B"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="#F8FAFC" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1E293B">单个 Block 内高性能算子工作流程</text>
+  <text x="400" y="46" text-anchor="middle" font-size="10" fill="#64748B">绿色节点 = 算子 (Operator)　蓝色节点 = 数据 (Data)　★ = FP8 量化存储与计算</text>
+
+  <!-- ===== TOP INPUT ===== -->
+  <!-- Input Token X -->
+  <rect x="316" y="62" width="168" height="36" rx="18" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+  <text x="400" y="84" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E40AF">输入 Token X [T, D]</text>
+
+  <!-- Arrow down from input -->
+  <line x1="400" y1="98" x2="400" y2="118" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== PRE-RMSNorm ===== -->
+  <rect x="330" y="118" width="140" height="34" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="400" y="136" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">Pre-RMSNorm</text>
+  <text x="400" y="149" text-anchor="middle" font-size="9" fill="#059669">归一化（无均值计算）</text>
+
+  <!-- Arrow down -->
+  <line x1="400" y1="152" x2="400" y2="172" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== MIXING SECTION ===== -->
+  <!-- Mixing operator box -->
+  <rect x="200" y="172" width="400" height="100" rx="10" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="400" y="192" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803D">Mixing 阶段</text>
+
+  <!-- Split & Concat operator -->
+  <rect x="220" y="200" width="130" height="34" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="285" y="218" text-anchor="middle" font-size="11" font-weight="bold" fill="#065F46">Split &amp; Concat</text>
+  <text x="285" y="230" text-anchor="middle" font-size="9" fill="#059669">T → H token 混合</text>
+
+  <!-- Arrow right -->
+  <line x1="350" y1="217" x2="370" y2="217" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- FP8 data node -->
+  <rect x="370" y="203" width="90" height="28" rx="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="415" y="217" text-anchor="middle" font-size="10" font-weight="bold" fill="#1E40AF">H tokens</text>
+  <!-- FP8 star -->
+  <text x="456" y="202" font-size="13" fill="#F59E0B" font-weight="bold">★</text>
+
+  <!-- Arrow right -->
+  <line x1="460" y1="217" x2="480" y2="217" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- pSwiGLU operator -->
+  <rect x="480" y="200" width="100" height="34" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="530" y="218" text-anchor="middle" font-size="11" font-weight="bold" fill="#065F46">pSwiGLU</text>
+  <text x="530" y="230" text-anchor="middle" font-size="9" fill="#059669">门控线性单元</text>
+
+  <!-- FP8 label on pSwiGLU -->
+  <text x="578" y="204" font-size="13" fill="#F59E0B" font-weight="bold">★</text>
+
+  <!-- LayerNorm inside mixing -->
+  <rect x="370" y="240" width="90" height="24" rx="4" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="415" y="256" text-anchor="middle" font-size="10" font-weight="bold" fill="#065F46">LayerNorm</text>
+
+  <!-- path from pSwiGLU down then left to layernorm -->
+  <path d="M 530 234 L 530 252 L 460 252" fill="none" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Arrow down from mixing section -->
+  <line x1="400" y1="272" x2="400" y2="292" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== REVERTING SECTION ===== -->
+  <rect x="200" y="292" width="400" height="60" rx="10" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
+  <text x="400" y="312" text-anchor="middle" font-size="12" font-weight="bold" fill="#1D4ED8">Reverting 阶段</text>
+
+  <!-- Split & Concat Back -->
+  <rect x="230" y="322" width="140" height="24" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+  <text x="300" y="338" text-anchor="middle" font-size="10" font-weight="bold" fill="#1E40AF">Split &amp; Concat Back</text>
+
+  <!-- Arrow right -->
+  <line x1="370" y1="334" x2="390" y2="334" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Restored tokens data node -->
+  <rect x="390" y="320" width="100" height="28" rx="14" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="440" y="334" text-anchor="middle" font-size="10" font-weight="bold" fill="#1E40AF">X_rev [T,D]</text>
+  <text x="487" y="319" font-size="13" fill="#F59E0B" font-weight="bold">★</text>
+
+  <!-- pSwiGLU 2 -->
+  <rect x="505" y="322" width="80" height="24" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="545" y="338" text-anchor="middle" font-size="10" font-weight="bold" fill="#065F46">pSwiGLU</text>
+  <line x1="490" y1="334" x2="505" y2="334" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Residual add from input X -->
+  <path d="M 316 80 L 155 80 L 155 350 L 200 350" fill="none" stroke="#EF4444" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="145" y="220" font-size="9" fill="#EF4444" text-anchor="middle" transform="rotate(-90,145,220)">Block 内残差</text>
+
+  <!-- Add node -->
+  <circle cx="195" cy="350" r="0" fill="none"/>
+
+  <!-- Arrow down from reverting -->
+  <line x1="400" y1="352" x2="400" y2="372" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== PRE-RMSNorm 2 ===== -->
+  <rect x="330" y="372" width="140" height="34" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="400" y="390" text-anchor="middle" font-size="12" font-weight="bold" fill="#065F46">Pre-RMSNorm</text>
+  <text x="400" y="403" text-anchor="middle" font-size="9" fill="#059669">第二次归一化</text>
+
+  <!-- Arrow down -->
+  <line x1="400" y1="406" x2="400" y2="426" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== S-P MoE SECTION ===== -->
+  <rect x="180" y="426" width="440" height="50" rx="10" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5"/>
+  <text x="400" y="447" text-anchor="middle" font-size="12" font-weight="bold" fill="#6D28D9">Sparse Per-token MoE (S-P MoE)</text>
+
+  <!-- Expert 1 -->
+  <rect x="198" y="455" width="80" height="18" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="238" y="468" text-anchor="middle" font-size="9" font-weight="bold" fill="#4C1D95">Expert 1</text>
+  <text x="275" y="459" font-size="11" fill="#F59E0B" font-weight="bold">★</text>
+
+  <!-- Expert 2 -->
+  <rect x="298" y="455" width="80" height="18" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="338" y="468" text-anchor="middle" font-size="9" font-weight="bold" fill="#4C1D95">Expert 2</text>
+
+  <!-- Shared Expert -->
+  <rect x="398" y="455" width="90" height="18" rx="4" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="443" y="468" text-anchor="middle" font-size="9" font-weight="bold" fill="#92400E">Shared Expert</text>
+
+  <!-- Expert k -->
+  <rect x="505" y="455" width="60" height="18" rx="4" fill="#EDE9FE" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="535" y="468" text-anchor="middle" font-size="9" font-weight="bold" fill="#4C1D95">Expert k</text>
+  <text x="573" y="468" font-size="11" fill="#64748B">...</text>
+
+  <!-- Arrow down from S-P MoE -->
+  <line x1="400" y1="476" x2="400" y2="492" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Output -->
+  <rect x="316" y="490" width="168" height="0" rx="0" fill="none"/>
+
+  <!-- Legend box -->
+  <rect x="20" y="420" width="155" height="70" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="97" y="438" text-anchor="middle" font-size="10" font-weight="bold" fill="#475569">图例</text>
+  <rect x="30" y="445" width="18" height="12" rx="3" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="55" y="456" font-size="9" fill="#475569">算子 Operator</text>
+  <rect x="30" y="462" width="18" height="12" rx="3" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="55" y="473" font-size="9" fill="#475569">数据 Data</text>
+  <text x="30" y="487" font-size="12" fill="#F59E0B" font-weight="bold">★</text>
+  <text x="47" y="487" font-size="9" fill="#475569">FP8 量化</text>
+
+  <!-- FP8 annotation box -->
+  <rect x="625" y="420" width="158" height="70" rx="8" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="704" y="438" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400E">FP8 量化说明</text>
+  <text x="637" y="453" font-size="9" fill="#78350F">FP8 格式显著降低</text>
+  <text x="637" y="466" font-size="9" fill="#78350F">显存占用和带宽需求</text>
+  <text x="637" y="479" font-size="9" fill="#78350F">同时保持计算精度</text>
+  <text x="637" y="488" font-size="9" fill="#F59E0B">▶ MFU 提升至 ~60%</text>
+</svg>

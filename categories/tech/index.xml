@@ -690,13 +690,8 @@ $$x_{l+1}^{\text{NormFormer}} = \text{NormFFN}(\text{NormScaledMHA}(x_l))$$&lt;p
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_907d3f8b57aa34db.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_1b4a0d45be0471f7.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure1_hu_65b7e3867928d564.webp"
-width="760"
-height="429"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: NormFormer、Pre-LN 与 Post-LN 架构对比"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure1.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -885,13 +880,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 4 &amp;amp; 5: Scaling parameters and learning rate stability"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_486bd82faad645a6.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_9c7ac67978c723e9.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5_hu_2839d97f2aa297f7.webp"
-width="760"
-height="249"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 4 &amp;amp; 5: Scaling parameters and learning rate stability"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure4_5.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1571,13 +1561,8 @@ $$\text{UniMixing}(X) = \text{reshape}\left(G(X, W_G) \cdot [\text{local pattern
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: UniMixer 整体架构——左侧展示 UniMixing 模块，中间为 UniMixer Block（含 Pertoken SwiGLU &amp;#43; UniMixing &amp;#43; SiameseNorm），右侧为 UniMixing-Lite 的低秩近似结构"
-srcset="https://dingyadong.top/posts/013_unimixer_paper_review/figure_architecture_hu_a5189f093d34d6a5.webp 320w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_architecture_hu_a729fd8556102b0b.webp 480w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_architecture_hu_dcfe6caa51ff03ff.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_architecture_hu_a5189f093d34d6a5.webp"
-width="760"
-height="238"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: UniMixer 整体架构——左侧展示 UniMixing 模块，中间为 UniMixer Block（含 Pertoken SwiGLU &amp;#43; UniMixing &amp;#43; SiameseNorm），右侧为 UniMixing-Lite 的低秩近似结构"
+src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1620,13 +1605,8 @@ $$\text{TokenMixer}(X) = \text{reshape}\left(W^{\text{perm}} \cdot \text{flatten
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 3: (a) 不同方法的全局混合权重可视化——注意力机制呈现尖锐稀疏的对角模式，TokenMixer 的等价排列矩阵，以及 UniMixer 学到的均匀分散权重；(b) 基于规则的 TokenMixer 等价参数化示意"
-srcset="https://dingyadong.top/posts/013_unimixer_paper_review/figure_mixing_weights_hu_3a2b504286d4b7a4.webp 320w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_mixing_weights_hu_68e6c4b8acabd42b.webp 480w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_mixing_weights_hu_a9cfcfa2876296a4.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_mixing_weights_hu_3a2b504286d4b7a4.webp"
-width="760"
-height="358"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 3: (a) 不同方法的全局混合权重可视化——注意力机制呈现尖锐稀疏的对角模式，TokenMixer 的等价排列矩阵，以及 UniMixer 学到的均匀分散权重；(b) 基于规则的 TokenMixer 等价参数化示意"
+src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_mixing_weights.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1827,13 +1807,8 @@ $$\tilde{Y}_\ell = \text{RMSNorm}(\bar{Y}_\ell), \quad O_\ell = \text{UniMixer}(
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 4: UniMixer-2B/UniMixer-Lite-2B 与 RankMixer 的缩放定律对比——左图为 ΔAUCvs. 参数量，右图为 ΔAUCvs. FLOPs，x 轴均为对数坐标。UniMixer-Lite 的幂律曲线斜率最陡，缩放效率最高"
-srcset="https://dingyadong.top/posts/013_unimixer_paper_review/figure_scaling_laws_hu_cfa30d2557d8f46c.webp 320w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_scaling_laws_hu_83f96da0a3f8d4cc.webp 480w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_scaling_laws_hu_7258ff687999d9fb.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_scaling_laws_hu_cfa30d2557d8f46c.webp"
-width="760"
-height="298"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 4: UniMixer-2B/UniMixer-Lite-2B 与 RankMixer 的缩放定律对比——左图为 ΔAUCvs. 参数量，右图为 ΔAUCvs. FLOPs，x 轴均为对数坐标。UniMixer-Lite 的幂律曲线斜率最陡，缩放效率最高"
+src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_scaling_laws.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1915,13 +1890,8 @@ $$\Delta \text{AUC} = a \cdot \text{Params}^{\alpha}$$&lt;p&gt;其中 $\alpha$ �
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Table 3: UniMixer 6.57M 各组件消融实验结果——温度系数和模型预热对整体性能影响最显著"
-srcset="https://dingyadong.top/posts/013_unimixer_paper_review/figure_ablation_hu_a71dbd43c50b1d42.webp 320w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_ablation_hu_4fbafce68171e479.webp 480w, https://dingyadong.top/posts/013_unimixer_paper_review/figure_ablation_hu_29ff7d61e160a0ab.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_ablation_hu_a71dbd43c50b1d42.webp"
-width="760"
-height="417"
+&lt;div class="w-full" &gt;&lt;img alt="Table 3: UniMixer 6.57M 各组件消融实验结果——温度系数和模型预热对整体性能影响最显著"
+src="https://dingyadong.top/posts/013_unimixer_paper_review/figure_ablation.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -2222,13 +2192,8 @@ style S4 fill:#ccc,color:#666
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers"
-srcset="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp 320w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_927c031cff0b81f2.webp 480w, https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_f932a40cff4efb8b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation_hu_a90a2c68556c56e5.webp"
-width="760"
-height="507"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: SID Generation Pipeline - From Items to Semantic Identifiers"
+src="https://dingyadong.top/posts/012_neo_unified_lm_search_rec/figure_sid_generation.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -3954,13 +3919,8 @@ $$\mathcal{L} = \sum_{t \in \{\text{click, cart, purchase}\}} w_t \cdot \text{BC
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
-srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_fdbac74ac0214b1b.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_9b0155f9ab4f5676.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp"
-width="760"
-height="475"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -3983,13 +3943,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
-srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_e3e71a78e5905f40.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_8866e2ae02b8ee6.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp"
-width="760"
-height="484"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -4630,13 +4585,8 @@ I --&gt; J[多任务预测: 排序 Ranking / 召回 Retrieval]
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: FuXi-Linear Three-Channel Parallel Architecture"
-srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_4ec32161bd5af700.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_527cfb5a198f2bfc.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture_hu_6e5cdd698877725f.webp"
-width="760"
-height="443"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: FuXi-Linear Three-Channel Parallel Architecture"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_three_channel_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -4827,13 +4777,8 @@ F --&gt; G[下一个 Item 预测]
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Inference Efficiency Comparison - FuXi-Linear vs Baselines"
-srcset="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp 320w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_7e60b5214464902.webp 480w, https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_77c1b1ae28603b89.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency_hu_927918af631cbd60.webp"
-width="760"
-height="449"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Inference Efficiency Comparison - FuXi-Linear vs Baselines"
+src="https://dingyadong.top/posts/006_fuxi_linear_paper_review/figure_inference_efficiency.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -4936,13 +4881,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: TokenMixer-Large 整体架构。Raw token 包含所有原始特征和序列聚合/抽取特征。整个模型由多个 TokenMixer-Large Block 堆叠而成，每个 Block 的骨干由 Norm、Mixing、S-P MoE、Reverting、Norm、S-P MoE 和残差连接组成。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_a96e4829249b2292.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_9c68ae2a97fcbf1d.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_c2a7ae1366e0da85.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture_hu_a96e4829249b2292.webp"
-width="760"
-height="276"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: TokenMixer-Large 整体架构。Raw token 包含所有原始特征和序列聚合/抽取特征。整个模型由多个 TokenMixer-Large Block 堆叠而成，每个 Block 的骨干由 Norm、Mixing、S-P MoE、Reverting、Norm、S-P MoE 和残差连接组成。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig1_architecture.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -4992,13 +4932,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Internal Residual（左）与 Auxiliary Loss（右）机制。跨层残差连接确保深层梯度流动，辅助损失通过中间层输出提供额外监督信号。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_6dde1adf4c3cac0d.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_ed292126ee3f73c5.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_d765f0985fc7ce9e.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss_hu_6dde1adf4c3cac0d.webp"
-width="760"
-height="412"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Internal Residual（左）与 Auxiliary Loss（右）机制。跨层残差连接确保深层梯度流动，辅助损失通过中间层输出提供额外监督信号。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig2_residual_aux_loss.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -5017,13 +4952,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 3: 单个 Block 内高性能算子的工作流程。绿色节点代表算子（operator），蓝色节点代表数据。标注星号（*）表示数据以 FP8 量化存储和计算。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_551817f61d0fc358.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_398fa1f1bd47369.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_7da354a1b841990b.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow_hu_551817f61d0fc358.webp"
-width="760"
-height="393"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 3: 单个 Block 内高性能算子的工作流程。绿色节点代表算子（operator），蓝色节点代表数据。标注星号（*）表示数据以 FP8 量化存储和计算。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig3_operators_workflow.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -5167,13 +5097,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 4: 三个核心业务场景的 Scaling Law 验证。(a) Feed Ads 15B (b) E-Commerce 7B (c) Live Streaming 4B。所有场景均展现出持续的 AUC 提升趋势。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_701841928bbeeb86.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_31b5ca9de6c56b92.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_cb75c2d5645cd226.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws_hu_701841928bbeeb86.webp"
-width="760"
-height="210"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 4: 三个核心业务场景的 Scaling Law 验证。(a) Feed Ads 15B (b) E-Commerce 7B (c) Live Streaming 4B。所有场景均展现出持续的 AUC 提升趋势。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig4_scaling_laws.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -5185,13 +5110,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 5: TokenMixer-Large vs RankMixer(TokenMixer) 的 Scaling Law 对比。无论是参数量还是 FLOPs 维度，TokenMixer-Large 都展现出更陡峭的提升斜率。"
-srcset="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5732f6cdf064d910.webp 320w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_4b1b8eb7052f469b.webp 480w, https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5886734552d50243.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison_hu_5732f6cdf064d910.webp"
-width="760"
-height="405"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 5: TokenMixer-Large vs RankMixer(TokenMixer) 的 Scaling Law 对比。无论是参数量还是 FLOPs 维度，TokenMixer-Large 都展现出更陡峭的提升斜率。"
+src="https://dingyadong.top/posts/005_tokenmixer_large_paper_review/fig5_auc_gain_comparison.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;

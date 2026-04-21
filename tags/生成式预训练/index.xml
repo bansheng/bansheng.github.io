@@ -1127,13 +1127,8 @@ $$\mathcal{L} = \sum_{t \in \{\text{click, cart, purchase}\}} w_t \cdot \text{BC
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
-srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_fdbac74ac0214b1b.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_9b0155f9ab4f5676.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training_hu_c54266bf38e0cff8.webp"
-width="760"
-height="475"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 1: GPSD Two-Stage Training Framework"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_two_stage_training.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1156,13 +1151,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
-srcset="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp 320w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_e3e71a78e5905f40.webp 480w, https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_8866e2ae02b8ee6.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law_hu_655650387d6b6ac5.webp"
-width="760"
-height="484"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 2: Scaling Law Demonstration in GPSD"
+src="https://dingyadong.top/posts/009_gpsd_paper_review/figure_scaling_law.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
