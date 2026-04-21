@@ -653,11 +653,11 @@ $$\text{PreLN}(x) = x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;Pre-LN �
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="Figure 3: Average L1 norm of gradients across layers"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_912365e85f7a846.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_b53a7587722dff7c.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_1d8372aa986662be.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_4c7d6128ffffc602.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_45d12f87337d3458.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_1ef4795c62986c12.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_912365e85f7a846.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_4c7d6128ffffc602.webp"
 width="760"
-height="240"
+height="239"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -787,11 +787,11 @@ $$\text{NormScaledMHA}(x) = x + \text{LN}(\text{HeadScaleMHA}(\text{LN}(x)))$$&l
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="Post-Attention LayerNorm 原理"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_650e3dadc91fdb23.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_3e2e0622ec83e258.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_61aad4458c295a8d.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_68693677cfca0559.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_ec157132294a949a.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_dd187e237c4b2b5.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_650e3dadc91fdb23.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_68693677cfca0559.webp"
 width="760"
-height="379"
+height="486"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -839,11 +839,11 @@ $$\text{HeadScaleMHA}(Q, K, V) = \text{Concat}(\gamma_1 \cdot h_1, \gamma_2 \cdo
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="HeadScale 原理：逐头缩放"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_2ef1e535a2f9325f.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_a4d052439fea2345.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_3b50bc676d871011.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_a21cc79fa53ff874.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_e50b9c80ed4768a4.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_2e036a0011ac033e.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_2ef1e535a2f9325f.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_a21cc79fa53ff874.webp"
 width="760"
-height="432"
+height="437"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -898,11 +898,11 @@ $$\text{NormFFN}(x) = x + \underbrace{\text{LN}_{\text{mid}}}_{\text{新增}}(\s
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="FFN Mid-LayerNorm 原理：自适应梯度控制"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_e49f003a6922a098.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_bf2c4151f3fd0dca.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_d3dd635843edcfa8.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_f159dc6b06971f29.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_f6e83aa42fbf88ee.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_5fec5fcb52c7b5a0.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_e49f003a6922a098.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_f159dc6b06971f29.webp"
 width="760"
-height="541"
+height="325"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1033,11 +1033,11 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;div class="flex justify-center "&gt;
 &lt;div class="w-full" &gt;
 &lt;img alt="消融实验贡献度分析"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_d5e98c5e7407aaa4.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_cd5bf144d73ca05f.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_7c23cca21b5bc352.webp 760w"
+srcset="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_69a0685725e267e8.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_caaba11b1ed3b54b.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_b143e237df55cfae.webp 760w"
 sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_d5e98c5e7407aaa4.webp"
+src="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_69a0685725e267e8.webp"
 width="760"
-height="433"
+height="421"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
