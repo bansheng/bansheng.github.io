@@ -651,13 +651,8 @@ $$\text{PreLN}(x) = x + \text{Sublayer}(\text{LayerNorm}(x))$$&lt;p&gt;Pre-LN �
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Figure 3: Average L1 norm of gradients across layers"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_3998438df5d9f5ef.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_1fefc4ae03010801.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_f718c2a947b08856.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/figure3_hu_3998438df5d9f5ef.webp"
-width="760"
-height="209"
+&lt;div class="w-full" &gt;&lt;img alt="Figure 3: Average L1 norm of gradients across layers"
+src="https://dingyadong.top/posts/014_normformer_paper_review/figure3.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -667,13 +662,8 @@ loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="梯度流向图：Post-LN vs Pre-LN vs NormFormer"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_ecb356253dc58d97.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_8b329c43d2314bd6.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_4811b6ada503dfb0.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow_hu_ecb356253dc58d97.webp"
-width="760"
-height="441"
+&lt;div class="w-full" &gt;&lt;img alt="梯度流向图：Post-LN vs Pre-LN vs NormFormer"
+src="https://dingyadong.top/posts/014_normformer_paper_review/gradient-flow.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -785,13 +775,8 @@ $$\text{NormScaledMHA}(x) = x + \text{LN}(\text{HeadScaleMHA}(\text{LN}(x)))$$&l
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="Post-Attention LayerNorm 原理"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_1d8a62b3a00e8a20.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_c2be06c548100887.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_12f499b55f8ccc4d.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln_hu_1d8a62b3a00e8a20.webp"
-width="760"
-height="499"
+&lt;div class="w-full" &gt;&lt;img alt="Post-Attention LayerNorm 原理"
+src="https://dingyadong.top/posts/014_normformer_paper_review/post-attn-ln.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -837,13 +822,8 @@ $$\text{HeadScaleMHA}(Q, K, V) = \text{Concat}(\gamma_1 \cdot h_1, \gamma_2 \cdo
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="HeadScale 原理：逐头缩放"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_d08fe0b7775c2490.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_dfdd157823e5e7e9.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_e702e509fdef94c3.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/headscale_hu_d08fe0b7775c2490.webp"
-width="760"
-height="430"
+&lt;div class="w-full" &gt;&lt;img alt="HeadScale 原理：逐头缩放"
+src="https://dingyadong.top/posts/014_normformer_paper_review/headscale.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -896,13 +876,8 @@ $$\text{NormFFN}(x) = x + \underbrace{\text{LN}_{\text{mid}}}_{\text{新增}}(\s
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="FFN Mid-LayerNorm 原理：自适应梯度控制"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_a655460b83712dcb.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_ed5c2df0da4b557f.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_80dcb86ac9c7f397.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln_hu_a655460b83712dcb.webp"
-width="760"
-height="332"
+&lt;div class="w-full" &gt;&lt;img alt="FFN Mid-LayerNorm 原理：自适应梯度控制"
+src="https://dingyadong.top/posts/014_normformer_paper_review/ffn-mid-ln.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
@@ -1031,13 +1006,8 @@ $$\text{ResScale}(x) = \lambda_{\text{resid}} \odot x + \text{Sublayer}(\text{La
 &lt;p&gt;
 &lt;figure &gt;
 &lt;div class="flex justify-center "&gt;
-&lt;div class="w-full" &gt;
-&lt;img alt="消融实验贡献度分析"
-srcset="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_9221948ac1a186cf.webp 320w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_68c55f8899fbf861.webp 480w, https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_3b0f77bb086fccec.webp 760w"
-sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 760px"
-src="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib_hu_9221948ac1a186cf.webp"
-width="760"
-height="408"
+&lt;div class="w-full" &gt;&lt;img alt="消融实验贡献度分析"
+src="https://dingyadong.top/posts/014_normformer_paper_review/ablation-contrib.svg"
 loading="lazy" data-zoomable /&gt;&lt;/div&gt;
 &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
