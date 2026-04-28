@@ -1,6 +1,6 @@
 ---
 title: "LLM 范式重构电商推荐召回：生成式召回的工程实践全记录"
-date: 2026-04-28T20:00:00+08:00
+date: 2026-04-28T10:00:00+08:00
 draft: false
 featured: true
 tags: ["推荐系统", "生成式召回", "Foundation Model", "Semantic ID", "Transformer", "工业落地", "深度学习", "LLM"]
