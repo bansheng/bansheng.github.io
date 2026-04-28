@@ -1,6 +1,6 @@
 ---
 title: "KV 高效的 2K 长序列电商精排：OneTrans V3.1 工程实践"
-date: 2026-04-28T22:00:00+08:00
+date: 2026-04-28T11:00:00+08:00
 draft: false
 featured: true
 tags: ["推荐系统", "精排", "Transformer", "长序列", "GQA", "Flash Attention", "工业落地", "深度学习"]
