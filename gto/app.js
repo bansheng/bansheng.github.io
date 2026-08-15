@@ -638,8 +638,17 @@ function showHandRead(hr) {
   }
 
   const width = (p) => Math.max(1, Math.round(p));
+  const bold = (s) => (s || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  // 组合数怎么来的，默认折叠 —— 想核对的时候能展开，不想看时不占地方
+  const method = hr.method ? `
+    <details class="hr-method">
+      <summary>这些组合数是怎么数出来的</summary>
+      <p>${bold(hr.method.how)}</p>
+      <p>${bold(hr.method.strong_how)}</p>
+    </details>` : "";
   table.innerHTML = `
     <p class="hint">对手范围共 <b>${hr.total_combos}</b> 个组合｜你的牌型：<b>${hr.hero_bucket}</b></p>
+    ${method}
     <table class="hrt">
       <tr><th>牌型</th><th>组合</th><th>占比</th><th></th><th>打败你</th><th>典型牌</th></tr>
       ${hr.buckets.map((b) => `
