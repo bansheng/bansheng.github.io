@@ -1,0 +1,136 @@
+{
+  "name": "hu_pushfold_nash",
+  "label": "单挑推-弃 Nash 均衡（真 GTO 解）",
+  "table_size": 2,
+  "stack_bb": 0,
+  "open_size_bb": 0,
+  "provenance": {
+    "kind": "solver",
+    "method": "damped fictitious play over the 169-hand abstraction, with card removal conditioning",
+    "equity_matrix_trials": 30000,
+    "max_exploitability_bb": 0.000142,
+    "note": "短筹码下没有翻后，终局要么是盲注交换要么是全下摊牌，所以这个游戏可以真正解到纳什均衡 —— 这是本项目里唯一标注为 solver 的 chart。可利用度已在上面给出。"
+  },
+  "spots": {
+    "SB|push-5bb": {
+      "description": "单挑 5bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,T3s,T2s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,94s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,84s,A7o,K7o,Q7o,J7o,T7o,97o,87o,77,76s,75s,74s,A6o,K6o,Q6o,J6o,T6o,96o:0.911,86o,76o,66,65s,64s,A5o,K5o,Q5o,J5o,55,54s,53s,A4o,K4o,Q4o,J4o,44,43s,A3o,K3o,Q3o,J3o,33,A2o,K2o,Q2o,22"
+      }
+    },
+    "BB|call-vs-push-5bb": {
+      "description": "单挑 5bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,A7o,K7o,Q7o,J7o,T7o,97o,77,76s,A6o,K6o,Q6o,J6o,66,A5o,K5o,Q5o,J5o,55,A4o,K4o,Q4o,44,A3o,K3o,Q3o,33,A2o,K2o,Q2o,22"
+      }
+    },
+    "SB|push-6bb": {
+      "description": "单挑 6bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,T3s,T2s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,94s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,84s,A7o,K7o,Q7o,J7o,T7o,97o,87o,77,76s,75s,74s,A6o,K6o,Q6o,J6o,86o,76o,66,65s,64s,63s,A5o,K5o,Q5o,J5o,55,54s,53s,A4o,K4o,Q4o,44,43s,A3o,K3o,Q3o,33,A2o,K2o,Q2o,22"
+      }
+    },
+    "BB|call-vs-push-6bb": {
+      "description": "单挑 6bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,A7o,K7o,Q7o,J7o,77,A6o,K6o,Q6o,66,A5o,K5o,Q5o,55,A4o,K4o,Q4o,44,A3o,K3o,33,A2o,K2o,22"
+      }
+    },
+    "SB|push-7bb": {
+      "description": "单挑 7bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,T3s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,84s,A7o,K7o,Q7o,J7o,T7o,97o,87o,77,76s,75s,74s,A6o,K6o,Q6o,86o,76o,66,65s,64s,63s,A5o,K5o,Q5o,55,54s,53s,A4o,K4o,Q4o,44,43s,A3o,K3o,Q3o,33,A2o,K2o,Q2o,22"
+      }
+    },
+    "BB|call-vs-push-7bb": {
+      "description": "单挑 7bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,A8o,K8o,Q8o,J8o,88,A7o,K7o,Q7o,77,A6o,K6o,Q6o,66,A5o,K5o,55,A4o,K4o,44,A3o,K3o,33,A2o,K2o,22"
+      }
+    },
+    "SB|push-8bb": {
+      "description": "单挑 8bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,A7o,K7o,Q7o,J7o,T7o:0.784,97o,87o,77,76s,75s,74s,A6o,K6o,Q6o,76o,66,65s,64s,A5o,K5o,Q5o,55,54s,53s,A4o,K4o,44,A3o,K3o,33,A2o,K2o,22"
+      }
+    },
+    "BB|call-vs-push-8bb": {
+      "description": "单挑 8bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,ATo,KTo,QTo,JTo,TT,T9s,T8s,A9o,K9o,Q9o,J9o,T9o,99,98s,A8o,K8o,Q8o,88,A7o,K7o,Q7o:0.914,77,A6o,K6o,66,A5o,K5o,55,A4o,K4o,44,A3o,K3o,33,A2o,K2o,22"
+      }
+    },
+    "SB|push-9bb": {
+      "description": "单挑 9bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,A7o,K7o,Q7o,T7o,97o,87o,77,76s,75s,74s,A6o,K6o,Q6o,76o,66,65s,64s,A5o,K5o,55,54s,53s,A4o,K4o,44,43s,A3o,K3o,33,A2o,K2o,22"
+      }
+    },
+    "BB|call-vs-push-9bb": {
+      "description": "单挑 9bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,T8s,A9o,K9o,Q9o,J9o,99,A8o,K8o,Q8o,88,A7o,K7o,77,A6o,K6o,66,A5o,K5o,55,A4o,K4o,44,A3o,33,A2o,22"
+      }
+    },
+    "SB|push-10bb": {
+      "description": "单挑 10bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,84s,A7o,K7o,Q7o,T7o:0.332,97o,87o,77,76s,75s,74s,A6o,K6o,76o,66,65s,64s,A5o,K5o,55,54s,53s,A4o,K4o,44,43s,A3o,K3o,33,A2o,K2o,22"
+      }
+    },
+    "BB|call-vs-push-10bb": {
+      "description": "单挑 10bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,A9o,K9o,Q9o,99,A8o,K8o,88,A7o,K7o,77,A6o,K6o,66,A5o,K5o,55,A4o,44,A3o,33,A2o,22"
+      }
+    },
+    "SB|push-12bb": {
+      "description": "单挑 12bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,A7o,K7o,87o,77,76s,75s,74s,A6o,K6o,66,65s,64s,A5o,K5o,55,54s,53s,A4o,K4o,44,A3o,K3o,33,A2o,22"
+      }
+    },
+    "BB|call-vs-push-12bb": {
+      "description": "单挑 12bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,AJo,KJo,QJo,JJ,JTs,J9s,ATo,KTo,QTo,JTo,TT,A9o,K9o,99,A8o,K8o,88,A7o,K7o,77,A6o,66,A5o,55,A4o,44,A3o,33,A2o,22"
+      }
+    },
+    "SB|push-15bb": {
+      "description": "单挑 15bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s:0.916,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,A8o,K8o,T8o,98o,88,87s,86s,85s,A7o,K7o,77,76s,75s,A6o,K6o,66,65s,64s,A5o,55,54s,A4o,44,A3o,33,A2o,22"
+      }
+    },
+    "BB|call-vs-push-15bb": {
+      "description": "单挑 15bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,AQo,KQo,QQ,QJs,QTs,Q9s,AJo,KJo,QJo,JJ,JTs,ATo,KTo,QTo,TT,A9o,K9o,99,A8o,88,A7o,77,A6o,66,A5o,55,A4o,44,A3o,33,A2o,22"
+      }
+    },
+    "SB|push-20bb": {
+      "description": "单挑 20bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,A8o,98o,88,87s,86s,A7o,77,76s,75s,A6o,66,65s,A5o,55,54s,A4o,44,A3o,33,A2o,22"
+      }
+    },
+    "BB|call-vs-push-20bb": {
+      "description": "单挑 20bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,AQo,KQo,QQ,QJs,QTs,AJo,KJo,JJ,ATo,KTo,TT,A9o,99,A8o,88,A7o,77,A6o,66,A5o,55,44,33"
+      }
+    },
+    "SB|push-25bb": {
+      "description": "单挑 25bb 有效筹码，SB 推-弃（真 Nash 均衡解）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,A9o,J9o,T9o,99,98s,97s,96s,A8o,88,87s,86s,A7o,77,76s,A6o,66,65s,A5o,55,A4o,44,A3o,33,A2o,22"
+      }
+    },
+    "BB|call-vs-push-25bb": {
+      "description": "单挑 25bb，BB 面对全下的跟注范围（真 Nash 均衡解）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,AKo,KK,KQs,KJs,KTs,AQo,KQo,QQ,QJs,AJo,KJo,JJ,ATo,TT,A9o,99,A8o,88,A7o,77,66,55,44"
+      }
+    }
+  }
+}

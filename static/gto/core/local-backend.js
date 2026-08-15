@@ -14,7 +14,7 @@ import { advise, BotTable, freqGap, frequencyOf, isBlunder,
          inferVillainRangeDetailed } from "./brain.js";
 import { analyse } from "./analysis.js";
 
-const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb"];
+const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";
 const SUPPORTED_STACKS = [50, 100, 200];
 

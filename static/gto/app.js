@@ -487,13 +487,16 @@ $("#btn-drill").addEventListener("click", async () => {
   hd.appendChild(cardEl(r1 + "s"));
   hd.appendChild(cardEl(r2 + (suited ? "s" : "h")));
 
+  // 按钮从这个 spot 实际有哪些动作推出来，不要写死。
+  // 推-弃表里 "raise" 的意思是全下，标成「加注」会看不懂。
+  const isPush = q.spot.includes("push-") && !q.spot.includes("vs-push");
+  const available = new Set(["fold", ...Object.keys(q.answer)]);
   const ac = $("#drill-actions");
   ac.innerHTML = "";
-  ["fold", "call", "raise"].forEach((a) => {
-    if (a === "call" && !("call" in q.answer) && !q.spot.includes("vs-")) return;
+  ["fold", "call", "raise"].filter((a) => available.has(a)).forEach((a) => {
     const b = document.createElement("button");
     b.className = "act " + a;
-    b.textContent = ACT_CN[a];
+    b.textContent = a === "raise" && isPush ? "全下" : ACT_CN[a];
     b.onclick = () => answerDrill(a);
     ac.appendChild(b);
   });
@@ -579,10 +582,19 @@ async function drawMatrix() {
       cell.innerHTML =
         `<span class="wfill" style="background:var(${color});opacity:${f.toFixed(2)}"></span>` +
         `<span class="lbltxt">${label}</span>`;
+      // 手机上格子里的字被 CSS 隐藏了，hover 也不存在，所以点一下把这手牌的
+      // 完整策略显示在下方
+      cell.onclick = () => {
+        $("#chart-pct").textContent =
+          `${label}：` + Object.entries(st)
+            .map(([k, v]) => `${ACT_CN[k]} ${(v * 100).toFixed(0)}%`).join("　");
+      };
       m.appendChild(cell);
     }
   }
-  $("#chart-pct").textContent = `${ACT_CN[action]}范围占比 ${spot.percent[action] ?? 0}%`;
+  const isPush = key.includes("push-") && !key.includes("vs-push");
+  const actionCn = action === "raise" && isPush ? "全下" : ACT_CN[action];
+  $("#chart-pct").textContent = `${actionCn}范围占比 ${spot.percent[action] ?? 0}%`;
 }
 
 /* ---------------- stats ---------------- */
@@ -678,7 +690,84 @@ async function replay(handId) {
     <p class="explain">公共牌 ${h.board || "—"}｜底池 ${h.pot}｜净收益
       <b style="color:${h.hero_net >= 0 ? "var(--call)" : "var(--raise)"}">
         ${h.hero_net > 0 ? "+" : ""}${h.hero_net}</b></p>
-    <ul class="timeline">${acts || "<li>无动作记录</li>"}</ul>`;
+    <ul class="timeline">${acts || "<li>无动作记录</li>"}</ul>
+    <div id="solve-box"></div>`;
+  renderSolveBox(h);
+}
+
+/* 翻后精确解只有本机后端跑得动，而且一个局面要几十秒到几分钟。
+   所以这里是「排队 + 轮询」，不是「点了就等」。 */
+async function renderSolveBox(hand) {
+  const box = $("#solve-box");
+  if (!remote) {
+    box.innerHTML =
+      '<p class="caveat">精确解需要本机后端（浏览器算不动 CFR）。' +
+      '在本机启动后端后刷新本页即可。</p>';
+    return;
+  }
+  let st;
+  try { st = await api("/api/solver/status"); } catch { return; }
+  if (!st.available) {
+    box.innerHTML =
+      '<p class="caveat">求解器还没编译。跑 <code>scripts/build_solver.sh</code> 之后这里会出现「求解此局面」。</p>';
+    return;
+  }
+  const board = (hand.board || "").slice(0, 6);
+  if (board.length < 6) {
+    box.innerHTML = '<p class="hint">这手牌没打到翻牌，没有可求解的翻后局面。</p>';
+    return;
+  }
+  box.innerHTML =
+    `<button class="primary" id="btn-solve">求解翻牌局面 ${board}（真 CFR）</button>` +
+    '<p class="hint" id="solve-msg">一个 flop 局面大约 30 秒到几分钟，算完会存下来，' +
+    '之后遇到同样的局面直接命中缓存。</p>';
+  $("#btn-solve").onclick = () => enqueueSolve(hand, board);
+}
+
+async function enqueueSolve(hand, board) {
+  const msg = $("#solve-msg");
+  const snap = hand.snapshot || {};
+  const bb = snap.big_blind || 2;
+  try {
+    const row = await api("/api/solver/solve", {
+      method: "POST",
+      body: JSON.stringify({
+        board,
+        // 用当前 chart 的默认范围当双方范围。真正贴合这手牌的范围需要
+        // 从牌局动作反推，那是下一步的事 —— 现在如实标注用的是什么。
+        oop_range: "22+,A2s+,K5s+,Q7s+,J8s+,T8s+,97s+,87s,76s,65s,A7o+,KTo+,QJo",
+        ip_range: "22+,A2s+,K9s+,Q9s+,J8s+,T8s+,97s+,86s+,76s,65s,ATo+,KJo+,QJo",
+        pot: Math.max(bb * 5, hand.pot || bb * 5),
+        effective_stack: bb * 100,
+      }),
+    });
+    msg.textContent = `已入队（key ${row.spot_key}），状态：${row.status}`;
+    pollSolve(row.spot_key, msg);
+  } catch (e) {
+    msg.textContent = "入队失败：" + e.message;
+  }
+}
+
+async function pollSolve(key, msg) {
+  const started = Date.now();
+  const tick = async () => {
+    let row;
+    try { row = await api(`/api/solver/solve/${key}`); } catch { return; }
+    const secs = Math.round((Date.now() - started) / 1000);
+    if (row.status === "done") {
+      msg.innerHTML = `✅ 求解完成，用时 ${row.seconds}s` +
+        (row.exploitability != null ? `，可利用度 ${row.exploitability}` : "") +
+        `<br>结果已缓存：<code>${row.strategy_path}</code>`;
+      return;
+    }
+    if (row.status === "failed") {
+      msg.textContent = "❌ 求解失败：" + (row.error || "未知原因");
+      return;
+    }
+    msg.textContent = `求解中…（${row.status}，已等 ${secs}s）`;
+    setTimeout(tick, 3000);
+  };
+  tick();
 }
 
 /* ---------------- boot ---------------- */
