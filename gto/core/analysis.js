@@ -4,7 +4,7 @@
  * 你记不住每个局面的频率，但你能学会数组合、把价格和胜率比一比。
  */
 
-import { RANKS, comboCount, gridLabel } from "./poker.js";
+import { RANKS, comboCount, gridLabel, cardToStr } from "./poker.js";
 import { evaluate, categoryOf, CATEGORY_CN } from "./evaluator.js";
 
 /* evaluator 的 category 序号是「越大越强」，这里按强到弱列出来 */
@@ -31,7 +31,180 @@ function rangeGrid(range, dead) {
   return grid;
 }
 
-export function analyse(state, seat, villainRange, equity, derivation = "") {
+
+/* ---------------- 文字解读 ---------------- */
+
+function rangeWords(pct) {
+  if (pct >= 45) return "非常宽（几乎什么都玩）";
+  if (pct >= 28) return "偏宽";
+  if (pct >= 18) return "中等";
+  if (pct >= 10) return "偏紧";
+  return "很紧（只有强牌）";
+}
+
+function labelOf(a, b) {
+  const ra = a >> 2, rb = b >> 2;
+  const hi = Math.max(ra, rb), lo = Math.min(ra, rb);
+  return ra === rb ? RANKS[hi] + RANKS[hi]
+    : RANKS[hi] + RANKS[lo] + ((a & 3) === (b & 3) ? "s" : "o");
+}
+
+/* 只用来给范围里最强的几手命名，不是胜率模型 —— 能把 AA 排在 AKs 前面就够了 */
+function preflopStrength([a, b]) {
+  const ra = a >> 2, rb = b >> 2;
+  const hi = Math.max(ra, rb), lo = Math.min(ra, rb);
+  if (hi === lo) return 100 + hi;
+  return hi * 2 + lo - Math.min(hi - lo, 5) + ((a & 3) === (b & 3) ? 3 : 0);
+}
+
+function topHands(combos, board, limit = 8) {
+  if (!combos.length) return [];
+  const ranked = board.length < 3
+    ? combos.map((c) => [c, preflopStrength(c)]).sort((x, y) => y[1] - x[1])
+    : combos.map((c) => [c, evaluate([c[0], c[1]].concat(board))]).sort((x, y) => y[1] - x[1]);
+  const seen = new Set(), out = [];
+  for (const [[a, b]] of ranked) {
+    const lb = labelOf(a, b);
+    if (seen.has(lb)) continue;
+    seen.add(lb); out.push(lb);
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
+/** 对手这条街最后那个动作说明了什么。 */
+function betRead(state, seat) {
+  let last = null;
+  for (let i = state.actions.length - 1; i >= 0; i--) {
+    const a = state.actions[i];
+    if (a.street === state.street && a.seat !== seat) { last = a; break; }
+  }
+  if (!last) return "这条街对手还没行动，没有额外信息。";
+  const hero = state.seats[seat];
+  const toCall = state.currentBet - hero.committed;
+  if (last.type === "check")
+    return "对手过牌。过牌范围通常是**去掉了最强和最弱两头**的中间段 —— " +
+           "强牌想下注拿价值，最烂的牌想下注诈唬，剩下的才过牌。" +
+           "所以你可以更放心地下注，但被过牌加注要当真。";
+  if (last.type === "fold") return "对手弃牌了。";
+  if (toCall <= 0) return "对手这条街没有下注给你。";
+
+  const potBefore = state.pot - toCall;
+  const ratio = potBefore > 0 ? toCall / potBefore : 0;
+  const p = (x) => `${Math.round(x * 100)}%`;
+  let shape;
+  if (ratio <= 0.36)
+    shape = `小注（约 ${p(ratio)} 底池）。小注通常是**融合型**范围 —— ` +
+            "中等强度的牌想廉价拿价值，同时带一点便宜的诈唬。" +
+            "这种尺度下对手范围更宽、更弱，你该防守得更宽。";
+  else if (ratio <= 0.7)
+    shape = `中注（约 ${p(ratio)} 底池）。这是最标准的尺度，` +
+            "范围最平衡，价值和诈唬的比例接近理论值。";
+  else
+    shape = `大注（约 ${p(ratio)} 底池）。大注通常是**极化型**范围 —— ` +
+            "要么很强要么在诈唬，中间强度的牌不会选这个尺度。" +
+            "所以你的中等牌力在这里价值很低，要么加注要么弃牌。";
+  if (last.type === "raise")
+    shape += " 而且这是**加注**，不是主动下注 —— 加注范围通常比下注范围窄得多。";
+  return shape;
+}
+
+/** 严格数 outs：这张牌来了能让你领先对手范围过半。 */
+function countOuts(state, seat, combos, totalW, ahead, tied) {
+  const board = state.board;
+  if (board.length < 3 || board.length > 4 || totalW <= 0) return 0;
+  const hero = state.seats[seat];
+  const dead = new Set(board.concat(hero.hole));
+  const nowAhead = (ahead + tied / 2) / totalW;
+  let outs = 0;
+  for (let card = 0; card < 52; card++) {
+    if (dead.has(card)) continue;
+    const nb = board.concat(card);
+    const hr = evaluate(hero.hole.concat(nb));
+    let better = 0, live = 0;
+    for (const [a, b, w] of combos) {
+      if (a === card || b === card) continue;
+      live += w;
+      const vr = evaluate([a, b].concat(nb));
+      if (hr < vr) better += w;
+      else if (hr === vr) better += w / 2;
+    }
+    if (live > 0 && better / live > 0.5 && nowAhead <= 0.5) outs++;
+  }
+  return outs;
+}
+
+/** 桌上能心算的公式，配上这个局面的真实数字做校准。 */
+function buildShortcuts(state, board, equity, pot, toCall, ahead, tied, totalW, outs) {
+  const out = [];
+  const p0 = (x) => `${Math.round(x * 100)}%`;
+  if (toCall > 0) {
+    out.push({
+      name: "底池赔率",
+      formula: "跟注量 ÷ (当前底池 + 跟注量)",
+      applied: `${toCall} ÷ (${pot} + ${toCall}) = ${(toCall / (pot + toCall) * 100).toFixed(1)}%`,
+      note: "这是你**至少**要有的胜率。桌上心算就记：跟一份、赢几份。",
+    });
+    const potBefore = pot - toCall;
+    out.push({
+      name: "最小防守频率 MDF",
+      formula: "下注前底池 ÷ (下注前底池 + 下注量)",
+      applied: pot > 0 ? `${potBefore} ÷ (${potBefore} + ${toCall}) = ${p0(potBefore / pot)}` : "—",
+      note: "**你整个范围**至少要防守这么高的比例，否则对手拿任意两张牌诈唬都稳赚。" +
+            "注意这是对范围的要求，不是对你这一手牌的要求；防守 = 跟注 + 加注，不只是跟注。",
+    });
+  }
+  if (board.length >= 3 && board.length <= 4) {
+    const mult = board.length === 3 ? 4 : 2;
+    const street = board.length === 3 ? "翻牌（还有两张牌）" : "转牌（还有一张牌）";
+    const est = Math.min(0.95, (outs * mult) / 100);
+    const now = totalW ? (ahead + tied / 2) / totalW : 0;
+    const improve = equity != null ? Math.max(0, equity - now) : null;
+    let applied = `${outs} 张 out × ${mult} = ${p0(est)}`;
+    if (equity != null)
+      applied += `｜真实拆开看：现在就领先 ${p0(now)} ＋ 改进后领先 ${p0(improve)} = 总胜率 ${p0(equity)}`;
+    out.push({
+      name: `2/4 法则 · ${street}`,
+      formula: `outs × ${mult} ≈ **改进后领先**的概率（不是总胜率）`,
+      applied,
+      note: "最常见的误用就是拿它当总胜率。**总胜率 = 现在就领先的部分 ＋ 改进后领先的部分**，" +
+            "2/4 只估后面那一半。这里的 outs 是按「这张牌来了能让你领先对手范围过半」" +
+            "严格数出来的，不是拍脑袋 —— 所以它比你在桌上数的通常要保守。",
+    });
+  }
+  if (toCall > 0) {
+    for (const [label, mult] of [["2.5 倍", 2.5], ["3.5 倍", 3.5]]) {
+      const size = Math.round(toCall * mult);
+      const risk = size - toCall;
+      if (risk > 0) out.push({
+        name: `加注诈唬打平点 · 加到 ${label}`,
+        formula: "多投入的部分 ÷ (加注后对手要面对的总底池)",
+        applied: `${risk} ÷ (${pot} + ${risk}) = ${p0(risk / (pot + risk))}`,
+        note: "对手弃牌超过这个比例，这个诈唬加注就不亏。",
+      });
+    }
+  } else if (pot > 0) {
+    for (const [label, frac] of [["半池", 0.5], ["满池", 1.0]]) {
+      const size = Math.round(pot * frac);
+      out.push({
+        name: `诈唬打平点 · ${label}`,
+        formula: "下注量 ÷ (底池 + 下注量)",
+        applied: `${size} ÷ (${pot} + ${size}) = ${p0(size / (pot + size))}`,
+        note: `下${label}诈唬，对手弃牌超过这个比例你就不亏 —— 这还没算被跟注后还能赢的部分。`,
+      });
+    }
+  }
+  out.push({
+    name: "组合数速算",
+    formula: "对子 6 个 · 同花 4 个 · 非同花 12 个",
+    applied: "被公共牌占掉一张时：对子剩 3，同花剩 3，非同花剩 6",
+    note: "数「对手范围里有几个组合能打败我」时用这个。" +
+          "比如牌面有 K，对手 KK 只剩 3 个组合，AK 只剩 8 个。",
+  });
+  return out;
+}
+
+export function analyse(state, seat, villainRange, equity, derivation = "", heroRange = null) {
   const hero = state.seats[seat];
   const board = state.board;
   const bb = state.bigBlind;
@@ -43,11 +216,16 @@ export function analyse(state, seat, villainRange, equity, derivation = "") {
   const r1 = (x) => Math.round(x * 10) / 10;
   const r2 = (x) => Math.round(x * 100) / 100;
 
+  const villainPct = (100 * totalW) / 1326;
   const villain = {
     combos: r1(totalW),
-    percent: r1((100 * totalW) / 1326),
+    percent: r1(villainPct),
     grid: rangeGrid(villainRange, dead),
     derivation,
+    width_words: rangeWords(villainPct),
+    top_hands: topHands(combos, board),
+    read: betRead(state, seat),
+    summary: "",
     categories: [],
   };
 
@@ -71,10 +249,63 @@ export function analyse(state, seat, villainRange, equity, derivation = "") {
       combos: r1(catW.get(c)),
       percent: r1((100 * catW.get(c)) / totalW),
     }));
+    // 1 = 一对, 0 = 高牌；其余都算两对以上
+    let strong = 0;
+    for (const [c, w] of catW) if (c > 1) strong += w;
+    villain.strong_pct = r1((100 * strong) / totalW);
   }
+
+  {
+    const top = villain.top_hands.slice(0, 5).join("、") || "—";
+    const head = `对手范围${rangeWords(villainPct)}，约 ${Math.round(totalW)} 个组合` +
+                 `（占全部起手牌 ${villainPct.toFixed(1)}%）。`;
+    villain.summary = board.length >= 3
+      ? head + `在 ${board.map(cardToStr).join("")} 这个牌面上，` +
+        `其中 **${(villain.strong_pct ?? 0).toFixed(0)}% 是两对以上**，` +
+        `剩下 ${(100 - (villain.strong_pct ?? 0)).toFixed(0)}% 只是一对或高牌。` +
+        `最强的那几手是 ${top}。`
+      : head + `里面最强的那几手是 ${top}。翻前还没有公共牌，无法拆牌型。`;
+  }
+
+  // 自己范围里的位置：绝对牌力没意义，相对位置才有
+  const heroPos = state.positionName(seat);
+  const heroBlock = {
+    note: `你在 ${heroPos}。**判断自己这手牌好不好，要看它在你自己范围里的位置**，` +
+          "不是绝对牌力 —— 顶对在一个很紧的范围里可能只是中游，在一个很宽的范围里就是顶端。",
+  };
+  if (heroRange && board.length >= 3) {
+    let boardDead = 0n;
+    for (const c of board) boardDead |= 1n << BigInt(c);
+    const mine = heroRange.combos(boardDead);
+    if (mine.length) {
+      const heroRank = evaluate(hero.hole.concat(board));
+      let worse = 0, myTotal = 0;
+      for (const [a, b, w] of mine) {
+        myTotal += w;
+        if (evaluate([a, b].concat(board)) < heroRank) worse += w;
+      }
+      const pct = (100 * worse) / myTotal;
+      Object.assign(heroBlock, {
+        combos: r1(myTotal),
+        percent: r1((100 * myTotal) / 1326),
+        percentile: r1(pct),
+        top_hands: topHands(mine, board),
+        summary:
+          `你的 **${heroCategory}** 在你自己的范围里打败了 **${pct.toFixed(0)}%** 的组合 —— ` +
+          (pct >= 80 ? "属于范围顶端，可以放心拿价值。"
+           : pct >= 60 ? "属于范围上游，通常够跟但不够加。"
+           : pct >= 35 ? "在范围中游，这类牌最难打：跟注亏、弃牌可惜。"
+           : "在范围底部，要么当诈唬打要么放掉。"),
+      });
+    }
+  }
+
+  const toCallNow = state.currentBet - hero.committed;
+  const outs = countOuts(state, seat, combos, totalW, ahead, tied);
 
   const matchup = {
     hero_hand: heroCategory,
+    outs,
     equity: equity == null ? null : Math.round(equity * 10000) / 10000,
     ahead_combos: r1(ahead), tied_combos: r1(tied), behind_combos: r1(behind),
     ahead_pct: board.length >= 3 ? r1((100 * ahead) / totalW) : null,
@@ -159,5 +390,9 @@ export function analyse(state, seat, villainRange, equity, derivation = "") {
       `**${b.fold_pct_needed.toFixed(0)}%** 才能打平。`);
   }
 
-  return { villain, matchup, odds, reasons };
+  const shortcuts = buildShortcuts(
+    state, board, equity, pot, toCall, ahead, tied, totalW, outs);
+  void toCallNow;
+
+  return { villain, matchup, odds, reasons, hero_range: heroBlock, shortcuts };
 }
