@@ -197,6 +197,19 @@ button{font-family:inherit}
 .sizer .amt{min-width:64px;text-align:right;color:var(--gold);font-weight:700}
 .waiting{color:var(--muted);font-size:13px;padding:11px 0}
 
+/* ---- 快捷下注尺度 ---- */
+.quick{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.qbtn{
+  padding:6px 11px;font-size:12.5px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--line);background:var(--panel2);color:var(--muted);
+  white-space:nowrap;
+}
+.qbtn:hover{border-color:var(--gold);color:var(--text)}
+/* 当前选中的尺度要一眼看得出来，否则你不知道滑杆停在哪一档 */
+.qbtn.on{background:var(--gold);border-color:var(--gold);color:#1a1408;font-weight:700}
+.qbtn.allin{border-color:var(--raise);color:var(--raise)}
+.qbtn.allin.on{background:var(--raise);border-color:var(--raise);color:#fff}
+
 /* ---------- advice ---------- */
 .advice-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
 .advice-head h3{margin:0}
@@ -311,6 +324,8 @@ tr.warn td{color:var(--gold)}
     box-shadow:0 -8px 16px -8px rgba(0,0,0,.7);
   }
   .act{flex:1 1 30%;min-width:0;min-height:48px;padding:12px 6px;font-size:14px}
+  .quick{flex:1 1 100%;order:8}
+  .qbtn{flex:1;min-height:40px;padding:6px 4px}
   .sizer{flex:1 1 100%;min-width:0;order:9;padding-top:4px}
   .sizer input[type=range]{min-height:44px}
 
