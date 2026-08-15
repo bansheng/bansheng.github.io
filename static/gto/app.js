@@ -879,6 +879,18 @@ async function loadStats() {
     kpi(k.blunder_pct + "%", "严重偏差率", k.blunder_pct > 15 ? "neg" : ""),
   ].join("");
 
+  // 你到底是被什么标准打的分 —— 全靠启发式打的分只是练手，不是 GTO 学习
+  const src = k.by_source || {};
+  $("#kpis").insertAdjacentHTML("afterend", `
+    <p class="hint" id="src-note">本局评分依据：
+      <b style="color:var(--call)">精确解 ${src.solver || 0}</b> ·
+      <b style="color:var(--gold)">chart ${src.chart || 0}</b> ·
+      <b style="color:var(--raise)">启发式 ${src.heuristic || 0}</b>
+      ${k.solver_pct ? `（真解占比 ${k.solver_pct}%）`
+        : "　—— 目前全部翻后决策都是启发式估算，不是 GTO。想要真解：连后端 + 点「求解这个局面」，或等预解库跑大。"}</p>`);
+  const dup = document.querySelectorAll("#src-note");
+  for (let i = 0; i < dup.length - 1; i++) dup[i].remove();
+
   const tbl = (rows, cols) =>
     rows.length
       ? `<table><tr>${cols.map((c) => `<th>${c[0]}</th>`).join("")}</tr>` +
