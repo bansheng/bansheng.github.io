@@ -164,6 +164,7 @@ async function deal() {
   clearTimeout(dealTimer);
   state.peeked = false;
   $("#feedback").classList.add("hidden");
+  $("#analysis").classList.add("hidden");
   const v = await api(`/api/sessions/${state.sessionId}/deal`, { method: "POST" });
   applyView(v);
 }
@@ -217,6 +218,7 @@ function applyView(v) {
 /* 训练的意义在于先自己判断。所以轮到你时建议是盖着的，
    出完动作才揭晓；实在想不出来可以主动点开，但那次会记为「偷看」。 */
 function hideAdvice() {
+  $("#analysis").classList.add("hidden");
   $("#advice-title").textContent = "GTO 建议";
   $("#advice-source").textContent = "已隐藏";
   $("#advice-source").className = "badge";
@@ -348,6 +350,7 @@ async function loadAdvice() {
     bars(a.actions, $("#advice-bars"));
     $("#advice-explain").textContent = a.explanation;
     $("#advice-caveat").textContent = a.caveat || "";
+    if (a.analysis) showAnalysis(a.analysis);
   } catch {
     $("#advice-bars").innerHTML = '<p class="hint">这个局面暂无建议。</p>';
   }
@@ -376,6 +379,73 @@ function showFeedback(d) {
   bars(a.actions, $("#advice-bars"), d.chosen);
   $("#advice-explain").textContent = a.explanation;
   $("#advice-caveat").textContent = a.caveat || "";
+
+  if (d.analysis) showAnalysis(d.analysis);
+}
+
+/* 建议告诉你「打什么」，分析告诉你「为什么」。后者才是能带走的东西：
+   频率记不住，但数组合、比价格和胜率，是可以练成习惯的。 */
+function showAnalysis(an) {
+  const box = $("#analysis");
+  box.classList.remove("hidden");
+
+  $("#ana-derive").textContent =
+    `${an.villain.derivation}　→　${an.villain.combos} 个组合，占全部起手牌 ${an.villain.percent}%`;
+
+  const g = $("#ana-grid");
+  g.innerHTML = "";
+  an.villain.grid.forEach((row, r) =>
+    row.forEach((w, c) => {
+      const hi = Math.min(r, c), lo = Math.max(r, c);
+      const label = r === c ? GRID[r] + GRID[r] : GRID[hi] + GRID[lo] + (r < c ? "s" : "o");
+      const cell = document.createElement("div");
+      cell.className = "mcell";
+      cell.title = `${label}  ${(w * 100).toFixed(0)}%`;
+      cell.style.background = w > 0
+        ? `color-mix(in srgb, var(--raise) ${Math.round(w * 100)}%, var(--fold))`
+        : "var(--fold)";
+      g.appendChild(cell);
+    })
+  );
+
+  $("#ana-cats").innerHTML = an.villain.categories.length
+    ? an.villain.categories.map((c) =>
+        `<div class="catrow"><span>${c.name}</span>
+         <span class="track"><span class="fill" style="width:${c.percent}%"></span></span>
+         <span class="v">${c.percent}%</span></div>`).join("")
+    : '<p class="hint">翻前没有公共牌，无法按牌型拆分。</p>';
+
+  const m = an.matchup;
+  const kv = (k, v, cls = "") => `<div class="kv"><span>${k}</span><b class="${cls}">${v}</b></div>`;
+  $("#ana-matchup").innerHTML = [
+    m.hero_hand ? kv("你的牌型", m.hero_hand) : "",
+    m.equity != null ? kv("你的胜率", (m.equity * 100).toFixed(1) + "%",
+      m.equity > 0.5 ? "good" : "bad") : "",
+    m.ahead_pct != null ? kv("现在摊牌领先", `${m.ahead_pct}%（${m.ahead_combos} 个组合）`, "good") : "",
+    m.behind_pct != null ? kv("现在摊牌落后", `${m.behind_pct}%（${m.behind_combos} 个组合）`, "bad") : "",
+    m.tied_combos ? kv("平分", `${m.tied_combos} 个组合`) : "",
+    m.note ? `<p class="hint" style="margin-top:8px">${m.note}</p>` : "",
+  ].filter(Boolean).join("");
+
+  const o = an.odds;
+  $("#ana-odds").innerHTML = [
+    kv("底池", `${o.pot_bb}bb`),
+    o.to_call ? kv("需要跟", `${o.to_call_bb}bb`) : "",
+    o.required_equity != null
+      ? kv("跟注门槛胜率", (o.required_equity * 100).toFixed(1) + "%") : "",
+    o.ev_call_bb != null
+      ? kv("跟注 EV", `${o.ev_call_bb > 0 ? "+" : ""}${o.ev_call_bb}bb`,
+           o.ev_call_bb > 0 ? "good" : "bad") : "",
+    o.spr != null ? kv("SPR（有效筹码/底池）", o.spr) : "",
+    kv("有效筹码", `${o.effective_stack_bb}bb`),
+    o.bluff_breakeven?.length
+      ? `<div class="kv"><span>诈唬打平所需弃牌率</span><b>${
+          o.bluff_breakeven.map((b) => `${b.label} ${b.fold_pct_needed}%`).join("　")
+        }</b></div>` : "",
+  ].filter(Boolean).join("");
+
+  $("#ana-reasons").innerHTML = an.reasons
+    .map((r) => `<li>${r.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")}</li>`).join("");
 }
 
 function showResults(h) {
