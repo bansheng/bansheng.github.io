@@ -225,7 +225,11 @@ export function inferVillainRangeDetailed(state, seat, chart) {
 
   let base, why;
   if (raiseCount >= 2) {
-    base = Range.parse("TT+,AJs+,KQs,AKo");
+    // 3bet 范围不只有大牌：A5s-A3s 和同花 broadway 那部分才让它成为一个
+    // "范围"而不是一张价值清单。原来写成 TT+,AJs+,KQs,AKo 里面一手诈唬都
+    // 没有，于是多数牌面上每个组合都成对，"能打走"直接算成 0%。
+    // 与求解库 3bet spot 用的是同一个范围。
+    base = Range.parse("TT+,AJs+,KQs,A5s,A4s,A3s,KJs,QJs,JTs,AKo,AQo");
     why = `翻前有 ${raiseCount} 次加注，按 3bet+ 的强范围估计`;
   } else if (raiseCount === 1 && openerPos) {
     const spot = chart.spots[spotKey(openerPos, null)];

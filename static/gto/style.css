@@ -522,3 +522,9 @@ tr.rr-verdict td { border-top: none; padding-top: 0; font-size: 12px; color: var
 .rr-chip.tight { background: rgba(210, 170, 60, .18); color: #e8cf8a; }
 .rr-more { font-size: 11px; color: var(--muted); }
 .rr-none { color: var(--muted); }
+
+/* ---- 组合数口径说明（默认折叠） ---- */
+.hr-method{margin:6px 0 10px;font-size:12.5px;color:var(--muted)}
+.hr-method summary{cursor:pointer;color:var(--gold);padding:3px 0}
+.hr-method p{margin:6px 0;line-height:1.65}
+.hr-method b{color:var(--text)}
