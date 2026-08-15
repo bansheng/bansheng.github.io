@@ -16,7 +16,8 @@ import { analyse } from "./analysis.js";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";
-const SUPPORTED_STACKS = [50, 100, 200];
+// 深筹码给常规打法；短的这几档存在是因为单挑推-弃 Nash 解只在这些深度有定义
+const SUPPORTED_STACKS = [5, 8, 10, 12, 15, 20, 25, 50, 100, 200];
 
 /* ---------------- chart ---------------- */
 
@@ -69,18 +70,19 @@ function saveStore(s) {
 /* ---------------- 会话 ---------------- */
 
 class LocalSession {
-  constructor(id, config, chart, store) {
+  constructor(id, config, chart, store, pushfoldChart = null) {
     this.id = id;
     this.config = config;
     this.chart = chart;
     this.store = store;
+    this.pushfoldChart = pushfoldChart;
     this.handNo = 0;
     this.button = config.table_size - 1;
     this.stack = config.stack_bb * config.big_blind;
     this.hand = null;
     this.handRowId = null;
     this.pendingDecision = null;
-    this.botTable = new BotTable(config.bots, chart);
+    this.botTable = new BotTable(config.bots, chart, Math.random, pushfoldChart);
   }
 
   get hero() { return this.config.hero_seat; }
@@ -115,7 +117,8 @@ class LocalSession {
   adviceAndAnalysis() {
     if (!this.hand || this.hand.actor !== this.hero) throw new Error("not the hero's turn");
     const [villain, derivation] = inferVillainRangeDetailed(this.hand, this.hero, this.chart);
-    const a = advise(this.hand, this.hero, this.chart, Math.random, villain);
+    const a = advise(this.hand, this.hero, this.chart, Math.random, villain,
+                     this.pushfoldChart);
     // chart 查表不产生胜率，但翻前的分析面板没有胜率就空了一半，
     // 所以这里补算一次蒙特卡洛。
     let equity = a.equity ?? null;
@@ -364,7 +367,8 @@ export class LocalBackend {
       bots, chart_name: chartName,
     };
     const id = this.nextSession++;
-    const s = new LocalSession(id, config, chart, this.store);
+    const s = new LocalSession(id, config, chart, this.store,
+                               this.charts["hu_pushfold_nash"] || null);
     this.sessions.set(id, s);
     this.store.sessions.push({ id, ...config });
     saveStore(this.store);

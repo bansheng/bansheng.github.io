@@ -36,9 +36,20 @@
       </label>
       <label>筹码深度
         <select id="cfg-stack">
-          <option value="50">50bb</option>
-          <option value="100" selected>100bb</option>
-          <option value="200">200bb</option>
+          <optgroup label="短筹码（单挑有真 Nash 解）">
+            <option value="5">5bb</option>
+            <option value="8">8bb</option>
+            <option value="10">10bb</option>
+            <option value="12">12bb</option>
+            <option value="15">15bb</option>
+            <option value="20">20bb</option>
+            <option value="25">25bb</option>
+          </optgroup>
+          <optgroup label="深筹码">
+            <option value="50">50bb</option>
+            <option value="100" selected>100bb</option>
+            <option value="200">200bb</option>
+          </optgroup>
         </select>
       </label>
       <label>你的座位

@@ -33,6 +33,53 @@ export function spotKey(heroPos, openerPos) {
   return openerPos === null ? `${heroPos}|rfi` : `${heroPos}|vs-${openerPos}-open`;
 }
 
+// 有 Nash 解的筹码深度
+export const PUSHFOLD_STACKS = [5, 6, 7, 8, 9, 10, 12, 15, 20, 25];
+
+/** 单挑短筹码翻前的精确 Nash 建议。
+ *  只在「被求解的那个游戏 == 正在打的这个游戏」时才返回：两人、翻前、
+ *  有解的筹码深度，而且要么是无人加注（SB 推-弃），要么是面对全下（BB 跟-弃）。
+ *  min-raise、跛入、非整数筹码都**不是**这个游戏，硬套 Nash 答案就是撒谎。 */
+export function pushfoldAdvice(state, seat, pushfoldChart) {
+  if (!pushfoldChart || state.numSeats !== 2 || state.street !== "preflop") return null;
+
+  const stackBb = state.startingStacks[seat] / state.bigBlind;
+  const depth = PUSHFOLD_STACKS.reduce(
+    (a, b) => (Math.abs(b - stackBb) < Math.abs(a - stackBb) ? b : a));
+  if (Math.abs(depth - stackBb) > 0.01) return null;
+
+  const raises = state.actions.filter(
+    (a) => a.street === "preflop" && (a.type === "bet" || a.type === "raise"));
+  const isButton = seat === state.button;
+  let key, names, note;
+  if (!raises.length && isButton) {
+    key = `SB|push-${depth}bb`;
+    names = { raise: "全下", fold: "弃牌" };
+    note = `单挑 ${depth}bb，SB 推-弃`;
+  } else if (raises.length === 1 && raises[0].all_in && !isButton) {
+    key = `BB|call-vs-push-${depth}bb`;
+    names = { call: "跟注全下", fold: "弃牌" };
+    note = `单挑 ${depth}bb，BB 面对全下`;
+  } else return null;
+
+  const spot = pushfoldChart.spots[key];
+  if (!spot) return null;
+  const hand = holeLabel(state.seats[seat].hole);
+  const freqs = spot.strategy[hand] || { fold: 1 };
+  const expl = pushfoldChart.provenance?.max_exploitability_bb ?? 0;
+
+  return {
+    source: "solver",
+    confidence: "exact",
+    spot: key,
+    hand,
+    actions: Object.entries(freqs).filter(([, f]) => f > 0)
+      .map(([action, frequency]) => ({ action, frequency, note: names[action] || "" })),
+    explanation: note,
+    caveat: `这是**真正的纳什均衡解**，不是近似 —— 短筹码下没有翻后，游戏可以完整求解。可利用度 ${expl.toFixed(6)} bb/手。`,
+  };
+}
+
 export function preflopAdvice(state, seat, chart) {
   const heroPos = state.positionName(seat);
   const { openerPos, raiseCount } = preflopContext(state);
@@ -182,11 +229,15 @@ export function postflopAdvice(state, seat, villainRange, trials = 2500, rand = 
   };
 }
 
-export function advise(state, seat, chart, rand = Math.random, villainRange = null) {
+export function advise(state, seat, chart, rand = Math.random, villainRange = null,
+                       pushfoldChart = null) {
   seat = seat ?? state.actor;
   if (seat === null) throw new Error("no seat is to act");
   const villain = villainRange || inferVillainRange(state, seat, chart);
   if (state.street === "preflop") {
+    // 只要这个局面真的就是被求解的那个游戏，精确解优先
+    const exact = pushfoldAdvice(state, seat, pushfoldChart);
+    if (exact) return exact;
     const a = preflopAdvice(state, seat, chart);
     if (a) return a;
     // chart 里没有这个局面（多次加注，或未收录的位置组合）。
@@ -224,9 +275,10 @@ const FISH_CALL = Range.parse(
 );
 
 export class Bot {
-  constructor(config, chart, rand = Math.random) {
+  constructor(config, chart, rand = Math.random, pushfoldChart = null) {
     this.config = { profile: "gto", aggression: 1.0, ...config };
     this.chart = chart;
+    this.pushfoldChart = pushfoldChart;
     this.rand = rand;
   }
 
@@ -241,7 +293,7 @@ export class Bot {
   }
 
   _gto(state, seat) {
-    const advice = advise(state, seat, this.chart, this.rand);
+    const advice = advise(state, seat, this.chart, this.rand, null, this.pushfoldChart);
     const legal = this._legal(state);
     const weights = new Map();
     for (const item of advice.actions) {
@@ -311,8 +363,9 @@ export class Bot {
 }
 
 export class BotTable {
-  constructor(configs, chart, rand = Math.random) {
-    this.bots = new Map(configs.map((c) => [c.seat, new Bot(c, chart, rand)]));
+  constructor(configs, chart, rand = Math.random, pushfoldChart = null) {
+    this.bots = new Map(
+      configs.map((c) => [c.seat, new Bot(c, chart, rand, pushfoldChart)]));
   }
   has(seat) { return this.bots.has(seat); }
   playUntilHuman(state, humanSeats, maxSteps = 200) {
