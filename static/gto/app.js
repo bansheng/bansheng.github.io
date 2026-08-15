@@ -6,13 +6,19 @@ import { LocalBackend } from "./core/local-backend.js";
 
 /* 后端探测：本地跑着 FastAPI 就用它（有 CFR solver + SQLite 全局手牌库），
    否则整套逻辑落到浏览器内的 LocalBackend（GitHub Pages 走这条）。 */
-const REMOTE_CANDIDATES = [
-  location.origin,
-  "http://127.0.0.1:8848",
-  "http://localhost:8848",
-];
+const BACKEND_KEY = "gto-backend-url";
+const savedBackend = () => { try { return localStorage.getItem(BACKEND_KEY) || ""; } catch { return ""; } };
+
+/* 探测顺序：手动设的地址 → 当前站点 → 本机回环。
+   注意一条浏览器的硬规则：**HTTPS 页面不能请求 HTTP 地址**（混合内容拦截），
+   localhost / 127.0.0.1 是唯一的例外（浏览器把它当可信来源）。
+   所以从 https://dingyadong.top/gto/ 连不上局域网里的 http 后端 ——
+   要用后端就直接打开后端自己的地址，它同样托管这套界面。 */
+const probeList = () => [savedBackend(), location.origin,
+                         "http://127.0.0.1:8848", "http://localhost:8848"].filter(Boolean);
 let remote = null;
 let local = null;
+let backendInfo = null;
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -38,7 +44,7 @@ const state = {
 /* ---------------- helpers ---------------- */
 
 async function probeRemote() {
-  for (const base of REMOTE_CANDIDATES) {
+  for (const base of probeList()) {
     try {
       const ctl = new AbortController();
       const timer = setTimeout(() => ctl.abort(), 1200);
@@ -46,7 +52,7 @@ async function probeRemote() {
       clearTimeout(timer);
       if (res.ok) {
         const h = await res.json();
-        if (h.ok && !h.local) return base;
+        if (h.ok && !h.local) { backendInfo = h; return base; }
       }
     } catch { /* 这个地址没有后端，试下一个 */ }
   }
@@ -221,6 +227,7 @@ function hideAdvice() {
   $("#advice-explain").textContent = "";
   $("#advice-caveat").textContent = "";
   $("#btn-peek").onclick = () => { state.peeked = true; loadAdvice(); };
+  renderSolveNow();
 }
 
 /* 座位按真实牌桌的位置摆：英雄永远在正下方，其余按顺时针绕桌一圈。
@@ -468,6 +475,83 @@ function showFeedback(d) {
   $("#advice-caveat").textContent = a.caveat || "";
 
   if (d.analysis) showAnalysis(d.analysis);
+  renderSolveNow();
+}
+
+/* 翻后要拿到真解，只有"这个局面已经解过"一条路 —— 现算要几分钟。
+   所以这里给的是一个明确的动作：把当前局面丢进求解队列，算完自动把
+   建议从红色「启发式估算」换成绿色「精确解」。 */
+async function renderSolveNow() {
+  const box = $("#solve-now");
+  if (!box) return;
+  box.innerHTML = "";
+  const h = state.hand;
+  if (!h || h.board.length < 3) return;
+  if (!remote) {
+    box.innerHTML =
+      '<p class="caveat">翻后精确解需要后端（浏览器算不动 CFR）。' +
+      '点右上角状态栏设置后端地址。</p>';
+    return;
+  }
+  if (!backendInfo?.solver_ready) {
+    box.innerHTML = '<p class="caveat">后端已连上，但求解器没编译：跑 <code>scripts/build_solver.sh</code>。</p>';
+    return;
+  }
+  box.innerHTML =
+    '<button class="peek" id="btn-solve-now">求解这个局面（真 CFR）</button>' +
+    '<span class="hint" id="solve-now-msg" style="margin-left:8px"></span>';
+  $("#btn-solve-now").onclick = solveCurrentSpot;
+}
+
+async function solveCurrentSpot() {
+  const msg = $("#solve-now-msg");
+  const btn = $("#btn-solve-now");
+  btn.disabled = true;
+  msg.textContent = "入队中…";
+  let row;
+  try {
+    row = await api(`/api/sessions/${state.sessionId}/solve`,
+      { method: "POST", body: JSON.stringify({ bet_sizes: [50], accuracy: 0.5 }) });
+  } catch (e) {
+    msg.textContent = "❌ " + e.message;
+    btn.disabled = false;
+    return;
+  }
+  const started = Date.now();
+  const tick = async () => {
+    let r;
+    try { r = await api(`/api/solver/solve/${row.spot_key}`); } catch { return; }
+    const secs = Math.round((Date.now() - started) / 1000);
+    if (r.status === "done") {
+      msg.textContent = `✅ 解完了（${r.seconds}s，可利用度 ${r.exploitability}），正在刷新建议…`;
+      try {
+        const a = await api(`/api/sessions/${state.sessionId}/advice`);
+        showRevealedAdvice(a, null);
+        msg.textContent = `✅ 已用精确解（${r.seconds}s，可利用度 ${r.exploitability}）`;
+      } catch { msg.textContent = "✅ 解完了，但这手牌不在求解范围内，仍用启发式"; }
+      return;
+    }
+    if (r.status === "failed") {
+      msg.textContent = "❌ " + (r.error || "求解失败");
+      btn.disabled = false;
+      return;
+    }
+    msg.textContent = `求解中…（${r.status}，已等 ${secs}s；一个 flop 局面通常 1-4 分钟）`;
+    setTimeout(tick, 4000);
+  };
+  tick();
+}
+
+/* 把一份 advice 直接画到建议面板上（求解完成后替换用） */
+function showRevealedAdvice(a, chosen) {
+  $("#advice-title").textContent = "GTO 建议";
+  const badge = $("#advice-source");
+  badge.textContent = CONFIDENCE_CN[a.confidence] || a.confidence;
+  badge.className = "badge " + a.confidence;
+  bars(a.actions, $("#advice-bars"), chosen);
+  $("#advice-explain").textContent = a.explanation || "";
+  $("#advice-caveat").textContent = a.caveat || "";
+  if (a.analysis) showAnalysis(a.analysis);
 }
 
 /* 建议告诉你「打什么」，分析告诉你「为什么」。后者才是能带走的东西：
@@ -948,18 +1032,50 @@ async function pollSolve(key, msg) {
 
 /* ---------------- boot ---------------- */
 
+/* 后端设置弹窗：公网版要连局域网后端，必须能手填地址 */
+function openBackendModal() {
+  const m = $("#backend-modal");
+  $("#backend-url").value = savedBackend();
+  const https = location.protocol === "https:";
+  $("#backend-state").innerHTML = remote
+    ? `当前：<b>已连接后端</b> ${remote}${backendInfo?.solver_ready
+        ? `　求解器可用，库里 <b>${backendInfo.solved_spots}</b> 个已解局面`
+        : "　求解器不可用"}`
+    : "当前：<b>浏览器本地模式</b>（所有计算在本页跑，翻后只有启发式估算）";
+  $("#backend-warn").innerHTML = https
+    ? "⚠ 当前页面是 <b>HTTPS</b>，浏览器不允许它请求 <b>http://</b> 地址" +
+      "（混合内容拦截），<b>localhost / 127.0.0.1 除外</b>。<br>" +
+      "要用局域网后端，请直接打开后端自己的地址 —— 它同样托管这套界面。"
+    : "当前页面是 HTTP，可以连任意 http 后端。";
+  m.classList.remove("hidden");
+}
+
+$("#conn").onclick = openBackendModal;
+$("#backend-close").onclick = () => $("#backend-modal").classList.add("hidden");
+$("#backend-save").onclick = () => {
+  try { localStorage.setItem(BACKEND_KEY, $("#backend-url").value.trim().replace(/\/$/, "")); } catch { /* 无痕模式 */ }
+  location.reload();
+};
+$("#backend-clear").onclick = () => {
+  try { localStorage.removeItem(BACKEND_KEY); } catch { /* 无痕模式 */ }
+  location.reload();
+};
+
 (async () => {
   setStatus("探测后端…");
   remote = await probeRemote();
   try {
     const h = await api("/api/health");
     if (remote) {
-      setStatus(`已连接后端 · ${h.charts.length} 套图表 · 支持 solver`, "ok");
+      const solver = h.solver_ready
+        ? `求解器就绪 · 库里 ${h.solved_spots} 个已解局面`
+        : "求解器未编译";
+      setStatus(`后端已连接 · ${solver}`, "ok");
+      $("#conn").title = `${remote}\n点击可修改后端地址`;
     } else {
-      setStatus(`浏览器本地模式 · ${h.charts.length} 套图表 · 无 solver`, "");
+      setStatus(`浏览器模式 · 翻后只有启发式`, "warn");
       $("#conn").title =
-        "所有计算都在你的浏览器里跑，数据存在本机 localStorage。" +
-        "想要 CFR 精确解和 SQLite 手牌库，在本机启动后端后刷新本页。";
+        "所有计算都在你的浏览器里跑，翻后没有 CFR 精确解。\n点击设置后端地址。";
     }
   } catch (e) {
     setStatus("初始化失败: " + e.message, "err");
