@@ -430,3 +430,13 @@ tr.warn td{color:var(--gold)}
 .modal-box h3{margin-bottom:12px}
 .modal-box input{width:100%;margin-top:4px}
 .modal-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+
+/* ---------- 用户 / 继续上次 ---------- */
+.whoami{cursor:pointer;border:1px solid var(--line);background:var(--panel2);
+  color:var(--text);border-radius:20px;padding:4px 12px;font-size:12px;font-family:inherit}
+.whoami:hover{border-color:var(--accent)}
+.resume{background:var(--panel2);border-radius:8px;padding:10px 12px;margin-top:12px;
+  font-size:13px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.resume b{color:var(--gold)}
+#login-known button{margin:2px 4px 2px 0}
+#lifetime b.pos{color:var(--call)} #lifetime b.neg{color:var(--raise)}

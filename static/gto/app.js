@@ -7,6 +7,8 @@ import { LocalBackend } from "./core/local-backend.js";
 /* 后端探测：本地跑着 FastAPI 就用它（有 CFR solver + SQLite 全局手牌库），
    否则整套逻辑落到浏览器内的 LocalBackend（GitHub Pages 走这条）。 */
 const BACKEND_KEY = "gto-backend-url";
+const USER_KEY = "gto-user-name";
+const savedUser = () => { try { return localStorage.getItem(USER_KEY) || ""; } catch { return ""; } };
 const savedBackend = () => { try { return localStorage.getItem(BACKEND_KEY) || ""; } catch { return ""; } };
 
 /* 探测顺序：手动设的地址 → 当前站点 → 本机回环。
@@ -39,6 +41,8 @@ const state = {
   peeked: false,
   drillStats: { total: 0, hit: 0 },
   chart: null,
+  user: null,
+  userSessions: [],
 };
 
 /* ---------------- helpers ---------------- */
@@ -142,20 +146,24 @@ $("#cfg-seats").addEventListener("change", renderSetup);
 $("#cfg-hero").addEventListener("change", renderSetup);
 renderSetup();
 
-$("#btn-start").addEventListener("click", async () => {
-  const seats = +$("#cfg-seats").value;
-  const hero = +$("#cfg-hero").value;
-  const bots = $$("#bot-rows select").map((s) => ({
-    seat: +s.dataset.seat, profile: s.value,
-  }));
+async function startSession(resumeFrom = null, prior = null) {
+  const seats = prior ? prior.table_size : +$("#cfg-seats").value;
+  const hero = prior ? prior.hero_seat : +$("#cfg-hero").value;
+  const bots = prior
+    ? Object.entries(prior.bot_config || {}).map(([seat, b]) =>
+        ({ seat: +seat, profile: b.profile }))
+    : $$("#bot-rows select").map((s) => ({ seat: +s.dataset.seat, profile: s.value }));
   try {
     const s = await api("/api/sessions", {
       method: "POST",
       body: JSON.stringify({
-        mode: "full", table_size: seats, stack_bb: +$("#cfg-stack").value,
+        mode: "full", table_size: seats,
+        stack_bb: prior ? prior.stack_bb : +$("#cfg-stack").value,
         hero_seat: hero, bots,
-        chip_mode: $("#cfg-chipmode").value,
+        chip_mode: prior ? "" : $("#cfg-chipmode").value,
         buyin_budget: +$("#cfg-budget").value || 2000,
+        user: state.user?.name || savedUser() || "",
+        resume_from: resumeFrom,
       }),
     });
     state.sessionId = s.session_id;
@@ -166,7 +174,9 @@ $("#btn-start").addEventListener("click", async () => {
   } catch (e) {
     setStatus("开局失败: " + e.message, "err");
   }
-});
+}
+
+$("#btn-start").addEventListener("click", () => startSession());
 
 /* ---------------- play ---------------- */
 
@@ -1072,6 +1082,77 @@ $("#backend-clear").onclick = () => {
   try { localStorage.removeItem(BACKEND_KEY); } catch { /* 无痕模式 */ }
   location.reload();
 };
+
+/* 用户名不是登录凭证，是记录的归属标签。没有它，刷新一次记录就散了。 */
+async function loginAs(name) {
+  name = (name || "").trim();
+  if (!name) return;
+  try { localStorage.setItem(USER_KEY, name); } catch { /* 无痕模式 */ }
+  try {
+    const r = await api("/api/users/login", {
+      method: "POST", body: JSON.stringify({ name }),
+    });
+    state.user = r.user;
+    state.userStats = r.stats;
+    state.userSessions = r.sessions || [];
+  } catch {
+    state.user = { name };
+    state.userStats = null;
+    state.userSessions = [];
+  }
+  $("#whoami").textContent = `👤 ${name}`;
+  $("#login-modal").classList.add("hidden");
+  renderResumeBox();
+  renderLifetime();
+}
+
+function renderResumeBox() {
+  const box = $("#resume-box");
+  if (!box) return;
+  const last = (state.userSessions || []).find((s) => s.hands > 0 && s.chip_state);
+  if (!last) { box.innerHTML = ""; return; }
+  const c = last.chip_state;
+  box.innerHTML = `
+    <div class="resume">
+      <div>上次这局打到 <b>第 ${c.hand_no} 手</b>，筹码 <b>${c.stacks?.[last.hero_seat] ?? "?"}</b>，
+        已买入 ${c.hero_bought_in}${c.rebuys ? `（补码 ${c.rebuys} 次）` : ""}</div>
+      <button class="peek" id="btn-resume">接着上次打</button>
+      <span class="hint">接着打会沿用上次的筹码；进行中的那一手不保留。</span>
+    </div>`;
+  $("#btn-resume").onclick = () => startSession(last.id, last);
+}
+
+function renderLifetime() {
+  const s = state.userStats;
+  const host = $("#kpis");
+  if (!host || !s) return;
+  const old = document.getElementById("lifetime");
+  if (old) old.remove();
+  host.insertAdjacentHTML("beforebegin", `
+    <p class="hint" id="lifetime">${state.user?.name} 的累计：
+      <b>${s.sessions}</b> 局 · <b>${s.hands}</b> 手 ·
+      净 <b class="${s.net_chips >= 0 ? "pos" : "neg"}">${s.net_chips > 0 ? "+" : ""}${s.net_chips}</b> ·
+      VPIP ${s.vpip_pct}% / PFR ${s.pfr_pct}% ·
+      严重偏差 ${s.blunder_pct}%（真解评分占 ${s.solver_pct}%）</p>`);
+}
+
+$("#whoami").onclick = async () => {
+  $("#login-name").value = savedUser();
+  try {
+    const r = await api("/api/users");
+    $("#login-known").innerHTML = (r.users || []).length
+      ? '<p class="hint">已有用户：' + r.users.map((u) =>
+          `<button class="peek" data-u="${u.name}">${u.name}（${u.hands} 手）</button>`).join(" ") + "</p>"
+      : "";
+    $$("#login-known button").forEach((b) =>
+      b.onclick = () => loginAs(b.dataset.u));
+  } catch { $("#login-known").innerHTML = ""; }
+  $("#login-modal").classList.remove("hidden");
+};
+$("#login-go").onclick = () => loginAs($("#login-name").value);
+$("#login-name").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") loginAs($("#login-name").value);
+});
 
 (async () => {
   setStatus("探测后端…");

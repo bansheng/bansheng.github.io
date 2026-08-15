@@ -17,7 +17,23 @@
     <button class="tab" data-view="stats">统计</button>
     <button class="tab" data-view="review">复盘</button>
   </nav>
+  <button class="whoami" id="whoami" title="点击切换用户">未登录</button>
   <button class="status" id="conn" title="点击设置后端地址">连接中…</button>
+
+<div class="modal hidden" id="login-modal">
+  <div class="modal-box">
+    <h3>选一个用户名</h3>
+    <p class="hint">训练和实战记录会挂在这个名字下，长期累积。
+      <b>没有密码</b> —— 这是你自己机器上的训练工具，用户名只是给记录贴个标签，不是安全边界。</p>
+    <label>用户名
+      <input id="login-name" type="text" maxlength="40" spellcheck="false" placeholder="例如：dyd">
+    </label>
+    <div id="login-known"></div>
+    <div class="modal-actions">
+      <button class="primary" id="login-go">进入</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal hidden" id="backend-modal">
   <div class="modal-box">
@@ -89,6 +105,7 @@
       </div>
       <div id="bot-rows"></div>
     </div>
+    <div id="resume-box"></div>
     <button class="primary big" id="btn-start">开始训练</button>
   </div>
 

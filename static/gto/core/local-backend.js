@@ -16,6 +16,8 @@ import { analyse } from "./analysis.js";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";
+/* 浏览器模式下记录也按用户分开存，并且**逐手写回** ——
+   刷新一次就全没了是原来最伤的问题：练了半小时的统计说没就没。 */
 // 深筹码给常规打法；短的这几档存在是因为单挑推-弃 Nash 解只在这些深度有定义
 const SUPPORTED_STACKS = [5, 8, 10, 12, 15, 20, 25, 50, 100, 200];
 // 短深度是练习深度（推-弃 Nash 解就在那儿），默认每手重置；
@@ -61,10 +63,11 @@ function buildChart(raw) {
 /* ---------------- 本地存储 ---------------- */
 
 function loadStore() {
+  const empty = { sessions: [], hands: [], decisions: [], users: [], nextId: 1 };
   try {
-    return JSON.parse(localStorage.getItem(STORE_KEY)) || { sessions: [], hands: [], decisions: [], nextId: 1 };
+    return { ...empty, ...(JSON.parse(localStorage.getItem(STORE_KEY)) || {}) };
   } catch {
-    return { sessions: [], hands: [], decisions: [], nextId: 1 };
+    return empty;
   }
 }
 function saveStore(s) {
@@ -275,8 +278,24 @@ class LocalSession {
     saveStore(this.store);
   }
 
+  restore(state) {
+    if (!state) return;
+    if (state.stacks?.length === this.config.table_size) this.stacks = state.stacks.slice();
+    this.heroBoughtIn = state.hero_bought_in ?? this.heroBoughtIn;
+    this.rebuys = state.rebuys ?? 0;
+    this.handNo = state.hand_no ?? 0;
+    this.button = state.button ?? this.button;
+  }
+
   _persistHand() {
     this.stacks = this.hand.seats.map((s) => s.stack);   // 把筹码带回会话
+    const sessionRow = (this.store.sessions || []).find((x) => x.id === this.id);
+    if (sessionRow) {
+      sessionRow.chip_state = {
+        stacks: this.stacks.slice(), hero_bought_in: this.heroBoughtIn,
+        rebuys: this.rebuys, hand_no: this.handNo, button: this.button,
+      };
+    }
     if (this.pendingDecision) this._persistDecision();
     const id = this._ensureHandRow();
     const row = this.store.hands.find((h) => h.id === id);
@@ -375,6 +394,15 @@ export class LocalBackend {
     const body = opts.body ? JSON.parse(opts.body) : {};
     const [, , ...seg] = path.split("/");            // ["", "api", ...]
 
+    if (seg[0] === "users" && seg.length === 1 && !opts.method)
+      return { users: this.store.users || [] };
+
+    if (seg[0] === "users" && seg[1] === "login")
+      return this._login(body.name);
+
+    if (seg[0] === "users" && seg.length === 3 && seg[2] === "sessions")
+      return this._login(decodeURIComponent(seg[1]), false);
+
     if (seg[0] === "health")
       return { ok: true, local: true, supported_stacks: SUPPORTED_STACKS, charts: Object.keys(this.charts), live_sessions: this.sessions.size };
 
@@ -421,6 +449,57 @@ export class LocalBackend {
     throw new Error(`本地版没有实现这个接口: ${path}`);
   }
 
+  /* 没有密码 —— 本地存储里的用户名只是记录的归属标签 */
+  _login(name, touch = true) {
+    name = String(name || "").trim();
+    if (!name) throw new Error("用户名不能为空");
+    this.store.users = this.store.users || [];
+    let u = this.store.users.find((x) => x.name === name);
+    if (!u) {
+      u = { id: this.store.nextId++, name, created_at: new Date().toISOString() };
+      this.store.users.push(u);
+    }
+    if (touch) { u.last_seen = new Date().toISOString(); saveStore(this.store); }
+    const mySessions = (this.store.sessions || []).filter((s) => s.user_id === u.id);
+    const ids = new Set(mySessions.map((s) => s.id));
+    const myHands = this.store.hands.filter((h) => ids.has(h.session_id));
+    const myDecs = this.store.decisions.filter((d) => ids.has(d.session_id));
+    u.hands = myHands.length;
+    u.sessions = mySessions.length;
+    const pf = myDecs.filter((d) => d.street === "preflop");
+    const r1 = (x) => Math.round(x * 10) / 10;
+    const net = myHands.reduce((a, h) => a + h.hero_net, 0);
+    return {
+      user: u,
+      stats: {
+        sessions: mySessions.length, hands: myHands.length, net_chips: net,
+        decisions: myDecs.length,
+        blunder_pct: myDecs.length
+          ? r1((100 * myDecs.filter((d) => d.blunder).length) / myDecs.length) : 0,
+        solver_pct: myDecs.length
+          ? r1((100 * myDecs.filter((d) => d.advice_source === "solver").length) / myDecs.length) : 0,
+        vpip_pct: pf.length
+          ? r1((100 * pf.filter((d) => ["call", "bet", "raise"].includes(d.chosen)).length) / pf.length) : 0,
+        pfr_pct: pf.length
+          ? r1((100 * pf.filter((d) => ["bet", "raise"].includes(d.chosen)).length) / pf.length) : 0,
+        wtsd_pct: myHands.length
+          ? r1((100 * myHands.filter((h) => h.went_to_showdown).length) / myHands.length) : 0,
+        win_pct: myHands.length
+          ? r1((100 * myHands.filter((h) => h.won).length) / myHands.length) : 0,
+        avg_freq_gap: myDecs.length
+          ? Math.round((myDecs.reduce((a, d) => a + d.freq_gap, 0) / myDecs.length) * 1e4) / 1e4 : 0,
+        blunders: myDecs.filter((d) => d.blunder).length,
+        solver_graded: myDecs.filter((d) => d.advice_source === "solver").length,
+      },
+      sessions: mySessions.slice().reverse().map((s) => ({
+        ...s,
+        hands: this.store.hands.filter((h) => h.session_id === s.id).length,
+        net: this.store.hands.filter((h) => h.session_id === s.id)
+          .reduce((a, h) => a + h.hero_net, 0),
+      })),
+    };
+  }
+
   _summary(c) {
     if (!c) throw new Error("chart not found");
     return {
@@ -457,8 +536,14 @@ export class LocalBackend {
     const id = this.nextSession++;
     const s = new LocalSession(id, config, chart, this.store,
                                this.charts["hu_pushfold_nash"] || null);
+    const user = body.user ? this._login(body.user).user : null;
+    s.userId = user ? user.id : null;
+    if (body.resume_from) {
+      const prev = (this.store.sessions || []).find((x) => x.id === body.resume_from);
+      if (prev?.chip_state) s.restore(prev.chip_state);
+    }
     this.sessions.set(id, s);
-    this.store.sessions.push({ id, ...config });
+    this.store.sessions.push({ id, user_id: s.userId, ...config });
     saveStore(this.store);
     return s.view();
   }
