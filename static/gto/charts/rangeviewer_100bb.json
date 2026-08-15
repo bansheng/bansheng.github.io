@@ -1,0 +1,180 @@
+{
+  "name": "rangeviewer_100bb",
+  "label": "rangeviewer 导入版 100bb（交叉验证 95-96%，偏锦标赛口径）",
+  "table_size": 6,
+  "stack_bb": 100,
+  "open_size_bb": 2.5,
+  "provenance": {
+    "kind": "imported-unattributed",
+    "upstream": "github.com/notnaone/rangeviewer (Ranges/, 790 charts)",
+    "cross_check": "同一 spot 的两套独立编码 (ranges / ranges_v2) 手牌级重合度 95.3-96.3%，范围宽度差 0.3-2.1pp —— 数据内部自洽",
+    "warning": "上游未标注数据来源。范围宽度系统性地比 6-max 现金局公认区间宽 5-8pp (CO 36% vs 24-33%, BTN 55% vs 38-52%)，特征符合带前注的锦标赛口径。打现金局请用 6max_100bb_cash；打 MTT 用这套更合适。",
+    "per_spot": {
+      "UTG|rfi": {
+        "percent": 24.59,
+        "warnings": [
+          "LJ 开池 24.6%，超出 6-max 现金局常见区间 15.0-23.0%（锦标赛带前注的范围本来就更宽）"
+        ],
+        "source_file": "100bb.json"
+      },
+      "HJ|rfi": {
+        "percent": 27.6,
+        "warnings": [
+          "图例有 6 种动作，可能不是简单的开池/弃牌图表：['Call 3B or 4B', 'Call 3B', '4B Bluff', 'Fold vs 3B']",
+          "HJ 开池 27.6%，超出 6-max 现金局常见区间 18.0-26.0%（锦标赛带前注的范围本来就更宽）"
+        ],
+        "source_file": "100bb.json"
+      },
+      "CO|rfi": {
+        "percent": 36.05,
+        "warnings": [
+          "CO 开池 36.0%，超出 6-max 现金局常见区间 24.0-33.0%（锦标赛带前注的范围本来就更宽）"
+        ],
+        "source_file": "100bb.json"
+      },
+      "BTN|rfi": {
+        "percent": 54.75,
+        "warnings": [
+          "BTN 开池 54.8%，超出 6-max 现金局常见区间 38.0-52.0%（锦标赛带前注的范围本来就更宽）"
+        ],
+        "source_file": "100bb__ranges.json"
+      },
+      "BTN|vs-CO-open": {
+        "percent": 29.71,
+        "warnings": [],
+        "source_file": "100bb__ranges.json"
+      },
+      "BTN|vs-UTG-open": {
+        "percent": 20.97,
+        "warnings": [],
+        "source_file": "100bb.json"
+      },
+      "BTN|vs-HJ-open": {
+        "percent": 28.21,
+        "warnings": [],
+        "source_file": "100bb__ranges.json"
+      },
+      "CO|vs-UTG-open": {
+        "percent": 17.35,
+        "warnings": [],
+        "source_file": "100bb.json"
+      },
+      "CO|vs-HJ-open": {
+        "percent": 20.66,
+        "warnings": [],
+        "source_file": "100bb__ranges.json"
+      },
+      "HJ|vs-UTG-open": {
+        "percent": 16.44,
+        "warnings": [],
+        "source_file": "100bb.json"
+      },
+      "SB|vs-BTN-open": {
+        "percent": 27.6,
+        "warnings": [],
+        "source_file": "100bb__ranges.json"
+      },
+      "SB|vs-CO-open": {
+        "percent": 26.7,
+        "warnings": [],
+        "source_file": "100bb__ranges.json"
+      },
+      "SB|vs-UTG-open": {
+        "percent": 17.95,
+        "warnings": [],
+        "source_file": "100bb.json"
+      },
+      "SB|vs-HJ-open": {
+        "percent": 22.78,
+        "warnings": [],
+        "source_file": "100bb__ranges.json"
+      }
+    }
+  },
+  "spots": {
+    "UTG|rfi": {
+      "description": "UTG 首入加注（导入自 rangeviewer，源位置 LJ）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,T8s,99,98s,88,87s,77,76s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "HJ|rfi": {
+      "description": "HJ 首入加注（导入自 rangeviewer，源位置 HJ）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,A9o,99,98s,97s,88,87s,86s,77,76s,75s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "CO|rfi": {
+      "description": "CO 首入加注（导入自 rangeviewer，源位置 CO）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,A9o,K9o,J9o,T9o,99,98s,97s,96s,A8o,88,87s,86s,A7o,77,76s,75s,66,65s,A5o,55,54s,44,33,22"
+      }
+    },
+    "BTN|rfi": {
+      "description": "BTN 首入加注（导入自 rangeviewer，源位置 BTN）",
+      "actions": {
+        "raise": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,K2s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,J7s,J6s,J5s,J4s,J3s,J2s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,T6s,T5s,T4s,T3s,A9o,K9o,Q9o,J9o,T9o,99,98s,97s,96s,95s,A8o,K8o,Q8o,J8o,T8o,98o,88,87s,86s,85s,A7o,K7o,T7o,97o,87o,77,76s,75s,74s,A6o,K6o,66,65s,64s,A5o,K5o,55,54s,53s,A4o,44,A3o,33,A2o,22"
+      }
+    },
+    "BTN|vs-CO-open": {
+      "description": "BTN 面对 CO 开池（导入自 rangeviewer，源 vs CO）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,K3s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,Q7s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,T8s,T7s,A9o,99,98s,97s,A8o,88,87s,86s,77,76s,75s,66,65s,64s,55,54s,53s,44,33,22"
+      }
+    },
+    "BTN|vs-UTG-open": {
+      "description": "BTN 面对 UTG 开池（导入自 rangeviewer，源 vs EP）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,AQo,KQo,QQ,QJs,QTs,Q9s,AJo,JJ,JTs,J9s,J8s,ATo,TT,T9s,T8s,99,98s,97s,88,87s,86s,77,76s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "BTN|vs-HJ-open": {
+      "description": "BTN 面对 HJ 开池（导入自 rangeviewer，源 vs HJ）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,T8s,A9o,99,98s,97s,96s,88,87s,86s,77,76s,75s,66,65s,64s,55,54s,53s,44,33,22"
+      }
+    },
+    "CO|vs-UTG-open": {
+      "description": "CO 面对 UTG 开池（导入自 rangeviewer，源 vs EP）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,AKo,KK,KQs,KJs,KTs,K9s,AQo,KQo,QQ,QJs,QTs,AJo,JJ,JTs,J9s,TT,T9s,T8s,99,98s,88,87s,77,76s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "CO|vs-HJ-open": {
+      "description": "CO 面对 HJ 开池（导入自 rangeviewer，源 vs HJ）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,AQo,KQo,QQ,QJs,QTs,Q9s,AJo,KJo,JJ,JTs,J9s,ATo,TT,T9s,T8s,99,98s,88,87s,77,76s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "HJ|vs-UTG-open": {
+      "description": "HJ 面对 UTG 开池（导入自 rangeviewer，源 vs EP）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A6s,A5s,A4s,A3s,AKo,KK,KQs,KJs,KTs,K9s,AQo,KQo,QQ,QJs,QTs,AJo,JJ,JTs,TT,T9s,99,98s,88,87s,77,76s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "SB|vs-BTN-open": {
+      "description": "SB 面对 BTN 开池（导入自 rangeviewer，源 vs BTN）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,T8s,A9o,99,98s,97s,A8o,88,87s,77,76s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "SB|vs-CO-open": {
+      "description": "SB 面对 CO 开池（导入自 rangeviewer，源 vs CO）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,K4s,AQo,KQo,QQ,QJs,QTs,Q9s,Q8s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,QTo,JTo,TT,T9s,T8s,A9o,99,98s,97s,88,87s,77,76s,66,65s,55,54s,44,33,22"
+      }
+    },
+    "SB|vs-UTG-open": {
+      "description": "SB 面对 UTG 开池（导入自 rangeviewer，源 vs EP）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,AQo,KQo,QQ,QJs,QTs,Q9s,AJo,JJ,JTs,J9s,TT,T9s,T8s,99,98s,88,87s,77,76s,66,65s,55,44,33,22"
+      }
+    },
+    "SB|vs-HJ-open": {
+      "description": "SB 面对 HJ 开池（导入自 rangeviewer，源 vs HJ）",
+      "actions": {
+        "call": "AA,AKs,AQs,AJs,ATs,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,AKo,KK,KQs,KJs,KTs,K9s,K8s,K7s,K6s,K5s,AQo,KQo,QQ,QJs,QTs,Q9s,AJo,KJo,QJo,JJ,JTs,J9s,J8s,ATo,KTo,TT,T9s,T8s,99,98s,97s,88,87s,77,76s,66,55,44,33,22"
+      }
+    }
+  }
+}

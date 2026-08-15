@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GTO 训练器</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">♠ GTO 训练器</div>
+  <nav class="tabs">
+    <button class="tab active" data-view="play">实战</button>
+    <button class="tab" data-view="drill">决策训练</button>
+    <button class="tab" data-view="charts">范围图表</button>
+    <button class="tab" data-view="stats">统计</button>
+    <button class="tab" data-view="review">复盘</button>
+  </nav>
+  <div class="status" id="conn">连接中…</div>
+</header>
+
+<main>
+
+<!-- ================= 实战 ================= -->
+<section class="view active" id="view-play">
+  <div class="setup card" id="setup">
+    <h2>开一局</h2>
+    <div class="grid">
+      <label>桌子人数
+        <select id="cfg-seats">
+          <option value="2">单挑 (2人)</option>
+          <option value="6" selected>6-max</option>
+          <option value="9">9人桌</option>
+        </select>
+      </label>
+      <label>筹码深度
+        <select id="cfg-stack">
+          <option value="50">50bb</option>
+          <option value="100" selected>100bb</option>
+          <option value="200">200bb</option>
+        </select>
+      </label>
+      <label>你的座位
+        <select id="cfg-hero"></select>
+      </label>
+    </div>
+    <div class="bots-config">
+      <div class="row-head">
+        <span>对手配置</span>
+        <span class="hint">每个 bot 可切换 GTO / 鱼（松被动）</span>
+      </div>
+      <div id="bot-rows"></div>
+    </div>
+    <button class="primary big" id="btn-start">开始训练</button>
+  </div>
+
+  <div class="table-wrap hidden" id="table-wrap">
+    <div class="board-info">
+      <span class="chip-pot">底池 <b id="pot">0</b></span>
+      <span class="street" id="street">preflop</span>
+      <span class="handno">第 <b id="handno">0</b> 手</span>
+    </div>
+
+    <div class="poker-table">
+      <div class="board" id="board"></div>
+      <div class="seats" id="seats"></div>
+    </div>
+
+    <div class="actionbar" id="actionbar"></div>
+
+    <div class="advice card" id="advice">
+      <div class="advice-head">
+        <h3>GTO 建议</h3>
+        <span class="badge" id="advice-source">—</span>
+      </div>
+      <div id="advice-bars"></div>
+      <p class="explain" id="advice-explain"></p>
+      <p class="caveat" id="advice-caveat"></p>
+    </div>
+
+    <div class="feedback card hidden" id="feedback"></div>
+  </div>
+</section>
+
+<!-- ================= 决策训练 ================= -->
+<section class="view" id="view-drill">
+  <div class="card">
+    <h2>决策训练</h2>
+    <p class="hint">随机给一个翻前局面，你选动作，立刻看到 chart 的答案和你的偏差。比打完整手牌快 10 倍。</p>
+    <div class="grid">
+      <label>局面类型
+        <select id="drill-kind">
+          <option value="any">全部</option>
+          <option value="rfi">首入加注 (RFI)</option>
+          <option value="vs-open">面对开池</option>
+        </select>
+      </label>
+      <label>位置
+        <select id="drill-pos">
+          <option value="">全部</option>
+          <option>UTG</option><option>HJ</option><option>CO</option>
+          <option>BTN</option><option>SB</option><option>BB</option>
+        </select>
+      </label>
+    </div>
+    <button class="primary" id="btn-drill">出题</button>
+  </div>
+
+  <div class="card hidden" id="drill-q">
+    <div class="drill-spot" id="drill-spot"></div>
+    <div class="drill-hand" id="drill-hand"></div>
+    <div class="drill-actions" id="drill-actions"></div>
+    <div class="drill-answer hidden" id="drill-answer"></div>
+    <div class="drill-score" id="drill-score"></div>
+  </div>
+</section>
+
+<!-- ================= 图表 ================= -->
+<section class="view" id="view-charts">
+  <div class="card">
+    <h2>翻前范围图表</h2>
+    <div class="grid">
+      <label>图表
+        <select id="chart-name"></select>
+      </label>
+      <label>局面
+        <select id="chart-spot"></select>
+      </label>
+      <label>动作
+        <select id="chart-action">
+          <option value="raise">加注</option>
+          <option value="call">跟注</option>
+        </select>
+      </label>
+    </div>
+    <p class="caveat" id="chart-prov"></p>
+  </div>
+  <div class="card">
+    <div class="matrix" id="matrix"></div>
+    <div class="legend">
+      <span class="sw" style="background:var(--raise)"></span>加注
+      <span class="sw" style="background:var(--call)"></span>跟注
+      <span class="sw" style="background:var(--fold)"></span>弃牌
+      <span class="pct" id="chart-pct"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 统计 ================= -->
+<section class="view" id="view-stats">
+  <div class="card"><h2>本局统计</h2><div class="kpis" id="kpis"></div></div>
+  <div class="card"><h3>按位置的漏洞</h3><div id="leak-pos"></div></div>
+  <div class="card"><h3>按起手牌的漏洞</h3><div id="leak-hand"></div></div>
+</section>
+
+<!-- ================= 复盘 ================= -->
+<section class="view" id="view-review">
+  <div class="card">
+    <h2>手牌复盘</h2>
+    <div id="hand-list"></div>
+  </div>
+  <div class="card hidden" id="replay"></div>
+</section>
+
+</main>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
