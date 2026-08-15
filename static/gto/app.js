@@ -370,11 +370,17 @@ function renderActions(h) {
       const sync = () => {
         amt.textContent = range.value;
         btn.textContent = `${ACT_CN[la.type]} 到 ${range.value}`;
+        // 快捷键高亮跟着实际数额走，滑杆拖到某个尺度上也会亮
+        quick.querySelectorAll("button").forEach((q) =>
+          q.classList.toggle("on", +q.dataset.to === +range.value));
       };
-      range.oninput = sync; sync();
-      btn.onclick = () => act(la.type, +range.value);
+      const quick = quickSizes(h, la, (to) => { range.value = to; sync(); });
+      range.oninput = sync;
       wrap.append(btn, range, amt);
+      bar.appendChild(quick);
       bar.appendChild(wrap);
+      sync();
+      btn.onclick = () => act(la.type, +range.value);
     } else {
       const b = document.createElement("button");
       b.className = "act " + la.type;
@@ -383,6 +389,52 @@ function renderActions(h) {
       bar.appendChild(b);
     }
   });
+}
+
+
+/* 快捷下注尺度。
+ *
+ * 下注和加注的算法**不一样**，这是最容易写错的地方：
+ *   下注（还没人下注）  下到 = 倍数 × 底池
+ *   加注（已经有注）    加到 = 当前注额 + 倍数 × (底池 + 需跟)
+ * 加注那条要先把自己的跟注算进底池再乘，因为「加一个底池」的意思是
+ * 在你跟完之后的那个底池上再加一份。写成「倍数 × 当前底池」会系统性偏小。
+ *
+ * 检验：底池 20、需跟 8、当前注 8 → 满池加注 = 8 + 1.0×(20+8) = 36。
+ * 也就是跟 8 让底池到 28，再加 28，手上共 36。对得上。
+ */
+const QUICK_SIZES = [
+  [1 / 3, "⅓ 池"], [1 / 2, "½ 池"], [2 / 3, "⅔ 池"],
+  [1, "1 池"], [1.2, "1.2 池"],
+];
+
+function quickSizes(h, la, pick) {
+  const box = document.createElement("div");
+  box.className = "quick";
+  const toCall = (h.legal_actions.find((x) => x.type === "call") || {}).amount || 0;
+  const isRaise = la.type === "raise";
+
+  const seen = new Map();
+  for (const [f, label] of QUICK_SIZES) {
+    const raw = isRaise ? h.current_bet + f * (h.pot + toCall) : f * h.pot;
+    const to = Math.round(Math.min(la.max, Math.max(la.min, raw)));
+    // 短码时多个尺度会一起顶到全下，只留最小的那个标签，不然一排一样的按钮
+    if (!seen.has(to)) seen.set(to, label);
+  }
+  // 全下永远单独给一个，并且如果某个尺度正好等于全下，就把它改叫全下
+  seen.set(la.max, "全下");
+
+  for (const [to, label] of [...seen.entries()].sort((a, b) => a[0] - b[0])) {
+    const b = document.createElement("button");
+    b.className = "qbtn" + (label === "全下" ? " allin" : "");
+    b.dataset.to = to;
+    b.textContent = label;
+    b.title = `${ACT_CN[la.type]} 到 ${to}`;
+    // 只设数额，不直接出手 —— 误点一下就全下太贵了
+    b.onclick = () => pick(to);
+    box.appendChild(b);
+  }
+  return box;
 }
 
 /* 后端一次就把「你的动作 + 所有 bot 的动作 + 新发的牌」全算完了。
