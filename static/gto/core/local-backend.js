@@ -13,6 +13,7 @@ import { HandState } from "./engine.js";
 import { advise, BotTable, freqGap, frequencyOf, isBlunder,
          inferVillainRangeDetailed, inferHeroRange } from "./brain.js";
 import { analyse } from "./analysis.js";
+import { SolveLibrary } from "./solve-library.js";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";
@@ -190,14 +191,14 @@ class LocalSession {
     return this.view();
   }
 
-  advice() {
-    const [a, report] = this.adviceAndAnalysis();
+  async advice() {
+    const [a, report] = await this.adviceAndAnalysis();
     return { ...a, analysis: report };
   }
 
   /* 建议和分析必须共用同一个对手范围估计 —— 分析里画的范围如果不是
      建议所依据的那个，那比不画还糟。 */
-  adviceAndAnalysis() {
+  async adviceAndAnalysis() {
     if (!this.hand || this.hand.actor !== this.hero) throw new Error("not the hero's turn");
     const [villain, derivation] = inferVillainRangeDetailed(this.hand, this.hero, this.chart);
     const a = advise(this.hand, this.hero, this.chart, Math.random, villain,
@@ -212,15 +213,56 @@ class LocalSession {
     }
     const report = analyse(this.hand, this.hero, villain, equity, derivation,
                            inferHeroRange(this.hand, this.hero, this.chart));
+
+    // 有导出的真解就用真解 —— 精确到你手上这两张具体的牌
+    if (this.library && this.hand.board.length >= 3) {
+      let read = null;
+      try { read = await this.library.read(this.hand, this.hero); } catch { read = null; }
+      if (read?.actions) {
+        const merged = new Map();
+        read.actions.forEach((label, i) => {
+          const [verb, amt] = label.split(/\s+/);
+          const kind = { FOLD: "fold", CHECK: "check", CALL: "call",
+                         BET: "bet", RAISE: "raise" }[verb];
+          if (!kind || read.frequencies[i] <= 0.0005) return;
+          const row = merged.get(kind) || { action: kind, frequency: 0, sizes: [] };
+          row.frequency += read.frequencies[i];
+          if (amt !== undefined) row.sizes.push({ to: parseFloat(amt), frequency: read.frequencies[i] });
+          merged.set(kind, row);
+        });
+        const actions = [...merged.values()].map((r) => ({
+          ...r,
+          frequency: Math.round(r.frequency * 1e4) / 1e4,
+          note: r.sizes.length
+            ? r.sizes.map((s) => `到 ${s.to}（${Math.round(s.frequency * 100)}%）`).join("／") : "",
+        }));
+        if (actions.length) {
+          return [{
+            source: "solver",
+            confidence: "exact",
+            spot: `solver:${read.entry.board}`,
+            hand: read.combo,
+            actions,
+            equity: a.equity ?? equity,
+            explanation: `翻后精确解 · 路径 ${read.path.join(" → ") || "（本街第一个决策）"}`,
+            caveat: `这是**离线预解的真解**（可利用度 ${read.entry.exploitability}）。`
+              + (read.permuted ? `本局面与已解的 ${read.entry.board} 花色同构，换个花色名称就是同一个博弈。` : "")
+              + "转牌之后没有导出真解，会退回启发式。",
+          }, report];
+        }
+      } else if (read?.unavailable) {
+        a.caveat += `（这个牌面有预解，但用不上：${read.unavailable}）`;
+      }
+    }
     return [a, report];
   }
 
-  act(action, amount = 0) {
+  async act(action, amount = 0) {
     if (!this.hand) throw new Error("no hand in progress");
     if (this.hand.finished) throw new Error("hand is already finished");
     if (this.hand.actor !== this.hero) throw new Error("not your turn");
 
-    const [a, report] = this.adviceAndAnalysis();
+    const [a, report] = await this.adviceAndAnalysis();
     const street = this.hand.street;
     const position = this.hand.positionName(this.hero);
     const label = holeLabel(this.hand.seats[this.hero].hole);
@@ -368,8 +410,10 @@ function groupLeaks(rows, keyFn, minCount = 1) {
 /* ---------------- 路由 ---------------- */
 
 export class LocalBackend {
-  constructor(chartBase = "./charts") {
+  constructor(chartBase = "./charts", solveBase = "./solves") {
     this.chartBase = chartBase;
+    // 公网版也能吃到真解：翻牌街的解已导出成静态文件，按牌面懒加载
+    this.library = new SolveLibrary(solveBase);
     this.charts = null;
     this.sessions = new Map();
     this.nextSession = 1;
@@ -403,8 +447,15 @@ export class LocalBackend {
     if (seg[0] === "users" && seg.length === 3 && seg[2] === "sessions")
       return this._login(decodeURIComponent(seg[1]), false);
 
-    if (seg[0] === "health")
-      return { ok: true, local: true, supported_stacks: SUPPORTED_STACKS, charts: Object.keys(this.charts), live_sessions: this.sessions.size };
+    if (seg[0] === "health") {
+      await this.library.ready();
+      return {
+        ok: true, local: true, supported_stacks: SUPPORTED_STACKS,
+        charts: Object.keys(this.charts), live_sessions: this.sessions.size,
+        solved_spots: this.library.size,
+        solver_ready: false,          // 不能现算，只能查已导出的
+      };
+    }
 
     if (seg[0] === "charts" && seg.length === 1)
       return { charts: Object.values(this.charts).map((c) => this._summary(c)) };
@@ -428,8 +479,8 @@ export class LocalBackend {
       const sub = seg[2];
       if (!sub) return s.view();
       if (sub === "deal") return s.newHand();
-      if (sub === "act") return s.act(body.action, body.amount || 0);
-      if (sub === "advice") return s.advice();
+      if (sub === "act") return await s.act(body.action, body.amount || 0);
+      if (sub === "advice") return await s.advice();
       if (sub === "rebuy") return s.rebuy();
       if (sub === "chips") return s.chips();
       if (sub === "stats") return this._stats(s);
@@ -536,6 +587,7 @@ export class LocalBackend {
     const id = this.nextSession++;
     const s = new LocalSession(id, config, chart, this.store,
                                this.charts["hu_pushfold_nash"] || null);
+    s.library = this.library;
     const user = body.user ? this._login(body.user).user : null;
     s.userId = user ? user.id : null;
     if (body.resume_from) {

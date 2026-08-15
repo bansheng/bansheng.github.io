@@ -1166,9 +1166,14 @@ $("#login-name").addEventListener("keydown", (e) => {
       setStatus(`后端已连接 · ${solver}`, "ok");
       $("#conn").title = `${remote}\n点击可修改后端地址`;
     } else {
-      setStatus(`浏览器模式 · 翻后只有启发式`, "warn");
-      $("#conn").title =
-        "所有计算都在你的浏览器里跑，翻后没有 CFR 精确解。\n点击设置后端地址。";
+      const n = h.solved_spots || 0;
+      setStatus(
+        n ? `浏览器模式 · 预解库 ${n} 个牌面（翻牌街真解）` : "浏览器模式 · 翻后只有启发式",
+        n ? "" : "warn");
+      $("#conn").title = n
+        ? `所有计算在浏览器里跑。已内置 ${n} 个牌面的翻牌街真解，`
+          + "按花色同构匹配，命中就显示绿色「精确解」；转牌之后仍是启发式。\n点击设置后端地址。"
+        : "所有计算都在你的浏览器里跑，翻后没有 CFR 精确解。\n点击设置后端地址。";
     }
   } catch (e) {
     setStatus("初始化失败: " + e.message, "err");
