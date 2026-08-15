@@ -215,3 +215,11 @@ tr.warn td{color:var(--gold)}
   .tabs{order:3;width:100%}
   .act{flex:1;min-width:88px;padding:12px 8px}
 }
+
+/* 建议默认盖着，想不出来才点开 */
+.peek{
+  background:none;border:1px dashed var(--line);color:var(--dim);
+  padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;margin-top:4px;
+}
+.peek:hover{color:var(--gold);border-color:var(--gold)}
+#btn-skip{padding:7px 14px;font-size:13px;font-weight:400}

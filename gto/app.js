@@ -21,6 +21,7 @@ const SUITS = { s: "♠", h: "♥", d: "♦", c: "♣" };
 const RED = new Set(["h", "d"]);
 const GRID = "AKQJT98765432".split("");
 const ACT_CN = { fold: "弃牌", check: "过牌", call: "跟注", bet: "下注", raise: "加注" };
+const CONFIDENCE_CN = { exact: "精确解", approximate: "参考近似", heuristic: "启发式估算" };
 const ACT_COLOR = { fold: "var(--fold)", check: "var(--dim)", call: "var(--call)", bet: "var(--raise)", raise: "var(--raise)" };
 
 const state = {
@@ -29,6 +30,7 @@ const state = {
   hero: 0,
   bots: {},
   drill: null,
+  peeked: false,
   drillStats: { total: 0, hit: 0 },
   chart: null,
 };
@@ -159,6 +161,8 @@ $("#btn-start").addEventListener("click", async () => {
 /* ---------------- play ---------------- */
 
 async function deal() {
+  clearTimeout(dealTimer);
+  state.peeked = false;
   $("#feedback").classList.add("hidden");
   const v = await api(`/api/sessions/${state.sessionId}/deal`, { method: "POST" });
   applyView(v);
@@ -205,9 +209,23 @@ function applyView(v) {
   });
 
   renderActions(h);
-  if (h.your_turn) loadAdvice();
+  if (h.your_turn) hideAdvice();
   else if (h.finished) showResults(h);
   else $("#advice-bars").innerHTML = '<p class="hint">等待对手行动…</p>';
+}
+
+/* 训练的意义在于先自己判断。所以轮到你时建议是盖着的，
+   出完动作才揭晓；实在想不出来可以主动点开，但那次会记为「偷看」。 */
+function hideAdvice() {
+  $("#advice-title").textContent = "GTO 建议";
+  $("#advice-source").textContent = "已隐藏";
+  $("#advice-source").className = "badge";
+  $("#advice-bars").innerHTML =
+    '<p class="hint">先自己判断 —— 出完动作才揭晓建议。</p>' +
+    '<button class="peek" id="btn-peek">想不出来，先看答案</button>';
+  $("#advice-explain").textContent = "";
+  $("#advice-caveat").textContent = "";
+  $("#btn-peek").onclick = () => { state.peeked = true; loadAdvice(); };
 }
 
 function renderActions(h) {
@@ -253,20 +271,60 @@ function renderActions(h) {
   });
 }
 
+/* 后端一次就把「你的动作 + 所有 bot 的动作 + 新发的牌」全算完了。
+   直接渲染的话，你还没看清反馈，转牌就已经拍在桌上了。
+   所以只要公共牌变多了，就先给 DEAL_DELAY_MS 的时间看建议，再翻牌。 */
+const DEAL_DELAY_MS = 3000;
+let dealTimer = null;
+
 async function act(type, amount) {
+  const before = state.hand ? state.hand.board.length : 0;
   try {
     const v = await api(`/api/sessions/${state.sessionId}/act`, {
       method: "POST", body: JSON.stringify({ action: type, amount }),
     });
-    if (v.last_decision) showFeedback(v.last_decision);
-    applyView(v);
+    // applyView 会为下一个决策把建议重新盖上，所以揭晓要排在它之后
+    const settleView = () => {
+      applyView(v);
+      if (v.last_decision) showFeedback(v.last_decision);
+    };
+
+    const after = v.hand ? v.hand.board.length : 0;
+    if (after > before) {
+      // 先只把反馈和答案摆出来，牌桌停在旧街，等 3 秒再翻新牌
+      if (v.last_decision) showFeedback(v.last_decision);
+      renderActions({ ...v.hand, your_turn: false, finished: false });
+      countdownThen(settleView);
+    } else {
+      settleView();
+    }
   } catch (e) {
     setStatus("动作失败: " + e.message, "err");
   }
 }
 
+function countdownThen(fn) {
+  clearTimeout(dealTimer);
+  const bar = $("#actionbar");
+  let left = Math.round(DEAL_DELAY_MS / 1000);
+  const paint = () => {
+    bar.innerHTML =
+      `<span class="waiting">${left} 秒后发牌…</span>` +
+      '<button class="act" id="btn-skip">立刻发牌</button>';
+    $("#btn-skip").onclick = () => { clearInterval(tick); clearTimeout(dealTimer); fn(); };
+  };
+  paint();
+  const tick = setInterval(() => { left -= 1; if (left > 0) paint(); }, 1000);
+  dealTimer = setTimeout(() => { clearInterval(tick); fn(); }, DEAL_DELAY_MS);
+}
+
 function bars(actions, container, chosen) {
   container.innerHTML = "";
+  // 你选的动作如果频率是 0，建议列表里根本没有它 —— 那更要画出来，
+  // 一条 0% 的空槽比「找不到自己选的那项」清楚得多。
+  if (chosen && !actions.some((a) => a.action === chosen)) {
+    actions = actions.concat([{ action: chosen, frequency: 0 }]);
+  }
   actions.forEach((a) => {
     const row = document.createElement("div");
     row.className = "bar";
@@ -283,8 +341,9 @@ function bars(actions, container, chosen) {
 async function loadAdvice() {
   try {
     const a = await api(`/api/sessions/${state.sessionId}/advice`);
+    $("#advice-title").textContent = "GTO 建议（本步，已偷看）";
     const badge = $("#advice-source");
-    badge.textContent = { exact: "精确解", approximate: "参考近似", heuristic: "启发式估算" }[a.confidence] || a.confidence;
+    badge.textContent = CONFIDENCE_CN[a.confidence] || a.confidence;
     badge.className = "badge " + a.confidence;
     bars(a.actions, $("#advice-bars"));
     $("#advice-explain").textContent = a.explanation;
@@ -300,11 +359,23 @@ function showFeedback(d) {
   const good = d.chosen_freq >= 0.2;
   fb.className = "feedback card " + (good ? "good" : "bad");
   fb.innerHTML = `
-    <h3>${good ? "✓" : "✕"} 你选了「${ACT_CN[d.chosen] || d.chosen}」</h3>
+    <h3>${good ? "✓" : "✕"} 你选了「${ACT_CN[d.chosen] || d.chosen}」${state.peeked ? " （偷看过）" : ""}</h3>
     <p class="explain">${d.hand_label} @ ${d.position} · ${d.street}｜
        建议策略里这个动作占 <b>${freq}%</b>
        ${d.blunder ? "，属于基本不该打的动作" : ""}</p>`;
   fb.classList.remove("hidden");
+  state.peeked = false;
+
+  // 揭晓：把完整建议摊开，并高亮你实际选的那一项。
+  // 这是**刚才那一步**的答案，不是当前面临的决策，标题要写明。
+  $("#advice-title").textContent = `上一步的 GTO 建议（${d.street} · ${d.hand_label}）`;
+  const a = d.advice;
+  const badge = $("#advice-source");
+  badge.textContent = CONFIDENCE_CN[a.confidence] || a.confidence;
+  badge.className = "badge " + a.confidence;
+  bars(a.actions, $("#advice-bars"), d.chosen);
+  $("#advice-explain").textContent = a.explanation;
+  $("#advice-caveat").textContent = a.caveat || "";
 }
 
 function showResults(h) {
