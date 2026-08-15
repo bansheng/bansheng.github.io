@@ -494,7 +494,12 @@ export class LocalBackend {
       : ALL_LABELS[Math.floor(Math.random() * ALL_LABELS.length)];
     return {
       spot: key, description: spot.description, hand: label,
-      answer: spot.strategy[label], provenance: chart.provenance,
+      answer: spot.strategy[label],
+      // 按钮取自这个**局面**有哪些动作，而不是这手牌恰好有哪些 ——
+      // chart 里 100% 弃牌的手牌否则只会显示一个"弃牌"按钮，
+      // 你不可能选错，也就什么都没练到。
+      spot_actions: ["fold", ...Object.keys(spot.ranges).filter((a) => a !== "fold")],
+      provenance: chart.provenance,
     };
   }
 

@@ -70,7 +70,10 @@ button{font-family:inherit}
 .bot-row .seat{width:74px;color:var(--muted)}
 .bot-row select{flex:1;max-width:180px;padding:5px 8px}
 
-/* ---------- table ---------- */
+/* ---------- 牌桌 ----------
+   真牌桌的关键不是画得像，是**位置本身要有信息**：
+   英雄永远在正下方，其他人按顺时针绕桌摆开，按钮标记贴在按钮位旁边。
+   这样你一眼就能读出位置关系，而不是去看每个座位上写的 BTN/CO 文字。 */
 .board-info{
   display:flex;gap:18px;align-items:center;margin-bottom:12px;
   font-size:13px;color:var(--muted);flex-wrap:wrap;
@@ -80,43 +83,103 @@ button{font-family:inherit}
   background:var(--panel2);padding:3px 10px;border-radius:20px;
   text-transform:uppercase;letter-spacing:1px;font-size:11px;
 }
-.poker-table{
-  position:relative;background:radial-gradient(ellipse at center,var(--felt),var(--felt2));
-  border:3px solid #0a2a1a;border-radius:50%/22%;
-  padding:34px 20px;min-height:330px;margin-bottom:16px;
-}
-.board{display:flex;gap:7px;justify-content:center;min-height:74px;align-items:center}
-.pcard{
-  width:50px;height:70px;border-radius:7px;background:#f5f5f0;color:#111;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-weight:700;font-size:22px;box-shadow:0 2px 6px rgba(0,0,0,.45);
-  line-height:1;
-}
-.pcard.small{width:36px;height:50px;font-size:16px}
-.pcard.back{background:linear-gradient(135deg,#2b4a7a,#1a2f52);color:transparent}
-.pcard .suit{font-size:15px;margin-top:2px}
-.pcard.small .suit{font-size:11px}
-.pcard.red{color:#c0392b}
 
-.seats{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
-  gap:9px;margin-top:22px;
+.table-area{padding:8px 0 14px}
+.felt{
+  position:relative;width:100%;aspect-ratio:16/10;max-height:480px;
+  margin:0 auto;
 }
-.seat{
-  background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.09);
-  border-radius:10px;padding:9px;font-size:12.5px;
+.felt-inner{
+  position:absolute;inset:7% 4%;
+  background:radial-gradient(ellipse at 50% 40%,#16553a,#0c3220 70%,#082418);
+  border-radius:48%/58%;
+  border:10px solid #2a1d12;
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,.55),
+    inset 0 3px 0 rgba(255,255,255,.06),
+    0 12px 30px rgba(0,0,0,.45);
 }
-.seat.hero{border-color:var(--accent);background:rgba(47,129,247,.13)}
-.seat.acting{border-color:var(--gold);box-shadow:0 0 0 2px rgba(210,153,34,.28)}
-.seat.folded{opacity:.36}
-.seat .nm{display:flex;justify-content:space-between;font-weight:600;margin-bottom:3px}
-.seat .pos{color:var(--gold);font-size:11px}
-.seat .stk{color:var(--muted);font-size:11.5px}
-.seat .cards{display:flex;gap:4px;margin-top:6px}
-.seat .bet{color:var(--gold);font-size:11.5px;margin-top:4px}
-.seat .btn-mark{
-  display:inline-block;background:#fff;color:#111;border-radius:50%;
-  width:16px;height:16px;line-height:16px;text-align:center;font-size:10px;font-weight:700;
+/* 台面上那圈浅色内沿，纯装饰但能把"桌子"读出来 */
+.felt-inner::after{
+  content:"";position:absolute;inset:5%;
+  border:1px solid rgba(255,255,255,.07);border-radius:48%/58%;
+}
+
+.table-center{
+  position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2;
+}
+.board{display:flex;gap:6px;justify-content:center}
+.center-pot{
+  font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,.4);padding:3px 12px;border-radius:20px;
+}
+.center-pot b{color:var(--gold);font-size:15px}
+.center-pot .disc,.bet-chip .disc{
+  width:11px;height:11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#f0d264,#c79a1a);
+  box-shadow:0 0 0 2px rgba(0,0,0,.35);display:inline-block;
+}
+
+.pcard{
+  width:46px;height:64px;border-radius:6px;background:#f7f6f1;color:#111;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:700;font-size:21px;line-height:1;
+  box-shadow:0 3px 8px rgba(0,0,0,.5);
+}
+.pcard .suit{font-size:15px;margin-top:2px}
+.pcard.red{color:#c0392b}
+.pcard.back{
+  background:repeating-linear-gradient(45deg,#2b4a7a,#2b4a7a 4px,#223c63 4px,#223c63 8px);
+  color:transparent;box-shadow:0 2px 6px rgba(0,0,0,.5);
+}
+.pcard.slot{
+  background:rgba(255,255,255,.05);box-shadow:none;
+  border:1px dashed rgba(255,255,255,.12);
+}
+.pcard.small{width:30px;height:42px;font-size:15px;border-radius:4px}
+.pcard.small .suit{font-size:10px}
+
+/* ---- 座位 ---- */
+.seat-layer,.bet-layer{position:absolute;inset:0;z-index:3;pointer-events:none}
+.pseat{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  min-width:92px;transition:opacity .2s;
+}
+.pseat-cards{display:flex;gap:3px}
+.pseat-info{
+  background:rgba(12,18,26,.92);border:1px solid rgba(255,255,255,.12);
+  border-radius:9px;padding:4px 10px;text-align:center;min-width:88px;
+  box-shadow:0 3px 10px rgba(0,0,0,.45);
+}
+.pseat-name{font-size:11.5px;font-weight:600;display:flex;gap:5px;
+  align-items:baseline;justify-content:center;white-space:nowrap}
+.pseat-pos{color:var(--gold);font-size:10px;font-weight:400}
+.pseat-stack{font-size:13px;font-variant-numeric:tabular-nums;color:var(--text)}
+
+.pseat.me .pseat-info{border-color:var(--accent);background:rgba(20,40,70,.95)}
+.pseat.acting .pseat-info{
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(210,153,34,.35),0 3px 10px rgba(0,0,0,.45);
+}
+.pseat.out{opacity:.32}
+.pseat.allin .pseat-stack{color:var(--raise);font-weight:700}
+
+.bet-chip{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:5px;
+  background:rgba(0,0,0,.55);border-radius:20px;padding:2px 9px;
+  font-size:12px;color:var(--gold);font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+.dealer-btn{
+  position:absolute;transform:translate(-50%,-50%);z-index:4;
+  width:22px;height:22px;border-radius:50%;
+  background:#fff;color:#111;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.5);
 }
 
 /* ---------- action bar ---------- */
@@ -224,16 +287,22 @@ tr.warn td{color:var(--gold)}
   .card{padding:12px;margin-bottom:12px;border-radius:10px}
   .grid{grid-template-columns:1fr 1fr;gap:8px}
 
-  /* 牌桌：椭圆在窄屏上会把座位挤扁，改成方角卡片 */
-  .poker-table{border-radius:14px;padding:14px 10px;min-height:0}
-  .board{gap:4px;min-height:60px}
-  .pcard{width:42px;height:58px;font-size:19px;border-radius:5px}
-  .pcard .suit{font-size:13px}
-  .pcard.small{width:30px;height:42px;font-size:14px}
-  .pcard.small .suit{font-size:10px}
-  .seats{grid-template-columns:1fr 1fr;gap:6px;margin-top:14px}
-  .seat{padding:7px;font-size:11.5px}
-  .seat .stk,.seat .bet{font-size:10.5px}
+  /* 窄屏：桌子拉高一点（16:10 会挤扁），座位整体缩小 */
+  .felt{aspect-ratio:1/1;max-height:none}
+  .felt-inner{inset:5% 2%;border-width:7px}
+  .pcard{width:34px;height:48px;font-size:16px;border-radius:5px}
+  .pcard .suit{font-size:11px}
+  .pcard.small{width:22px;height:31px;font-size:11px}
+  .pcard.small .suit{font-size:8px}
+  .board{gap:3px}
+  .pseat{min-width:0}
+  .pseat-info{min-width:0;padding:3px 7px}
+  .pseat-name{font-size:10px}
+  .pseat-pos{font-size:9px}
+  .pseat-stack{font-size:11.5px}
+  .bet-chip{font-size:10.5px;padding:1px 6px}
+  .dealer-btn{width:18px;height:18px;font-size:10px}
+  .center-pot{font-size:11.5px;padding:2px 9px}
 
   /* 动作栏钉在底部：手一直在屏幕下缘，不该为了出牌往上够 */
   .actionbar{
@@ -270,17 +339,18 @@ tr.warn td{color:var(--gold)}
 
 /* 很窄的机型（iPhone SE 一类）：座位改单列，否则名字会折行 */
 @media(max-width:380px){
-  .seats{grid-template-columns:1fr}
   .grid{grid-template-columns:1fr}
   .kpis{grid-template-columns:repeat(2,1fr)}
-  .pcard{width:36px;height:50px;font-size:17px}
+  .pcard{width:30px;height:42px;font-size:14px}
+  .pcard.small{width:19px;height:27px;font-size:10px}
+  .pseat-info{padding:2px 5px}
+  .pseat-name{font-size:9px}
 }
 
 /* 横屏矮屏：别让牌桌把动作栏顶出屏幕 */
 @media(max-height:520px) and (orientation:landscape){
-  .poker-table{min-height:0;padding:10px}
-  .board{min-height:52px}
-  .seats{grid-template-columns:repeat(3,1fr);margin-top:10px}
+  .felt{aspect-ratio:20/9;max-height:300px}
+  .pcard{width:32px;height:45px;font-size:15px}
 }
 
 /* 建议默认盖着，想不出来才点开 */
@@ -330,3 +400,20 @@ tr.warn td{color:var(--gold)}
 .fapplied b{color:var(--call)}
 .fnote{font-size:12px;color:var(--dim);line-height:1.6}
 .fnote b{color:var(--muted)}
+
+/* ---------- 领先概率 vs 胜率 ---------- */
+.leadbox{background:var(--panel2);border-radius:8px;padding:12px}
+.leadrow{display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.leadcell{flex:1;min-width:120px;text-align:center}
+.leadcell span{display:block;font-size:11.5px;color:var(--muted)}
+.leadcell b{display:block;font-size:26px;font-variant-numeric:tabular-nums;margin:2px 0}
+.leadcell b.hi{color:var(--gold)}
+.leadcell em{display:block;font-size:11px;color:var(--dim);font-style:normal}
+.leadarrow{color:var(--dim);font-size:20px}
+.leadsplit{display:flex;gap:2px;margin-bottom:10px;font-size:10.5px;flex-wrap:wrap}
+.leadsplit span{flex:1;min-width:78px;padding:4px 6px;border-radius:4px;text-align:center;
+  color:#fff;white-space:nowrap}
+.leadsplit .s1{background:#2d7a4a}
+.leadsplit .s2{background:#8a6d1f}
+.leadsplit .s3{background:#2f6ea8}
+.leadsplit .s4{background:#4a3030}

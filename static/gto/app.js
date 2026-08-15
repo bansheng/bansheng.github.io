@@ -200,26 +200,7 @@ function applyView(v) {
     board.appendChild(ph);
   }
 
-  const seats = $("#seats");
-  seats.innerHTML = "";
-  h.seats.forEach((s) => {
-    const d = document.createElement("div");
-    d.className = "seat"
-      + (s.index === h.hero_seat ? " hero" : "")
-      + (s.index === h.actor ? " acting" : "")
-      + (s.folded ? " folded" : "");
-    const btn = s.index === h.button ? '<span class="btn-mark">D</span>' : "";
-    const cards = (s.hole || [null, null])
-      .map((c) => c).slice(0, 2);
-    d.innerHTML = `
-      <div class="nm"><span>${s.name} ${btn}</span><span class="pos">${s.position}</span></div>
-      <div class="stk">筹码 ${s.stack}${s.all_in ? " · ALL-IN" : ""}</div>
-      <div class="cards"></div>
-      ${s.committed ? `<div class="bet">已投入 ${s.committed}</div>` : ""}`;
-    const cw = d.querySelector(".cards");
-    cards.forEach((c) => cw.appendChild(cardEl(c, true)));
-    seats.appendChild(d);
-  });
+  renderTable(h);
 
   renderActions(h);
   if (h.your_turn) hideAdvice();
@@ -240,6 +221,100 @@ function hideAdvice() {
   $("#advice-explain").textContent = "";
   $("#advice-caveat").textContent = "";
   $("#btn-peek").onclick = () => { state.peeked = true; loadAdvice(); };
+}
+
+/* 座位按真实牌桌的位置摆：英雄永远在正下方，其余按顺时针绕桌一圈。
+   坐标是每种人数写死的百分比 —— 用三角函数均分角度在 2 人和 9 人时都难看，
+   写死反而能照顾每种人数的实际观感（比如 6 人桌希望正上方有人、正左右各一个）。 */
+const SEAT_LAYOUT = {
+  2: [[50, 90], [50, 8]],
+  3: [[50, 90], [8, 32], [92, 32]],
+  4: [[50, 90], [6, 50], [50, 6], [94, 50]],
+  5: [[50, 90], [6, 60], [22, 12], [78, 12], [94, 60]],
+  6: [[50, 90], [5, 64], [15, 16], [50, 6], [85, 16], [95, 64]],
+  7: [[50, 90], [5, 68], [9, 28], [34, 8], [66, 8], [91, 28], [95, 68]],
+  8: [[50, 90], [5, 72], [5, 38], [24, 10], [50, 5], [76, 10], [95, 38], [95, 72]],
+  9: [[50, 90], [6, 76], [4, 46], [15, 16], [38, 6], [62, 6], [85, 16], [96, 46], [94, 76]],
+};
+
+/** 座位 i 在牌桌上的位置。英雄的相对序号是 0，其余顺时针排开。 */
+function seatSpot(index, hero, n) {
+  const layout = SEAT_LAYOUT[n] || SEAT_LAYOUT[6];
+  const rel = ((index - hero) % n + n) % n;
+  return layout[rel] || layout[0];
+}
+
+/* 下注筹码摆在座位和桌心之间，视觉上就是"推出去的那一份"。 */
+function betSpot([x, y]) {
+  return [x + (50 - x) * 0.42, y + (50 - y) * 0.42];
+}
+
+function renderTable(h) {
+  const n = h.seats.length;
+  const hero = h.hero_seat;
+  const seatLayer = $("#seats");
+  const betLayer = $("#bets");
+  seatLayer.innerHTML = "";
+  betLayer.innerHTML = "";
+
+  h.seats.forEach((s) => {
+    const [x, y] = seatSpot(s.index, hero, n);
+    const box = document.createElement("div");
+    box.className = "pseat"
+      + (s.index === hero ? " me" : "")
+      + (s.index === h.actor ? " acting" : "")
+      + (s.folded ? " out" : "")
+      + (s.all_in ? " allin" : "");
+    box.style.left = x + "%";
+    box.style.top = y + "%";
+
+    const cards = document.createElement("div");
+    cards.className = "pseat-cards";
+    (s.hole || [null, null]).slice(0, 2).forEach((c) => cards.appendChild(cardEl(c, true)));
+
+    const info = document.createElement("div");
+    info.className = "pseat-info";
+    info.innerHTML = `
+      <div class="pseat-name">${s.name}<span class="pseat-pos">${s.position}</span></div>
+      <div class="pseat-stack">${s.all_in ? "ALL-IN" : s.stack}</div>`;
+
+    box.append(cards, info);
+    seatLayer.appendChild(box);
+
+    if (s.committed > 0) {
+      const [bx, by] = betSpot([x, y]);
+      const chip = document.createElement("div");
+      chip.className = "bet-chip";
+      chip.style.left = bx + "%";
+      chip.style.top = by + "%";
+      chip.innerHTML = `<span class="disc"></span>${s.committed}`;
+      betLayer.appendChild(chip);
+    }
+  });
+
+  // 按钮标记贴在按钮位座位的靠桌心一侧
+  const d = $("#dealer");
+  if (h.button != null && h.seats[h.button]) {
+    const [bx, by] = seatSpot(h.button, hero, n);
+    d.style.left = bx + (50 - bx) * 0.2 + "%";
+    d.style.top = by + (50 - by) * 0.2 + "%";
+    d.textContent = "D";
+    d.classList.remove("hidden");
+  } else {
+    d.classList.add("hidden");
+  }
+
+  const board = $("#board");
+  board.innerHTML = "";
+  h.board.forEach((c) => board.appendChild(cardEl(c)));
+  for (let i = h.board.length; i < 5; i++) {
+    const ph = document.createElement("div");
+    ph.className = "pcard slot";
+    board.appendChild(ph);
+  }
+  $("#center-pot").innerHTML = h.pot
+    ? `<span class="disc"></span>底池 <b>${h.pot}</b>`
+    : "";
 }
 
 function renderActions(h) {
@@ -465,6 +540,55 @@ function showAnalysis(an) {
 
   $("#ana-reasons").innerHTML = an.reasons.map((r) => `<li>${bold(r)}</li>`).join("");
 
+  const lv = an.lead_vs_equity || {};
+  $("#ana-lead").innerHTML = lv.trials ? `
+    <div class="leadbox">
+      <div class="leadrow">
+        <div class="leadcell"><span>现在摊牌就赢</span><b>${(lv.lead_now * 100).toFixed(0)}%</b>
+          <em>纯数组合，不含运气</em></div>
+        <div class="leadarrow">→</div>
+        <div class="leadcell"><span>发完剩下的牌后赢</span><b class="hi">${(lv.equity_after * 100).toFixed(0)}%</b>
+          <em>这才是胜率(equity)</em></div>
+      </div>
+      <div class="leadsplit">
+        <span class="s1">现在领先且守住 ${(lv.held * 100).toFixed(0)}%</span>
+        <span class="s2">现在领先被反超 ${(lv.lost * 100).toFixed(0)}%</span>
+        <span class="s3">现在落后但反超 ${(lv.caught * 100).toFixed(0)}%</span>
+        <span class="s4">一直落后 ${(lv.never * 100).toFixed(0)}%</span>
+      </div>
+      <div class="fexpr">${bold(lv.formula)}</div>
+      <div class="fapplied">${bold(lv.worked)}</div>
+      <div class="fnote">${bold(lv.reading)}</div>
+    </div>` : '<p class="hint">河牌上没有后续的牌，领先概率就等于胜率，两者是同一个数。</p>';
+
+  const cm = an.combo_math || {};
+  $("#ana-combomath").innerHTML = `
+    <div class="formula">
+      <div class="fname">第一步：一手牌有几种组合</div>
+      ${(cm.basics || []).map((b) =>
+        `<div class="fapplied">${b.kind} = <b>${b.full}</b> 个　<span class="fnote">${b.why}</span></div>`).join("")}
+    </div>
+    ${(cm.blockers || []).length ? `
+    <div class="formula">
+      <div class="fname">第二步：减掉已经露面的牌（最容易漏的一步）</div>
+      ${cm.blockers.slice(0, 5).map((b) =>
+        `<div class="fapplied"><b>${b.rank}</b> 已现 ${b.gone} 张 →
+          ${b.pair}　${b.suited}　${b.offsuit}</div>`).join("")}
+    </div>` : ""}
+    ${(cm.beats_you || []).length ? `
+    <div class="formula">
+      <div class="fname">第三步：数出能打败你的组合</div>
+      <div class="fapplied">${cm.beats_you.slice(0, 8).map((b) =>
+        `${b.hand} <b>${b.combos}</b>`).join("　")}</div>
+      <div class="fnote">合计 <b>${cm.beats_total}</b> 个，对手范围共 <b>${cm.range_total}</b> 个</div>
+    </div>` : ""}
+    ${(cm.steps || []).length ? `
+    <div class="formula">
+      <div class="fname">第四步：算成概率</div>
+      ${cm.steps.map((s) => `<div class="fapplied">${bold(s)}</div>`).join("")}
+    </div>` : ""}
+    <p class="fnote">${bold(cm.note || "")}</p>`;
+
   $("#ana-shortcuts").innerHTML = (an.shortcuts || []).map((sc) => `
     <div class="formula">
       <div class="fname">${sc.name}</div>
@@ -539,7 +663,10 @@ $("#btn-drill").addEventListener("click", async () => {
   // 按钮从这个 spot 实际有哪些动作推出来，不要写死。
   // 推-弃表里 "raise" 的意思是全下，标成「加注」会看不懂。
   const isPush = q.spot.includes("push-") && !q.spot.includes("vs-push");
-  const available = new Set(["fold", ...Object.keys(q.answer)]);
+  // 用局面的动作集合，不用这手牌的 —— 只给一个"弃牌"按钮等于送分
+  const available = new Set(q.spot_actions?.length
+    ? q.spot_actions
+    : ["fold", ...Object.keys(q.answer)]);
   const ac = $("#drill-actions");
   ac.innerHTML = "";
   ["fold", "call", "raise"].filter((a) => available.has(a)).forEach((a) => {

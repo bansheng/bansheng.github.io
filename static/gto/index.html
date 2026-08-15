@@ -85,9 +85,17 @@
       <button class="peek hidden" id="btn-rebuy">补码</button>
     </div>
 
-    <div class="poker-table">
-      <div class="board" id="board"></div>
-      <div class="seats" id="seats"></div>
+    <div class="table-area">
+      <div class="felt">
+        <div class="felt-inner"></div>
+        <div class="table-center">
+          <div class="board" id="board"></div>
+          <div class="center-pot" id="center-pot"></div>
+        </div>
+        <div class="seat-layer" id="seats"></div>
+        <div class="bet-layer" id="bets"></div>
+        <div class="dealer-btn hidden" id="dealer"></div>
+      </div>
     </div>
 
     <div class="actionbar" id="actionbar"></div>
@@ -128,6 +136,12 @@
 
       <h4>为什么</h4>
       <ul class="ana-reasons" id="ana-reasons"></ul>
+
+      <h4>领先概率 vs 胜率：两个不同的问题</h4>
+      <div id="ana-lead"></div>
+
+      <h4>怎么数对手的组合数（这一步在牌桌上能徒手做）</h4>
+      <div id="ana-combomath"></div>
 
       <h4>桌上能心算的速算公式</h4>
       <div id="ana-shortcuts"></div>
