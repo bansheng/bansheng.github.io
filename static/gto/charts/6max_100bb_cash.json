@@ -144,6 +144,19 @@
         "raise": "TT+,AJs+,A5s,A4s,A3s,KTs+,QTs+,JTs,T9s,98s,87s,76s,65s,AQo+,KQo:0.4",
         "call": "22+:0.9,A2s+,K2s+,Q4s+,J6s+,T6s+,95s+,85s+,74s+,64s+,54s,43s,A2o+,K5o+,Q7o+,J8o+,T8o+,97o+,87o,76o"
       }
+    },
+    "BTN/SB|rfi": {
+      "description": "单挑 SB（按钮）首入加注 —— 单挑只有两家，开池范围比 6-max 宽得多",
+      "actions": {
+        "raise": "22+,A2s+,K2s+,Q2s+,J2s+,T4s+,95s+,85s+,74s+,64s+,53s+,43s,A2o+,K2o+,Q5o+,J7o+,T7o+,97o+,87o,76o"
+      }
+    },
+    "BB|vs-BTN/SB-open": {
+      "description": "单挑 BB 面对 SB 开池的防守 —— 面对最宽的开池，防守也最宽",
+      "actions": {
+        "raise": "TT+,AJs+,A5s,A4s,A3s,KTs+,QTs+,JTs,T9s,98s,87s,76s,65s,AQo+,KQo:0.5",
+        "call": "22+:0.9,A2s+,K2s+,Q3s+,J5s+,T5s+,95s+,84s+,74s+,63s+,53s+,43s,A2o+,K4o+,Q7o+,J8o+,T8o+,97o+,87o,76o"
+      }
     }
   }
 }
