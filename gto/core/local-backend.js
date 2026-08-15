@@ -14,6 +14,7 @@ import { advise, BotTable, freqGap, frequencyOf, isBlunder,
          inferVillainRangeDetailed, inferHeroRange } from "./brain.js";
 import { analyse } from "./analysis.js";
 import { SolveLibrary } from "./solve-library.js";
+import { rangeReport } from "./rangereport.js";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";
@@ -447,6 +448,18 @@ export class LocalBackend {
     if (seg[0] === "users" && seg.length === 3 && seg[2] === "sessions")
       return this._login(decodeURIComponent(seg[1]), false);
 
+    // 跨这个用户的所有对局：翻前漏洞是长期问题，只看当前一局每个位置都
+    // 凑不够样本，报告只会一片"样本太小"。
+    if (seg[0] === "users" && seg.length === 3 && seg[2] === "rangereport") {
+      const name = decodeURIComponent(seg[1]);
+      const u = (this.store.users || []).find((x) => x.name === name);
+      if (!u) throw new Error(`没有这个用户: ${name}`);
+      const ids = new Set((this.store.sessions || [])
+        .filter((s) => s.user_id === u.id).map((s) => s.id));
+      return rangeReport(this.store.decisions.filter((d) => ids.has(d.session_id)),
+                         this.charts["6max_100bb_cash"]);
+    }
+
     if (seg[0] === "health") {
       await this.library.ready();
       return {
@@ -484,6 +497,9 @@ export class LocalBackend {
       if (sub === "rebuy") return s.rebuy();
       if (sub === "chips") return s.chips();
       if (sub === "stats") return this._stats(s);
+      if (sub === "rangereport")
+        return rangeReport(this.store.decisions.filter((d) => d.session_id === s.id),
+                           this.charts["6max_100bb_cash"]);
       if (sub === "hands") return { hands: this.store.hands.filter((h) => h.session_id === s.id).slice().reverse() };
     }
 

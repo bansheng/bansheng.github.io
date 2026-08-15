@@ -467,3 +467,43 @@ details.more{margin-top:16px;border-top:1px solid var(--line);padding-top:10px}
 details.more summary{cursor:pointer;color:var(--muted);font-size:12.5px;user-select:none}
 details.more summary:hover{color:var(--text)}
 details.more[open] summary{margin-bottom:12px}
+
+
+/* ---- 座位上的当前牌型 ---- */
+.pseat-made {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .45);
+  color: var(--muted);
+  white-space: nowrap;
+}
+/* 自己的牌型给足对比度 —— 这是打牌时一直在看的那一行 */
+.pseat-made.mine { color: var(--gold); background: rgba(0, 0, 0, .6); font-weight: 600; }
+
+/* ---- 翻前范围 vs chart ---- */
+.win-tabs { display: flex; gap: 6px; margin: 6px 0 10px; }
+.win-tab {
+  padding: 4px 12px; font-size: 13px; border-radius: 14px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--muted);
+}
+.win-tab.active { background: var(--gold); color: #1a1408; border-color: var(--gold); }
+table.rr { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.rr th { text-align: left; font-weight: 600; color: var(--muted); padding: 6px 8px; }
+table.rr td { padding: 5px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+table.rr tr.dim td, table.rr td.dim { color: var(--muted); }
+table.rr td.pos { color: var(--call); }
+table.rr td.neg { color: var(--raise); }
+table.rr td.warn { color: var(--gold); }
+tr.rr-verdict td { border-top: none; padding-top: 0; font-size: 12px; color: var(--muted); }
+.rr-chip {
+  display: inline-block; margin: 1px 3px 1px 0; padding: 1px 5px;
+  border-radius: 4px; font-family: var(--mono, monospace); font-size: 11px;
+}
+.rr-chip.wide  { background: rgba(220, 80, 80, .18);  color: #f0a0a0; }
+.rr-chip.tight { background: rgba(210, 170, 60, .18); color: #e8cf8a; }
+.rr-more { font-size: 11px; color: var(--muted); }
+.rr-none { color: var(--muted); }

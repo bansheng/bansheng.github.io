@@ -263,6 +263,15 @@
 <!-- ================= 统计 ================= -->
 <section class="view" id="view-stats">
   <div class="card"><h2>本局统计</h2><div class="kpis" id="kpis"></div></div>
+  <div class="card">
+    <h3>翻前入池范围 vs GTO chart</h3>
+    <div class="win-tabs" id="rr-tabs">
+      <button class="win-tab active" data-win="all">全部</button>
+      <button class="win-tab" data-win="last500">最近 500 手</button>
+      <button class="win-tab" data-win="last100">最近 100 手</button>
+    </div>
+    <div id="range-report"></div>
+  </div>
   <div class="card"><h3>按位置的漏洞</h3><div id="leak-pos"></div></div>
   <div class="card"><h3>按起手牌的漏洞</h3><div id="leak-hand"></div></div>
 </section>

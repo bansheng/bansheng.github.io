@@ -328,7 +328,8 @@ export class HandState {
       net: Object.fromEntries(this.seats.map((s) => [s.index, s.stack - this.startingStacks[s.index]])),
       pots,
       rankings: Object.fromEntries(
-        Object.entries(rankings).map(([i, r]) => [i, { rank: r, category: categoryName(r) }])
+        Object.entries(rankings).map(([i, r]) =>
+          [i, { rank: r, category: categoryName(r), name: categoryName(r) }])
       ),
       showdown: uncontested === null || uncontested === undefined,
       board: cardsToStr(this.board),
@@ -354,6 +355,11 @@ export class HandState {
         stack: s.stack, committed: s.committed, total_committed: s.totalCommitted,
         folded: s.folded, all_in: s.allIn,
         hole: reveal || (viewer !== null && s.index === viewer) ? s.hole.map(cardToStr) : null,
+        // 只给看得见牌的座位：一眼读出牌型，比每条街重新看五张牌快得多；
+        // 摊牌时也是靠它直接看出谁赢，而不用自己解读牌面。
+        made: (reveal || (viewer !== null && s.index === viewer))
+              && this.board.length >= 3 && !s.folded
+          ? categoryName(evaluate(s.hole.concat(this.board))) : null,
       })),
       legal_actions: this.legalActions(),
       actions: this.actions,

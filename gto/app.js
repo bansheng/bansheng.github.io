@@ -296,6 +296,14 @@ function renderTable(h) {
       <div class="pseat-stack">${s.all_in ? "ALL-IN" : s.stack}</div>`;
 
     box.append(cards, info);
+    // 当前牌型：牌看得见就标出来。自己的每条街都在，别人的只在摊牌后
+    // （引擎决定谁的 made 可见，前端不自己推）。摊牌时这一行就是"谁赢了"。
+    if (s.made) {
+      const made = document.createElement("div");
+      made.className = "pseat-made" + (s.index === hero ? " mine" : "");
+      made.textContent = s.made;
+      box.appendChild(made);
+    }
     seatLayer.appendChild(box);
 
     if (s.committed > 0) {
@@ -919,6 +927,75 @@ async function drawMatrix() {
   $("#chart-pct").textContent = `${actionCn}范围占比 ${spot.percent[action] ?? 0}%`;
 }
 
+/* ---------------- 翻前范围 vs chart ---------------- */
+
+let rrData = null;
+
+async function loadRangeReport() {
+  const box = $("#range-report");
+  if (!box) return;
+  // 优先按用户拉全量：翻前漏洞是长期问题，只看当前一局每个位置都不够样本。
+  try {
+    rrData = state.user
+      ? await api(`/api/users/${encodeURIComponent(state.user.name)}/rangereport`)
+      : await api(`/api/sessions/${state.sessionId}/rangereport`);
+  } catch (e) {
+    box.innerHTML = `<p class="empty">拿不到范围报告：${e.message}</p>`;
+    return;
+  }
+  renderRangeReport(document.querySelector("#rr-tabs .win-tab.active")?.dataset.win || "all");
+}
+
+function renderRangeReport(win) {
+  const box = $("#range-report");
+  const w = rrData?.windows?.[win];
+  if (!w || !w.positions.length) {
+    box.innerHTML = '<p class="empty">这个窗口还没有翻前决策。</p>';
+    return;
+  }
+  const rows = w.positions.map((p) => {
+    if (!p.chart_available)
+      return `<tr class="dim"><td>${p.position}</td><td>${p.decisions}</td>
+              <td colspan="4">${p.note || "没有对应 chart"}</td></tr>`;
+    // 两个方向分开显示：一个宽度数字会把"弃 AJo + 跟 96s"显示成正常。
+    const chips = (list, extra, cls) =>
+      list.length
+        ? list.map((h) => `<span class="rr-chip ${cls}">${h}</span>`).join("") +
+          (extra > list.length ? `<span class="rr-more">+${extra - list.length}</span>` : "")
+        : '<span class="rr-none">—</span>';
+    const gap = p.your_vpip_pct - p.chart_range_pct;
+    const gapCls = !p.enough_sample ? "dim" : gap > 5 ? "neg" : gap < -5 ? "warn" : "pos";
+    return `<tr>
+      <td><b>${p.position}</b></td>
+      <td>${p.decisions}</td>
+      <td class="${gapCls}">${p.your_vpip_pct}%</td>
+      <td>${p.chart_range_pct}%</td>
+      <td>${chips(p.too_wide, p.too_wide_count, "wide")}</td>
+      <td>${chips(p.too_tight, p.too_tight_count, "tight")}</td>
+    </tr>
+    <tr class="rr-verdict ${p.enough_sample ? "" : "dim"}"><td colspan="6">${
+      p.verdict.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")}</td></tr>`;
+  }).join("");
+
+  box.innerHTML = `
+    <p class="hint">窗口内 ${w.hands} 个翻前决策。<b>入池率</b>和 chart 的<b>范围宽度</b>比 ——
+      不用「你玩过的牌有多宽」，那个会被样本量系统性压低，
+      打得再准也会显示成「太紧」。每个位置满 30 个决策才给结论。</p>
+    <table class="rr">
+      <tr><th>位置</th><th>决策数</th><th>你的入池率</th><th>chart 宽度</th>
+          <th>打太宽（chart 会弃）</th><th>打太紧（chart 会玩）</th></tr>
+      ${rows}
+    </table>`;
+}
+
+$$("#rr-tabs .win-tab").forEach((b) =>
+  b.addEventListener("click", () => {
+    $$("#rr-tabs .win-tab").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    renderRangeReport(b.dataset.win);
+  })
+);
+
 /* ---------------- stats ---------------- */
 
 async function loadStats() {
@@ -960,6 +1037,8 @@ async function loadStats() {
           cols.map((c) => `<td>${c[1](r)}</td>`).join("") + "</tr>").join("") +
         "</table>"
       : '<p class="empty">数据还不够。</p>';
+
+  await loadRangeReport();
 
   $("#leak-pos").innerHTML = tbl(s.by_position, [
     ["位置", (r) => r.position], ["街", (r) => r.street],
