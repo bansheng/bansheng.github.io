@@ -8,6 +8,7 @@
 
 import { Range, handVsRange, holeLabel, cardMask } from "./poker.js";
 import { evaluate } from "./evaluator.js";
+import { classify } from "./handread.js";
 
 export const DEFAULT_VILLAIN = Range.parse(
   "22+,A2s+,K5s+,Q7s+,J8s+,T8s+,97s+,87s,76s,65s,A7o+,KTo+,QJo"
@@ -123,6 +124,98 @@ export function narrowByStrength(base, board, dead, keepFraction) {
   return r;
 }
 
+
+/* 各桶的下注频率。用频率而不是「进/不进」，是因为「这手牌下不下注」几乎
+ * 从来不是是非题：弱踢脚顶对有时下有时过，而写成「总是下」就会把每一手
+ * K7o 都塞进下注范围，于是对手一下注你就永远显示落后。 */
+const BET_RATE = {
+  "超强牌": 0.90,   // 很少慢打
+  "两对": 0.85,
+  "顶对": 0.60,     // 好踢脚下注，弱踢脚常过牌控池
+  "中/弱对": 0.15,  // 既叫不到更差的、也赶不走更好的 —— 基本过牌
+  "强听牌": 0.55,   // 半诈唬
+  "弱听牌": 0.35,
+};
+const MADE = ["超强牌", "两对", "顶对", "中/弱对"];
+
+/** 下注 s 倍底池时，均衡诈唬占下注范围的比例。
+ *  下注方要让跟注方恰好无差异，解出来就是 s/(1+2s)：半池 25%，满池 33%。
+ *  这是整个范围模型里唯一不是拍脑袋的数 —— 它直接来自跟注方的底池赔率。 */
+export function bluffShare(betFraction) {
+  const s = Math.max(0.05, betFraction);
+  return s / (1 + 2 * s);
+}
+
+/** 把下注范围建模成「价值 + 诈唬」，而不是「最强的 X%」。
+ *
+ * 按成手强度排序取头部得到的是**线性**范围，里面一手诈唬都没有，于是下游
+ * 每个数字都朝同一个方向错：面对任何下注你都显示落后，而「能打走哪些」
+ * 直接掉到接近 0 —— 那恰恰是读牌最该告诉你的一件事。
+ *
+ * 这里每个桶按自己的频率下注，再解出空气的频率，让整体诈唬占比正好等于
+ * 这个下注尺度所要求的值。所以范围会跟着**下注多大**变：注越大范围越极化、
+ * 空气越多，而这正是牌桌上真正有用的那个读。
+ */
+export function polarizedBettingRange(base, board, dead, betFraction) {
+  const combos = base.combos(dead);
+  if (!combos.length || board.length < 3) return base;
+
+  const key = (c) => `${c[0]},${c[1]}`;
+  const bucketOf = new Map();
+  const bucketed = {};
+  for (const c of combos) {
+    const w = c[2];
+    if (w <= 0) continue;
+    const b = classify([c[0], c[1]], board);
+    bucketOf.set(key(c), b);
+    (bucketed[b] = bucketed[b] || []).push(c);
+  }
+
+  const weighted = new Map();
+  for (const [name, group] of Object.entries(bucketed)) {
+    const rate = BET_RATE[name];
+    if (rate === undefined) continue;        // 空气 —— 下面按诈唬预算填
+    for (const c of group) weighted.set(key(c), c[2] * rate);
+  }
+
+  let value = 0, drawn = 0;
+  for (const [k, w] of weighted)
+    (MADE.includes(bucketOf.get(k)) ? (value += w) : (drawn += w));
+
+  const want = bluffShare(betFraction);
+  const budget = (value * want) / Math.max(1e-6, 1 - want);
+  const air = bucketed["空气"] || [];
+
+  if (budget <= drawn) {
+    // 听牌本身就已经填满诈唬预算：把听牌按比例压回去，不下纯空气。小注就是这种情况。
+    if (drawn > 0) {
+      const scale = budget / drawn;
+      for (const [k, w] of weighted)
+        if (!MADE.includes(bucketOf.get(k))) weighted.set(k, w * scale);
+    }
+  } else if (air.length) {
+    const totalAir = air.reduce((a, c) => a + c[2], 0);
+    const rate = totalAir ? Math.min(1, (budget - drawn) / totalAir) : 0;
+    for (const c of air) if (c[2] * rate > 0) weighted.set(key(c), c[2] * rate);
+  }
+
+  const r = new Range({}, new Map());
+  for (const [k, w] of weighted) if (w > 0.001) r.extra.set(k, w);
+  return r.extra.size ? r : base;
+}
+
+/** 本街这一注占下注前底池的比例 —— 注多大决定了诈唬比例。 */
+function betFractionOf(state, villain) {
+  let last = null;
+  for (const a of state.actions)
+    if (a.street === state.street && a.seat === villain
+        && (a.type === "bet" || a.type === "raise")) last = a;
+  if (!last) return 0.5;
+  const streetIn = state.seats.reduce((x, s) => x + s.committed, 0);
+  const potBefore = Math.max(1, state.pot - streetIn + (streetIn - last.amount));
+  return Math.max(0.05, Math.min(3, last.amount / potBefore));
+}
+
 /** 估计对手范围，并把「是怎么估出来的」一起返回。
  *  这个估计是下游所有数字里最大的一个假设，玩家应该能看到它、也能不同意它。 */
 export function inferVillainRangeDetailed(state, seat, chart) {
@@ -159,9 +252,15 @@ export function inferVillainRangeDetailed(state, seat, chart) {
     (a) => a.seat === aggressor && a.street !== "preflop" && (a.type === "bet" || a.type === "raise")
   ).length;
   if (bets <= 0) return [base, why];
-  const keep = bets === 1 ? 0.55 : bets === 2 ? 0.35 : 0.22;
-  why += `；翻后对手下注/加注 ${bets} 次，按成手强度收窄到最强的 ${Math.round(keep * 100)}%`;
-  return [narrowByStrength(base, board, dead, keep), why];
+  const frac = betFractionOf(state, aggressor);
+  let rng = polarizedBettingRange(base, board, dead, frac);
+  const w = bluffShare(frac);
+  why += `；对手下注约 ${Math.round(frac * 100)}% 底池，按极化范围建模` +
+         `（价值 ${Math.round((1 - w) * 100)}% + 诈唬 ${Math.round(w * 100)}%，中等牌多数过牌）`;
+  // 多开一枪就是又极化一轮：放弃的诈唬没了，还在开火的是价值那部分。
+  for (let i = 1; i < bets; i++) rng = polarizedBettingRange(rng, board, dead, frac);
+  if (bets > 1) why += `；连开 ${bets} 枪，又收窄了一轮`;
+  return [rng, why];
 }
 
 export function inferVillainRange(state, seat, chart) {
