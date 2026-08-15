@@ -17,7 +17,23 @@
     <button class="tab" data-view="stats">统计</button>
     <button class="tab" data-view="review">复盘</button>
   </nav>
-  <div class="status" id="conn">连接中…</div>
+  <button class="status" id="conn" title="点击设置后端地址">连接中…</button>
+
+<div class="modal hidden" id="backend-modal">
+  <div class="modal-box">
+    <h3>后端设置</h3>
+    <p class="hint" id="backend-state"></p>
+    <label>后端地址
+      <input id="backend-url" type="text" placeholder="http://10.251.252.148:8848" spellcheck="false">
+    </label>
+    <p class="caveat" id="backend-warn"></p>
+    <div class="modal-actions">
+      <button class="primary" id="backend-save">保存并重连</button>
+      <button class="peek" id="backend-clear">清除（用自动探测）</button>
+      <button class="peek" id="backend-close">关闭</button>
+    </div>
+  </div>
+</div>
 </header>
 
 <main>
@@ -108,6 +124,7 @@
       <div id="advice-bars"></div>
       <p class="explain" id="advice-explain"></p>
       <p class="caveat" id="advice-caveat"></p>
+      <div id="solve-now"></div>
     </div>
 
     <div class="feedback card hidden" id="feedback"></div>
