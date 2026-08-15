@@ -4,7 +4,7 @@
  * 你记不住每个局面的频率，但你能学会数组合、把价格和胜率比一比。
  */
 
-import { RANKS, comboCount, gridLabel, cardToStr } from "./poker.js";
+import { RANKS, comboCount, gridLabel, cardToStr, makeCard } from "./poker.js";
 import { evaluate, categoryOf, CATEGORY_CN } from "./evaluator.js";
 
 /* evaluator 的 category 序号是「越大越强」，这里按强到弱列出来 */
@@ -204,6 +204,145 @@ function buildShortcuts(state, board, equity, pot, toCall, ahead, tied, totalW, 
   return out;
 }
 
+/* 教「怎么数组合」——用你这一手的真实数字走一遍。
+   数组合是唯一一个在真牌桌上能徒手做的读牌技能：你算不了蒙特卡洛，
+   但你能数对手有几种方式拿到一副 set。所以这里不是讲规则，是把当前局面
+   的账一步步算给你看，包括最容易漏掉的「牌被占用后要减」。 */
+export function comboMath(state, seat, combos, totalW, heroRank) {
+  const hero = state.seats[seat];
+  const board = state.board;
+  const dead = new Set(board.concat(hero.hole));
+  const deadRanks = new Map();
+  for (const c of dead) deadRanks.set(c >> 2, (deadRanks.get(c >> 2) || 0) + 1);
+  const gone = (r) => deadRanks.get(r) || 0;
+
+  const basics = [
+    { kind: "口袋对子（如 KK）", full: 6, why: "从 4 张同点数里挑 2 张：C(4,2) = 4×3÷2 = 6" },
+    { kind: "同花两张（如 AKs）", full: 4, why: "花色必须一样，4 种花色各一种组合 = 4" },
+    { kind: "非同花两张（如 AKo）", full: 12, why: "A 有 4 种花色 × K 有 4 种 = 16，减去 4 种同花 = 12" },
+  ];
+
+  const blockers = [];
+  for (const rank of [...deadRanks.keys()].sort((a, b) => b - a)) {
+    const g = gone(rank), left = 4 - g, r = RANKS[rank];
+    if (g <= 0) continue;
+    blockers.push({
+      rank: r, gone: g,
+      pair: `${r}${r}：6 → ${(left * (left - 1)) / 2}`,
+      suited: `含 ${r} 的同花两张：4 → ${Math.max(0, left)}`,
+      offsuit: `含 ${r} 的非同花两张：12 → ${left * 4 - left}`,
+    });
+  }
+
+  const labelOfCombo = ([a, b]) => {
+    const ra = a >> 2, rb = b >> 2;
+    const hi = Math.max(ra, rb), lo = Math.min(ra, rb);
+    return ra === rb ? RANKS[hi] + RANKS[hi]
+      : RANKS[hi] + RANKS[lo] + ((a & 3) === (b & 3) ? "s" : "o");
+  };
+
+  let ties = 0, loses = 0;
+  const byLabel = new Map();
+  if (heroRank != null && board.length >= 3) {
+    for (const [a, b, w] of combos) {
+      const r = evaluate([a, b].concat(board));
+      if (r > heroRank) {
+        const lb = labelOfCombo([a, b]);
+        byLabel.set(lb, (byLabel.get(lb) || 0) + w);
+      } else if (r === heroRank) ties += w;
+      else loses += w;
+    }
+  }
+  const beats = [...byLabel.entries()].sort((x, y) => y[1] - x[1]).slice(0, 10)
+    .map(([hand, w]) => ({ hand, combos: Math.round(w * 10) / 10 }));
+  const allBeat = heroRank != null ? totalW - loses - ties : 0;
+
+  const steps = [];
+  if (heroRank != null && board.length >= 3 && totalW > 0) {
+    steps.push(`1) 先定对手范围：${totalW.toFixed(0)} 个组合（这是分母）`);
+    if (beats.length) {
+      const top = beats.slice(0, 4).map((b) => `${b.hand} ${b.combos.toFixed(0)} 个`).join("、");
+      steps.push(`2) 数出能打败你的：${top}…… 合计 ${allBeat.toFixed(0)} 个`);
+    }
+    steps.push(`3) 概率 = 能打败你的组合数 ÷ 范围总组合数 = ${allBeat.toFixed(0)} ÷ ` +
+               `${totalW.toFixed(0)} = **${((100 * allBeat) / totalW).toFixed(0)}%**`);
+    steps.push(`4) 反过来，你现在领先的概率 = ${(totalW - allBeat - ties).toFixed(0)} ÷ ` +
+               `${totalW.toFixed(0)} = **${((100 * (totalW - allBeat - ties)) / totalW).toFixed(0)}%**` +
+               (ties > 0.5 ? `（另有 ${ties.toFixed(0)} 个组合和你平分）` : ""));
+  }
+
+  return {
+    basics, blockers, beats_you: beats,
+    beats_total: Math.round(allBeat * 10) / 10,
+    range_total: Math.round(totalW * 10) / 10,
+    steps,
+    note: "**这一步是能在牌桌上真做的**：你算不了蒙特卡洛，但你能数组合。" +
+          "关键是别忘了减掉被公共牌和自己手牌占掉的那些 —— 牌面有一张 K，" +
+          "对手的 KK 就只剩 3 个组合而不是 6 个，少算这一步会把对手的强牌概率高估将近一倍。",
+  };
+}
+
+/* 把「现在领先吗」和「最终会赢吗」分开，并把两者的关系算出来。
+   混淆这两个是读错局面最常见的方式：
+     领先概率 = 此刻摊牌我赢的比例（纯数组合，不含运气）
+     胜率     = 发完剩下的牌之后我赢的比例
+   关系：胜率 = P(现在领先) × P(守住) + P(现在落后) × P(反超)
+   河牌上两者按定义相等；在此之前，**差值就是后面那些牌的价值**。 */
+export function leadVsEquity(state, seat, combos, heroRank, trials = 3000, rand = Math.random) {
+  const hero = state.seats[seat];
+  const board = state.board;
+  if (heroRank == null || !combos.length || board.length >= 5) return {};
+
+  const cum = []; let total = 0;
+  for (const c of combos) { total += c[2]; cum.push(total); }
+  const pick = () => {
+    const x = rand() * total;
+    let lo = 0, hi = cum.length - 1;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (cum[m] < x) lo = m + 1; else hi = m; }
+    return combos[lo];
+  };
+  const need = 5 - board.length;
+  const blocked = new Set(board.concat(hero.hole));
+
+  let held = 0, lost = 0, caught = 0, never = 0;
+  for (let i = 0; i < trials; i++) {
+    const [va, vb] = pick();
+    if (blocked.has(va) || blocked.has(vb)) continue;
+    const nowAhead = heroRank > evaluate([va, vb].concat(board));
+    const pool = [];
+    for (let c = 0; c < 52; c++) if (!blocked.has(c) && c !== va && c !== vb) pool.push(c);
+    for (let k = 0; k < need; k++) {
+      const j = k + Math.floor(rand() * (pool.length - k));
+      const tmp = pool[k]; pool[k] = pool[j]; pool[j] = tmp;
+    }
+    const full = board.concat(pool.slice(0, need));
+    const endAhead = evaluate(hero.hole.concat(full)) > evaluate([va, vb].concat(full));
+    if (nowAhead && endAhead) held++;
+    else if (nowAhead) lost++;
+    else if (endAhead) caught++;
+    else never++;
+  }
+  const n = held + lost + caught + never;
+  if (!n) return {};
+  const leadNow = (held + lost) / n, eq = (held + caught) / n;
+  const p = (x) => `${Math.round(x * 100)}%`;
+  const holdRate = held + lost ? held / (held + lost) : 0;
+  const catchRate = caught + never ? caught / (caught + never) : 0;
+  const r4 = (x) => Math.round(x * 10000) / 10000;
+  return {
+    trials: n, lead_now: r4(leadNow), equity_after: r4(eq),
+    held: r4(held / n), lost: r4(lost / n), caught: r4(caught / n), never: r4(never / n),
+    hold_rate: r4(holdRate), catch_rate: r4(catchRate), gap: r4(eq - leadNow),
+    formula: "胜率 = P(现在领先) × P(守住) + P(现在落后) × P(反超)",
+    worked: `${p(leadNow)} × ${p(holdRate)} ＋ ${p(1 - leadNow)} × ${p(catchRate)} = **${p(eq)}**`,
+    reading: Math.abs(eq - leadNow) < 0.03
+      ? "两个数几乎一样，说明这手牌基本靠现在的牌力赢，后面的牌帮不上也害不了。"
+      : eq > leadNow
+      ? `胜率比领先概率高 ${Math.round((eq - leadNow) * 100)}pp —— 差出来的这部分**就是听牌的价值**，你现在落后但后面能反超。`
+      : `胜率比领先概率低 ${Math.round((leadNow - eq) * 100)}pp —— 你现在领先但**很脆**，后面的牌更可能帮到对手，所以别把底池打太大。`,
+  };
+}
+
 export function analyse(state, seat, villainRange, equity, derivation = "", heroRange = null) {
   const hero = state.seats[seat];
   const board = state.board;
@@ -394,5 +533,8 @@ export function analyse(state, seat, villainRange, equity, derivation = "", hero
     state, board, equity, pot, toCall, ahead, tied, totalW, outs);
   void toCallNow;
 
-  return { villain, matchup, odds, reasons, hero_range: heroBlock, shortcuts };
+  const heroRankNow = board.length >= 3 ? evaluate(hero.hole.concat(board)) : null;
+  return { villain, matchup, odds, reasons, hero_range: heroBlock, shortcuts,
+           combo_math: comboMath(state, seat, combos, totalW, heroRankNow),
+           lead_vs_equity: leadVsEquity(state, seat, combos, heroRankNow) };
 }
