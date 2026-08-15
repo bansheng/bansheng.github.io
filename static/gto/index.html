@@ -55,6 +55,16 @@
       <label>你的座位
         <select id="cfg-hero"></select>
       </label>
+      <label>筹码规则
+        <select id="cfg-chipmode">
+          <option value="">自动（深码走现金局，短码走练习）</option>
+          <option value="cash">现金局：筹码延续，可补码</option>
+          <option value="fixed">练习：每手重置到设定深度</option>
+        </select>
+      </label>
+      <label>本局买入上限
+        <input id="cfg-budget" type="number" value="2000" min="200" step="100">
+      </label>
     </div>
     <div class="bots-config">
       <div class="row-head">
@@ -71,6 +81,8 @@
       <span class="chip-pot">底池 <b id="pot">0</b></span>
       <span class="street" id="street">preflop</span>
       <span class="handno">第 <b id="handno">0</b> 手</span>
+      <span class="bankroll" id="bankroll"></span>
+      <button class="peek hidden" id="btn-rebuy">补码</button>
     </div>
 
     <div class="poker-table">
@@ -94,6 +106,8 @@
 
     <div class="card hidden" id="analysis">
       <h3>局面分析</h3>
+      <p class="ana-summary" id="ana-summary"></p>
+      <p class="ana-read" id="ana-read"></p>
       <div class="ana-grid">
         <div class="ana-col">
           <h4>对手可能的手牌</h4>
@@ -108,8 +122,15 @@
           <div id="ana-odds"></div>
         </div>
       </div>
+      <h4>你这手牌在你自己范围里的位置</h4>
+      <p class="ana-summary" id="ana-mine"></p>
+      <p class="hint" id="ana-mine-note"></p>
+
       <h4>为什么</h4>
       <ul class="ana-reasons" id="ana-reasons"></ul>
+
+      <h4>桌上能心算的速算公式</h4>
+      <div id="ana-shortcuts"></div>
     </div>
   </div>
 </section>

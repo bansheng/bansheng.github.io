@@ -80,6 +80,8 @@ function cardEl(txt, small = false) {
   return d;
 }
 
+const bold = (t) => String(t || "").replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+
 function setStatus(text, cls = "") {
   const el = $("#conn");
   el.textContent = text;
@@ -146,6 +148,8 @@ $("#btn-start").addEventListener("click", async () => {
       body: JSON.stringify({
         mode: "full", table_size: seats, stack_bb: +$("#cfg-stack").value,
         hero_seat: hero, bots,
+        chip_mode: $("#cfg-chipmode").value,
+        buyin_budget: +$("#cfg-budget").value || 2000,
       }),
     });
     state.sessionId = s.session_id;
@@ -165,14 +169,22 @@ async function deal() {
   state.peeked = false;
   $("#feedback").classList.add("hidden");
   $("#analysis").classList.add("hidden");
-  const v = await api(`/api/sessions/${state.sessionId}/deal`, { method: "POST" });
-  applyView(v);
+  try {
+    applyView(await api(`/api/sessions/${state.sessionId}/deal`, { method: "POST" }));
+  } catch (e) {
+    const fb = $("#feedback");
+    fb.className = "feedback card bad";
+    fb.innerHTML = `<h3>这一局结束</h3><p class="explain">${e.message}</p>`;
+    fb.classList.remove("hidden");
+    $("#actionbar").innerHTML = '<span class="waiting">刷新页面可以重新开一局。</span>';
+  }
 }
 
 function applyView(v) {
   state.hand = v.hand;
   state.bots = v.bots || {};
   $("#handno").textContent = v.hand_no;
+  if (v.chips) renderChips(v.chips);
   if (!v.hand) return;
   const h = v.hand;
 
@@ -444,8 +456,22 @@ function showAnalysis(an) {
         }</b></div>` : "",
   ].filter(Boolean).join("");
 
-  $("#ana-reasons").innerHTML = an.reasons
-    .map((r) => `<li>${r.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")}</li>`).join("");
+  $("#ana-summary").innerHTML = bold(an.villain.summary);
+  $("#ana-read").innerHTML = bold(an.villain.read);
+
+  const mine = an.hero_range || {};
+  $("#ana-mine").innerHTML = bold(mine.summary || "翻前还没有公共牌，无法定位相对牌力。");
+  $("#ana-mine-note").innerHTML = bold(mine.note || "");
+
+  $("#ana-reasons").innerHTML = an.reasons.map((r) => `<li>${bold(r)}</li>`).join("");
+
+  $("#ana-shortcuts").innerHTML = (an.shortcuts || []).map((sc) => `
+    <div class="formula">
+      <div class="fname">${sc.name}</div>
+      <div class="fexpr">${bold(sc.formula)}</div>
+      <div class="fapplied">${bold(sc.applied)}</div>
+      <div class="fnote">${bold(sc.note)}</div>
+    </div>`).join("");
 }
 
 function showResults(h) {
@@ -463,6 +489,29 @@ function showResults(h) {
   $("#advice-bars").innerHTML = "";
   $("#advice-explain").textContent = "";
   $("#advice-caveat").textContent = "";
+}
+
+/* 筹码是连续的：一手打完带到下一手，只有下不起盲注才自动补。
+   把还能打的筹码自动补满会让每手都是同一个深度，SPR、短码打法全都失去意义。 */
+function renderChips(c) {
+  state.chips = c;
+  const el = $("#bankroll");
+  const net = c.net >= 0 ? `+${c.net}` : `${c.net}`;
+  el.innerHTML = c.chip_mode === "fixed"
+    ? `<span class="dim">固定 ${c.buyin_bb}bb（练习模式，每手重置）</span>`
+    : `你的筹码 <b>${c.hero_stack}</b>（${c.hero_stack_bb}bb）｜` +
+      `已买入 ${c.hero_bought_in}/${c.buyin_budget}｜` +
+      `<b class="${c.net >= 0 ? "pos" : "neg"}">${net}</b>` +
+      (c.rebuys ? `｜补码 ${c.rebuys} 次` : "");
+  const btn = $("#btn-rebuy");
+  const canShow = c.can_rebuy && (!state.hand || state.hand.finished);
+  btn.classList.toggle("hidden", !canShow);
+  btn.textContent = `补码到 ${c.buyin}`;
+  btn.onclick = async () => {
+    try {
+      renderChips(await api(`/api/sessions/${state.sessionId}/rebuy`, { method: "POST" }));
+    } catch (e) { setStatus("补码失败: " + e.message, "err"); }
+  };
 }
 
 /* ---------------- drill ---------------- */

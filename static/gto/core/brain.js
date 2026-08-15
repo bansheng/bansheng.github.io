@@ -168,6 +168,26 @@ export function inferVillainRange(state, seat, chart) {
   return inferVillainRangeDetailed(state, seat, chart)[0];
 }
 
+/** 你在这个局面代表的范围。
+ *  牌力是相对的：同一个顶对，在紧范围里是中游，在宽范围里是顶端，
+ *  而这决定了你是在拿价值还是在抓诈唬。 */
+export function inferHeroRange(state, seat, chart) {
+  const heroPos = state.positionName(seat);
+  const { openerPos, raiseCount } = preflopContext(state);
+  const heroRaised = state.actions.some(
+    (a) => a.seat === seat && a.street === "preflop"
+        && (a.type === "bet" || a.type === "raise"));
+
+  if (heroRaised) {
+    const spot = chart.spots[spotKey(heroPos, null)];
+    if (spot?.actions?.raise) return Range.parse(spot.actions.raise);
+  } else if (raiseCount === 1 && openerPos) {
+    const spot = chart.spots[spotKey(heroPos, openerPos)];
+    if (spot?.actions?.call) return Range.parse(spot.actions.call);
+  }
+  return DEFAULT_VILLAIN;
+}
+
 export function postflopAdvice(state, seat, villainRange, trials = 2500, rand = Math.random) {
   const hero = state.seats[seat];
   const board = state.board;

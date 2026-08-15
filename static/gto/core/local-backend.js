@@ -11,13 +11,17 @@
 import { Range, ALL_LABELS, cardsFromStr, holeLabel, handVsRange } from "./poker.js";
 import { HandState } from "./engine.js";
 import { advise, BotTable, freqGap, frequencyOf, isBlunder,
-         inferVillainRangeDetailed } from "./brain.js";
+         inferVillainRangeDetailed, inferHeroRange } from "./brain.js";
 import { analyse } from "./analysis.js";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";
 // 深筹码给常规打法；短的这几档存在是因为单挑推-弃 Nash 解只在这些深度有定义
 const SUPPORTED_STACKS = [5, 8, 10, 12, 15, 20, 25, 50, 100, 200];
+// 短深度是练习深度（推-弃 Nash 解就在那儿），默认每手重置；
+// 深筹码默认按真实现金局走：筹码延续、破产才补。
+const DRILL_DEPTHS = [5, 8, 10, 12, 15, 20, 25];
+const DEFAULT_BUYIN_BUDGET = 2000;
 
 /* ---------------- chart ---------------- */
 
@@ -78,7 +82,12 @@ class LocalSession {
     this.pushfoldChart = pushfoldChart;
     this.handNo = 0;
     this.button = config.table_size - 1;
-    this.stack = config.stack_bb * config.big_blind;
+    this.buyin = config.stack_bb * config.big_blind;
+    // 实时筹码，cash 模式下逐手延续
+    this.stacks = Array(config.table_size).fill(this.buyin);
+    this.heroBoughtIn = this.buyin;   // 只计量英雄的买入，bot 是练习道具
+    this.rebuys = 0;
+    this.busted = false;
     this.hand = null;
     this.handRowId = null;
     this.pendingDecision = null;
@@ -87,8 +96,79 @@ class LocalSession {
 
   get hero() { return this.config.hero_seat; }
 
+  get minPlayable() { return this.config.big_blind; }
+
+  /* 为下一手准备筹码。
+     fixed 模式每手重置 —— 推-弃练习就该是固定深度。
+     cash 模式筹码延续，只有连盲注都下不起的座位才补 —— 把还能打的筹码
+     自动补满正是这次要修掉的 bug：那样每手都是 100bb，筹码深度形同虚设。 */
+  _prepareStacks() {
+    if (this.config.chip_mode === "fixed") {
+      this.stacks = Array(this.config.table_size).fill(this.buyin);
+      return;
+    }
+    for (let i = 0; i < this.config.table_size; i++) {
+      if (this.stacks[i] >= this.minPlayable) continue;
+      if (i === this.hero) {
+        if (!this._chargeRebuy()) { this.busted = true; return; }
+      } else {
+        this.stacks[i] = this.buyin;       // bot 永远坐得回来
+      }
+    }
+  }
+
+  _chargeRebuy(target = null) {
+    const goal = target === null ? this.buyin : target;
+    const need = goal - this.stacks[this.hero];
+    if (need <= 0) return true;
+    const remaining = this.config.buyin_budget - this.heroBoughtIn;
+    if (remaining <= 0) return false;
+    const take = Math.min(need, remaining);
+    this.stacks[this.hero] += take;
+    this.heroBoughtIn += take;
+    this.rebuys++;
+    return true;
+  }
+
+  /* 手动补码，只能补到买入线 —— 现金局不让你坐得比桌上限还深，
+     允许的话等于悄悄改了正在训练的那个游戏。 */
+  rebuy() {
+    if (this.config.chip_mode !== "cash") throw new Error("固定筹码模式下不需要补码");
+    if (this.hand && !this.hand.finished) throw new Error("这手牌还没打完，不能补码");
+    if (this.stacks[this.hero] >= this.buyin)
+      throw new Error(`你现在有 ${this.stacks[this.hero]}，已经不低于买入线 ${this.buyin}，补不了`);
+    if (!this._chargeRebuy()) throw new Error("买入额度已经用完");
+    return this.chips();
+  }
+
+  chips() {
+    const hs = this.stacks[this.hero];
+    const bb = this.config.big_blind;
+    const r2 = (x) => Math.round(x * 100) / 100;
+    return {
+      chip_mode: this.config.chip_mode,
+      buyin: this.buyin,
+      buyin_bb: this.config.stack_bb,
+      stacks: this.stacks.slice(),
+      hero_stack: hs,
+      hero_stack_bb: Math.round((hs / bb) * 10) / 10,
+      hero_bought_in: this.heroBoughtIn,
+      buyin_budget: this.config.buyin_budget,
+      budget_left: Math.max(0, this.config.buyin_budget - this.heroBoughtIn),
+      rebuys: this.rebuys,
+      net: hs - this.heroBoughtIn,
+      net_bb: r2((hs - this.heroBoughtIn) / bb),
+      can_rebuy: this.config.chip_mode === "cash" && hs < this.buyin
+                 && this.heroBoughtIn < this.config.buyin_budget,
+      busted: this.busted,
+    };
+  }
+
   newHand() {
     if (this.hand && !this.hand.finished) throw new Error("finish the current hand first");
+    this._prepareStacks();
+    if (this.busted)
+      throw new Error(`买入额度用完了（已买入 ${this.heroBoughtIn}，上限 ${this.config.buyin_budget}）。这一局到此为止。`);
     this.handNo++;
     this.button = (this.button + 1) % this.config.table_size;
     this.hand = new HandState({
@@ -96,7 +176,7 @@ class LocalSession {
       button: this.button,
       smallBlind: this.config.small_blind,
       bigBlind: this.config.big_blind,
-      startingStacks: Array(this.config.table_size).fill(this.stack),
+      startingStacks: this.stacks.slice(),
       names: Array.from({ length: this.config.table_size }, (_, i) =>
         i === this.hero ? "你" : (this.botTable.bots.get(i)?.config.name
           || `${this.botTable.bots.get(i)?.config.profile === "fish" ? "Fish" : "GTO"}-${i}`)),
@@ -127,7 +207,8 @@ class LocalSession {
         equity = handVsRange(this.hand.seats[this.hero].hole, villain, this.hand.board, 4000).equity;
       } catch { equity = null; }
     }
-    const report = analyse(this.hand, this.hero, villain, equity, derivation);
+    const report = analyse(this.hand, this.hero, villain, equity, derivation,
+                           inferHeroRange(this.hand, this.hero, this.chart));
     return [a, report];
   }
 
@@ -195,6 +276,7 @@ class LocalSession {
   }
 
   _persistHand() {
+    this.stacks = this.hand.seats.map((s) => s.stack);   // 把筹码带回会话
     if (this.pendingDecision) this._persistDecision();
     const id = this._ensureHandRow();
     const row = this.store.hands.find((h) => h.id === id);
@@ -208,14 +290,15 @@ class LocalSession {
   }
 
   view() {
-    if (!this.hand) return { session_id: this.id, config: this.config, hand: null, hand_no: this.handNo };
+    if (!this.hand) return { session_id: this.id, config: this.config, hand: null,
+                             hand_no: this.handNo, chips: this.chips() };
     const snap = this.hand.snapshot(this.hand.finished, this.hero);
     snap.hero_seat = this.hero;
     snap.your_turn = this.hand.actor === this.hero;
     snap.hand_label = holeLabel(this.hand.seats[this.hero].hole);
     return {
       session_id: this.id, hand_no: this.handNo, mode: this.config.mode,
-      hand: snap, bots: this.botTable.asDict(),
+      hand: snap, bots: this.botTable.asDict(), chips: this.chips(),
     };
   }
 
@@ -319,6 +402,8 @@ export class LocalBackend {
       if (sub === "deal") return s.newHand();
       if (sub === "act") return s.act(body.action, body.amount || 0);
       if (sub === "advice") return s.advice();
+      if (sub === "rebuy") return s.rebuy();
+      if (sub === "chips") return s.chips();
       if (sub === "stats") return this._stats(s);
       if (sub === "hands") return { hands: this.store.hands.filter((h) => h.session_id === s.id).slice().reverse() };
     }
@@ -360,11 +445,14 @@ export class LocalBackend {
       : Array.from({ length: tableSize }, (_, i) => i).filter((i) => i !== heroSeat)
           .map((seat) => ({ seat, profile: "gto" }));
 
+    const stackBb = body.stack_bb ?? 100;
     const config = {
       mode: body.mode || "full", table_size: tableSize,
-      stack_bb: body.stack_bb ?? 100, small_blind: body.small_blind ?? 1,
+      stack_bb: stackBb, small_blind: body.small_blind ?? 1,
       big_blind: body.big_blind ?? 2, hero_seat: heroSeat,
       bots, chart_name: chartName,
+      chip_mode: body.chip_mode || (DRILL_DEPTHS.includes(stackBb) ? "fixed" : "cash"),
+      buyin_budget: body.buyin_budget ?? DEFAULT_BUYIN_BUDGET,
     };
     const id = this.nextSession++;
     const s = new LocalSession(id, config, chart, this.store,
