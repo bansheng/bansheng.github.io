@@ -10,7 +10,9 @@
 
 import { Range, ALL_LABELS, cardsFromStr, holeLabel, handVsRange } from "./poker.js";
 import { HandState } from "./engine.js";
-import { advise, BotTable, freqGap, frequencyOf, isBlunder } from "./brain.js";
+import { advise, BotTable, freqGap, frequencyOf, isBlunder,
+         inferVillainRangeDetailed } from "./brain.js";
+import { analyse } from "./analysis.js";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb"];
 const STORE_KEY = "gto-trainer-v1";
@@ -104,8 +106,26 @@ class LocalSession {
   }
 
   advice() {
+    const [a, report] = this.adviceAndAnalysis();
+    return { ...a, analysis: report };
+  }
+
+  /* 建议和分析必须共用同一个对手范围估计 —— 分析里画的范围如果不是
+     建议所依据的那个，那比不画还糟。 */
+  adviceAndAnalysis() {
     if (!this.hand || this.hand.actor !== this.hero) throw new Error("not the hero's turn");
-    return advise(this.hand, this.hero, this.chart);
+    const [villain, derivation] = inferVillainRangeDetailed(this.hand, this.hero, this.chart);
+    const a = advise(this.hand, this.hero, this.chart, Math.random, villain);
+    // chart 查表不产生胜率，但翻前的分析面板没有胜率就空了一半，
+    // 所以这里补算一次蒙特卡洛。
+    let equity = a.equity ?? null;
+    if (equity == null) {
+      try {
+        equity = handVsRange(this.hand.seats[this.hero].hole, villain, this.hand.board, 4000).equity;
+      } catch { equity = null; }
+    }
+    const report = analyse(this.hand, this.hero, villain, equity, derivation);
+    return [a, report];
   }
 
   act(action, amount = 0) {
@@ -113,7 +133,7 @@ class LocalSession {
     if (this.hand.finished) throw new Error("hand is already finished");
     if (this.hand.actor !== this.hero) throw new Error("not your turn");
 
-    const a = this.advice();
+    const [a, report] = this.adviceAndAnalysis();
     const street = this.hand.street;
     const position = this.hand.positionName(this.hero);
     const label = holeLabel(this.hand.seats[this.hero].hole);
@@ -125,7 +145,7 @@ class LocalSession {
       street, position, hand_label: label, spot: a.spot,
       facing_bet: facing, pot_bb: potBb,
       chosen: action, chosen_amount: record.amount,
-      advice: a, chosen_freq: frequencyOf(a, action),
+      advice: a, analysis: report, chosen_freq: frequencyOf(a, action),
       freq_gap: freqGap(a, action), blunder: isBlunder(a, action),
     };
 

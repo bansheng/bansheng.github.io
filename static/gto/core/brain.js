@@ -76,31 +76,49 @@ export function narrowByStrength(base, board, dead, keepFraction) {
   return r;
 }
 
-export function inferVillainRange(state, seat, chart) {
+/** 估计对手范围，并把「是怎么估出来的」一起返回。
+ *  这个估计是下游所有数字里最大的一个假设，玩家应该能看到它、也能不同意它。 */
+export function inferVillainRangeDetailed(state, seat, chart) {
   const { openerPos, raiseCount } = preflopContext(state);
   const board = state.board;
   const dead = cardMask(board.concat(state.seats[seat].hole));
 
-  let base;
-  if (raiseCount >= 2) base = Range.parse("TT+,AJs+,KQs,AKo");
-  else if (raiseCount === 1 && openerPos) {
+  let base, why;
+  if (raiseCount >= 2) {
+    base = Range.parse("TT+,AJs+,KQs,AKo");
+    why = `翻前有 ${raiseCount} 次加注，按 3bet+ 的强范围估计`;
+  } else if (raiseCount === 1 && openerPos) {
     const spot = chart.spots[spotKey(openerPos, null)];
-    base = spot?.actions?.raise ? Range.parse(spot.actions.raise) : DEFAULT_VILLAIN;
-  } else base = DEFAULT_VILLAIN;
+    if (spot?.actions?.raise) {
+      base = Range.parse(spot.actions.raise);
+      why = `${openerPos} 位置的开池范围（chart）`;
+    } else {
+      base = DEFAULT_VILLAIN;
+      why = `${openerPos} 开池，但 chart 没有这个位置，用默认宽范围`;
+    }
+  } else {
+    base = DEFAULT_VILLAIN;
+    why = "无人加注，按一个偏宽的默认范围估计";
+  }
 
   let aggressor = null;
   for (let i = state.actions.length - 1; i >= 0; i--) {
     const a = state.actions[i];
     if (a.street === state.street && (a.type === "bet" || a.type === "raise")) { aggressor = a.seat; break; }
   }
-  if (aggressor === null || aggressor === seat) return base;
+  if (aggressor === null || aggressor === seat) return [base, why];
 
   const bets = state.actions.filter(
     (a) => a.seat === aggressor && a.street !== "preflop" && (a.type === "bet" || a.type === "raise")
   ).length;
-  if (bets <= 0) return base;
+  if (bets <= 0) return [base, why];
   const keep = bets === 1 ? 0.55 : bets === 2 ? 0.35 : 0.22;
-  return narrowByStrength(base, board, dead, keep);
+  why += `；翻后对手下注/加注 ${bets} 次，按成手强度收窄到最强的 ${Math.round(keep * 100)}%`;
+  return [narrowByStrength(base, board, dead, keep), why];
+}
+
+export function inferVillainRange(state, seat, chart) {
+  return inferVillainRangeDetailed(state, seat, chart)[0];
 }
 
 export function postflopAdvice(state, seat, villainRange, trials = 2500, rand = Math.random) {
@@ -164,21 +182,22 @@ export function postflopAdvice(state, seat, villainRange, trials = 2500, rand = 
   };
 }
 
-export function advise(state, seat, chart, rand = Math.random) {
+export function advise(state, seat, chart, rand = Math.random, villainRange = null) {
   seat = seat ?? state.actor;
   if (seat === null) throw new Error("no seat is to act");
+  const villain = villainRange || inferVillainRange(state, seat, chart);
   if (state.street === "preflop") {
     const a = preflopAdvice(state, seat, chart);
     if (a) return a;
     // chart 里没有这个局面（多次加注，或未收录的位置组合）。
     // 仍然给个按底池赔率的估算，但要说清楚是为什么。
-    const fallback = postflopAdvice(state, seat, inferVillainRange(state, seat, chart), 2500, rand);
+    const fallback = postflopAdvice(state, seat, villain, 2500, rand);
     fallback.caveat =
       "翻前的这个局面（多次加注或未收录的位置组合）不在 chart 里，" +
       "下面是按胜率和底池赔率算的估算，**不是 GTO 解**。";
     return fallback;
   }
-  return postflopAdvice(state, seat, inferVillainRange(state, seat, chart), 2500, rand);
+  return postflopAdvice(state, seat, villain, 2500, rand);
 }
 
 export function frequencyOf(advice, action) {

@@ -223,3 +223,24 @@ tr.warn td{color:var(--gold)}
 }
 .peek:hover{color:var(--gold);border-color:var(--gold)}
 #btn-skip{padding:7px 14px;font-size:13px;font-weight:400}
+
+/* ---------- 局面分析 ---------- */
+#analysis h4{font-size:13px;color:var(--muted);margin:0 0 8px;font-weight:600}
+#analysis h4:not(:first-child){margin-top:16px}
+.ana-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.ana-derive{font-size:12.5px;color:var(--gold);margin:0 0 10px;line-height:1.5}
+.minigrid{display:grid;grid-template-columns:repeat(13,1fr);gap:1px;max-width:260px}
+.mcell{aspect-ratio:1;border-radius:1px}
+.ana-cats{margin-top:12px}
+.catrow{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:4px}
+.catrow>span:first-child{width:44px;color:var(--muted)}
+.catrow .track{flex:1;height:12px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.catrow .fill{display:block;height:100%;background:var(--raise);border-radius:3px}
+.catrow .v{width:42px;text-align:right;font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;
+  border-bottom:1px solid var(--line);font-size:13px}
+.kv span{color:var(--muted)}
+.kv b.good{color:var(--call)} .kv b.bad{color:var(--raise)}
+.ana-reasons{margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--text)}
+.ana-reasons li{margin-bottom:5px}
+.ana-reasons b{color:var(--gold)}
