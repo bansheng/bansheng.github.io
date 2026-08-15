@@ -148,37 +148,50 @@
 
     <div class="card hidden" id="analysis">
       <h3>局面分析</h3>
-      <p class="ana-summary" id="ana-summary"></p>
       <p class="ana-read" id="ana-read"></p>
-      <div class="ana-grid">
-        <div class="ana-col">
-          <h4>对手可能的手牌</h4>
-          <p class="ana-derive" id="ana-derive"></p>
-          <div class="minigrid" id="ana-grid"></div>
-          <div class="ana-cats" id="ana-cats"></div>
+
+      <h4>对手可能拿什么</h4>
+      <div id="hr-table"></div>
+
+      <h4>你领先哪些 · 落后哪些 · 能打走哪些</h4>
+      <div id="hr-verdict"></div>
+
+      <details class="more">
+        <summary>展开：范围热力图 / 胜率与赔率 / 组合数怎么数</summary>
+        <p class="ana-summary" id="ana-summary"></p>
+        <div class="ana-grid">
+          <div class="ana-col">
+            <h4>范围热力图</h4>
+            <p class="ana-derive" id="ana-derive"></p>
+            <div class="minigrid" id="ana-grid"></div>
+            <div class="ana-cats" id="ana-cats"></div>
+          </div>
+          <div class="ana-col">
+            <h4>牌力对比</h4>
+            <div id="ana-matchup"></div>
+            <h4>赔率与筹码</h4>
+            <div id="ana-odds"></div>
+          </div>
         </div>
-        <div class="ana-col">
-          <h4>牌力对比</h4>
-          <div id="ana-matchup"></div>
-          <h4>赔率与筹码</h4>
-          <div id="ana-odds"></div>
-        </div>
-      </div>
-      <h4>你这手牌在你自己范围里的位置</h4>
-      <p class="ana-summary" id="ana-mine"></p>
-      <p class="hint" id="ana-mine-note"></p>
 
-      <h4>为什么</h4>
-      <ul class="ana-reasons" id="ana-reasons"></ul>
+        <h4>你这手牌在你自己范围里的位置</h4>
+        <p class="ana-summary" id="ana-mine"></p>
+        <p class="hint" id="ana-mine-note"></p>
 
-      <h4>领先概率 vs 胜率：两个不同的问题</h4>
-      <div id="ana-lead"></div>
+        <h4>为什么</h4>
+        <ul class="ana-reasons" id="ana-reasons"></ul>
 
-      <h4>怎么数对手的组合数（这一步在牌桌上能徒手做）</h4>
-      <div id="ana-combomath"></div>
+        <h4>领先概率 vs 胜率</h4>
+        <div id="ana-lead"></div>
 
-      <h4>桌上能心算的速算公式</h4>
-      <div id="ana-shortcuts"></div>
+        <h4>怎么数对手的组合数</h4>
+        <div id="ana-combomath"></div>
+      </details>
+
+      <details class="more">
+        <summary>展开：桌上能心算的速算公式</summary>
+        <div id="ana-shortcuts"></div>
+      </details>
     </div>
   </div>
 </section>

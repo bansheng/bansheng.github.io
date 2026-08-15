@@ -564,6 +564,57 @@ function showRevealedAdvice(a, chosen) {
   if (a.analysis) showAnalysis(a.analysis);
 }
 
+/* 读牌：把对手范围拆成人会思考的那几桶，数组合，说清楚哪些弃哪些跟。
+   这是唯一一块在真牌桌上能徒手复现的分析 —— 所以它排在最前面，
+   胜率、赔率那些算术折叠起来，想看再展开。 */
+function showHandRead(hr) {
+  const table = $("#hr-table");
+  const verdict = $("#hr-verdict");
+  if (!table || !verdict) return;
+  if (!hr.buckets?.length) {
+    table.innerHTML = '<p class="hint">翻前还没有公共牌，无法按牌型拆分对手范围。</p>';
+    verdict.innerHTML = "";
+    return;
+  }
+
+  const width = (p) => Math.max(1, Math.round(p));
+  table.innerHTML = `
+    <p class="hint">对手范围共 <b>${hr.total_combos}</b> 个组合｜你的牌型：<b>${hr.hero_bucket}</b></p>
+    <table class="hrt">
+      <tr><th>牌型</th><th>组合</th><th>占比</th><th></th><th>打败你</th><th>典型牌</th></tr>
+      ${hr.buckets.map((b) => `
+        <tr class="${b.beats_you > 0.5 ? "over" : "under"}">
+          <td class="bk">${b.name}</td>
+          <td class="num">${b.combos}</td>
+          <td class="num">${b.pct}%</td>
+          <td class="barcell"><span class="hrbar" style="width:${width(b.pct)}%"></span></td>
+          <td class="num">${b.beats_you || "—"}</td>
+          <td class="eg">${b.examples.join(" ")}</td>
+        </tr>`).join("")}
+    </table>`;
+
+  const v = hr.vs_hero, f = hr.fold_equity;
+  verdict.innerHTML = `
+    <div class="hrv">
+      <div class="hrv-row"><span class="tag good">你领先</span>
+        <b>${v.you_beat_pct}%</b>（${v.you_beat} 个）
+        <span class="dim">${v.you_beat_list.join("、") || "—"}</span></div>
+      <div class="hrv-row"><span class="tag bad">你落后</span>
+        <b>${v.beats_you_pct}%</b>（${v.beats_you} 个）
+        <span class="dim">${v.beaten_by.join("、") || "—"}</span></div>
+      <div class="hrv-row"><span class="tag push">下注能打走</span>
+        <b>${f.folds_pct}%</b>（${f.folds} 个）
+        <span class="dim">空气 + 弱听牌</span></div>
+      <div class="hrv-row"><span class="tag hold">会跟你</span>
+        <b>${f.sticky_pct}%</b>
+        <span class="dim">${f.sticky_label}</span></div>
+      <div class="hrv-row"><span class="tag never">铁定不弃</span>
+        <b>${f.never_folds_pct}%</b>
+        <span class="dim">顶对以上</span></div>
+      <p class="fnote">${bold(f.note)}</p>
+    </div>`;
+}
+
 /* 建议告诉你「打什么」，分析告诉你「为什么」。后者才是能带走的东西：
    频率记不住，但数组合、比价格和胜率，是可以练成习惯的。 */
 function showAnalysis(an) {
@@ -627,6 +678,7 @@ function showAnalysis(an) {
 
   $("#ana-summary").innerHTML = bold(an.villain.summary);
   $("#ana-read").innerHTML = bold(an.villain.read);
+  showHandRead(an.hand_read || {});
 
   const mine = an.hero_range || {};
   $("#ana-mine").innerHTML = bold(mine.summary || "翻前还没有公共牌，无法定位相对牌力。");

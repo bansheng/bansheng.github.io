@@ -6,6 +6,7 @@
 
 import { RANKS, comboCount, gridLabel, cardToStr, makeCard } from "./poker.js";
 import { evaluate, categoryOf, CATEGORY_CN } from "./evaluator.js";
+import { readHands } from "./handread.js";
 
 /* evaluator 的 category 序号是「越大越强」，这里按强到弱列出来 */
 const ORDER = [8, 7, 6, 5, 4, 3, 2, 1, 0];
@@ -536,5 +537,6 @@ export function analyse(state, seat, villainRange, equity, derivation = "", hero
   const heroRankNow = board.length >= 3 ? evaluate(hero.hole.concat(board)) : null;
   return { villain, matchup, odds, reasons, hero_range: heroBlock, shortcuts,
            combo_math: comboMath(state, seat, combos, totalW, heroRankNow),
-           lead_vs_equity: leadVsEquity(state, seat, combos, heroRankNow) };
+           lead_vs_equity: leadVsEquity(state, seat, combos, heroRankNow),
+           hand_read: readHands(state, seat, villainRange) };
 }
