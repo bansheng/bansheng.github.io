@@ -1,0 +1,149 @@
+{
+  "name": "6max_100bb_cash",
+  "label": "6-max 100bb 现金局（参考近似）",
+  "table_size": 6,
+  "stack_bb": 100,
+  "open_size_bb": 2.5,
+  "provenance": {
+    "kind": "approximate-reference",
+    "warning": "NOT solver output. These are commonly published 6-max 100bb reference ranges, accurate to roughly a couple of percent of range width but not to the individual mixed frequency. Replace via `gto.preflop.import_chart` with real solver output before relying on exact frequencies for study.",
+    "compiled": "2026-08-15"
+  },
+  "spots": {
+    "UTG|rfi": {
+      "description": "UTG 首入加注",
+      "actions": {
+        "raise": "22+,A2s+,KTs+,QTs+,J9s+,T9s,98s,87s,76s,AJo+,KQo"
+      }
+    },
+    "HJ|rfi": {
+      "description": "HJ 首入加注",
+      "actions": {
+        "raise": "22+,A2s+,K9s+,Q9s+,J8s+,T8s+,97s+,86s+,76s,65s,ATo+,KJo+,QJo"
+      }
+    },
+    "CO|rfi": {
+      "description": "CO 首入加注",
+      "actions": {
+        "raise": "22+,A2s+,K6s+,Q8s+,J8s+,T7s+,96s+,86s+,75s+,65s,54s,A9o+,KTo+,QTo+,JTo"
+      }
+    },
+    "BTN|rfi": {
+      "description": "BTN 首入加注",
+      "actions": {
+        "raise": "22+,A2s+,K2s+,Q6s+,J7s+,T6s+,95s+,86s+,75s+,65s,54s,43s,A2o+,K9o+,Q9o+,J9o+,T9o"
+      }
+    },
+    "SB|rfi": {
+      "description": "SB 首入加注（纯加注或弃牌策略）",
+      "actions": {
+        "raise": "22+,A2s+,K4s+,Q7s+,J7s+,T7s+,96s+,86s+,75s+,65s,54s,A2o+,K9o+,Q9o+,J9o+,T9o"
+      }
+    },
+    "BB|vs-BTN-open": {
+      "description": "BB 面对 BTN 开池 2.5bb 的防守",
+      "actions": {
+        "raise": "QQ+,AKs,AQs,A5s,A4s,K5s,76s,65s,AKo,A5o:0.4",
+        "call": "22+:0.9,A2s+,K2s+,Q4s+,J6s+,T6s+,96s+,85s+,75s+,64s+,54s,A2o+:0.7,K8o+,Q9o+,J9o+,T9o,98o"
+      }
+    },
+    "BB|vs-CO-open": {
+      "description": "BB 面对 CO 开池 2.5bb 的防守",
+      "actions": {
+        "raise": "JJ+,AKs,AQs,A5s,A4s,K9s,87s,76s,AKo",
+        "call": "22+:0.9,A2s+,K5s+,Q7s+,J7s+,T7s+,97s+,86s+,75s+,65s,54s,A7o+,K9o+,QTo+,JTo"
+      }
+    },
+    "BB|vs-UTG-open": {
+      "description": "BB 面对 UTG 开池 2.5bb 的防守",
+      "actions": {
+        "raise": "QQ+,AKs,A5s,A4s,AKo:0.7",
+        "call": "22+:0.8,A2s+:0.7,K8s+,Q9s+,J9s+,T9s,98s,87s,76s,AJo+,KQo"
+      }
+    },
+    "BTN|vs-UTG-open": {
+      "description": "BTN 面对 UTG 开池的应对",
+      "actions": {
+        "raise": "QQ+,AKs,AQs,A5s,A4s,AKo:0.8",
+        "call": "22+:0.85,ATs+,KTs+,QTs+,JTs,T9s,98s,AQo,AJo:0.5,KQo:0.5"
+      }
+    },
+    "BTN|vs-CO-open": {
+      "description": "BTN 面对 CO 开池的应对",
+      "actions": {
+        "raise": "JJ+,AKs,AQs,A5s,A4s,A3s,K5s,AKo,AQo:0.5",
+        "call": "22+:0.9,A9s+,K9s+,Q9s+,J9s+,T8s+,97s+,87s,76s,65s,AJo,ATo:0.6,KQo,KJo:0.5,QJo:0.5"
+      }
+    },
+    "SB|vs-BTN-open": {
+      "description": "SB 面对 BTN 开池的应对（SB 位置最差，3bet 频率高）",
+      "actions": {
+        "raise": "TT+,AJs+,A5s,A4s,A3s,KTs+,QTs+,JTs,T9s,76s,65s,AQo+,AJo:0.5,KQo:0.4",
+        "call": "22+:0.6,A2s+:0.4,K5s+:0.5,Q8s+:0.5,J8s+:0.5,T8s:0.5,98s:0.5,ATo:0.4"
+      }
+    },
+    "HJ|vs-UTG-open": {
+      "description": "HJ 面对 UTG 开池",
+      "actions": {
+        "raise": "QQ+,AKs,AQs,A5s,A4s,AKo:0.8",
+        "call": "22+:0.8,ATs+,KTs+,QTs+,JTs,T9s,98s,AQo,AJo:0.4"
+      }
+    },
+    "CO|vs-UTG-open": {
+      "description": "CO 面对 UTG 开池",
+      "actions": {
+        "raise": "QQ+,AKs,AQs,A5s,A4s,AKo:0.85",
+        "call": "22+:0.85,ATs+,KTs+,QTs+,JTs,T9s,98s,87s,AQo,AJo:0.5"
+      }
+    },
+    "CO|vs-HJ-open": {
+      "description": "CO 面对 HJ 开池",
+      "actions": {
+        "raise": "JJ+,AKs,AQs,A5s,A4s,A3s,AKo,AQo:0.4",
+        "call": "22+:0.9,A9s+,K9s+,Q9s+,J9s+,T8s+,97s+,87s,76s,AJo,ATo:0.5,KQo,KJo:0.4"
+      }
+    },
+    "BTN|vs-HJ-open": {
+      "description": "BTN 面对 HJ 开池",
+      "actions": {
+        "raise": "JJ+,AKs,AQs,A5s,A4s,A3s,K5s,AKo,AQo:0.45",
+        "call": "22+:0.9,A8s+,K9s+,Q9s+,J9s+,T8s+,97s+,87s,76s,65s,AJo,ATo:0.5,KQo,KJo:0.5,QJo:0.4"
+      }
+    },
+    "SB|vs-CO-open": {
+      "description": "SB 面对 CO 开池",
+      "actions": {
+        "raise": "TT+,AJs+,A5s,A4s,A3s,KTs+,QTs+,JTs,T9s,76s,65s,AQo+,AJo:0.4",
+        "call": "22+:0.55,A2s+:0.35,K7s+:0.45,Q9s+:0.45,J9s+:0.45,98s:0.45,ATo:0.35,KQo:0.4"
+      }
+    },
+    "SB|vs-HJ-open": {
+      "description": "SB 面对 HJ 开池",
+      "actions": {
+        "raise": "JJ+,AJs+,A5s,A4s,KTs+,QTs+,JTs,76s,65s,AQo+",
+        "call": "22+:0.5,A8s+:0.4,K9s+:0.4,Q9s+:0.4,J9s+:0.4,T9s:0.4,AJo:0.35,KQo:0.35"
+      }
+    },
+    "SB|vs-UTG-open": {
+      "description": "SB 面对 UTG 开池",
+      "actions": {
+        "raise": "QQ+,AKs,AQs,A5s,A4s,AKo:0.75",
+        "call": "22+:0.45,ATs+:0.5,KTs+:0.4,QTs+:0.4,JTs:0.4,T9s:0.35,AQo:0.5,AJo:0.3"
+      }
+    },
+    "BB|vs-HJ-open": {
+      "description": "BB 面对 HJ 开池 2.5bb 的防守",
+      "actions": {
+        "raise": "JJ+,AKs,AQs,A5s,A4s,K9s,87s,76s,AKo",
+        "call": "22+:0.9,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,86s+,75s+,65s,54s,A8o+,K9o+,Q9o+,JTo,T9o"
+      }
+    },
+    "BB|vs-SB-open": {
+      "description": "BB 面对 SB 开池（对抗最宽的开池范围，防守也最宽）",
+      "actions": {
+        "raise": "TT+,AJs+,A5s,A4s,A3s,KTs+,QTs+,JTs,T9s,98s,87s,76s,65s,AQo+,KQo:0.4",
+        "call": "22+:0.9,A2s+,K2s+,Q4s+,J6s+,T6s+,95s+,85s+,74s+,64s+,54s,43s,A2o+,K5o+,Q7o+,J8o+,T8o+,97o+,87o,76o"
+      }
+    }
+  }
+}
