@@ -6,8 +6,8 @@
  * 所以这里把范围拆成人真正会思考的那几桶，数组合，并说明哪些弃、哪些跟。
  */
 
-import { RANKS } from "./poker.js?v=da6c45f72f";
-import { evaluate, categoryOf } from "./evaluator.js?v=da6c45f72f";
+import { RANKS } from "./poker.js?v=2eea846f8e";
+import { evaluate, categoryOf } from "./evaluator.js?v=2eea846f8e";
 
 export const BUCKETS = ["超强牌", "两对", "顶对", "中/弱对", "强听牌", "弱听牌", "空气"];
 const STRONG_MADE = ["超强牌", "两对", "顶对"];
