@@ -2,7 +2,7 @@
    刻意不用框架：这样同一份文件既能被 FastAPI 直接托管，也能原样丢到
    GitHub Pages 之类的静态托管上，不需要 npm build。 */
 
-import { LocalBackend } from "./core/local-backend.js";
+import { LocalBackend } from "./core/local-backend.js?v=da6c45f72f";
 
 /* 后端探测：本地跑着 FastAPI 就用它（有 CFR solver + SQLite 全局手牌库），
    否则整套逻辑落到浏览器内的 LocalBackend（GitHub Pages 走这条）。 */
@@ -443,7 +443,22 @@ function quickSizes(h, la, pick) {
 const DEAL_DELAY_MS = 3000;
 let dealTimer = null;
 
+/* 一次只允许一个动作在飞。
+ * 没有这个锁的话，连点两下「过牌」会在第一个 await 返回之前就发出第二个请求，
+ * 服务端照单全收 —— 于是一次点击推进了两条街，翻牌和转牌一起拍在桌上。
+ * 按钮同时立刻置灰：点了没反应又没有任何反馈，比慢一点更让人困惑。 */
+let acting = false;
+
+function lockActions() {
+  const bar = $("#actionbar");
+  bar.classList.add("busy");
+  bar.querySelectorAll("button").forEach((b) => { b.disabled = true; });
+}
+
 async function act(type, amount) {
+  if (acting) return;
+  acting = true;
+  lockActions();
   const before = state.hand ? state.hand.board.length : 0;
   try {
     const v = await api(`/api/sessions/${state.sessionId}/act`, {
@@ -466,22 +481,37 @@ async function act(type, amount) {
     }
   } catch (e) {
     setStatus("动作失败: " + e.message, "err");
+    // 失败时把按钮放回去，否则这一手就卡死了
+    if (state.hand) renderActions(state.hand);
+  } finally {
+    acting = false;
   }
 }
 
-function countdownThen(fn) {
+/* 倒计时的 interval 必须和 timeout 一起记，一起清。
+   只清 timeout 的话，上一轮的 tick 会继续每秒重画动作条，把新的按钮盖掉。 */
+let countdownTick = null;
+
+function stopCountdown() {
   clearTimeout(dealTimer);
+  clearInterval(countdownTick);
+  countdownTick = null;
+}
+
+function countdownThen(fn) {
+  stopCountdown();
   const bar = $("#actionbar");
   let left = Math.round(DEAL_DELAY_MS / 1000);
+  const done = () => { stopCountdown(); fn(); };
   const paint = () => {
     bar.innerHTML =
       `<span class="waiting">${left} 秒后发牌…</span>` +
       '<button class="act" id="btn-skip">立刻发牌</button>';
-    $("#btn-skip").onclick = () => { clearInterval(tick); clearTimeout(dealTimer); fn(); };
+    $("#btn-skip").onclick = done;
   };
   paint();
-  const tick = setInterval(() => { left -= 1; if (left > 0) paint(); }, 1000);
-  dealTimer = setTimeout(() => { clearInterval(tick); fn(); }, DEAL_DELAY_MS);
+  countdownTick = setInterval(() => { left -= 1; if (left > 0) paint(); }, 1000);
+  dealTimer = setTimeout(done, DEAL_DELAY_MS);
 }
 
 function bars(actions, container, chosen) {
@@ -628,6 +658,11 @@ function showRevealedAdvice(a, chosen) {
    这是唯一一块在真牌桌上能徒手复现的分析 —— 所以它排在最前面，
    胜率、赔率那些算术折叠起来，想看再展开。 */
 function showHandRead(hr) {
+  try { renderHandReadInner(hr); }
+  catch (e) { console.error("读牌面板渲染失败（不影响这手牌）:", e); }
+}
+
+function renderHandReadInner(hr) {
   const table = $("#hr-table");
   const verdict = $("#hr-verdict");
   if (!table || !verdict) return;
@@ -646,7 +681,15 @@ function showHandRead(hr) {
       <p>${bold(hr.method.how)}</p>
       <p>${bold(hr.method.strong_how)}</p>
     </details>` : "";
+  // 先说清楚这是哪种范围。不写的话，"还没人下注的完整范围"会被当成
+  // "下注范围"来读，然后得出「你的模型认为对手下注从不诈唬」的结论。
+  const kind = hr.range_kind ? `
+    <div class="rk ${hr.range_kind.polarized ? "pol" : "raw"}">
+      <b>${hr.range_kind.label}</b>
+      <p>${bold(hr.range_kind.note)}</p>
+    </div>` : "";
   table.innerHTML = `
+    ${kind}
     <p class="hint">对手范围共 <b>${hr.total_combos}</b> 个组合｜你的牌型：<b>${hr.hero_bucket}</b></p>
     ${method}
     <table class="hrt">
@@ -662,24 +705,45 @@ function showHandRead(hr) {
         </tr>`).join("")}
     </table>`;
 
-  const v = hr.vs_hero, f = hr.fold_equity;
+  const v = hr.vs_hero, f = hr.fold_equity, how = hr.how || {};
+  const T = hr.total_combos;
+  // 每个数字后面直接跟「这是怎么数出来的」——否则只能当结论背，带不到牌桌上
+  const row = (cls, name, pct, n, dim, calc) => `
+      <div class="hrv-row"><span class="tag ${cls}">${name}</span>
+        <b>${pct}%</b>${n != null ? `（${n} 个）` : ""}
+        <span class="dim">${dim}</span></div>
+      ${calc ? `<div class="hrv-how">${bold(calc)}</div>` : ""}`;
   verdict.innerHTML = `
     <div class="hrv">
-      <div class="hrv-row"><span class="tag good">你领先</span>
-        <b>${v.you_beat_pct}%</b>（${v.you_beat} 个）
-        <span class="dim">${v.you_beat_list.join("、") || "—"}</span></div>
-      <div class="hrv-row"><span class="tag bad">你落后</span>
-        <b>${v.beats_you_pct}%</b>（${v.beats_you} 个）
-        <span class="dim">${v.beaten_by.join("、") || "—"}</span></div>
-      <div class="hrv-row"><span class="tag push">下注能打走</span>
-        <b>${f.folds_pct}%</b>（${f.folds} 个）
-        <span class="dim">空气 + 弱听牌</span></div>
-      <div class="hrv-row"><span class="tag hold">会跟你</span>
-        <b>${f.sticky_pct}%</b>
-        <span class="dim">${f.sticky_label}</span></div>
-      <div class="hrv-row"><span class="tag never">铁定不弃</span>
-        <b>${f.never_folds_pct}%</b>
-        <span class="dim">顶对以上</span></div>
+      ${row("good", "你领先", v.you_beat_pct, v.you_beat,
+            v.you_beat_list.join("、") || "—",
+            `${how.you_beat || ""}：${v.you_beat} ÷ ${T} = ${v.you_beat_pct}%`)}
+      ${row("bad", "你落后", v.beats_you_pct, v.beats_you,
+            v.beaten_by.join("、") || "—",
+            `${how.beats_you || ""}：${v.beats_you} ÷ ${T} = ${v.beats_you_pct}%`)}
+      ${row("push", "下注能打走", f.folds_pct, f.folds, "空气 + 弱听牌",
+            `${how.folds || ""}：${f.folds} ÷ ${T} = ${f.folds_pct}%`)}
+      ${row("hold", "会跟你", f.sticky_pct, null, f.sticky_label, how.sticky)}
+      ${row("never", "铁定不弃", f.never_folds_pct, null, "顶对以上", how.never)}
+      <details class="hrv-formula">
+        <summary>牌桌上怎么心算这几个数</summary>
+        <p><b>第一步 记住三个组合数</b>：一手对子 <b>6</b> 个组合，
+           同花 <b>4</b> 个，非同花 <b>12</b> 个。（AA=6，AKs=4，AKo=12，AK 合起来=16）</p>
+        <p><b>第二步 数他范围里有几手</b>：不用精确到个位。
+           「所有对子」= 13×6 = 78；「所有 A 开头的同花」= 12×4 = 48；
+           一个 15% 的开池范围 ≈ 1326×15% ≈ 200 个组合。</p>
+        <p><b>第三步 扣掉看得见的牌（阻断）</b>：牌面有一张 Q，
+           他的 QQ 就从 6 个掉到 3 个；他要的顶对 Qx 也少了一张 Q 可用。
+           这一步最容易漏，而且专门在关键牌上起作用。</p>
+        <p><b>第四步 按牌面分堆，不要逐手算</b>：问三个问题就够了 ——
+           ①他有几种方式命中这个牌面（顶对有几张、成套有几对）
+           ②有几种听牌（同花听、顺听）
+           ③剩下的就是空气。<b>能打走的就是第三堆</b>。</p>
+        <p class="dim">例：Q-8-3 彩虹面，对手是 15% 的开池范围（约 200 组合）。
+           带 Q 的 ≈ AQ/KQ/QJ 各 12−16 个 ≈ 40；成套 QQ/88/33 ≈ 3+3+3 = 9；
+           剩下约 150 里大部分是没中的 AK/AJ/KJ 和中小对子 —— 所以
+           <b>他这里大约有四分之一命中，四分之三没中</b>。这就是你要的那个量级。</p>
+      </details>
       <p class="fnote">${bold(f.note)}</p>
     </div>`;
 }
@@ -687,6 +751,21 @@ function showHandRead(hr) {
 /* 建议告诉你「打什么」，分析告诉你「为什么」。后者才是能带走的东西：
    频率记不住，但数组合、比价格和胜率，是可以练成习惯的。 */
 function showAnalysis(an) {
+  // 整体兜底：分析面板是**说明性**的，渲染失败不该让动作失败。
+  // 起因是一个真实报错：浏览器缓存住旧的 app.js、拿到新的 index.html，
+  // 旧代码去写一个已经删掉的面板 → 抛异常 → 被 act() 的 catch 抓到 →
+  // 屏幕上显示「动作失败: Cannot set properties of null」，牌也打不下去了。
+  // 缓存本身也治了（本地 no-store + 静态构建打版本号），这里是第二道防线。
+  try {
+    renderAnalysis(an);
+  } catch (e) {
+    console.error("分析面板渲染失败（不影响这手牌）:", e);
+    const box = $("#analysis");
+    if (box) box.classList.remove("hidden");
+  }
+}
+
+function renderAnalysis(an) {
   const box = $("#analysis");
   box.classList.remove("hidden");
 
@@ -804,13 +883,6 @@ function showAnalysis(an) {
     </div>` : ""}
     <p class="fnote">${bold(cm.note || "")}</p>`;
 
-  $("#ana-shortcuts").innerHTML = (an.shortcuts || []).map((sc) => `
-    <div class="formula">
-      <div class="fname">${sc.name}</div>
-      <div class="fexpr">${bold(sc.formula)}</div>
-      <div class="fapplied">${bold(sc.applied)}</div>
-      <div class="fnote">${bold(sc.note)}</div>
-    </div>`).join("");
 }
 
 function showResults(h) {

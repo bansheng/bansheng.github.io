@@ -11,8 +11,8 @@
  * 因为那些子树大 300 倍，静态站放不下。
  */
 
-import { canonicalKeyString, findPermutation, applyPerm } from "./boards.js";
-import { cardToStr } from "./poker.js";
+import { canonicalKeyString, findPermutation, applyPerm } from "./boards.js?v=da6c45f72f";
+import { cardToStr } from "./poker.js?v=da6c45f72f";
 
 export class SolveLibrary {
   constructor(base = "./solves") {
@@ -84,6 +84,14 @@ export class SolveLibrary {
   /** 沿着这手牌翻牌街的实际动作走到当前节点，读出这两张具体牌的频率。 */
   async read(state, seat) {
     if (state.board.length < 3) return null;
+    // 预解库都是**单挑**解：两个范围、一个底池、一个 SPR。
+    // 多人底池是另一个博弈（每家防守得更少，因为后面还有人），
+    // 拿单挑解去答多人局，和拿 3bet 解去答单加注池是同一种错。
+    const live = state.seats.filter((s) => !s.folded).length;
+    if (live !== 2) {
+      return { unavailable:
+        `这手牌还有 ${live} 家在池，而预解库都是单挑解 —— 多人底池是另一个博弈，不能拿来当答案` };
+    }
     const family = SolveLibrary.familyOf(state);
     const hit = await this.find(state.board.slice(0, 3), family);
     if (!hit) return null;

@@ -2,7 +2,7 @@
  * 保持同语义是硬要求：同一个范围字符串，两边必须展开成同一组具体组合，
  * 否则本地版和后端版会给出不同的建议。tests/test_js_core.py 逐条对撞。 */
 
-import { evaluate } from "./evaluator.js";
+import { evaluate } from "./evaluator.js?v=da6c45f72f";
 
 export const RANKS = "23456789TJQKA";
 export const SUITS = "cdhs";

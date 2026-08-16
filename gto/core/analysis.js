@@ -4,9 +4,9 @@
  * 你记不住每个局面的频率，但你能学会数组合、把价格和胜率比一比。
  */
 
-import { RANKS, comboCount, gridLabel, cardToStr, makeCard } from "./poker.js";
-import { evaluate, categoryOf, CATEGORY_CN } from "./evaluator.js";
-import { readHands } from "./handread.js";
+import { RANKS, comboCount, gridLabel, cardToStr, makeCard } from "./poker.js?v=da6c45f72f";
+import { evaluate, categoryOf, CATEGORY_CN } from "./evaluator.js?v=da6c45f72f";
+import { readHands } from "./handread.js?v=da6c45f72f";
 
 /* evaluator 的 category 序号是「越大越强」，这里按强到弱列出来 */
 const ORDER = [8, 7, 6, 5, 4, 3, 2, 1, 0];

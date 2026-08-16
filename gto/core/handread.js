@@ -6,8 +6,8 @@
  * 所以这里把范围拆成人真正会思考的那几桶，数组合，并说明哪些弃、哪些跟。
  */
 
-import { RANKS } from "./poker.js";
-import { evaluate, categoryOf } from "./evaluator.js";
+import { RANKS } from "./poker.js?v=da6c45f72f";
+import { evaluate, categoryOf } from "./evaluator.js?v=da6c45f72f";
 
 export const BUCKETS = ["超强牌", "两对", "顶对", "中/弱对", "强听牌", "弱听牌", "空气"];
 const STRONG_MADE = ["超强牌", "两对", "顶对"];
@@ -163,8 +163,34 @@ export function readHands(state, seat, villainRange, examples = 6) {
   const strongCombos = sum(["超强牌"]);
   const removed = board.length + 2;
 
+  // 这份范围到底是什么范围 —— 不写清楚，读者会把「还没人下注的完整范围」
+  // 当成「下注范围」，然后得出"你的模型认为对手下注从不诈唬"的结论。
+  let bettor = null;
+  for (let i = state.actions.length - 1; i >= 0; i--) {
+    const a = state.actions[i];
+    if (a.street === state.street && (a.type === "bet" || a.type === "raise")) {
+      bettor = a.seat; break;
+    }
+  }
+  const rangeKind = (bettor === null || bettor === seat)
+    ? { label: "对手的完整范围（本街还没人下注）", polarized: false,
+        note: "这是他**所有**可能的牌，不是下注范围。完整范围里成手牌占比高很正常 —— "
+            + "对子和大牌本来就容易成对。等他真的下注，范围会被极化成"
+            + "「价值 + 诈唬」，空气占比会跳上去。" }
+    : { label: "对手的下注范围（已极化）", polarized: true,
+        note: "他下注了，所以这里是**下注范围**：中等牌多数被过滤掉（它们过牌），"
+            + "剩下价值牌和按下注尺度配平的诈唬。注越大，里面的空气越多。" };
+
   return {
     total_combos: r1(total),
+    range_kind: rangeKind,
+    how: {
+      you_beat: "把范围里每个组合和你的牌**摊牌比大小**，你赢的那些组合数相加",
+      beats_you: "同上，他赢的那些相加。两者加起来 + 平局 = 总组合数",
+      folds: "空气 + 弱听牌的组合数 —— 看的是他手牌的**绝对强度**，不是他有没有打过你",
+      sticky: "中/弱对 + 强听牌：有摊牌价值或有听，小注会跟、大注多半弃",
+      never: "顶对以上：这部分你下多大他都不弃，别指望打走",
+    },
     method: {
       total: r1(total),
       removed,
