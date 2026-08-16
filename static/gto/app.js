@@ -2,7 +2,7 @@
    刻意不用框架：这样同一份文件既能被 FastAPI 直接托管，也能原样丢到
    GitHub Pages 之类的静态托管上，不需要 npm build。 */
 
-import { LocalBackend } from "./core/local-backend.js?v=da6c45f72f";
+import { LocalBackend } from "./core/local-backend.js?v=2eea846f8e";
 
 /* 后端探测：本地跑着 FastAPI 就用它（有 CFR solver + SQLite 全局手牌库），
    否则整套逻辑落到浏览器内的 LocalBackend（GitHub Pages 走这条）。 */
@@ -192,6 +192,7 @@ async function deal() {
     fb.className = "feedback card bad";
     fb.innerHTML = `<h3>这一局结束</h3><p class="explain">${e.message}</p>`;
     fb.classList.remove("hidden");
+    unlockActions();
     $("#actionbar").innerHTML = '<span class="waiting">刷新页面可以重新开一局。</span>';
   }
 }
@@ -344,6 +345,10 @@ function renderTable(h) {
 
 function renderActions(h) {
   const bar = $("#actionbar");
+  // 每次重画动作条都先解锁。busy 是加在**容器**上的（pointer-events:none），
+  // 换掉 innerHTML 只换掉了里面的按钮，class 还留在容器上 ——
+  // 于是新按钮（包括「下一手」）全是灰的、点不动，整页看起来卡死。
+  unlockActions();
   bar.innerHTML = "";
   if (h.finished) {
     const b = document.createElement("button");
@@ -455,6 +460,13 @@ function lockActions() {
   bar.querySelectorAll("button").forEach((b) => { b.disabled = true; });
 }
 
+function unlockActions() {
+  const bar = $("#actionbar");
+  if (!bar) return;
+  bar.classList.remove("busy");
+  bar.querySelectorAll("button").forEach((b) => { b.disabled = false; });
+}
+
 async function act(type, amount) {
   if (acting) return;
   acting = true;
@@ -504,6 +516,7 @@ function countdownThen(fn) {
   let left = Math.round(DEAL_DELAY_MS / 1000);
   const done = () => { stopCountdown(); fn(); };
   const paint = () => {
+    unlockActions();
     bar.innerHTML =
       `<span class="waiting">${left} 秒后发牌…</span>` +
       '<button class="act" id="btn-skip">立刻发牌</button>';
