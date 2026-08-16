@@ -14,7 +14,7 @@
  * 于是不管你怎么打每个位置都会显示"太紧"。VPIP 没有这个偏差。
  */
 
-import { comboCount, ALL_LABELS } from "./poker.js?v=2eea846f8e";
+import { comboCount, ALL_LABELS } from "./poker.js?v=36e7fc8dc6";
 
 export const WINDOWS = [["all", null], ["last500", 500], ["last100", 100]];
 
@@ -45,8 +45,11 @@ function width(labels) {
 
 export function rangeReport(decisions, chart) {
   // 只看翻前，倒序（最近的在前）好切窗口
+  // 只看无人加注的局面。对比的是 chart 的开池范围，而「跟 UTG 开池的牌」
+  // 和「自己开池的牌」是两个范围（前者紧得多）。混在一起会让每个曾经
+  // 面对过加注的位置无端显示成"太紧"。
   const rows = decisions
-    .filter((d) => d.street === "preflop")
+    .filter((d) => d.street === "preflop" && /\|rfi$/.test(d.spot || ""))
     .slice()
     .reverse();
 

@@ -2,7 +2,7 @@
    刻意不用框架：这样同一份文件既能被 FastAPI 直接托管，也能原样丢到
    GitHub Pages 之类的静态托管上，不需要 npm build。 */
 
-import { LocalBackend } from "./core/local-backend.js?v=2eea846f8e";
+import { LocalBackend } from "./core/local-backend.js?v=36e7fc8dc6";
 
 /* 后端探测：本地跑着 FastAPI 就用它（有 CFR solver + SQLite 全局手牌库），
    否则整套逻辑落到浏览器内的 LocalBackend（GitHub Pages 走这条）。 */
@@ -1162,6 +1162,11 @@ async function loadStats() {
     kpi(k.wtsd_pct + "%", "摊牌率"),
     kpi(k.decisions, "决策数"),
     kpi(k.blunder_pct + "%", "严重偏差率", k.blunder_pct > 15 ? "neg" : ""),
+    // 只按真解/chart 打的分。启发式下的"偏差"只等于"和一个胜率估算不一致"，
+    // 和前一个数混成一个看起来很确定的数字是不诚实的。
+    kpi(k.blunder_pct_graded == null ? "—" : k.blunder_pct_graded + "%",
+        `有依据的偏差率（${k.graded_decisions || 0} 个决策）`,
+        k.blunder_pct_graded > 15 ? "neg" : ""),
   ].join("");
 
   // 你到底是被什么标准打的分 —— 全靠启发式打的分只是练手，不是 GTO 学习

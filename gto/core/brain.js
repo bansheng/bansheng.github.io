@@ -6,9 +6,9 @@
  *   solver     真 CFR 解，只有本地后端跑得动，静态版拿不到。
  */
 
-import { Range, handVsRange, holeLabel, cardMask } from "./poker.js?v=2eea846f8e";
-import { evaluate } from "./evaluator.js?v=2eea846f8e";
-import { classify } from "./handread.js?v=2eea846f8e";
+import { Range, handVsRange, handVsOpponents, holeLabel, cardMask } from "./poker.js?v=36e7fc8dc6";
+import { evaluate } from "./evaluator.js?v=36e7fc8dc6";
+import { classify } from "./handread.js?v=36e7fc8dc6";
 
 export const DEFAULT_VILLAIN = Range.parse(
   "22+,A2s+,K5s+,Q7s+,J8s+,T8s+,97s+,87s,76s,65s,A7o+,KTo+,QJo"
@@ -112,19 +112,6 @@ export function preflopAdvice(state, seat, chart) {
 
 /** 按当前牌面的成手强度保留范围里最强的一部分。
  *  听牌会被低估（同花听牌算作高牌），所以这是「下注范围至少有多强」的下界。 */
-export function narrowByStrength(base, board, dead, keepFraction) {
-  const combos = base.combos(dead);
-  if (!combos.length || board.length < 3) return base;
-  const ranked = combos
-    .map((c) => [c, evaluate([c[0], c[1]].concat(board))])
-    .sort((a, b) => b[1] - a[1]);
-  const keep = Math.max(1, Math.floor(ranked.length * keepFraction));
-  const r = new Range({}, new Map());
-  for (const [[a, b, w]] of ranked.slice(0, keep)) r.extra.set(`${a},${b}`, w);
-  return r;
-}
-
-
 /* 各桶的下注频率。用频率而不是「进/不进」，是因为「这手牌下不下注」几乎
  * 从来不是是非题：弱踢脚顶对有时下有时过，而写成「总是下」就会把每一手
  * K7o 都塞进下注范围，于是对手一下注你就永远显示落后。 */
@@ -295,7 +282,11 @@ export function postflopAdvice(state, seat, villainRange, trials = 2500, rand = 
   const hero = state.seats[seat];
   const board = state.board;
   const bb = state.bigBlind;
-  const eq = handVsRange(hero.hole, villainRange || DEFAULT_VILLAIN, board, trials, rand).equity;
+  // 数一下还有几家在池。两家以上就不是单挑：顶对单挑值 89%，三人局约 79%，
+  // 当成单挑算会让多人底池里每个跟注和下注都显得比实际好。
+  const others = state.seats.filter((s) => !s.folded && s.index !== seat).length;
+  const eq = handVsOpponents(hero.hole, villainRange || DEFAULT_VILLAIN, board,
+                             Math.max(1, others), trials, rand).equity;
   const toCall = state.currentBet - hero.committed;
   const pot = state.pot;
   const required = toCall > 0 ? toCall / (pot + toCall) : 0;

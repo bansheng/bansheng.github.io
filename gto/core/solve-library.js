@@ -11,8 +11,8 @@
  * 因为那些子树大 300 倍，静态站放不下。
  */
 
-import { canonicalKeyString, findPermutation, applyPerm } from "./boards.js?v=2eea846f8e";
-import { cardToStr } from "./poker.js?v=2eea846f8e";
+import { canonicalKeyString, findPermutation, applyPerm } from "./boards.js?v=36e7fc8dc6";
+import { cardToStr } from "./poker.js?v=36e7fc8dc6";
 
 export class SolveLibrary {
   constructor(base = "./solves") {

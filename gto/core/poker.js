@@ -2,7 +2,7 @@
  * 保持同语义是硬要求：同一个范围字符串，两边必须展开成同一组具体组合，
  * 否则本地版和后端版会给出不同的建议。tests/test_js_core.py 逐条对撞。 */
 
-import { evaluate } from "./evaluator.js?v=2eea846f8e";
+import { evaluate } from "./evaluator.js?v=36e7fc8dc6";
 
 export const RANKS = "23456789TJQKA";
 export const SUITS = "cdhs";
@@ -304,4 +304,59 @@ export function winners(holeBySeat, board) {
   for (const [seat, hole] of Object.entries(holeBySeat)) ranks[seat] = evaluate(hole.concat(board));
   const best = Math.max(...Object.values(ranks));
   return { ranks, winners: Object.keys(ranks).filter((s) => ranks[s] === best).map(Number) };
+}
+
+/** 对 n 个独立对手的胜率（每个对手都从同一个范围里抽牌）。
+ *
+ * 多一个对手就是多一手要打过的牌，影响很大：单挑值 89% 的顶对，
+ * 三人局约 79%，四人局约 71%。把多人底池当成单挑算 —— 之前就是这么算的 ——
+ * 会系统性高估你领先多少，让每个跟注和下注都显得比实际好。
+ *
+ * 每个对手用同一个范围是近似（真实里不同位置范围不同），
+ * 但比"假装其他人不存在"的误差小得多。
+ */
+export function handVsOpponents(hero, range, board = [], opponents = 1,
+                                trials = 6000, rand = Math.random) {
+  if (opponents <= 1) return handVsRange(hero, range, board, trials, rand);
+  const dead = cardMask([...hero, ...board]);
+  const combos = range.combos(dead);
+  if (!combos.length) throw new Error("对手范围在这个牌面上是空的");
+
+  const cum = [];
+  let total = 0;
+  for (const c of combos) { total += c[2]; cum.push(total); }
+  const pick = () => {
+    const x = rand() * total;
+    let lo = 0, hi = cum.length - 1;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (cum[mid] < x) lo = mid + 1; else hi = mid; }
+    return combos[lo];
+  };
+
+  const need = 5 - board.length;
+  let w = 0, t = 0, l = 0, n = 0;
+  for (let i = 0; i < trials; i++) {
+    const used = new Set([...hero, ...board]);
+    const picked = [];
+    let ok = true;
+    for (let o = 0; o < opponents; o++) {
+      let got = null;
+      for (let tries = 0; tries < 24; tries++) {
+        const c = pick();
+        if (!used.has(c[0]) && !used.has(c[1])) { got = c; break; }
+      }
+      if (!got) { ok = false; break; }
+      used.add(got[0]); used.add(got[1]); picked.push(got);
+    }
+    if (!ok) continue;
+    const pool = [];
+    for (let c = 0; c < 52; c++) if (!used.has(c)) pool.push(c);
+    const full = need ? board.concat(shuffleTake(pool, need, rand)) : board;
+    const h = evaluate(hero.concat(full));
+    let best = -Infinity;
+    for (const [a, b] of picked) best = Math.max(best, evaluate([a, b].concat(full)));
+    n++;
+    if (h > best) w++; else if (h === best) t++; else l++;
+  }
+  if (!n) throw new Error("多人局面一次都没能发出牌");
+  return { win: w / n, tie: t / n, lose: l / n, equity: (w + t / 2) / n, trials: n, exact: false };
 }
