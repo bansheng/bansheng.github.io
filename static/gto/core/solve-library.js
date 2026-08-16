@@ -35,11 +35,28 @@ export class SolveLibrary {
 
   get size() { return this.index ? Object.keys(this.index).length : 0; }
 
+  /** 这手牌是单加注池还是 3bet 池 —— 决定该查哪一份解。
+   *  同一个牌面上这是两个**不同的博弈**：范围不一样、SPR 不一样，
+   *  拿其中一个当另一个的答案，比没有解更糟（它顶着"精确解"的标签）。 */
+  static familyOf(state) {
+    const raises = (state.actions || []).filter(
+      (a) => a.street === "preflop" && (a.type === "bet" || a.type === "raise")).length;
+    return raises >= 2 ? "3bet" : "srp";
+  }
+
   /** 这个翻牌有没有解（按同构算）。返回 {entry, perm} 或 null。 */
-  async find(flop) {
+  async find(flop, family = "srp") {
     const index = await this.ready();
-    const entry = index[canonicalKeyString(flop)];
-    if (!entry) return null;
+    const byFamily = index[canonicalKeyString(flop)];
+    if (!byFamily) return null;
+    const entry = byFamily[family];
+    // 有这个牌面、但没有这个牌局类型的解：如实说，不拿另一种顶上
+    if (!entry) {
+      const have = Object.keys(byFamily);
+      return have.length
+        ? { missingFamily: family, have }
+        : null;
+    }
     const stored = entry.board.match(/../g).map((s) => {
       const r = "23456789TJQKA".indexOf(s[0]), su = "cdhs".indexOf(s[1]);
       return r * 4 + su;
@@ -67,8 +84,15 @@ export class SolveLibrary {
   /** 沿着这手牌翻牌街的实际动作走到当前节点，读出这两张具体牌的频率。 */
   async read(state, seat) {
     if (state.board.length < 3) return null;
-    const hit = await this.find(state.board.slice(0, 3));
+    const family = SolveLibrary.familyOf(state);
+    const hit = await this.find(state.board.slice(0, 3), family);
     if (!hit) return null;
+    if (hit.missingFamily) {
+      const cn = { srp: "单加注池", "3bet": "3bet 池" };
+      return { unavailable:
+        `这个牌面解过 ${hit.have.map((f) => cn[f] || f).join("/")}，但没解过`
+        + `${cn[family] || family} —— 两者范围和 SPR 都不同，不能拿来顶替` };
+    }
     // 转牌之后就走出了导出的范围 —— 如实返回 null，不拿翻牌的解冒充
     if (state.board.length > 3) {
       return { unavailable: "转牌之后没有导出真解（子树太大），仍用启发式" };
