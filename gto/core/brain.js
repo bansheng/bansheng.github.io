@@ -6,9 +6,9 @@
  *   solver     真 CFR 解，只有本地后端跑得动，静态版拿不到。
  */
 
-import { Range, handVsRange, handVsOpponents, holeLabel, cardMask } from "./poker.js?v=36e7fc8dc6";
-import { evaluate } from "./evaluator.js?v=36e7fc8dc6";
-import { classify } from "./handread.js?v=36e7fc8dc6";
+import { Range, handVsRange, handVsOpponents, holeLabel, cardMask } from "./poker.js?v=18362dd4ad";
+import { evaluate } from "./evaluator.js?v=18362dd4ad";
+import { classify } from "./handread.js?v=18362dd4ad";
 
 export const DEFAULT_VILLAIN = Range.parse(
   "22+,A2s+,K5s+,Q7s+,J8s+,T8s+,97s+,87s,76s,65s,A7o+,KTo+,QJo"
