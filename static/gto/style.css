@@ -550,3 +550,11 @@ tr.rr-verdict td { border-top: none; padding-top: 0; font-size: 12px; color: var
 /* 动作发出后立刻置灰，避免连点把两条街一次发出来 */
 .actionbar.busy{opacity:.5;pointer-events:none}
 .actionbar button:disabled{cursor:not-allowed}
+
+/* 多人底池的诈唬警告：单个对手弃牌率会被误当成"打走整个底池"的概率 */
+.mw-warn{
+  margin:6px 0 10px;padding:8px 11px;border-radius:6px;font-size:12.5px;
+  line-height:1.65;background:rgba(229,83,75,.10);
+  border-left:3px solid var(--raise);color:var(--muted);
+}
+.mw-warn b{color:var(--text)}

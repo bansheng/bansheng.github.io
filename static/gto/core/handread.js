@@ -6,8 +6,8 @@
  * 所以这里把范围拆成人真正会思考的那几桶，数组合，并说明哪些弃、哪些跟。
  */
 
-import { RANKS } from "./poker.js?v=36e7fc8dc6";
-import { evaluate, categoryOf } from "./evaluator.js?v=36e7fc8dc6";
+import { RANKS } from "./poker.js?v=18362dd4ad";
+import { evaluate, categoryOf } from "./evaluator.js?v=18362dd4ad";
 
 export const BUCKETS = ["超强牌", "两对", "顶对", "中/弱对", "强听牌", "弱听牌", "空气"];
 const STRONG_MADE = ["超强牌", "两对", "顶对"];
@@ -157,6 +157,14 @@ export function readHands(state, seat, villainRange, examples = 6) {
   const foldable = sum(["空气", "弱听牌"]);
   const sticky = sum(["强听牌", "中/弱对"]);
   const never = sum(STRONG_MADE);
+
+  // 「能打走 X%」是**对一个对手**说的。多人底池里你要的是所有人都弃牌，
+  // 那是 X 的 n 次方 —— 单个对手弃 60%，三家全弃只有 22%。
+  // 不写清楚，这个数会诱导你在多人底池里做根本不成立的诈唬。
+  const opponents = Math.max(1,
+    state.seats.filter((s) => !s.folded && s.index !== seat).length);
+  const oneFold = total ? foldable / total : 0;
+  const allFold = Math.pow(oneFold, opponents);
 
   // 组合数是怎么来的 —— 面板不写清楚，"超强牌 24 个组合是算出来的还是估的"
   // 这个问题就会一直被问。所以把口径直接放进结果里。

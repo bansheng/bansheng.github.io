@@ -8,13 +8,13 @@
  *   - 存储是 localStorage 而不是 SQLite：只留在这台机器的这个浏览器里
  */
 
-import { Range, ALL_LABELS, cardsFromStr, holeLabel, handVsRange } from "./poker.js?v=36e7fc8dc6";
-import { HandState } from "./engine.js?v=36e7fc8dc6";
+import { Range, ALL_LABELS, cardsFromStr, holeLabel, handVsRange } from "./poker.js?v=18362dd4ad";
+import { HandState } from "./engine.js?v=18362dd4ad";
 import { advise, BotTable, freqGap, frequencyOf, isBlunder,
-         inferVillainRangeDetailed, inferHeroRange } from "./brain.js?v=36e7fc8dc6";
-import { analyse } from "./analysis.js?v=36e7fc8dc6";
-import { SolveLibrary } from "./solve-library.js?v=36e7fc8dc6";
-import { rangeReport } from "./rangereport.js?v=36e7fc8dc6";
+         inferVillainRangeDetailed, inferHeroRange } from "./brain.js?v=18362dd4ad";
+import { analyse } from "./analysis.js?v=18362dd4ad";
+import { SolveLibrary } from "./solve-library.js?v=18362dd4ad";
+import { rangeReport } from "./rangereport.js?v=18362dd4ad";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";

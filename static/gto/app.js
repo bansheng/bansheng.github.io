@@ -2,7 +2,7 @@
    刻意不用框架：这样同一份文件既能被 FastAPI 直接托管，也能原样丢到
    GitHub Pages 之类的静态托管上，不需要 npm build。 */
 
-import { LocalBackend } from "./core/local-backend.js?v=36e7fc8dc6";
+import { LocalBackend } from "./core/local-backend.js?v=18362dd4ad";
 
 /* 后端探测：本地跑着 FastAPI 就用它（有 CFR solver + SQLite 全局手牌库），
    否则整套逻辑落到浏览器内的 LocalBackend（GitHub Pages 走这条）。 */
@@ -734,7 +734,11 @@ function renderHandReadInner(hr) {
       ${row("bad", "你落后", v.beats_you_pct, v.beats_you,
             v.beaten_by.join("、") || "—",
             `${how.beats_you || ""}：${v.beats_you} ÷ ${T} = ${v.beats_you_pct}%`)}
-      ${row("push", "下注能打走", f.folds_pct, f.folds, "空气 + 弱听牌",
+      ${f.multiway ? `<div class="mw-warn">${bold(f.multiway_note)}</div>` : ""}
+      ${f.multiway ? row("push", "全部弃牌", f.all_fold_pct, null,
+            `${f.folds_pct}% 的 ${hr.opponents} 次方 —— 诈唬真正要的是这个数`, "") : ""}
+      ${row("push", f.multiway ? "单个对手能打走" : "下注能打走",
+            f.folds_pct, f.folds, "空气 + 弱听牌",
             `${how.folds || ""}：${f.folds} ÷ ${T} = ${f.folds_pct}%`)}
       ${row("hold", "会跟你", f.sticky_pct, null, f.sticky_label, how.sticky)}
       ${row("never", "铁定不弃", f.never_folds_pct, null, "顶对以上", how.never)}
