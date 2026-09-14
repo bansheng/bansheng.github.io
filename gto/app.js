@@ -2,7 +2,7 @@
    刻意不用框架：这样同一份文件既能被 FastAPI 直接托管，也能原样丢到
    GitHub Pages 之类的静态托管上，不需要 npm build。 */
 
-import { LocalBackend } from "./core/local-backend.js?v=18362dd4ad";
+import { LocalBackend } from "./core/local-backend.js?v=d7f59760f3";
 
 /* 后端探测：本地跑着 FastAPI 就用它（有 CFR solver + SQLite 全局手牌库），
    否则整套逻辑落到浏览器内的 LocalBackend（GitHub Pages 走这条）。 */
@@ -944,7 +944,60 @@ function renderChips(c) {
 
 /* ---------------- drill ---------------- */
 
+// 翻前和翻后是两套出题：前者查 chart，后者查求解库。
+// 分开写而不是塞进一个函数，是因为两边的题面差得远 —— 翻后要显示公共牌、
+// 底池、SPR，还要说清这道题的答案有多准。
+$("#drill-street")?.addEventListener("change", () => {
+  const post = $("#drill-street").value === "postflop";
+  // 翻后没有「RFI / 面对开池」「位置」这些筛选项，藏起来免得误导
+  const kind = $("#drill-kind-wrap");
+  if (kind) kind.style.display = post ? "none" : "";
+  const pos = $("#drill-pos")?.closest("label");
+  if (pos) pos.style.display = post ? "none" : "";
+});
+
+async function drillPostflop() {
+  let q;
+  try {
+    q = await api("/api/drill/postflop", { method: "POST" });
+  } catch (e) {
+    $("#drill-q").classList.remove("hidden");
+    $("#drill-answer").classList.add("hidden");
+    $("#drill-spot").textContent = "翻后出题暂时不可用";
+    $("#drill-hand").innerHTML = "";
+    $("#drill-actions").innerHTML =
+      `<p class="hint">${e.message}</p>`;
+    return;
+  }
+  state.drill = q;
+  $("#drill-q").classList.remove("hidden");
+  $("#drill-answer").classList.add("hidden");
+  $("#drill-spot").textContent = q.description;
+
+  // 翻后的题面要把公共牌摆出来，不然无从判断
+  const hd = $("#drill-hand");
+  hd.innerHTML = "";
+  q.hand_cards.forEach((c) => hd.appendChild(cardEl(c)));
+  const sep = document.createElement("span");
+  sep.className = "drill-board-sep";
+  sep.textContent = "牌面";
+  hd.appendChild(sep);
+  q.board.forEach((c) => hd.appendChild(cardEl(c)));
+
+  const ac = $("#drill-actions");
+  ac.innerHTML = "";
+  const order = ["fold", "check", "call", "bet", "raise"];
+  order.filter((a) => a in q.answer).forEach((a) => {
+    const b = document.createElement("button");
+    b.className = "act " + (a === "check" ? "call" : a);
+    b.textContent = ACT_CN[a] || a;
+    b.onclick = () => answerDrill(a);
+    ac.appendChild(b);
+  });
+}
+
 $("#btn-drill").addEventListener("click", async () => {
+  if ($("#drill-street")?.value === "postflop") return drillPostflop();
   const q = await api("/api/drill", {
     method: "POST",
     body: JSON.stringify({
@@ -990,10 +1043,17 @@ function answerDrill(chosen) {
 
   const ans = $("#drill-answer");
   ans.classList.remove("hidden");
-  ans.innerHTML = `<h3>${q.hand} 在 ${q.spot} 的策略</h3><div id="drill-bars"></div>
-    <p class="explain">你选了「${ACT_CN[chosen]}」，占 <b>${(freq * 100).toFixed(1)}%</b></p>
-    <p class="caveat">${q.provenance.kind === "approximate-reference"
-      ? "此 chart 为参考近似，范围宽度可信，单手牌混合频率不保证精确" : ""}</p>`;
+  const where = q.kind === "postflop"
+    ? `${q.board.join(" ")}（${q.description}）`
+    : q.spot;
+  // 翻后的题来自真解，要标出这道题的解有多准；翻前的要标 chart 的出处
+  const caveat = q.kind === "postflop"
+    ? (q.accuracy_note || "")
+    : (q.provenance?.kind === "approximate-reference"
+        ? "此 chart 为参考近似，范围宽度可信，单手牌混合频率不保证精确" : "");
+  ans.innerHTML = `<h3>${q.hand} 在 ${where} 的策略</h3><div id="drill-bars"></div>
+    <p class="explain">你选了「${ACT_CN[chosen] || chosen}」，占 <b>${(freq * 100).toFixed(1)}%</b></p>
+    <p class="caveat">${caveat}</p>`;
   bars(
     Object.entries(q.answer).map(([action, frequency]) => ({ action, frequency })),
     $("#drill-bars"), chosen

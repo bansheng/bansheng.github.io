@@ -14,7 +14,7 @@
  * 于是不管你怎么打每个位置都会显示"太紧"。VPIP 没有这个偏差。
  */
 
-import { comboCount, ALL_LABELS } from "./poker.js?v=18362dd4ad";
+import { comboCount, ALL_LABELS } from "./poker.js?v=d7f59760f3";
 
 export const WINDOWS = [["all", null], ["last500", 500], ["last100", 100]];
 
