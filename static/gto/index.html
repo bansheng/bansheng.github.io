@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GTO 训练器</title>
-<link rel="stylesheet" href="./style.css?v=18362dd4ad">
+<link rel="stylesheet" href="./style.css?v=d7f59760f3">
 </head>
 <body>
 
@@ -196,9 +196,16 @@
 <section class="view" id="view-drill">
   <div class="card">
     <h2>决策训练</h2>
-    <p class="hint">随机给一个翻前局面，你选动作，立刻看到 chart 的答案和你的偏差。比打完整手牌快 10 倍。</p>
+    <p class="hint">随机给一个局面，你选动作，立刻看到答案和你的偏差。比打完整手牌快 10 倍。
+      翻前的答案来自 chart，翻后的来自求解库里的真解。</p>
     <div class="grid">
-      <label>局面类型
+      <label>街
+        <select id="drill-street">
+          <option value="preflop">翻前（chart）</option>
+          <option value="postflop">翻后（真解）</option>
+        </select>
+      </label>
+      <label id="drill-kind-wrap">局面类型
         <select id="drill-kind">
           <option value="any">全部</option>
           <option value="rfi">首入加注 (RFI)</option>
@@ -283,6 +290,6 @@
 
 </main>
 
-<script type="module" src="./app.js?v=18362dd4ad"></script>
+<script type="module" src="./app.js?v=d7f59760f3"></script>
 </body>
 </html>

@@ -8,13 +8,13 @@
  *   - 存储是 localStorage 而不是 SQLite：只留在这台机器的这个浏览器里
  */
 
-import { Range, ALL_LABELS, cardsFromStr, holeLabel, handVsRange } from "./poker.js?v=18362dd4ad";
-import { HandState } from "./engine.js?v=18362dd4ad";
+import { Range, ALL_LABELS, cardsFromStr, holeLabel, handVsRange } from "./poker.js?v=d7f59760f3";
+import { HandState } from "./engine.js?v=d7f59760f3";
 import { advise, BotTable, freqGap, frequencyOf, isBlunder,
-         inferVillainRangeDetailed, inferHeroRange } from "./brain.js?v=18362dd4ad";
-import { analyse } from "./analysis.js?v=18362dd4ad";
-import { SolveLibrary } from "./solve-library.js?v=18362dd4ad";
-import { rangeReport } from "./rangereport.js?v=18362dd4ad";
+         inferVillainRangeDetailed, inferHeroRange } from "./brain.js?v=d7f59760f3";
+import { analyse } from "./analysis.js?v=d7f59760f3";
+import { SolveLibrary } from "./solve-library.js?v=d7f59760f3";
+import { rangeReport } from "./rangereport.js?v=d7f59760f3";
 
 const CHART_FILES = ["6max_100bb_cash", "rangeviewer_100bb", "hu_pushfold_nash"];
 const STORE_KEY = "gto-trainer-v1";
@@ -510,10 +510,81 @@ export class LocalBackend {
       return { ...h, decisions: this.store.decisions.filter((d) => d.hand_id === id) };
     }
 
+    if (seg[0] === "drill" && seg[1] === "postflop") return this._drillPostflop();
     if (seg[0] === "drill") return this._drill(body);
     if (seg[0] === "equity") return this._equity(body);
 
     throw new Error(`本地版没有实现这个接口: ${path}`);
+  }
+
+  /* 翻后出题：从静态导出的真解里抽一个决策。
+     公网版没有求解器，但导出的解本身就是完整策略表，抽题足够了。
+     抽不到就如实报错，不拿启发式凑题 —— 拿估算当答案的练习题，
+     练的是"猜得像不像那个估算"，不是 GTO。 */
+  async _drillPostflop() {
+    await this.library.ready();
+    const index = this.library.index || {};
+    const entries = Object.values(index)
+      .map((byFam) => byFam.srp || Object.values(byFam)[0])
+      .filter(Boolean);
+    if (!entries.length) throw new Error("求解库里还没有可用的翻后解，练不了翻后");
+
+    for (let tries = 0; tries < 8; tries++) {
+      const e = entries[Math.floor(Math.random() * entries.length)];
+      const data = await this.library.load(e.file);
+      if (!data?.tree || !data.combos?.length) continue;
+      // 导出的树是压缩过的：a=动作表，p=谁行动，f=展平的频率（每百分之一），
+      // c=子节点。跟原始 dump 的 strategy.strategy 不是一个形状，
+      // 这里必须按导出格式读，照抄后端那套会一道题都出不来。
+      let node = data.tree;
+      let facing = false;
+      if (Math.random() < 0.5) {
+        const bet = (node.a || []).find((a) => /^(BET|RAISE)/.test(a));
+        const child = bet && node.c?.[bet];
+        if (child) { node = child; facing = true; }
+      }
+      const acts = node.a || [];
+      const freqs = node.f || [];
+      if (!acts.length || !freqs.length) continue;
+      const idx = Math.floor(Math.random() * data.combos.length);
+      const combo = data.combos[idx];
+      const answer = {};
+      let sum = 0;
+      acts.forEach((label, j) => {
+        const v = (freqs[idx * acts.length + j] || 0) / 100;
+        const kind = label.split(" ")[0].toLowerCase();
+        answer[kind] = (answer[kind] || 0) + v;
+        sum += v;
+      });
+      // 量化到百分之一会有舍入残差，归一化一下再给出去
+      if (sum > 0.5) for (const k of Object.keys(answer)) answer[k] /= sum;
+      else continue;
+
+      const spr = e.effective_stack && e.pot
+        ? Math.round((e.effective_stack / e.pot) * 10) / 10 : null;
+      return {
+        kind: "postflop",
+        board: e.board.match(/../g),
+        hand: combo,
+        hand_cards: [combo.slice(0, 2), combo.slice(2, 4)],
+        street: "flop",
+        pot: e.pot, effective_stack: e.effective_stack, spr,
+        family: "srp",
+        position: node.player === 1 ? "OOP" : "IP",
+        facing_bet: facing,
+        description: `单加注底池　${facing ? "你面对一注" : "轮到你先行动"}`
+          + `　底池 ${e.pot}，有效筹码 ${e.effective_stack}（SPR ${spr}）`,
+        answer,
+        spot_actions: Object.keys(answer),
+        exploitability: e.exploitability,
+        source: "solver",
+        accuracy_note: e.exploitability != null
+          ? `这道题的答案来自真实 CFR 解，可利用度 ${e.exploitability.toFixed(2)}%`
+          : "这道题的答案来自真实 CFR 解",
+        substitutions: [],
+      };
+    }
+    throw new Error("抽了几个解都没能出题");
   }
 
   /* 没有密码 —— 本地存储里的用户名只是记录的归属标签 */

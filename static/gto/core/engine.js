@@ -12,8 +12,8 @@
  *  - 单挑时按钮=小盲，且翻前先行动
  */
 
-import { cardToStr, cardsToStr, holeLabel } from "./poker.js?v=18362dd4ad";
-import { evaluate, categoryName } from "./evaluator.js?v=18362dd4ad";
+import { cardToStr, cardsToStr, holeLabel } from "./poker.js?v=d7f59760f3";
+import { evaluate, categoryName } from "./evaluator.js?v=d7f59760f3";
 
 export const STREETS = ["preflop", "flop", "turn", "river"];
 export const BOARD_SIZE = { preflop: 0, flop: 3, turn: 4, river: 5 };
